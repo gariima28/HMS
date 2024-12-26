@@ -2,35 +2,74 @@ import * as React from 'react';
 import Box from '@mui/material/Box';
 import { Button, Stack, FormHelperText, InputLabel, OutlinedInput, Divider, Typography, Select, MenuItem} from '@mui/material';
 import Grid from '@mui/material/Unstable_Grid2/Grid2';
-import { useNavigate } from 'react-router';
-import { createHotelApi } from 'api/api';
+import { useNavigate, useParams } from 'react-router';
+import { createHotelApi, getHotelByIdApi, updateHotelApi } from 'api/api';
 import { useForm } from 'react-hook-form';
+import { Snackbar, Alert } from '@mui/material';
 
 const CreateHotel = () => {
 
+  const {id}= useParams();
+  
   const navigate = useNavigate();
-  const { register , handleSubmit , formState: {errors} , setValue, trigger } = useForm({
+  const [snackbar, setSnackbar] = React.useState({ open: false, message: '', severity: '' });
+  
+  const { register , handleSubmit , formState: {errors} , setValue, trigger, watch } = useForm({
     mode: 'onChange',
     reValidateMode: 'onChange', 
-    defaultValues: {
-      hotelName : '',
-      subTitle : '',
-      destination : '',
-      status : '',
-      // registerDate : '',
-      hotelClass : '',
-      phoneNo : '',
-      address : '',
-      hotelEmail : '',
-      description : '',
-      hotelId : '',
-      hotelImage : '',
-      adminName : '',
-      adminEmail : '',
-      adminAddress : '',
-      adminPhone : '',
-    }
   });
+  
+  const hotelStatus = watch('status')
+
+  console.log(id,' jhugfydtxfgchvjhkjgyf')
+
+  React.useEffect(() => {
+    if(id !== 'add'){
+    getHotelById();
+    }
+  }, [id])
+  
+  const handleCloseSnackbar = () => {
+    setSnackbar((prev) => ({ ...prev, open: false }));
+  };
+
+  const handleChange = (event) => {
+    const { value } = event.target;
+    setValue('status', value);
+    trigger('status');
+  };
+
+
+  // Get Amenities data by id
+  const getHotelById = async () => {
+    try {
+      var response = await getHotelByIdApi(id);
+      console.log(response, 'get by id')
+      if (response?.status === 200) {
+        setValue('hotelName', response?.data?.hotelName);
+        setValue('subTitle', response?.data?.subTitle);
+        setValue('destination', response?.data?.destination);
+        setValue('status', response?.data?.status);
+        setValue('hotelClass', response?.data?.hotelClass);
+        setValue('phoneNo', response?.data?.phoneNo);
+        setValue('address', response?.data?.address);
+        setValue('hotelEmail', response?.data?.hotelEmail);
+        setValue('description', response?.data?.description);
+        setValue('hotelId', response?.data?.stHotelId?.split('-')[0] || '');
+        setValue('hotelImage', response?.data?.hotelImageUrl);
+      }
+      else {
+        console.log(response?.data?.message);
+      }
+    }
+    catch (error) {
+      console.log('catch')
+    }
+    finally {
+      console.log('finally')
+    }
+  }
+
   
   const onSubmit = async (data) => {
     console.log('start')
@@ -40,7 +79,7 @@ const CreateHotel = () => {
       formData.append('hotelName', data.hotelName)
       formData.append('subTitle', data.subTitle)
       formData.append('destination', data.destination)
-      formData.append('status', data.status)
+      formData.append('status', data.status === 'true')
       // formData.append('registerDate', data.registerDate)
       formData.append('hotelClass', data.hotelClass)
       formData.append('phoneNo', data.phoneNo)
@@ -49,32 +88,35 @@ const CreateHotel = () => {
       formData.append('description', data.description)
       formData.append('hotelId', data.hotelId)
       formData.append('hotelImage', data.hotelImage[0])
-      formData.append('adminName', data.adminName)
-      formData.append('adminEmail', data.adminEmail)
-      formData.append('adminAddress', data.adminAddress)
-      formData.append('adminPhone', data.adminPhone)
+      { id === 'add' && 
+        formData.append('adminName', data.adminName)
+        formData.append('adminEmail', data.adminEmail)
+        formData.append('adminAddress', data.adminAddress)
+        formData.append('adminPhone', data.adminPhone)
+      }
 
-      const response = await createHotelApi(formData);
+      const response = id === 'add' ? await createHotelApi(formData) : await updateHotelApi(id, formData) ;
       console.log(response, 'try1')
       if (response.status === 200) {
-        if(response?.data?.status === 'success'){
-          console.log(response?.data?.message, 'success')
-          navigate('/hotels');
+        if (response?.data?.status === 'success') {
+          console.log(response?.data?.message, 'success');
+          setSnackbar({ open: true, message: response?.data?.message, severity: 'success' });
+          setTimeout(() => {
+            navigate('/hotels');
+          }, 5500);
+        }
+        else {
+          setSnackbar({ open: true, message: response?.data?.msg || 'Error occurred', severity: 'error' });
         }
       }
     } catch (error) {
-      console.log('catch')
+      setSnackbar({ open: true, message: error.message || 'Error occurred', severity: 'error' });
+      console.error(error);
     } finally {
       console.log('finally')
     }
   };
 
-  const handleChange = (event) => {
-    const { value } = event.target;
-    setValue("status", value);
-    trigger("status"); 
-  };
-  
   return (
     <Box sx={{ flexGrow: 1 }}>
       <form onSubmit={handleSubmit(onSubmit)}>
@@ -104,21 +146,15 @@ const CreateHotel = () => {
           <Grid  xs={12} sm={6} md={6} lg={4} >
             <Stack spacing={1}>
               <InputLabel htmlFor="status">Status</InputLabel>
-              <Select {...register("status" , { required: 'This Field is required' })} onChange={handleChange} fullWidth displayEmpty error={Boolean(errors.status)} defaultValue="" >
-                <MenuItem value='' disabled >Select Status</MenuItem>
+              <Select {...register("status", { required: 'This Field is required', validate: (value) => value === 'true' || value === 'false' || 'Invalid status value', })} onChange={handleChange} fullWidth displayEmpty error={Boolean(errors.status)} value={hotelStatus ?? ''} >
+                <MenuItem value='' disabled>Select Status</MenuItem>
                 <MenuItem value='true'>Active</MenuItem>
-                <MenuItem value='false'>InActive</MenuItem>
+                <MenuItem value='false'>Inactive</MenuItem>
               </Select>
+
             </Stack>
             <FormHelperText error id="standard-weight-helper-text-status">{errors.status?.message}</FormHelperText>
           </Grid>
-          {/* <Grid  xs={12} sm={6} md={6} lg={4} >
-            <Stack spacing={1}>
-              <InputLabel htmlFor="registerDate">Hotel Date</InputLabel>
-              <OutlinedInput id="registerDate" type="date" {...register("registerDate" , { required: 'This Field is required' })} placeholder="Enter Hotel Date" fullWidth error={Boolean(errors.registerDate)} />
-            </Stack>
-            <FormHelperText error id="standard-weight-helper-text-registerDate">{errors.registerDate?.message}</FormHelperText>
-          </Grid> */}
           <Grid  xs={12} sm={6} md={6} lg={4} >
             <Stack spacing={1}>
               <InputLabel htmlFor="hotelClass">Hotel Class</InputLabel>
@@ -129,7 +165,7 @@ const CreateHotel = () => {
           <Grid  xs={12} sm={6} md={6} lg={4} >
             <Stack spacing={1}>
               <InputLabel htmlFor="phoneNo">Phone No</InputLabel>
-              <OutlinedInput id="phoneNo" type="tel" { ...register("phoneNo", { required: 'This field is required', validate: { minLength: (value) => value.length <= 10 || 'Phone number must not be more than 10 digits', maxLength: (value) => value.length === 10 || 'Phone number must be exactly 10 digits', pattern: (value) => /^[6-9]\d{9}$/.test(value) || 'Phone number must contain only digits. Any characters or special characters are not allowed', } }) } placeholder="Enter Phone No" fullWidth error={Boolean(errors.phoneNo)} />
+              <OutlinedInput id="phoneNo" type="text" { ...register("phoneNo", { required: 'This field is required', validate: { minLength: (value) => value.length <= 10 || 'Phone number must not be more than 10 digits', maxLength: (value) => value.length === 10 || 'Phone number must be exactly 10 digits', pattern: (value) => /^[6-9]\d{9}$/.test(value) || 'Phone number must contain only digits. Any characters or special characters are not allowed', } }) } placeholder="Enter Phone No" fullWidth error={Boolean(errors.phoneNo)} />
             </Stack>
             <FormHelperText error id="standard-weight-helper-text-phoneNo">{errors.phoneNo?.message}</FormHelperText>
           </Grid>
@@ -143,7 +179,7 @@ const CreateHotel = () => {
           <Grid  xs={12} sm={6} md={6} lg={4} >
             <Stack spacing={1}>
               <InputLabel htmlFor="hotelEmail">Hotel Email</InputLabel>
-              <OutlinedInput id="hotelEmail" type="email" {...register("hotelEmail" , { required: 'This Field is required',  validate: { pattern: (value) => /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/.test(value) || 'Not a valid email format' } })} placeholder="Enter Hotel Email" fullWidth error={Boolean(errors.hotelEmail)} />
+              <OutlinedInput id="hotelEmail" type="text" {...register("hotelEmail" , { required: 'This Field is required',  validate: { pattern: (value) => /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/.test(value) || 'Not a valid email format' } })} placeholder="Enter Hotel Email" fullWidth error={Boolean(errors.hotelEmail)} />
             </Stack>
             <FormHelperText error id="standard-weight-helper-text-hotelEmail">{errors.hotelEmail?.message}</FormHelperText>
           </Grid>
@@ -164,51 +200,67 @@ const CreateHotel = () => {
           <Grid  xs={12} sm={6} md={6} lg={4} >
             <Stack spacing={1}>
               <InputLabel htmlFor="hotelImage">Hotel Image URL</InputLabel>
-              <OutlinedInput id="hotelImage" type="file" {...register("hotelImage" , { required: 'This Field is required', validate: { fileType: (file) => { if (!file[0]) return 'No file selected'; if (value.size < 10240 || value.size > 204800) return '* File size must be between 10 KB to 200 KB'; const allowedTypes = ['image/jpeg', 'image/png']; return allowedTypes.includes(file[0].type) || 'Only .jpg and .png files are allowed'; }, },})} placeholder="Enter Hotel Image URL" fullWidth error={Boolean(errors.hotelImage)} />
+              <OutlinedInput id="hotelImage" type="file" {...register("hotelImage" , { required: 'This Field is required', validate: { fileType: (file) => { if (!file[0]) return 'No file selected'; if (file.size < 10240 || file.size > 204800) return '* File size must be between 10 KB to 200 KB'; const allowedTypes = ['image/jpeg', 'image/png']; return allowedTypes.includes(file[0].type) || 'Only .jpg and .png files are allowed'; }, },})} placeholder="Enter Hotel Image URL" fullWidth error={Boolean(errors.hotelImage)} />
             </Stack>
             <FormHelperText error id="standard-weight-helper-text-hotelImage">{errors.hotelImage?.message}</FormHelperText>
           </Grid>
         </Grid>
-        <Grid sx={{mt:4, mb:4}} >
-          <Typography variant="h5">Admin Details</Typography>
-        </Grid>
-        <Grid container spacing={3}>
-          <Grid  xs={12} sm={6} md={6} lg={4} >
-            <Stack spacing={1}>
-              <InputLabel htmlFor="adminName">Admin Name</InputLabel>
-              <OutlinedInput id="adminName" type="text" {...register("adminName" , { required: 'This Field is required', validate: { startsWithCapital: (value) =>  /^[A-Z]/.test(value) || 'Admin name must start with an uppercase letter', minLength: (value) => value.length >= 4 || 'Minimum Length is 4', pattern: (value) => /^[A-Z][a-zA-Z\s]+$/.test(value) ||  'Admin name must contain only letters, and spaces', } })} placeholder="Enter Admin Name" fullWidth error={Boolean(errors.adminName)} />
-            </Stack>
-            <FormHelperText error id="standard-weight-helper-text-adminName">{errors.adminName?.message}</FormHelperText>
-          </Grid>
-          <Grid  xs={12} sm={6} md={6} lg={4} >
-            <Stack spacing={1}>
-              <InputLabel htmlFor="adminEmail">Admin Email</InputLabel>
-              <OutlinedInput id="adminEmail" type="text" {...register("adminEmail" , { required: 'This Field is required',  validate: { pattern: (value) => /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/.test(value) || 'Not a valid email format' } })} placeholder="Enter Admin Email" fullWidth error={Boolean(errors.adminEmail)} />
-            </Stack>
-            <FormHelperText error id="standard-weight-helper-text-adminEmail">{errors.adminEmail?.message}</FormHelperText>
-          </Grid>
-          <Grid  xs={12} sm={6} md={6} lg={4} >
-            <Stack spacing={1}>
-              <InputLabel htmlFor="adminAddress">Admin Address</InputLabel>
-              <OutlinedInput id="adminAddress" type="text" {...register("adminAddress" , { required: 'This Field is required', validate: { startsWithCapital: (value) =>  /^[A-Z]/.test(value) || 'Admin Address must start with an uppercase letter', minLength: (value) => value.length >= 4 || 'Minimum Length is 4', pattern: (value) => /^[A-Z][a-zA-Z\s]+$/.test(value) ||  'Admin Address must contain only letters, and spaces', } })} placeholder="Enter Admin Address" fullWidth error={Boolean(errors.adminAddress)} />
-            </Stack>
-            <FormHelperText error id="standard-weight-helper-text-adminAddress">{errors.adminAddress?.message}</FormHelperText>
-          </Grid>
-          <Grid  xs={12} sm={6} md={6} lg={4} >
-            <Stack spacing={1}>
-              <InputLabel htmlFor="adminPhone">Admin Phone</InputLabel>
-              <OutlinedInput id="adminPhone" type="text" {...register("adminPhone" , { required: 'This Field is required', validate: { minLength: (value) => value.length <= 10 || 'Phone number must not be more than 10 digits', maxLength: (value) => value.length === 10 || 'Phone number must be exactly 10 digits', pattern: (value) => /^[6-9]\d{9}$/.test(value) || 'Phone number must contain only digits. Any characters or special characters are not allowed', } })} placeholder="Enter Admin Phone" fullWidth error={Boolean(errors.adminPhone)} />
-            </Stack>
-            <FormHelperText error id="standard-weight-helper-text-adminPhone">{errors.adminPhone?.message}</FormHelperText>
-          </Grid>
-          <Grid  xs={12} gap={2}>
-            <Button size="sm" type="submit" variant="contained" color="primary">
-              Create
-            </Button>
-            <Button size="sm" variant="outlined" sx={{ m:2 }}>Cancel</Button>
-          </Grid>
+       {!id &&(
+        <>
+            <Grid sx={{ mt: 4, mb: 4 }} >
+              <Typography variant="h5">Admin Details</Typography>
+            </Grid>
+            <Grid container spacing={3}>
+              <Grid xs={12} sm={6} md={6} lg={4} >
+                <Stack spacing={1}>
+                  <InputLabel htmlFor="adminName">Admin Name</InputLabel>
+                  <OutlinedInput id="adminName" type="text" {...register("adminName", { required: 'This Field is required', validate: { startsWithCapital: (value) => /^[A-Z]/.test(value) || 'Admin name must start with an uppercase letter', minLength: (value) => value.length >= 4 || 'Minimum Length is 4', pattern: (value) => /^[A-Z][a-zA-Z\s]+$/.test(value) || 'Admin name must contain only letters, and spaces', } })} placeholder="Enter Admin Name" fullWidth error={Boolean(errors.adminName)} />
+                </Stack>
+                <FormHelperText error id="standard-weight-helper-text-adminName">{errors.adminName?.message}</FormHelperText>
+              </Grid>
+              <Grid xs={12} sm={6} md={6} lg={4} >
+                <Stack spacing={1}>
+                  <InputLabel htmlFor="adminEmail">Admin Email</InputLabel>
+                  <OutlinedInput id="adminEmail" type="text" {...register("adminEmail", { required: 'This Field is required', validate: { pattern: (value) => /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/.test(value) || 'Not a valid email format' } })} placeholder="Enter Admin Email" fullWidth error={Boolean(errors.adminEmail)} />
+                </Stack>
+                <FormHelperText error id="standard-weight-helper-text-adminEmail">{errors.adminEmail?.message}</FormHelperText>
+              </Grid>
+              <Grid xs={12} sm={6} md={6} lg={4} >
+                <Stack spacing={1}>
+                  <InputLabel htmlFor="adminAddress">Admin Address</InputLabel>
+                  <OutlinedInput id="adminAddress" type="text" {...register("adminAddress", { required: 'This Field is required', validate: { startsWithCapital: (value) => /^[A-Z]/.test(value) || 'Admin Address must start with an uppercase letter', minLength: (value) => value.length >= 4 || 'Minimum Length is 4', pattern: (value) => /^[A-Z][a-zA-Z\s]+$/.test(value) || 'Admin Address must contain only letters, and spaces', } })} placeholder="Enter Admin Address" fullWidth error={Boolean(errors.adminAddress)} />
+                </Stack>
+                <FormHelperText error id="standard-weight-helper-text-adminAddress">{errors.adminAddress?.message}</FormHelperText>
+              </Grid>
+              <Grid xs={12} sm={6} md={6} lg={4} >
+                <Stack spacing={1}>
+                  <InputLabel htmlFor="adminPhone">Admin Phone</InputLabel>
+                  <OutlinedInput id="adminPhone" type="text" {...register("adminPhone", { required: 'This Field is required', validate: { minLength: (value) => value.length <= 10 || 'Phone number must not be more than 10 digits', maxLength: (value) => value.length === 10 || 'Phone number must be exactly 10 digits', pattern: (value) => /^[6-9]\d{9}$/.test(value) || 'Phone number must contain only digits. Any characters or special characters are not allowed', } })} placeholder="Enter Admin Phone" fullWidth error={Boolean(errors.adminPhone)} />
+                </Stack>
+                <FormHelperText error id="standard-weight-helper-text-adminPhone">{errors.adminPhone?.message}</FormHelperText>
+              </Grid>
+            </Grid>
+        </>
+       ) }
+
+        <Grid xs={12} gap={2}>
+          <Button size="sm" type="submit" variant="contained" color="primary">
+            {id ? 'Update' : 'Create'}
+          </Button>
+          <Button size="sm" variant="outlined" sx={{ m: 2 }}>Cancel</Button>
         </Grid>
       </form>
+
+      <Snackbar
+        open={snackbar.open}
+        autoHideDuration={4000}
+        onClose={handleCloseSnackbar}
+        anchorOrigin={{ vertical: 'top', horizontal: 'right' }}
+      >
+        <Alert onClose={handleCloseSnackbar} variant="filled" severity={snackbar.severity} sx={{ width: '100%', color:'#fff' }}>
+          {snackbar.message}
+        </Alert>
+      </Snackbar>
     </Box>
   );
 }

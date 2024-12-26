@@ -37,7 +37,7 @@ const CustomButton = styled(Button)(({ status }) => ({
 
 const columns = [
   { id: 'PremiumService', label: 'Name', minWidth: 120 },
-  { id: 'cost', label: 'Cost', minWidth: 120 },
+  { id: 'price', label: 'Cost', minWidth: 120 },
   { id: 'status', label: 'Status', minWidth: 120, align: 'center' },
   { id: 'action', label: 'Action', minWidth: 120, align: 'right' },
 ];
@@ -54,22 +54,24 @@ const PremiumService = () => {
   const [modalOpen, setModalOpen] = useState(false);
   const [rows, setRows] = useState([]);
   const [preServiceId, setPreServiceId] = useState();
-  const [toaster, setToaster] = useState(false);
-  const [msgToaster, setMsgToaster] = useState('');
-  const [toaterErrorSuccessState, setToaterErrorSuccessState] = useState('success');
+
+
+
+  const [snackbar, setSnackbar] = useState({ open: false, message: '', severity: '' });
+
 
   // Add Premium Service State Function
   const [formDataa, setFormDataa] = useState({
     preSerName: '',
-    cost: ''
+    price: ''
   })
 
   // Update Premium Service State Function
   const [updateFormDataa, setUpdateFormDataa] = useState({
     preSerName: '',
-    cost: '',
+    price: '',
     PremiumServiceNameOriginal: '',
-    CostOriginal: ''
+    PriceOriginal: ''
   });
 
   // Add Premium Service Name
@@ -84,7 +86,7 @@ const PremiumService = () => {
   const handleFormDataaCost = (val) => {
     setFormDataa({
       ...formDataa,
-      cost: val
+      price: val
     });
   }
 
@@ -100,26 +102,25 @@ const PremiumService = () => {
   const handleUpdateFormDataaCost = (val) => {
     setUpdateFormDataa({
       ...updateFormDataa,
-      cost: val
+      price: val
     });
   }
 
   const AddInputFields =
     [
       { id: 'preSerName', field: 'textInput', fieldType: 'text', fieldName: 'Service Name *', placeholder: 'Enter Service Name', updateValFunc: handleFormDataaPremiumServiceName },
-      { id: 'cost', field: 'textInput', fieldType: 'text', fieldName: 'Cost *', placeholder: 'Enter Cost', updateValFunc: handleFormDataaCost },
+      { id: 'price', field: 'textInput', fieldType: 'text', fieldName: 'Cost *', placeholder: 'Enter Cost', updateValFunc: handleFormDataaCost },
     ];
 
   const UpdateInputFields = [
     { id: 'preSerName', field: 'textInput', fieldType: 'text', fieldName: 'Service Name *', placeholder: 'Enter Service Name', value: updateFormDataa.preSerName || '', updateValFunc: handleUpdateFormDataaPremiumServiceName },
-    { id: 'cost', field: 'textInput', fieldType: 'text', fieldName: 'Cost *', placeholder: 'Enter Cost', value: updateFormDataa.cost || '', updateValFunc: handleUpdateFormDataaCost }
+    { id: 'price', field: 'textInput', fieldType: 'text', fieldName: 'Cost *', placeholder: 'Enter Cost', value: updateFormDataa.price || '', updateValFunc: handleUpdateFormDataaCost }
   ];
 
 
   // get API
   const { data, error } = useSWR(`${ServerIP}/preServ/getAll`, fetcher);
 
-  console.log(data, 'pre data')
   // Function to refresh the data
   const refreshData = () => {
     mutate(`${ServerIP}/preServ/getAll`);
@@ -132,35 +133,29 @@ const PremiumService = () => {
     if (button === 'Update') {
       getPremiumServicesDataById(preServiceId);
     }
-    setModalOpen(!modalOpen);
+    setModalOpen(true);
   };
 
   // Dialog Close Handle
   const handleClosingDialogState = () => {
-    setModalOpen(!modalOpen);
+    setModalOpen(false);
   };
 
-  // Toast Open Handle
-  const handleOpeningToasterState = (message, severity) => {
-    setMsgToaster(message);
-    setToaterErrorSuccessState(severity);
-    setToaster(true);
-    refreshData();
+  const handleSnackbarClose = () => {
+    setSnackbar((prev) => ({ ...prev, open: false }));
   };
 
-  // Toast Close Handle
-  const handleClosingToasterState = () => {
-    setToaster(false);
+  const handleSnackbarMessage = (message, severity) => {
+    setSnackbar({ open: true, message, severity });
   };
 
   // useEffect
   useEffect(() => {
     if (data) {
-      setMsgToaster(data?.message ? data?.message : 'Success' )
       const transformedRows = data.map((premiumService) => ({
         ...premiumService,
         PremiumService: premiumService.preSerName,
-        cost: `$ ${premiumService.price}.00`,
+        price: `$ ${premiumService.price}.00`,
         status: <CustomButton variant="outlined" status={`${premiumService.status ? 'enable' : 'disable'}`}> {premiumService.status ? 'Enabled' : 'Disabled'} </CustomButton>,
         action: (
           <Stack justifyContent='end' spacing={2} direction="row">
@@ -171,37 +166,30 @@ const PremiumService = () => {
       }));
       setRows(transformedRows);
     }
-    if (msgToaster) {
-      handleOpeningToasterState();
-    }
   }, [data]);
 
   // Add Function
   const AddNewPremiumServices = async () => {
-    console.log(formDataa, 'formDataa')
-    console.log('start')
     try {
       const data = {
         'preSerName': formDataa.preSerName,
-        'cost': formDataa.cost
+        'price': formDataa.price
       }
-      console.log(data)
       const response = await addPremiumServicesApi(data);
-      console.log(response, 'response')
       if (response.status === 200) {
         if (response?.data?.status === 'success') {
-          console.log(response?.data?.message, 'success')
-          // navigate('/premiumService');
+          handleSnackbarMessage('Premium Services Added Successfully', 'success');
           setModalOpen(false);
           refreshData();
+        }
+        else{
+          handleSnackbarMessage(response?.data?.message, 'error');
         }
       }
     }
     catch (error) {
+      setModalOpen(false);
       console.log('catch')
-    }
-    finally {
-      console.log('finally')
     }
   };
 
@@ -216,9 +204,9 @@ const PremiumService = () => {
         console.log(response.data, 'hjdnbghjnsbdfhjdmsnbdgfhjdsndbhfj')
         setUpdateFormDataa({
           preSerName: response?.data?.preSerName,
-          cost: response?.data?.price,
+          price: response?.data?.price,
           PremiumServiceNameOriginal: response?.data?.preSerName,
-          CostOriginal: response?.data?.price
+          PriceOriginal: response?.data?.price
         });
       }
       else {
@@ -236,24 +224,22 @@ const PremiumService = () => {
   // Update Function
   const UpdatePremiumServicesStatus = async (id, PremiumServicesStatus) => {
     try {
-      const data = {
-        'status': PremiumServicesStatus ? false : true
-      }
-      var response = await updatePremiumServicesApi(id, data);
+      const formDataToSend = new FormData();
+      formDataToSend.append('status', PremiumServicesStatus ? false : true);
+
+      var response = await updatePremiumServicesApi(id, formDataToSend);
       if (response?.status === 200) {
         if (response?.data?.status === 'success') {
-          setMsgToaster(response?.data?.message)
+          handleSnackbarMessage('Premium Services Updated Successfully', 'success');
+          setModalOpen(false);
           refreshData();
         }
         else {
-          setMsgToaster(response?.data?.message)
+          handleSnackbarMessage(response?.data?.message, 'error');
         }
-      } else {
-        setMsgToaster(response?.data?.message)
       }
     } catch (error) {
-      console.error('Error during update:', error);
-      setMsgToaster('Error during update:', error)
+      console.log(error, 'error')
     }
   }
 
@@ -261,33 +247,31 @@ const PremiumService = () => {
   const UpdatePremiumServicesData = async () => {
     try {
       // Create the data object dynamically
-      const data = {};
+      const formDataToSend = new FormData();
       if (updateFormDataa.preSerName !== updateFormDataa.PremiumServiceNameOriginal) {
-        data.preSerName = updateFormDataa.preSerName;
+        formDataToSend.append('preSerName', updateFormDataa.preSerName);
       }
-      if (updateFormDataa.cost !== updateFormDataa.CostOriginal) {
-        data.price = updateFormDataa.cost;
+      if (updateFormDataa.price !== updateFormDataa.PriceOriginal) {
+        formDataToSend.append('price', updateFormDataa.price);
       }
 
       console.log("Data to update:", data);
 
-      var response = await updatePremiumServicesApi(preServiceId, data);
+      var response = await updatePremiumServicesApi(preServiceId, formDataToSend);
       console.log(response, 'facili');
 
       if (response?.status === 200) {
         if (response?.data?.status === 'success') {
-          setMsgToaster(response?.data?.message);
+          handleSnackbarMessage('Premium Services Updated Successfully', 'success');
           setModalOpen(false);
           refreshData();
         } else {
-          setMsgToaster(response?.data?.message);
+          handleSnackbarMessage(response?.data?.message, 'error');
         }
-      } else {
-        setMsgToaster(response?.data?.message);
-      }
+      } 
     } catch (error) {
+      setModalOpen(false);
       console.error('Error during update:', error);
-      setMsgToaster('Error during update:', error.message || error);
     }
   };
 
@@ -324,11 +308,10 @@ const PremiumService = () => {
       />
 
 
-      {/* SnackBar */}
-
-      <Snackbar open={toaster} autoHideDuration={5000} onClose={handleClosingToasterState} >
-        <Alert onClose={handleClosingToasterState} severity={toaterErrorSuccessState} variant="filled" sx={{ width: '100%', color: '#fff', fontSize: '14px' }} >
-          {msgToaster}
+      {/* Snackbar for Notifications */}
+      <Snackbar open={snackbar.open} autoHideDuration={3000} onClose={handleSnackbarClose} anchorOrigin={{ vertical: 'top', horizontal: 'right' }}>
+        <Alert onClose={handleSnackbarClose} variant="filled" severity={snackbar.severity} sx={{ width: '100%', color: '#fff' }}>
+          {snackbar.message}
         </Alert>
       </Snackbar>
 
@@ -381,7 +364,7 @@ export default PremiumService;
 
 // const columns = [
 //   { id: 'name', label: 'Name', minWidth: 170 },
-//   { id: 'cost', label: 'Cost', minWidth: 100, align: 'center' },
+//   { id: 'price', label: 'Cost', minWidth: 100, align: 'center' },
 //   { id: 'status', label: 'Status', minWidth: 170, align: 'center' },
 //   { id: 'action', label: 'Action', minWidth: 170, align: 'right' },
 // ];
@@ -405,7 +388,7 @@ export default PremiumService;
 
 //   const rows = [
 //     {
-//       name: 'Braveer', cost:' $10.00',
+//       name: 'Braveer', price:' $10.00',
 //       status: <CustomButton variant="outlined"> Enabled </CustomButton>,
 //       action:
 //         <Stack justifyContent='end' spacing={2} direction="row">
@@ -414,7 +397,7 @@ export default PremiumService;
 //         </Stack>
 //     },
 //     {
-//       name: 'Braveer', cost:' $10.00',
+//       name: 'Braveer', price:' $10.00',
 //       status: <CustomButton variant="outlined"> Enabled </CustomButton>,
 //       action:
 //         <Stack justifyContent='end' spacing={2} direction="row">
@@ -423,7 +406,7 @@ export default PremiumService;
 //         </Stack>
 //     },
 //     {
-//       name: 'Braveer', cost:' $10.00',
+//       name: 'Braveer', price:' $10.00',
 //       status: <CustomButton variant="outlined"> Enabled </CustomButton>,
 //       action:
 //         <Stack justifyContent='end' spacing={2} direction="row">
@@ -432,7 +415,7 @@ export default PremiumService;
 //         </Stack>
 //     },
 //     {
-//       name: 'Braveer', cost:' $10.00',
+//       name: 'Braveer', price:' $10.00',
 //       status: <CustomButton variant="outlined"> Enabled </CustomButton>,
 //       action:
 //         <Stack justifyContent='end' spacing={2} direction="row">
@@ -441,7 +424,7 @@ export default PremiumService;
 //         </Stack>
 //     },
 //     {
-//       name: 'Braveer', cost:' $10.00',
+//       name: 'Braveer', price:' $10.00',
 //       status: <CustomButton variant="outlined"> Enabled </CustomButton>,
 //       action:
 //         <Stack justifyContent='end' spacing={2} direction="row">
@@ -450,7 +433,7 @@ export default PremiumService;
 //         </Stack>
 //     },
 //     {
-//       name: 'Braveer', cost:' $10.00',
+//       name: 'Braveer', price:' $10.00',
 //       status: <CustomButton variant="outlined"> Enabled </CustomButton>,
 //       action:
 //         <Stack justifyContent='end' spacing={2} direction="row">

@@ -56,11 +56,11 @@ const PremiumServicesInBookings = () => {
   console.log(id)
   const [rows, setRows] = useState([]);
   // get API
-  const { data, error } = useSWR(`${ServerIP}/booking/getPremBookingId/${id}`, fetcher);
+  const { data, error } = useSWR(`${ServerIP}/booking/getPremBookingById/${id}`, fetcher);
 
   // Function to refresh the data
   const refreshData = () => {
-    mutate(`${ServerIP}/booking/getAllPremBooking`);
+    mutate(`${ServerIP}/booking/getPremBookingById/${id}`);
   };
 
   // useEffect

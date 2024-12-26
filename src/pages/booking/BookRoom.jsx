@@ -109,9 +109,6 @@ const BookRoom = () => {
     const [searchOpen, setSearchOpen] = useState(false);
 
     const [rooms, setRooms] = useState([]);
-    const [roomType, setRoomType] = useState('');
-    const [checkInDate, setCheckInDate] = useState();
-    const [checkOutDate, setCheckOutDate] = useState();
     const [noOfRooms, setNoOfRooms] = useState();
 
     const [selectedRooms, setSelectedRooms] = useState([]);
@@ -143,63 +140,63 @@ const BookRoom = () => {
         }
     }, [data, msgToaster]);
 
-    const { register, handleSubmit, formState: { errors }, } = useForm();
+    const { register, handleSubmit, formState: { errors }, watch } = useForm();
+    const roomType = watch('roomType', '');
 
 
-    const handleRoomTypeChange = (event) => {
-        setRoomType(event.target.value);
+    const handleAddRemoveRoomFromSelected = (roomId) => {
+        const roomToRemove = selectedRooms.find((room) => room.roomId === roomId);
+
+        if (roomToRemove) {
+            setSelectedRooms(selectedRooms.filter((room) => room.roomId !== roomId));
+            setAvailableRooms([...availableRooms, roomToRemove]);
+        }
     };
 
-    const handleCheckInCheckOutDate = (val) => {
-        console.log(val)
-        setCheckInDate(dayjs(val[0]?.$d).format('YYYY-MM-DDTHH:mm:ss'));
-        setCheckOutDate(dayjs(val[1]?.$d).format('YYYY-MM-DDTHH:mm:ss'));
+    const handleAddRemoveRoomFromAvailable = (roomId) => {
+        if (selectedRooms.length >= noOfRooms) {
+            alert(`Please remove the rooms you no longer need before selecting new ones. You can only select up to ${noOfRooms} rooms.`);
+            return;
+        }
+        const roomToAdd = availableRooms.find((room) => room.roomId === roomId);
+
+        if (roomToAdd) {
+            setAvailableRooms(availableRooms.filter((room) => room.roomId !== roomId));
+            setSelectedRooms([...selectedRooms, roomToAdd]);
+        }
     };
+
 
     const getAvailableRooms = async () => {
-        try {
-            const response = await getAvailableRoomApi(roomType, noOfRooms, checkInDate, checkOutDate);
-            console.log(response)
-            // const response = await getAvailableRoomApi(roomType, noOfRooms, checkInDate, checkOutDate);
-            if (response?.status === 200 && response?.data?.status === 'success') {
-                setRooms(response?.data?.available?.First)
-                const rooms = response?.data?.available?.First || [];
-                setSelectedRooms(rooms.slice(0, noOfRooms));
-                setAvailableRooms(rooms.slice(noOfRooms));
-            }
+        const { roomType, room, dateRange } = formData;
+        setNoOfRooms(room)
 
+        // Format the selected date range
+        const checkInDate = dateRange?.[0] ? dayjs(dateRange[0]?.$d).format('YYYY-MM-DDTHH:mm:ss') : null;
+        const checkOutDate = dateRange?.[1] ? dayjs(dateRange[1]?.$d).format('YYYY-MM-DDTHH:mm:ss') : null;
+
+        try {
+            const response = await getAvailableRoomApi(roomType, room, checkInDate, checkOutDate);
+
+            if (response?.status === 200 && response?.data?.status === 'success') {
+                const rooms = response?.data?.available || [];
+
+                const requiredRooms = parseInt(noOfRooms, 10);
+
+                setSelectedRooms(rooms.slice(0, requiredRooms));
+                setAvailableRooms(rooms.slice(requiredRooms));
+                setRooms(rooms);
+            } else {
+                console.error('Failed to fetch rooms:', response?.data?.message);
+            }
         } catch (error) {
             console.error('Error fetching available rooms:', error);
         }
     };
 
-    const handleAddRemoveRoomFromSelected = (roomId) => {
-        setSelectedRooms((prevSelected) =>
-            prevSelected.filter((room) => room.id !== roomId)
-        );
-        setAvailableRooms((prevAvailable) => [
-            ...prevAvailable,
-            selectedRooms.find((room) => room.id === roomId),
-        ]);
-    };
-
-    const handleAddRemoveRoomFromAvailable = (roomId) => {
-        const roomToAdd = availableRooms.find((room) => room.id === roomId);
-        if (roomToAdd) {
-            setAvailableRooms((prevAvailable) =>
-                prevAvailable.filter((room) => room.id !== roomId)
-            );
-            if (selectedRooms.length < noOfRooms) {
-                setSelectedRooms((prevSelected) => [...prevSelected, roomToAdd]);
-            }
-        }
-    };
-
 
     const NewRoomBooking = async (data) => {
-        console.log(selectedRooms, 'data entered')
         const ids = selectedRooms.map(item => item.roomId);
-        console.log(ids, 'hcduenf')
         try {
             const formData = new FormData();
             formData.append('roomNumbers', ids)
@@ -215,19 +212,15 @@ const BookRoom = () => {
             formData.append('totalPaid', data?.payingAmount)
 
             const response = await addBookingAPI(formData);
-            console.log(response, 'response')
             if (response.status === 200) {
                 if (response?.data?.status === 'success') {
-                    console.log(response?.data?.message, 'success')
                     navigate('/allBookings');
                 }
+            } else {
+                console.error('Failed to book room:', response?.data?.message);
             }
-        }
-        catch (error) {
-            console.log('catch')
-        }
-        finally {
-            console.log('finally')
+        } catch (error) {
+            console.error('Error book new rooms:', error);
         }
     };
 
@@ -250,38 +243,54 @@ const BookRoom = () => {
                     </Stack>
                 </Grid>
             </Grid>
-            <Grid container spacing={1} sx={{ backgroundColor: '#ffffff', p: 1, mb: 4 }}>
-                <Grid xs={12} sm={6} md={6} lg={3} >
-                    <Stack spacing={1}>
-                        <InputLabel htmlFor="roomType">Room Type</InputLabel>
-                        <Select id='roomType' value={roomType} onChange={handleRoomTypeChange} displayEmpty>
-                            <MenuItem value="" disabled>Select One</MenuItem>
-                            {rows.map((menuItem) => (
-                                <MenuItem key={menuItem?.roomTypesId} value={menuItem?.roomTypesId}>{menuItem?.roomName}</MenuItem>
-                            ))}
-                        </Select>
-                    </Stack>
+            <form onSubmit={handleSubmit(getAvailableRooms)}>
+                <Grid container spacing={1} sx={{ backgroundColor: '#ffffff', p: 1, mb: 4 }}>
+                    <Grid item xs={12} sm={6} md={6} lg={3}>
+                        <Stack spacing={1}>
+                            <InputLabel htmlFor="roomType">Room Type</InputLabel>
+                            <Select id="roomType" value={roomType || ''} {...register('roomType', { required: 'Room type is required *' })} displayEmpty  sx={{border: errors.roomType && '1px solid red', borderRadius: errors.roomType && '5px'}}>
+                                <MenuItem value="" disabled>Select One</MenuItem>
+                                {rows.map((menuItem) => (
+                                    <MenuItem key={menuItem?.roomTypesId} value={menuItem?.roomTypesId}>
+                                        {menuItem?.roomName}
+                                    </MenuItem>
+                                ))}
+                            </Select>
+                            {errors.roomType && (
+                                <span style={{ color: 'red', fontSize: '11px' }}>
+                                    {errors.roomType.message}
+                                </span>
+                            )}
+                        </Stack>
+                    </Grid>
+                    <Grid item xs={12} sm={6} md={6} lg={3}>
+                        <Stack spacing={1}>
+                            <InputLabel htmlFor="dateRange">Check In - Check Out Date</InputLabel>
+                            <LocalizationProvider dateAdapter={AdapterDayjs}>
+                                <DateRangePicker slots={{ field: SingleInputDateRangeField }} {...register('dateRange', { validate: (value) => { if (!value?.[0] || !value?.[1]) { return 'Date range is required *'; } return true; }, })} onChange={(newValue) => setValue('dateRange', newValue)} fullWidth  sx={{border: errors.dateRange && '1px solid red', borderRadius: errors.dateRange && '5px'}}/>
+                            </LocalizationProvider>
+                            {errors.dateRange && (
+                                <span style={{ color: 'red', fontSize: '11px' }}>{errors.dateRange.message}</span>
+                            )}
+                        </Stack>
+                    </Grid>
+
+                    <Grid item xs={12} sm={6} md={6} lg={3}>
+                        <Stack spacing={1}>
+                            <InputLabel htmlFor="room">Room</InputLabel>
+                            <OutlinedInput id="room" type="text" placeholder="How many rooms?" {...register('room', { required: 'Number of rooms is required *', pattern: { value: /^[0-9]+$/, message: 'Only numbers are allowed', }, })} fullWidth  sx={{border: errors.room && '1px solid red', borderRadius: errors.room && '5px'}}/>
+                            {errors.room && (
+                                <span style={{ color: 'red', fontSize: '11px' }}>{errors.room.message}</span>
+                            )}
+                        </Stack>
+                    </Grid>
+                    <Grid item alignContent="center" xs={12} sm={6} md={6} lg={3}>
+                        <CustomButton variant="outlined" fullWidth sx={{ p: 1 }} type="submit">
+                            <SearchRounded sx={{ rotate: '90deg', me: 5 }} /> Search
+                        </CustomButton>
+                    </Grid>
                 </Grid>
-                <Grid xs={12} sm={6} md={6} lg={3} >
-                    <Stack spacing={1}>
-                        <InputLabel htmlFor="subTitle">Check In - Check Out Date</InputLabel>
-                        <LocalizationProvider dateAdapter={AdapterDayjs}>
-                            <DateRangePicker slots={{ field: SingleInputDateRangeField }} fullWidth id="subTitle" name="subTitle" onChange={(newValue) => handleCheckInCheckOutDate(newValue)} />
-                        </LocalizationProvider>
-                    </Stack>
-                </Grid>
-                <Grid xs={12} sm={6} md={6} lg={3} >
-                    <Stack spacing={1}>
-                        <InputLabel htmlFor="room">Room</InputLabel>
-                        <OutlinedInput id="room" type="text" name="room" placeholder="How many room?" value={noOfRooms} fullWidth onChange={(e) => setNoOfRooms(e.target.value)} />
-                    </Stack>
-                </Grid>
-                <Grid alignContent='end' xs={12} sm={6} md={6} lg={3} >
-                    <CustomButton variant="outlined" fullWidth sx={{ p: 1 }} onClick={getAvailableRooms}>
-                        <SearchRounded sx={{ rotate: '90deg', me: 5 }} /> Search
-                    </CustomButton>
-                </Grid>
-            </Grid>
+            </form>
 
             {rooms.length > 0 &&
                 <Grid container spacing={3}>
@@ -326,12 +335,32 @@ const BookRoom = () => {
                                             <StyledTableRow>
                                                 <StyledTableCell component="th" scope="row" sx={{ textWrap: 'nowrap' }}>{checkInDate} - {checkOutDate}</StyledTableCell>
                                                 <StyledTableCell align="left">
-                                                    {selectedRooms?.map((item) => (
-                                                        <RoomKey status='selected' sx={{ m: 1 }} onClick={() => handleAddRemoveRoomFromSelected(item.roomId)}>{item.roomNo}</RoomKey>
-                                                    ))}
-                                                    {availableRooms?.map((item) => (
-                                                        <RoomKey status='available' sx={{ m: 1 }} onClick={() => handleAddRemoveRoomFromAvailable(item.roomId)}>{item.roomNo}</RoomKey>
-                                                    ))}
+                                                    <StyledTableCell align="left">
+                                                        {/* Render selected rooms */}
+                                                        {selectedRooms?.map((item) => (
+                                                            <RoomKey
+                                                                key={item.roomId}
+                                                                status="selected"
+                                                                sx={{ m: 1 }}
+                                                                onClick={() => handleAddRemoveRoomFromSelected(item.roomId)}
+                                                            >
+                                                                {item.roomNo}
+                                                            </RoomKey>
+                                                        ))}
+
+                                                        {/* Render available rooms */}
+                                                        {availableRooms?.map((item) => (
+                                                            <RoomKey
+                                                                key={item.roomId}
+                                                                status="available"
+                                                                sx={{ m: 1 }}
+                                                                onClick={() => handleAddRemoveRoomFromAvailable(item.roomId)}
+                                                            >
+                                                                {item.roomNo}
+                                                            </RoomKey>
+                                                        ))}
+                                                    </StyledTableCell>
+
                                                 </StyledTableCell>
                                             </StyledTableRow>
                                         </TableBody>
@@ -426,7 +455,7 @@ const BookRoom = () => {
                                 </Grid>
                                 <Grid xs={12} sx={{ p: 0.7, mt:1 }} >
                                     <Stack spacing={1}>
-                                        <InputLabel htmlFor="child">Adult</InputLabel>
+                                        <InputLabel htmlFor="child">Children</InputLabel>
                                         <OutlinedInput {...register('child', { required: 'No. of Children is required' })} placeholder="Enter no. of Children"
                                                 sx={inputStyles(errors.child)} />
                                             {errors.child && (

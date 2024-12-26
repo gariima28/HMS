@@ -13,15 +13,26 @@ import ProfileOutlined from '@ant-design/icons/ProfileOutlined';
 import LogoutOutlined from '@ant-design/icons/LogoutOutlined';
 import UserOutlined from '@ant-design/icons/UserOutlined';
 import WalletOutlined from '@ant-design/icons/WalletOutlined';
+import { useNavigate } from 'react-router';
 
 // ==============================|| HEADER PROFILE - PROFILE TAB ||============================== //
 
 export default function ProfileTab() {
+
+  const navigate = useNavigate();
   const [selectedIndex, setSelectedIndex] = useState(0);
 
   const handleListItemClick = (index) => {
     setSelectedIndex(index);
   };
+
+  const handleLogout = () => {
+    localStorage.removeItem('token')
+    navigate('/');
+    setTimeout(() => {
+      window.location.reload();
+    }, 500);
+  }
 
   return (
     <List component="nav" sx={{ p: 0, '& .MuiListItemIcon-root': { minWidth: 32 } }}>
@@ -38,7 +49,7 @@ export default function ProfileTab() {
         <ListItemText primary="View Profile" />
       </ListItemButton>
 
-      <ListItemButton selected={selectedIndex === 3} onClick={(event) => handleListItemClick(event, 3, 'apps/profiles/account/personal')}>
+      {/* <ListItemButton selected={selectedIndex === 3} onClick={(event) => handleListItemClick(event, 3, 'apps/profiles/account/personal')}>
         <ListItemIcon>
           <ProfileOutlined />
         </ListItemIcon>
@@ -49,8 +60,8 @@ export default function ProfileTab() {
           <WalletOutlined />
         </ListItemIcon>
         <ListItemText primary="Billing" />
-      </ListItemButton>
-      <ListItemButton selected={selectedIndex === 2}>
+      </ListItemButton> */}
+      <ListItemButton selected={selectedIndex === 2} onClick={()=> handleLogout()}>
         <ListItemIcon>
           <LogoutOutlined />
         </ListItemIcon>

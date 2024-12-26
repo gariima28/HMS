@@ -94,7 +94,7 @@ const columns = [
   { id: 'checkInCheckOut', label: 'Check In | Check Out', align: 'center' },
   { id: 'totalAmount', label: 'Total Amount', minWidth: 100, align: 'center' },
   { id: 'totalPaid', label: 'Total Paid', minWidth: 100, align: 'center' },
-  { id: 'due', label: 'Due', minWidth: 100, align: 'center' },
+  { id: 'pendingAmount', label: 'Due', minWidth: 100, align: 'center' },
   { id: 'status', label: 'Status', minWidth: 100, align: 'center' },
   { id: 'action', label: 'Action', minWidth: 170, align: 'right' },
 ];
@@ -105,7 +105,6 @@ const AllBookings = () => {
 
   const [rows, setRows] = useState([]);
 
-  const [openBookingId, setOpenBookingId] = useState(null);
   const [formInputs, setFormInputs] = useState([{ quantity: 0 }]);
 
   const [openMergeDialog, setOpenMergeDialog] = React.useState(false);
@@ -114,6 +113,7 @@ const AllBookings = () => {
   const [anchorEl, setAnchorEl] = useState(null);
   const open = Boolean(anchorEl);
 
+  const [openBookingId, setOpenBookingId] = useState(null);
 
   const handleClick = (event, bookingId) => {
     setAnchorEl(event.currentTarget);
@@ -150,7 +150,7 @@ const AllBookings = () => {
         return {
           ...booking,
           checkInCheckOut: `${checkInDate} | ${checkOutDate}`,
-          // image: booking.icon === null ? '-' : booking.icon.split('/').pop(),
+          due: booking.pendingAmount,
           status: <CustomEnableButton variant="outlined" status={`${booking.status ? 'running' : 'upcoming'}`}> {booking.status ? 'Running' : 'Upcoming'} </CustomEnableButton>,
           action: (
             <Stack justifyContent='end' spacing={2} direction="row">
@@ -188,9 +188,9 @@ const AllBookings = () => {
                 <MenuItem sx={{ p: 0 }}>
                   <Button component={Link} to={`/paymentInBookings/${booking.bookingId}`} sx={{ backgroundColor: 'transparent', color: '#000', '&:hover': { color: '#000', backgroundColor: 'transparent' } }}>Payment</Button>
                 </MenuItem>
-                <MenuItem sx={{ p: 0 }}>
+                {/* <MenuItem sx={{ p: 0 }}>
                   <Button sx={{ backgroundColor: 'transparent', color: '#000', '&:hover': { color: '#000', backgroundColor: 'transparent' } }} onClick={() => { setOpenMergeDialog(true), setBookingNumber(booking.bookingNo) }}>Merge Booking</Button>
-                </MenuItem>
+                </MenuItem> */}
                 <MenuItem sx={{ p: 0 }}>
                   <Button component={Link} to={`/cancelBookings/${booking.bookingId}`} sx={{ backgroundColor: 'transparent', color: '#000', '&:hover': { color: '#000', backgroundColor: 'transparent' } }}>Cancel Booking</Button>
                 </MenuItem>
@@ -243,7 +243,7 @@ const AllBookings = () => {
         </Grid>
         <Grid xs={12} sm={6} md={6} lg={3} >
           <Stack spacing={1}>
-            <InputLabel htmlFor="subTitle">Check In </InputLabel>
+            <InputLabel htmlFor="subTitle">Check In</InputLabel>
             <LocalizationProvider dateAdapter={AdapterDayjs}>
               <DatePicker />
             </LocalizationProvider>
@@ -251,11 +251,9 @@ const AllBookings = () => {
         </Grid>
         <Grid xs={12} sm={6} md={6} lg={3} >
           <Stack spacing={1}>
-            <InputLabel htmlFor="subTitle">Checkout </InputLabel>
+            <InputLabel htmlFor="subTitle">Checkout</InputLabel>
             <LocalizationProvider dateAdapter={AdapterDayjs}>
               <DatePicker />
-              {/* <DemoContainer components={['DatePicker']}>
-              </DemoContainer> */}
             </LocalizationProvider>
           </Stack>
         </Grid>
@@ -267,82 +265,25 @@ const AllBookings = () => {
       </Grid>
       <DynamicDataTable columns={columns} rows={rows} />
 
-      {/* Merge Dialog */}
-      <Dialog
-        open={openMergeDialog}
-        onClose={handleClose}
-        aria-labelledby="alert-dialog-title"
-        aria-describedby="alert-dialog-description"
-        maxWidth="md"
-        PaperProps={{
-          sx: { position: "absolute", top: 20, margin: 0 },
-        }}
-      >
-        {/* Dialog Title */}
-        <DialogTitle
-          sx={{ m: 0, p: 2, fontWeight: "bold" }}
-          id="customized-dialog-title"
-        >
-          Merging with:{" "}
-          <Typography component="span" color="primary" fontWeight="bold">
-            {BookingNumber}
-          </Typography>
+      <Dialog open={openMergeDialog} onClose={handleClose} aria-labelledby="alert-dialog-title" aria-describedby="alert-dialog-description" maxWidth="xs" PaperProps={{ sx: { position: "absolute", top: 20, margin: 0, width: '100%' }, }} >
+        <DialogTitle sx={{ m: 0, p: 2, fontWeight: "bold" }} id="customized-dialog-title" > Merging with:{" "}
+          <Typography component="span" color="primary" fontWeight="bold"> {BookingNumber} </Typography>
         </DialogTitle>
 
-        {/* Close Icon */}
-        <IconButton
-          aria-label="close"
-          onClick={handleClose}
-          sx={(theme) => ({
-            position: "absolute",
-            right: 8,
-            top: 8,
-            color: theme.palette.grey[500],
-          })}
-        >
+        <IconButton aria-label="close" onClick={handleClose} sx={(theme) => ({ position: "absolute", right: 8, top: 8, color: theme.palette.grey[500], })} >
           <CloseIcon />
         </IconButton>
 
-        {/* Dialog Content */}
         <DialogContent dividers>
-          {/* Dynamic Fields */}
           {formInputs.map((element, index) => (
-            <Grid
-              display='flex'
-              key={index}
-              alignItems="center"
-              justifyContent="space-between"
-              sx={{ mb: 2 }}
-            >
-              <OutlinedInput
-                placeholder="Booking Number *"
-                value={element.bookingNumber || ""}
-                onChange={(e) => handleChange(index, e)}
-                sx={{ width: "100%" }}
-              />
-              {index===0 ?
-                <IconButton
-                  onClick={addFormFields}
-                  sx={{
-                    backgroundColor: "#28c76f",
-                    color: "#fff",
-                    ml: 1,
-                    "&:hover": { backgroundColor: "#1f9d57" },
-                  }}
-                >
+            <Grid display='flex' key={index} alignItems="center" justifyContent="space-between" sx={{ mb: 2 }} >
+              <OutlinedInput placeholder="Booking Number *" value={element.bookingNumber || ""} onChange={(e) => handleChange(index, e)} sx={{ width: "100%" }} />
+              {index === 0 ?
+                <IconButton onClick={addFormFields} sx={{ backgroundColor: "#28c76f", color: "#fff", ml: 1, "&:hover": { backgroundColor: "#1f9d57" }, }} >
                   <AddCircleRounded />
                 </IconButton>
-                
                 :
-                <IconButton
-                  onClick={() => removeFormFields(index)}
-                  sx={{
-                    backgroundColor: "#eb2222",
-                    color: "#fff",
-                    ml: 1,
-                    "&:hover": { backgroundColor: "#c91d1d" },
-                  }}
-                >
+                <IconButton onClick={() => removeFormFields(index)} sx={{ backgroundColor: "#eb2222", color: "#fff", ml: 1, "&:hover": { backgroundColor: "#c91d1d" }, }} >
                   <CloseIcon />
                 </IconButton>
               }
@@ -350,17 +291,8 @@ const AllBookings = () => {
           ))}
         </DialogContent>
 
-        {/* Submit Button */}
         <DialogActions>
-          <Button
-            variant="contained"
-            fullWidth
-            sx={{
-              backgroundColor: "#5a32ea",
-              color: "#fff",
-              "&:hover": { backgroundColor: "#482bc8" },
-            }}
-          >
+          <Button variant="contained" fullWidth sx={{ backgroundColor: "#5a32ea", color: "#fff", "&:hover": { backgroundColor: "#482bc8" }, }} >
             Submit
           </Button>
         </DialogActions>

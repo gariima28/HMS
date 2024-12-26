@@ -32,11 +32,11 @@ export default function HeaderContent() {
         sx={{ color: 'text.primary', bgcolor: 'grey.100' }}
       >
         <GithubOutlined />
-      </IconButton>
+      </IconButton> */}
 
-      <Notification />
+      {/* <Notification /> */}
       {!downLG && <Profile />}
-      {downLG && <MobileSection />} */}
+      {downLG && <MobileSection />}
     </>
   );
 }

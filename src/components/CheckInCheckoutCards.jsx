@@ -3,6 +3,7 @@ import Card from '@mui/material/Card';
 import CardContent from '@mui/material/CardContent';
 import Typography from '@mui/material/Typography';
 import { UserOutlined } from '@ant-design/icons';
+import { Grid } from '@mui/material';
 
 const CheckInCheckoutCards = ({ name, mobile, bookingNo, totalRooms }) => {
   return (
@@ -22,16 +23,18 @@ const CheckInCheckoutCards = ({ name, mobile, bookingNo, totalRooms }) => {
           <UserOutlined /> {name}
         </Typography>
         <Typography variant='subtitle2' sx={{ color: 'text.secondary' }}>
-          Mobile: {mobile}
+          Mobile : {mobile}
         </Typography>
+        <Grid sx={{display: 'flex'}}>
+          <Typography variant='subtitle2' sx={{ color: 'text.secondary' }}>
+            Booking No. :
+          </Typography>
+          <Typography variant="subtitle2" sx={{ color: '#0d6efd', '&:hover': { color: '#4634ff' }, ml:0.4 }}>
+            {bookingNo}
+          </Typography>
+        </Grid>
         <Typography variant='subtitle2' sx={{ color: 'text.secondary' }}>
-          Booking No.:
-        </Typography>
-        <Typography variant="subtitle2" sx={{ color: '#0d6efd', '&:hover': { color: '#4634ff' } }}>
-          {bookingNo}
-        </Typography>
-        <Typography variant='subtitle2' sx={{ color: 'text.secondary' }}>
-          Total Rooms: {totalRooms}
+          Total Rooms : {totalRooms}
         </Typography>
       </CardContent>
       {/* <CardActions>

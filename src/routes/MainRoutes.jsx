@@ -72,7 +72,7 @@ const MainRoutes = {
       element: <HotelDetails />
     },
     {
-      path: 'createHotel',
+      path: 'hotelForm/:id',
       element: <CreateHotel />
     },
     {

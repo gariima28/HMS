@@ -11,6 +11,7 @@ import TableCell from '@mui/material/TableCell';
 import TableContainer from '@mui/material/TableContainer';
 import TableRow from '@mui/material/TableRow';
 import { Computer } from '@mui/icons-material';
+import useSWR, { mutate } from 'swr';
 
 const ServerIP = 'http://89.116.122.211:5001'
 const token = `Bearer ${localStorage.getItem('token')}`;
@@ -39,6 +40,14 @@ const PaymentInBookings = () => {
 
   const { id } = useParams();
   // const [rows, setRows] = useState([]);
+
+  // get API
+  const { data, error } = useSWR(`${ServerIP}/booking/getBookingDetails/${id}`, fetcher);
+
+  // Function to refresh the data
+  const refreshData = () => {
+    mutate(`${ServerIP}/booking/getBookingDetails/${id}`);
+  };
 
   const guestInfoData = [
     { key: 'Name', value: 'ol' },

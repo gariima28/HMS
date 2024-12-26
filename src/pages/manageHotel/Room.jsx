@@ -49,11 +49,8 @@ const Room = () => {
   const [rows, setRows] = useState([]);
   const [allRoomTypes, setAllRoomTypes] = useState([]);
   const [roomId, setRoomId] = useState();
-  const [toaster, setToaster] = useState(false);
-  const [msgToaster, setMsgToaster] = useState('');
-  const [toaterErrorSuccessState, setToaterErrorSuccessState] = useState(
-    'success'
-  );
+
+  const [snackbar, setSnackbar] = useState({ open: false, message: '', severity: '' });
 
   // Add Room State Function
   const [formDataa, setFormDataa] = useState({
@@ -174,18 +171,14 @@ const Room = () => {
     setModalOpen(false);
   };
 
-  // Toast Open Handle
-  const handleOpeningToasterState = (message, severity = 'success') => {
-    setMsgToaster(message);
-    setToaterErrorSuccessState(severity);
-    setToaster(true);
-    refreshData();
+  const handleSnackbarClose = () => {
+    setSnackbar((prev) => ({ ...prev, open: false }));
   };
 
-  // Toast Close Handle
-  const handleClosingToasterState = () => {
-    setToaster(false);
+  const handleSnackbarMessage = (message, severity) => {
+    setSnackbar({ open: true, message, severity });
   };
+
 
   // Fetch all room types when component mounts
   useEffect(() => {
@@ -233,11 +226,6 @@ const Room = () => {
       }));
       setRows(transformedRows);
     }
-    if (msgToaster) {
-      // Ensure that toaster state is managed correctly
-      // This line was previously calling handleOpeningToasterState without arguments, which might cause issues
-      // Removed or adjust as needed
-    }
   }, [data]);
 
   // Add New Room Function
@@ -248,9 +236,19 @@ const Room = () => {
         roomNo: formDataa.roomNumber,
       };
       const response = await addRoomApi(payload);
-      if (response.status === 200 && response.data.status === 'success') {
-        handleOpeningToasterState(response.data.message, 'success');
-        setModalOpen(false);
+      if (response.status === 200) {
+        if (response.data.status === 'success') {
+          handleSnackbarMessage('Bed Type Added Successfully', 'success');
+          refreshData();
+          setModalOpen(false);
+          setFormDataa({
+            roomType: '',
+            roomNumber: ''
+          })
+        }
+        else {
+          handleSnackbarMessage(response?.data?.message, 'error');
+        }
       } else {
         handleOpeningToasterState(response.data.message, 'error');
       }
@@ -302,7 +300,8 @@ const Room = () => {
       };
       const response = await updateRoomApi(id, payload);
       if (response?.status === 200 && response?.data?.status === 'success') {
-        handleOpeningToasterState(response?.data?.message, 'success');
+        handleSnackbarMessage('Bed Type Status Updated Successfully', 'success');
+        refreshData();
       } else {
         handleOpeningToasterState(response?.data?.message, 'error');
       }
@@ -315,20 +314,32 @@ const Room = () => {
   // Update Room Data Function
   const UpdateRoomData = async () => {
     try {
-      const payload = {
-        roomType: updateFormDataa.roomType, // Selected room type ID
-        roomNo: updateFormDataa.roomNumber,
-      };
+      const payload = {};
+      if (updateFormDataa.roomTypeOriginal !== updateFormDataa.roomType) {
+        payload.roomType = updateFormDataa.roomType;
+      }
+      if (updateFormDataa.roomNoOriginal !== updateFormDataa.roomNo) {
+        payload.roomNo = updateFormDataa.roomNumber;
+      }
+
       const response = await updateRoomApi(roomId, payload);
-      if (response?.status === 200 && response?.data?.status === 'success') {
-        handleOpeningToasterState(response?.data?.message, 'success');
-        setModalOpen(false);
-      } else {
-        handleOpeningToasterState(response?.data?.message, 'error');
+      if (response?.status === 200) {
+        if (response?.data?.status === 'success') {
+          handleSnackbarMessage('Bed Type Added Successfully', 'success');
+          refreshData();
+          setModalOpen(false);
+          setUpdateFormDataa({
+            roomType: '',
+            roomNumber: '',
+            roomTypeOriginal: '',
+            roomNumberOriginal: '',
+          })
+        } else {
+          handleSnackbarMessage(response?.data?.error, 'success');
+        }
       }
     } catch (error) {
       console.error('Error updating room:', error);
-      handleOpeningToasterState('Error updating room', 'error');
     }
   };
 
@@ -377,19 +388,10 @@ const Room = () => {
         onSubmit={buttonName === 'Create' ? AddNewRoom : UpdateRoomData}
       />
 
-      {/* SnackBar */}
-      <Snackbar
-        open={toaster}
-        autoHideDuration={5000}
-        onClose={handleClosingToasterState}
-      >
-        <Alert
-          onClose={handleClosingToasterState}
-          severity={toaterErrorSuccessState}
-          variant="filled"
-          sx={{ width: '100%', color: '#fff', fontSize: '14px' }}
-        >
-          {msgToaster}
+      {/* Snackbar for Notifications */}
+      <Snackbar open={snackbar.open} autoHideDuration={3000} onClose={handleSnackbarClose} anchorOrigin={{ vertical: 'top', horizontal: 'right' }}>
+        <Alert onClose={handleSnackbarClose} variant="filled" severity={snackbar.severity} sx={{ width: '100%', color: '#fff' }}>
+          {snackbar.message}
         </Alert>
       </Snackbar>
     </Box>

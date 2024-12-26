@@ -1,35 +1,31 @@
-import React from 'react'
+import React, { useState, useEffect } from 'react';
 import { EyeFilled, EyeInvisibleFilled } from '@ant-design/icons';
 import { Edit } from '@mui/icons-material';
 import { Alert, Box, Button, Snackbar, Stack, Typography } from '@mui/material';
 import Grid from '@mui/material/Unstable_Grid2/Grid2';
 import DynamicDataTable from 'components/DynamicDataTable';
 import { styled } from '@mui/material/styles';
-import { useEffect, useState } from 'react';
 import DialogModal from 'components/DialogModal';
 import useSWR, { mutate } from "swr";
 import axios from 'axios';
 import { addAmenitiesApi, getAmenitiesDataByIdApi, updateAmenitiesApi, updateAmenitiesStatus } from 'api/api';
-// import { useForm } from 'react-hook-form';
 
-// const LocalGirjesh = 'http://192.168.20.109:5001';
-const ServerIP = 'http://89.116.122.211:5001'
+const ServerIP = 'http://89.116.122.211:5001';
 const token = `Bearer ${localStorage.getItem('token')}`;
 
 // Custom Button CSS using Material UI Styles
-const CustomButton = styled(Button)(({status}) => ({
+const CustomButton = styled(Button)(({ status }) => ({
   borderRadius: '50px',
-  backgroundColor:  status === 'enable' ? '#E6F4EA' : '#fee5e5',
+  backgroundColor: status === 'enable' ? '#E6F4EA' : '#fee5e5',
   borderColor: status === 'enable' ? '#57C168' : 'red',
   color: status === 'enable' ? '#57C168' : 'red',
   padding: '2px 26px',
   fontSize: '12px',
   textTransform: 'none',
-
   '&:hover': {
-    backgroundColor:  status === 'enable' ? '#D4ECD9' : '#fccfcf',
+    backgroundColor: status === 'enable' ? '#D4ECD9' : '#fccfcf',
     borderColor: status === 'enable' ? '#57C168' : 'red',
-    color: status === 'enable' ? '#57C168' : 'red'
+    color: status === 'enable' ? '#57C168' : 'red',
   },
 }));
 
@@ -41,256 +37,180 @@ const columns = [
   { id: 'action', label: 'Action', minWidth: 170, align: 'right' },
 ];
 
-// API Call when ever data updates 
+// API Call when data updates
 const fetcher = (url) => axios.get(url, { headers: { Authorization: token } }).then(res => res.data);
 
 const Amenities = () => {
-
-  // All useStates
+  const [snackbar, setSnackbar] = useState({ open: false, message: '', severity: '' });
   const [modalTitle, setModalTitle] = useState('Add New Amenities');
   const [buttonName, setButtonName] = useState('Save Changes');
   const [modalOpen, setModalOpen] = useState(false);
   const [rows, setRows] = useState([]);
   const [amenitiesId, setAmenitiesId] = useState([]);
-  const [toaster, setToaster] = useState(false);
-  const [msgToaster, setMsgToaster] = useState('');
-  const [toaterErrorSuccessState, setToaterErrorSuccessState] = useState('success');
 
-  // Add Amenities State Function
   const [formDataa, setFormDataa] = useState({
-    amenitiesName:'',
-    amenitiesStatus:'',
-    amenitiesIcon:''
-  })
+    amenitiesName: '',
+    amenitiesStatus: '',
+    amenitiesIcon: ''
+  });
 
-  // Update Amenities State Function
   const [updateFormDataa, setUpdateFormDataa] = useState({
-    amenitiesName:'',
-    amenitiesIcon:'',
-    amenitiesNameOriginal:'',
-    amenitiesIconOriginal:''
-  })
+    amenitiesName: '',
+    amenitiesIcon: '',
+    amenitiesNameOriginal: '',
+    amenitiesIconOriginal: ''
+  });
 
-  // Add Amenities Name
-  const handleFormDataaAmenitiesName = (val) => {
-    setFormDataa({
-      ...formDataa,
-      amenitiesName: val
-    });
-  }
+  // Input handling functions
+  const handleFormDataaAmenitiesName = (val) => setFormDataa({ ...formDataa, amenitiesName: val });
+  const handleFormDataaAmenitiesStatus = (val) => setFormDataa({ ...formDataa, amenitiesStatus: val });
+  const handleFormDataaAmenitiesIcon = (val) => setFormDataa({ ...formDataa, amenitiesIcon: val });
+  const handleUpdateFormDataaAmenitiesName = (val) => setUpdateFormDataa({ ...updateFormDataa, amenitiesName: val });
+  const handleUpdateFormDataaAmenitiesIcon = (val) => setUpdateFormDataa({ ...updateFormDataa, amenitiesIcon: val });
 
-  // Add Amenities Status
-  const handleFormDataaAmenitiesStatus = (val) => {
-    setFormDataa({
-      ...formDataa,
-      amenitiesStatus: val
-    });
-  }
-
-  // Add Amenities Icon
-  const handleFormDataaAmenitiesIcon = (val) => {
-    setFormDataa({
-      ...formDataa,
-      amenitiesIcon: val
-    });
-  }
-
-  // Update Amenities Name
-  const handleUpdateFormDataaAmenitiesName = (val) => {
-    setUpdateFormDataa({
-      ...updateFormDataa,
-      amenitiesName: val
-    });
-  }
-
-  // Update Amenities Icon
-  const handleUpdateFormDataaAmenitiesIcon = (val) => {
-    setUpdateFormDataa({
-      ...updateFormDataa,
-      amenitiesIcon: val
-    });
-  }
-
-  const AddInputFields = 
-  [
-    { id: 'amenitiesName', field:'textInput', fieldType: 'text', fieldName: 'Amenities Title *', placeholder: 'Enter Amenities Name',  updateValFunc: handleFormDataaAmenitiesName },
-    { id: 'amenitiesStatus', field:'select', feildOptions: [{ optionId: 'active', optionName: 'Active', optionValue: 'true' }, { optionId: 'inActive', optionName: 'InActive', optionValue: 'false' }], fieldName: 'Status *',  updateValFunc: handleFormDataaAmenitiesStatus  },
-    { id: 'amenitiesIcon', field:'fileType', fieldType: 'file', fieldName: 'Icon *', allowedTypes: ['image/jpeg', 'image/png'],  updateValFunc: handleFormDataaAmenitiesIcon }
+  const AddInputFields = [
+    { id: 'amenitiesName', field: 'textInput', fieldType: 'text', fieldName: 'Amenities Title *', placeholder: 'Enter Amenities Name', updateValFunc: handleFormDataaAmenitiesName },
+    {
+      id: 'amenitiesStatus',
+      field: 'select',
+      fieldName: 'Status *',
+      fieldOptions: [
+        { optionId: 'active', optionName: 'Active', optionValue: 'true' },
+        { optionId: 'inActive', optionName: 'Inactive', optionValue: 'false' },
+      ],
+      value: formDataa.amenitiesStatus,
+      updateValFunc: handleFormDataaAmenitiesStatus,
+    },
+    { id: 'amenitiesIcon', field: 'fileType', fieldType: 'file', fieldName: 'Icon *', allowedTypes: ['image/jpeg', 'image/png'], updateValFunc: handleFormDataaAmenitiesIcon }
   ];
 
-  const UpdateInputFields =
-  [
-    { id: 'amenitiesName', field:'textInput', fieldType: 'text', fieldName: 'Amenities Title *', placeholder: 'Enter Amenities Name', value:updateFormDataa.amenitiesName, updateValFunc: handleUpdateFormDataaAmenitiesName },
-    { id: 'amenitiesIcon', field:'fileType', fieldType: 'file', fieldName: 'Icon *', allowedTypes: ['image/jpeg', 'image/png'], value:updateFormDataa.amenitiesIcon, updateValFunc: handleUpdateFormDataaAmenitiesIcon }
+  const UpdateInputFields = [
+    { id: 'amenitiesName', field: 'textInput', fieldType: 'text', fieldName: 'Amenities Title *', placeholder: 'Enter Amenities Name', value: updateFormDataa.amenitiesName, updateValFunc: handleUpdateFormDataaAmenitiesName },
+    { id: 'amenitiesIcon', field: 'fileType', fieldType: 'file', fieldName: 'Icon *', allowedTypes: ['image/jpeg', 'image/png'], value: updateFormDataa.amenitiesIcon, updateValFunc: handleUpdateFormDataaAmenitiesIcon }
   ];
 
-  // get API
+  // Get API
   const { data, error } = useSWR(`${ServerIP}/amenites/getAll`, fetcher);
 
-  // Function to refresh the data
   const refreshData = () => {
     mutate(`${ServerIP}/amenites/getAll`);
   };
 
-  // Dialog Open Handle
   const handleDialogState = (title, button, amenityId) => {
     setModalTitle(title);
     setButtonName(button);
-    if(button==='Update'){
+    if (button === 'Update') {
       getAmenitiesDataById(amenityId);
     }
     setModalOpen(!modalOpen);
   };
 
-  // Dialog Close Handle
   const handleClosingDialogState = () => {
     setModalOpen(!modalOpen);
   };
-  
-  // Toast Open Handle
-  const handleOpeningToasterState = (message, severity) => {
-    setMsgToaster(message);
-    setToaterErrorSuccessState(severity);
-    setToaster(true);
-    refreshData();
+
+  const handleSnackbarClose = () => {
+    setSnackbar((prev) => ({ ...prev, open: false }));
   };
 
-  // Toast Close Handle
-  const handleClosingToasterState = () => {
-    setToaster(false);
-  };
-
-  // useEffect
   useEffect(() => {
     if (data) {
-      setMsgToaster(data?.message)
-      console.log(data?.Amenities, 'data');
       const transformedRows = data.Amenities.map((amenity) => ({
         ...amenity,
         image: amenity.icon === null ? '-' : amenity.icon.split('/').pop(),
-        status: <CustomButton variant="outlined" status={`${amenity.status? 'enable' : 'disable'}`}> {amenity.status ? 'Enabled' : 'Disabled'} </CustomButton>,
+        status: <CustomButton variant="outlined" status={`${amenity.status ? 'enable' : 'disable'}`}> {amenity.status ? 'Enabled' : 'Disabled'} </CustomButton>,
         action: (
           <Stack justifyContent='end' spacing={2} direction="row">
-            <Button variant="outlined" size="small" startIcon={<Edit />} onClick={() => handleDialogState( 'Update New Amenities', 'Update', amenity.amenitiesId )}>Edit</Button>
-            <Button variant="outlined" size="small" startIcon={amenity.status ? <EyeInvisibleFilled /> : <EyeFilled/> } color={`${amenity.status? 'error' : 'success'}`} onClick={()=> UpdateAmenitiesStatus( amenity?.amenitiesId, amenity.status )}>{`${amenity.status? 'Disable' : 'Enable'}`}</Button>
+            <Button variant="outlined" size="small" startIcon={<Edit />} onClick={() => handleDialogState('Update New Amenities', 'Update', amenity.amenitiesId)}>Edit</Button>
+            <Button variant="outlined" size="small" startIcon={amenity.status ? <EyeInvisibleFilled /> : <EyeFilled />} color={`${amenity.status ? 'error' : 'success'}`} onClick={() => UpdateAmenitiesStatus(amenity?.amenitiesId, amenity.status)}>{`${amenity.status ? 'Disable' : 'Enable'}`}</Button>
           </Stack>
         ),
       }));
       setRows(transformedRows);
     }
-    if(msgToaster){
-      handleOpeningToasterState();
-    }
   }, [data]);
 
-  // Add Function
+  const handleSnackbarMessage = (message, severity) => {
+    setSnackbar({ open: true, message, severity });
+  };
+
   const AddNewAmenity = async () => {
-    console.log('start')
     try {
-      console.log('try')
       const formData = new FormData();
-      formData.append('amenitiesName', formDataa.amenitiesName)
-      formData.append('status', formDataa.amenitiesStatus)
-      formData.append('icon', formDataa.amenitiesIcon)
+      formData.append('amenitiesName', formDataa.amenitiesName);
+      formData.append('status', formDataa.amenitiesStatus);
+      formData.append('icon', formDataa.amenitiesIcon);
 
       const response = await addAmenitiesApi(formData);
-      console.log(response, 'response')
-      if (response.status === 200) {
-        if(response?.data?.status === 'success'){
-          console.log(response?.data?.message, 'success')
-          navigate('/amenities');
-        }
+      if (response.status === 200 && response?.data?.status === 'success') {
+        handleSnackbarMessage('Amenity Added Successfully', 'success');
+        setModalOpen(false);
+        refreshData();
+      } else {
+        handleSnackbarMessage('Error adding amenity', 'error');
       }
-    } 
-    catch (error) {
-      console.log('catch')
-    } 
-    finally {
-      console.log('finally')
+    } catch (error) {
+      handleSnackbarMessage('Error adding amenity', 'error');
     }
   };
 
-  
-  // Get Amenities data by id
   const getAmenitiesDataById = async (id) => {
-    setAmenitiesId(id)
+    setAmenitiesId(id);
     try {
-        var response = await getAmenitiesDataByIdApi(id);
-        console.log(response, 'get by id')
-        if (response?.status === 200) {
-            if (response?.data?.status === 'success') {
-              setUpdateFormDataa({ 
-                amenitiesName: response?.data?.amenity?.amenitiesName,
-                amenitiesIcon: response?.data?.amenity?.icon,
-                amenitiesNameOriginal: response?.data?.amenity?.amenitiesName,
-                amenitiesIconOriginal: response?.data?.amenity?.icon
-                });
-            }
-        }
-        else {
-            console.log(response?.data?.message);
-        }
+      const response = await getAmenitiesDataByIdApi(id);
+      if (response?.status === 200 && response?.data?.status === 'success') {
+        setUpdateFormDataa({
+          amenitiesName: response?.data?.amenity?.amenitiesName,
+          amenitiesIcon: response?.data?.amenity?.icon,
+          amenitiesNameOriginal: response?.data?.amenity?.amenitiesName,
+          amenitiesIconOriginal: response?.data?.amenity?.icon,
+        });
+      }
+    } catch (error) {
+      console.log('Error fetching amenity data by id');
     }
-    catch (error) {
-      console.log('catch')
-    } 
-    finally {
-      console.log('finally')
-    }
-  }
+  };
 
-  // Update Function
   const UpdateAmenitiesStatus = async (id, amenityStatus) => {
     try {
       const formData = new FormData();
-      formData.append('status', amenityStatus ? false : true)
-      var response = await updateAmenitiesStatus(id, formData);
+      formData.append('status', amenityStatus ? false : true);
+      const response = await updateAmenitiesStatus(id, formData);
       if (response?.status === 200) {
-        if (response?.data?.status === 'success') {
-          setMsgToaster(response?.data?.message)
-        }
-        else {
-          setMsgToaster(response?.data?.message)
-        }
+        handleSnackbarMessage(response?.data?.message, 'success');
+        refreshData();
+        
       } else {
-        setMsgToaster(response?.data?.message)
+        handleSnackbarMessage(response?.data?.message, 'error');
       }
     } catch (error) {
-      console.error('Error during update:', error);
-      setMsgToaster('Error during update:', error)
+      handleSnackbarMessage('Error during update', 'error');
     }
-  }
+  };
 
-
-  // Update Status Function
   const UpdateAmenitiesData = async () => {
     try {
       const formData = new FormData();
-      if(updateFormDataa.amenitiesName !== updateFormDataa.amenitiesNameOriginal){
-        formData.append('amenitiesName', updateFormDataa.amenitiesName)
+      if (updateFormDataa.amenitiesName !== updateFormDataa.amenitiesNameOriginal) {
+        formData.append('amenitiesName', updateFormDataa.amenitiesName);
       }
-      if(updateFormDataa.amenitiesIcon !== updateFormDataa.amenitiesIconOriginal){
-        formData.append('icon', updateFormDataa.amenitiesIcon)
+      if (updateFormDataa.amenitiesIcon !== updateFormDataa.amenitiesIconOriginal) {
+        formData.append('icon', updateFormDataa.amenitiesIcon);
       }
-      var response = await updateAmenitiesApi(amenitiesId, formData);
+      const response = await updateAmenitiesApi(amenitiesId, formData);
       if (response?.status === 200) {
-        if (response?.data?.status === 'success') {
-          setMsgToaster(response?.data?.message)
-        }
-        else {
-          setMsgToaster(response?.data?.message)
-        }
+        handleSnackbarMessage(response?.data?.message, 'success');
+        setModalOpen(false);
       } else {
-        setMsgToaster(response?.data?.message)
+        handleSnackbarMessage(response?.data?.message, 'error');
       }
     } catch (error) {
-      console.error('Error during update:', error);
-      setMsgToaster('Error during update:', error)
+      handleSnackbarMessage('Error during update', 'error');
     }
-  }
+  };
 
-  if (error) {<Typography variant="subtitle1">- Error loading data</Typography> };
-  if (!data) return <Typography variant="subtitle1">Speed is slow from Backend &nbsp; : - &nbsp; Loading Data...</Typography>;
+  if (error) return <Typography variant="subtitle1">Error loading data</Typography>;
+  if (!data) return <Typography variant="subtitle1">Loading data...</Typography>;
 
   return (
     <Box>
@@ -313,18 +233,395 @@ const Amenities = () => {
       {/* Modals for all Add and Update */}
       <DialogModal handleClosingDialogState={handleClosingDialogState} modalOpen={modalOpen} title={modalTitle} buttonName={buttonName} InputFields={buttonName === 'Create' ? AddInputFields : UpdateInputFields} onSubmit={buttonName === 'Create' ? AddNewAmenity : UpdateAmenitiesData} />
 
-      {/* SnackBar */}
-      <Snackbar open={toaster} autoHideDuration={5000} onClose={handleClosingToasterState}>
-        <Alert onClose={handleClosingToasterState} severity={toaterErrorSuccessState} variant="filled" sx={{ width: '100%', color: '#fff', fontSize: '14px' }}>
-          {msgToaster}
+      {/* Snackbar for Notifications */}
+      <Snackbar open={snackbar.open} autoHideDuration={3000} onClose={handleSnackbarClose} anchorOrigin={{ vertical: 'top', horizontal: 'right' }}>
+        <Alert onClose={handleSnackbarClose} variant="filled" severity={snackbar.severity} sx={{ width: '100%', color: '#fff' }}>
+          {snackbar.message}
         </Alert>
       </Snackbar>
-
     </Box>
   );
 };
 
 export default Amenities;
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+// import React from 'react'
+// import { EyeFilled, EyeInvisibleFilled } from '@ant-design/icons';
+// import { Edit } from '@mui/icons-material';
+// import { Alert, Box, Button, Snackbar, Stack, Typography } from '@mui/material';
+// import Grid from '@mui/material/Unstable_Grid2/Grid2';
+// import DynamicDataTable from 'components/DynamicDataTable';
+// import { styled } from '@mui/material/styles';
+// import { useEffect, useState } from 'react';
+// import DialogModal from 'components/DialogModal';
+// import useSWR, { mutate } from "swr";
+// import axios from 'axios';
+// import { addAmenitiesApi, getAmenitiesDataByIdApi, updateAmenitiesApi, updateAmenitiesStatus } from 'api/api';
+// // import { useForm } from 'react-hook-form';
+
+// // const LocalGirjesh = 'http://192.168.20.109:5001';
+// const ServerIP = 'http://89.116.122.211:5001'
+// const token = `Bearer ${localStorage.getItem('token')}`;
+
+// // Custom Button CSS using Material UI Styles
+// const CustomButton = styled(Button)(({status}) => ({
+//   borderRadius: '50px',
+//   backgroundColor:  status === 'enable' ? '#E6F4EA' : '#fee5e5',
+//   borderColor: status === 'enable' ? '#57C168' : 'red',
+//   color: status === 'enable' ? '#57C168' : 'red',
+//   padding: '2px 26px',
+//   fontSize: '12px',
+//   textTransform: 'none',
+
+//   '&:hover': {
+//     backgroundColor:  status === 'enable' ? '#D4ECD9' : '#fccfcf',
+//     borderColor: status === 'enable' ? '#57C168' : 'red',
+//     color: status === 'enable' ? '#57C168' : 'red'
+//   },
+// }));
+
+// // Table Columns
+// const columns = [
+//   { id: 'amenitiesName', label: 'Title', minWidth: 170 },
+//   { id: 'image', label: 'Icon', minWidth: 100 },
+//   { id: 'status', label: 'Status', minWidth: 170, align: 'center' },
+//   { id: 'action', label: 'Action', minWidth: 170, align: 'right' },
+// ];
+
+// // API Call when ever data updates 
+// const fetcher = (url) => axios.get(url, { headers: { Authorization: token } }).then(res => res.data);
+
+// const Amenities = () => {
+
+//   // All useStates
+//   const [modalTitle, setModalTitle] = useState('Add New Amenities');
+//   const [buttonName, setButtonName] = useState('Save Changes');
+//   const [modalOpen, setModalOpen] = useState(false);
+//   const [rows, setRows] = useState([]);
+//   const [amenitiesId, setAmenitiesId] = useState([]);
+//   const [toaster, setToaster] = useState(false);
+//   const [msgToaster, setMsgToaster] = useState('');
+//   const [toaterErrorSuccessState, setToaterErrorSuccessState] = useState('success');
+
+//   // Add Amenities State Function
+//   const [formDataa, setFormDataa] = useState({
+//     amenitiesName:'',
+//     amenitiesStatus:'',
+//     amenitiesIcon:''
+//   })
+
+//   // Update Amenities State Function
+//   const [updateFormDataa, setUpdateFormDataa] = useState({
+//     amenitiesName:'',
+//     amenitiesIcon:'',
+//     amenitiesNameOriginal:'',
+//     amenitiesIconOriginal:''
+//   })
+
+//   // Add Amenities Name
+//   const handleFormDataaAmenitiesName = (val) => {
+//     setFormDataa({
+//       ...formDataa,
+//       amenitiesName: val
+//     });
+//   }
+
+//   // Add Amenities Status
+//   const handleFormDataaAmenitiesStatus = (val) => {
+//     setFormDataa({
+//       ...formDataa,
+//       amenitiesStatus: val
+//     });
+//   }
+
+//   // Add Amenities Icon
+//   const handleFormDataaAmenitiesIcon = (val) => {
+//     setFormDataa({
+//       ...formDataa,
+//       amenitiesIcon: val
+//     });
+//   }
+
+//   // Update Amenities Name
+//   const handleUpdateFormDataaAmenitiesName = (val) => {
+//     setUpdateFormDataa({
+//       ...updateFormDataa,
+//       amenitiesName: val
+//     });
+//   }
+
+//   // Update Amenities Icon
+//   const handleUpdateFormDataaAmenitiesIcon = (val) => {
+//     setUpdateFormDataa({
+//       ...updateFormDataa,
+//       amenitiesIcon: val
+//     });
+//   }
+
+//   const AddInputFields = 
+//   [
+//     { id: 'amenitiesName', field:'textInput', fieldType: 'text', fieldName: 'Amenities Title *', placeholder: 'Enter Amenities Name',  updateValFunc: handleFormDataaAmenitiesName },
+//       {
+//         id: 'amenitiesStatus',
+//         field: 'select',
+//         fieldName: 'Status *',
+//         fieldOptions: [
+//           { optionId: 'active', optionName: 'Active', optionValue: 'true' },
+//           { optionId: 'inActive', optionName: 'Inactive', optionValue: 'false' },
+//         ],
+//         value: formDataa.amenitiesStatus,
+//         updateValFunc: handleFormDataaAmenitiesStatus,
+//       },
+//     { id: 'amenitiesIcon', field:'fileType', fieldType: 'file', fieldName: 'Icon *', allowedTypes: ['image/jpeg', 'image/png'],  updateValFunc: handleFormDataaAmenitiesIcon }
+//   ];
+
+//   const UpdateInputFields =
+//   [
+//     { id: 'amenitiesName', field:'textInput', fieldType: 'text', fieldName: 'Amenities Title *', placeholder: 'Enter Amenities Name', value:updateFormDataa.amenitiesName, updateValFunc: handleUpdateFormDataaAmenitiesName },
+//     { id: 'amenitiesIcon', field:'fileType', fieldType: 'file', fieldName: 'Icon *', allowedTypes: ['image/jpeg', 'image/png'], value:updateFormDataa.amenitiesIcon, updateValFunc: handleUpdateFormDataaAmenitiesIcon }
+//   ];
+
+//   // get API
+//   const { data, error } = useSWR(`${ServerIP}/amenites/getAll`, fetcher);
+
+//   // Function to refresh the data
+//   const refreshData = () => {
+//     mutate(`${ServerIP}/amenites/getAll`);
+//   };
+
+//   // Dialog Open Handle
+//   const handleDialogState = (title, button, amenityId) => {
+//     setModalTitle(title);
+//     setButtonName(button);
+//     if(button==='Update'){
+//       getAmenitiesDataById(amenityId);
+//     }
+//     setModalOpen(!modalOpen);
+//   };
+
+//   // Dialog Close Handle
+//   const handleClosingDialogState = () => {
+//     setModalOpen(!modalOpen);
+//   };
+  
+//   // Toast Open Handle
+//   const handleOpeningToasterState = (message, severity) => {
+//     setMsgToaster(message);
+//     setToaterErrorSuccessState(severity);
+//     setToaster(true);
+//     refreshData();
+//   };
+
+//   // Toast Close Handle
+//   const handleClosingToasterState = () => {
+//     setToaster(false);
+//   };
+
+//   // useEffect
+//   useEffect(() => {
+//     if (data) {
+//       setMsgToaster(data?.message || 'All Amenities')
+//       console.log(data?.Amenities, 'data');
+//       const transformedRows = data.Amenities.map((amenity) => ({
+//         ...amenity,
+//         image: amenity.icon === null ? '-' : amenity.icon.split('/').pop(),
+//         status: <CustomButton variant="outlined" status={`${amenity.status? 'enable' : 'disable'}`}> {amenity.status ? 'Enabled' : 'Disabled'} </CustomButton>,
+//         action: (
+//           <Stack justifyContent='end' spacing={2} direction="row">
+//             <Button variant="outlined" size="small" startIcon={<Edit />} onClick={() => handleDialogState( 'Update New Amenities', 'Update', amenity.amenitiesId )}>Edit</Button>
+//             <Button variant="outlined" size="small" startIcon={amenity.status ? <EyeInvisibleFilled /> : <EyeFilled/> } color={`${amenity.status? 'error' : 'success'}`} onClick={()=> UpdateAmenitiesStatus( amenity?.amenitiesId, amenity.status )}>{`${amenity.status? 'Disable' : 'Enable'}`}</Button>
+//           </Stack>
+//         ),
+//       }));
+//       setRows(transformedRows);
+//     }
+//     if(msgToaster){
+//       handleOpeningToasterState();
+//     }
+//   }, [data]);
+
+//   // Add Function
+//   const AddNewAmenity = async () => {
+//     try {
+//       const formData = new FormData();
+//       formData.append('amenitiesName', formDataa.amenitiesName);
+//       formData.append('status', formDataa.amenitiesStatus);
+//       formData.append('icon', formDataa.amenitiesIcon);
+
+//       const response = await addAmenitiesApi(formData);
+
+//       if (response.status === 200 && response?.data?.status === 'success') {
+//         setMsgToaster(response?.data?.message || 'Amenity Added Successfully');
+//         setToaterErrorSuccessState('success');
+//         setToaster(true);
+//         setModalOpen(false);
+//         refreshData();
+//       } else {
+//         setMsgToaster(response?.data?.message || 'Error adding amenity');
+//         setToaterErrorSuccessState('error');
+//         setToaster(true);
+//       }
+//     } catch (error) {
+//       console.error('Error adding amenity:', error);
+//       setMsgToaster('Error adding amenity');
+//       setToaterErrorSuccessState('error');
+//       setToaster(true);
+//     }
+//   };
+
+
+  
+//   // Get Amenities data by id
+//   const getAmenitiesDataById = async (id) => {
+//     setAmenitiesId(id)
+//     try {
+//         var response = await getAmenitiesDataByIdApi(id);
+//         console.log(response, 'get by id')
+//         if (response?.status === 200) {
+//             if (response?.data?.status === 'success') {
+//               setUpdateFormDataa({ 
+//                 amenitiesName: response?.data?.amenity?.amenitiesName,
+//                 amenitiesIcon: response?.data?.amenity?.icon,
+//                 amenitiesNameOriginal: response?.data?.amenity?.amenitiesName,
+//                 amenitiesIconOriginal: response?.data?.amenity?.icon
+//                 });
+//             }
+//         }
+//         else {
+//             console.log(response?.data?.message);
+//         }
+//     }
+//     catch (error) {
+//       console.log('catch')
+//     } 
+//     finally {
+//       console.log('finally')
+//     }
+//   }
+
+//   // Update Function
+//   const UpdateAmenitiesStatus = async (id, amenityStatus) => {
+//     try {
+//       const formData = new FormData();
+//       formData.append('status', amenityStatus ? false : true)
+//       var response = await updateAmenitiesStatus(id, formData);
+//       if (response?.status === 200) {
+//         if (response?.data?.status === 'success') {
+//           setMsgToaster(response?.data?.message)
+//           refreshData();
+//         }
+//         else {
+//           setMsgToaster(response?.data?.message)
+//           refreshData();
+//         }
+//       } else {
+//         setMsgToaster(response?.data?.message)
+//       }
+//     } catch (error) {
+//       console.error('Error during update:', error);
+//       setMsgToaster('Error during update:', error)
+//     }
+//   }
+
+
+//   // Update Status Function
+//   const UpdateAmenitiesData = async () => {
+//     try {
+//       const formData = new FormData();
+//       if(updateFormDataa.amenitiesName !== updateFormDataa.amenitiesNameOriginal){
+//         formData.append('amenitiesName', updateFormDataa.amenitiesName)
+//       }
+//       if(updateFormDataa.amenitiesIcon !== updateFormDataa.amenitiesIconOriginal){
+//         formData.append('icon', updateFormDataa.amenitiesIcon)
+//       }
+//       var response = await updateAmenitiesApi(amenitiesId, formData);
+//       if (response?.status === 200) {
+//         if (response?.data?.status === 'success') {
+//           setMsgToaster(response?.data?.message)
+//         }
+//         else {
+//           setMsgToaster(response?.data?.message)
+//         }
+//       } else {
+//         setMsgToaster(response?.data?.message)
+//       }
+//     } catch (error) {
+//       console.error('Error during update:', error);
+//       setMsgToaster('Error during update:', error)
+//     }
+//   }
+
+//   if (error) {<Typography variant="subtitle1">- Error loading data</Typography> };
+//   if (!data) return <Typography variant="subtitle1">Speed is slow from Backend &nbsp; : - &nbsp; Loading Data...</Typography>;
+
+//   return (
+//     <Box>
+//       {/* Heading */}
+//       <Grid sx={{ display: 'flex', mb: 3 }}>
+//         <Grid alignContent='center' sx={{ flexGrow: 1 }}>
+//           <Typography variant="h5">All Amenities</Typography>
+//         </Grid>
+//         <Grid>
+//           <Stack justifyContent='start' spacing={2} direction="row">
+//             <Button variant="outlined" onClick={() => handleDialogState('Add New Amenities', 'Create')}>
+//               + Add New
+//             </Button>
+//           </Stack>
+//         </Grid>
+//       </Grid>
+//       {/* Data Table */}
+//       <DynamicDataTable columns={columns} rows={rows} />
+
+//       {/* Modals for all Add and Update */}
+//       <DialogModal handleClosingDialogState={handleClosingDialogState} modalOpen={modalOpen} title={modalTitle} buttonName={buttonName} InputFields={buttonName === 'Create' ? AddInputFields : UpdateInputFields} onSubmit={buttonName === 'Create' ? AddNewAmenity : UpdateAmenitiesData} />
+
+//       {/* SnackBar */}
+//       <Snackbar open={toaster} autoHideDuration={5000} onClose={handleClosingToasterState}>
+//         <Alert onClose={handleClosingToasterState} severity={toaterErrorSuccessState} variant="filled" sx={{ width: '100%', color: '#fff', fontSize: '14px' }}>
+//           {msgToaster}
+//         </Alert>
+//       </Snackbar>
+
+//     </Box>
+//   );
+// };
+
+// export default Amenities;
 
 
 

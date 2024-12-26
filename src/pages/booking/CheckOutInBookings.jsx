@@ -3,7 +3,7 @@ import { Box, Button, InputAdornment, OutlinedInput, Stack, Typography } from '@
 import Grid from '@mui/material/Unstable_Grid2/Grid2';
 import { styled } from '@mui/material/styles';
 import axios from 'axios';
-import { useParams } from 'react-router';
+import { useNavigate, useParams } from 'react-router';
 
 import Table from '@mui/material/Table';
 import TableBody from '@mui/material/TableBody';
@@ -11,6 +11,7 @@ import TableCell from '@mui/material/TableCell';
 import TableContainer from '@mui/material/TableContainer';
 import TableRow from '@mui/material/TableRow';
 import { Computer } from '@mui/icons-material';
+import { updateCheckOutOfUserApi } from 'api/api';
 
 const CustomEnableButton = styled(Button)(({ status }) => ({
   borderRadius: '50px',
@@ -32,7 +33,7 @@ const CustomEnableButton = styled(Button)(({ status }) => ({
 const CheckOutInBookings = () => {
 
   const { id } = useParams();
-  // const [rows, setRows] = useState([]);
+  const navigate = useNavigate();
 
   const guestInfoData = [
     { key: 'Name', value: 'ol' },
@@ -58,6 +59,21 @@ const CheckOutInBookings = () => {
     { key: 'Cancellation Fee', value: '+$0.00' },
     { key: 'Total Amount', value: '= $1,771.00' },
   ]
+
+  const handleCheckoutOfUser = async () => {
+    try {
+      const response = await updateCheckOutOfUserApi(id);
+      if (response.status === 200) {
+        if (response?.data?.status === 'success') {
+          navigate('/allBookings');
+        }
+      } else {
+        console.error('Failed to book room:', response?.data?.message);
+      }
+    } catch (error) {
+      console.error('Error book new rooms:', error);
+    }
+  };
 
 
   return (
@@ -155,7 +171,9 @@ const CheckOutInBookings = () => {
             <Grid display='flex' justifyContent='space-between'>
               <Button variant='contained' fullWidth sx={{ mx: 1, backgroundColor: '#1e9ff2', '&:hover': { backgroundColor: '#1e9ff2' } }}>Print Invoice</Button>
               <Button variant='contained' fullWidth sx={{ mx: 1, backgroundColor: '#4634ff', '&:hover': { backgroundColor: '#4634ff' } }}>Go To Payment</Button>
-              <Button variant='contained' fullWidth sx={{ mx: 1, backgroundColor: '#000', '&:hover': { backgroundColor: '#000' } }}>Check Out</Button>
+              <Button variant='contained' fullWidth sx={{ mx: 1, backgroundColor: '#000', '&:hover': { backgroundColor: '#000' } }}
+                onClick={handleCheckoutOfUser}
+              >Check Out</Button>
             </Grid>
           </Box>
         </Grid>

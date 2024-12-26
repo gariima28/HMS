@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react'
 import { styled } from '@mui/material/styles';
-import { Box, Button, InputLabel, OutlinedInput, Stack, Typography } from '@mui/material';
+import { Box, Button, InputLabel, Menu, OutlinedInput, Stack, Typography } from '@mui/material';
 import Grid from '@mui/material/Unstable_Grid2/Grid2';
 import FilterAltIcon from '@mui/icons-material/FilterAlt';
 // Date Picker
@@ -8,12 +8,13 @@ import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
 import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
 import { DatePicker } from '@mui/x-date-pickers/DatePicker';
 import { ComputerSharp, MoreVertOutlined } from '@mui/icons-material';
-import { RightOutlined } from '@ant-design/icons';
+import { CaretDownFilled, RightOutlined } from '@ant-design/icons';
 import DynamicDataTable from 'components/DynamicDataTable';
 import useSWR from 'swr';
 import axios from 'axios';
+import { MenuItem } from '@mui/base';
+import { Link } from 'react-router-dom';
 
-// const LocalGirjesh = 'http://192.168.20.109:5001';
 const ServerIP = 'http://89.116.122.211:5001'
 const token = `Bearer ${localStorage.getItem('token')}`;
 
@@ -80,8 +81,8 @@ const CustomButton = styled(Button)(() => ({
 
 const columns = [
   { id: 'bookingNo', label: 'Booking Number', minWidth: 170 },
-  { id: 'guestName', label: 'Guest', minWidth: 100, align: 'center' },
-  { id: 'checkInCheckOut', label: 'Check In | Check Out', align: 'center' },
+  { id: 'guestName', label: 'Guest', minWidth: 100, align: 'start' },
+  { id: 'checkInCheckOut', label: 'Check In | Check Out', align: 'start' },
   { id: 'totalAmount', label: 'Total Amount', minWidth: 100, align: 'center' },
   { id: 'totalPaid', label: 'Total Paid', minWidth: 100, align: 'center' },
   { id: 'due', label: 'Due', minWidth: 100, align: 'center' },
@@ -95,17 +96,20 @@ const ActiveBookings = () => {
 
   const [rows, setRows] = useState([]);
 
-  const [toaster, setToaster] = useState(false)
-  const [msgToaster, setMsgToaster] = useState('')
+  const [openBookingId, setOpenBookingId] = useState(null);
   const [anchorEl, setAnchorEl] = useState(null);
   const open = Boolean(anchorEl);
-  
-  const handleClick = (event) => {
-    setAnchorEl(event);
-    console.log(event)
+
+  const handleClick = (event, bookingId) => {
+    console.log("Button clicked for bookingId:", bookingId);
+    setAnchorEl(event.currentTarget);
+    setOpenBookingId(bookingId);
   };
+
   const handleClose = () => {
+    console.log("Closing menu for bookingId:", openBookingId);
     setAnchorEl(null);
+    setOpenBookingId(null);
   };
 
   // get API
@@ -114,24 +118,71 @@ const ActiveBookings = () => {
   useEffect(() => {
     if (data) {
       console.log(data?.active, 'data');
-      const transformedRows = data.active.map((active) => ({
-        ...active,
-        // checkInCheckOut: booking.checkInDate - booking.checkOutDate,
-        // image: booking.icon === null ? '-' : booking.icon.split('/').pop(),
-        status: <CustomEnableButton variant="outlined" status={`${active.status ? 'running' : 'upcoming'}`}> {active.status ? 'Running' : 'Upcoming'} </CustomEnableButton>,
-        action: (
-          <Stack justifyContent='end' spacing={2} direction="row">
-            <DetailsButton variant="outlined" size="small" startIcon={<ComputerSharp />} href={`bookingDetailsPage/${active.bookingId}`}>Details</DetailsButton>
-            <MoreButton variant="outlined" size="small" startIcon={<MoreVertOutlined />} color={`${active.status ? 'error' : 'success'}`} >More</MoreButton>
-          </Stack>
-        ),
-      }));
+      const transformedRows = data.active.map((active) => {
+        const checkInDate = new Date(active.checkInDate).toISOString().split('T')[0];
+        const checkOutDate = new Date(active.checkOutDate).toISOString().split('T')[0];
+        
+        return {
+          ...active,
+          checkInCheckOut: `${checkInDate} | ${checkOutDate}`,
+          due: active.pendingAmount,
+          status: <CustomEnableButton variant="outlined" status={`${active.status ? 'running' : 'upcoming'}`}> {active.status ? 'Running' : 'Upcoming'} </CustomEnableButton>,
+          action: (
+            <Stack justifyContent='end' spacing={2} direction="row">
+              <DetailsButton variant="outlined" size="small" startIcon={<ComputerSharp />} href={`bookingDetailsPage/${active.bookingId}`}>Details</DetailsButton>
+              <MoreButton
+                  variant="outlined"
+                  type='button'
+                  size="small"
+                  startIcon={<MoreVertOutlined />}
+                  endIcon={<CaretDownFilled />}
+                  id="basic-button"
+                  aria-controls={open ? 'basic-menu' : undefined}
+                  aria-haspopup="true"
+                  aria-expanded={open ? 'true' : undefined}
+                  onClick={(e) => handleClick(e, active.bookingId)} // Pass bookingId to handleClick
+                >
+                  More
+                </MoreButton>
+                <Menu
+                  id="basic-menu"
+                  anchorEl={anchorEl}
+                  open={openBookingId === active.bookingId} // Dynamically check if the menu for this booking should be open
+                  onClose={handleClose}
+                  MenuListProps={{
+                    'aria-labelledby': 'basic-button',
+                  }}
+                >
+                  <MenuItem sx={{ p: 0 }}>
+                    <Button component={Link} to={`/bookedRoomInBookings/${active.bookingId}`} sx={{ backgroundColor: 'transparent', color: '#000', '&:hover': { color: '#000', backgroundColor: 'transparent' } }}>Booked Rooms</Button>
+                  </MenuItem>
+                  <MenuItem sx={{ p: 0 }}>
+                    <Button component={Link} to={`/premiumServicesInBookings/${active.bookingId}`} sx={{ backgroundColor: 'transparent', color: '#000', '&:hover': { color: '#000', backgroundColor: 'transparent' } }}>Premium Services</Button>
+                  </MenuItem>
+                  <MenuItem sx={{ p: 0 }}>
+                    <Button component={Link} to={`/paymentInBookings/${active.bookingId}`} sx={{ backgroundColor: 'transparent', color: '#000', '&:hover': { color: '#000', backgroundColor: 'transparent' } }}>Payment</Button>
+                  </MenuItem>
+                  {/* <MenuItem sx={{ p: 0 }}>
+                    <Button sx={{ backgroundColor: 'transparent', color: '#000', '&:hover': { color: '#000', backgroundColor: 'transparent' } }} onClick={() => { setOpenMergeDialog(true), setBookingNumber(booking.bookingNo) }}>Merge Booking</Button>
+                  </MenuItem> */}
+                  <MenuItem sx={{ p: 0 }}>
+                    <Button component={Link} to={`/cancelBookings/${active.bookingId}`} sx={{ backgroundColor: 'transparent', color: '#000', '&:hover': { color: '#000', backgroundColor: 'transparent' } }}>Cancel Booking</Button>
+                  </MenuItem>
+                  <MenuItem sx={{ p: 0 }}>
+                    <Button component={Link} to={`/checkOutBookings/${active.bookingId}`} sx={{ backgroundColor: 'transparent', color: '#000', '&:hover': { color: '#000', backgroundColor: 'transparent' } }}>Check Out</Button>
+                  </MenuItem>
+                  <MenuItem sx={{ p: 0 }}>
+                    <Button component={Link} to="/" sx={{ backgroundColor: 'transparent', color: '#000', '&:hover': { color: '#000', backgroundColor: 'transparent' } }}>Print Invoice</Button>
+                  </MenuItem>
+                </Menu>
+            </Stack>
+          ),
+        }
+      
+    });
       setRows(transformedRows);
     }
-    if (msgToaster) {
-      handleOpeningToasterState();
-    }
-  }, [token, data, msgToaster]);
+  }, [token, data]);
 
 
   if (error) { <Typography variant="subtitle1">- Error loading data</Typography> };

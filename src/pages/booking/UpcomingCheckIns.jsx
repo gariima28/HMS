@@ -46,7 +46,7 @@ const UpcomingCheckIns = () => {
       <Grid container spacing={3}>
         {cardsData.map((item) => (
           <Grid item xs={12} sm={6} md={4} lg={3} >
-            <CheckInCheckoutCards name = {item.name}  mobile = {item.mobile}  bookingNo = {item.bookingNo}  totalRooms = {item.totalRooms} />
+            <CheckInCheckoutCards name={item.guestName} mobile={item.phoneNo} bookingNo={item.bookingNo} totalRooms={item.totalRoom} />
           </Grid>
         ))}
       </Grid>

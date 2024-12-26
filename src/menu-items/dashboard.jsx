@@ -8,7 +8,7 @@ const icons = {
   NightShelterOutlinedIcon
 };
 
-// ==============================|| MENU ITEMS - DASHBOARD ||============================== //
+const roleType = localStorage.getItem('roleType')
 
 const dashboard = {
   id: 'group-dashboard',
@@ -23,7 +23,8 @@ const dashboard = {
       icon: icons.DashboardOutlined,
       breadcrumbs: false
     },
-    {
+
+    ...(roleType === 'SUPERADMIN' ? [ {
       id: 'hotels',
       title: 'Hotels',
       type: 'collapse',
@@ -37,14 +38,14 @@ const dashboard = {
           icon: icons.NightShelterOutlinedIcon
         },
         {
-          id: 'createHotel',
+          id: 'hotelForm',
           title: 'Create Hotels',
           type: 'item',
-          url: '/createHotel',
+          url: '/hotelForm/add',
           icon: icons.NightShelterOutlinedIcon
         }
       ],
-    },
+    }] : []),
   ]
 };
 

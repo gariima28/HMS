@@ -28,7 +28,7 @@ import Transitions from 'components/@extended/Transitions';
 import LogoutOutlined from '@ant-design/icons/LogoutOutlined';
 import SettingOutlined from '@ant-design/icons/SettingOutlined';
 import UserOutlined from '@ant-design/icons/UserOutlined';
-import avatar1 from 'assets/images/users/avatar-1.png';
+import avatar1 from 'assets/images/profile.svg';
 
 // tab panel wrapper
 function TabPanel({ children, value, index, ...other }) {
@@ -52,6 +52,10 @@ export default function Profile() {
   const theme = useTheme();
 
   const anchorRef = useRef(null);
+  const roleType = localStorage.getItem('roleType');
+  const name = localStorage.getItem('name');
+  const email = localStorage.getItem('email');
+
   const [open, setOpen] = useState(false);
   const handleToggle = () => {
     setOpen((prevOpen) => !prevOpen);
@@ -91,7 +95,7 @@ export default function Profile() {
         <Stack direction="row" spacing={1.25} alignItems="center" sx={{ p: 0.5 }}>
           <Avatar alt="profile user" src={avatar1} size="sm" />
           <Typography variant="subtitle1" sx={{ textTransform: 'capitalize' }}>
-            John Doe
+            {email}
           </Typography>
         </Stack>
       </ButtonBase>
@@ -118,7 +122,7 @@ export default function Profile() {
             <Paper sx={{ boxShadow: theme.customShadows.z1, width: 290, minWidth: 240, maxWidth: { xs: 250, md: 290 } }}>
               <ClickAwayListener onClickAway={handleClose}>
                 <MainCard elevation={0} border={false} content={false}>
-                  <CardContent sx={{ px: 2.5, pt: 3 }}>
+                  {/* <CardContent sx={{ px: 2.5, pt: 3 }}>
                     <Grid container justifyContent="space-between" alignItems="center">
                       <Grid item>
                         <Stack direction="row" spacing={1.25} alignItems="center">
@@ -139,7 +143,7 @@ export default function Profile() {
                         </Tooltip>
                       </Grid>
                     </Grid>
-                  </CardContent>
+                  </CardContent> */}
 
                   <Box sx={{ borderBottom: 1, borderColor: 'divider' }}>
                     <Tabs variant="fullWidth" value={value} onChange={handleChange} aria-label="profile tabs">
@@ -155,7 +159,7 @@ export default function Profile() {
                         label="Profile"
                         {...a11yProps(0)}
                       />
-                      <Tab
+                      {/* <Tab
                         sx={{
                           display: 'flex',
                           flexDirection: 'row',
@@ -166,7 +170,7 @@ export default function Profile() {
                         icon={<SettingOutlined style={{ marginBottom: 0, marginRight: '10px' }} />}
                         label="Setting"
                         {...a11yProps(1)}
-                      />
+                      /> */}
                     </Tabs>
                   </Box>
                   <TabPanel value={value} index={0} dir={theme.direction}>

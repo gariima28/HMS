@@ -1,16 +1,4 @@
-import {
-    Button,
-    Dialog,
-    DialogActions,
-    DialogContent,
-    DialogTitle,
-    IconButton,
-    InputLabel,
-    MenuItem,
-    OutlinedInput,
-    Select,
-    Divider
-} from '@mui/material';
+import { Button, Dialog, DialogActions, DialogContent, DialogTitle, IconButton, InputLabel, MenuItem, OutlinedInput, Select, Divider } from '@mui/material';
 import CloseIcon from '@mui/icons-material/Close';
 import React, { useState } from 'react';
 import Grid from '@mui/material/Unstable_Grid2/Grid2';
@@ -88,26 +76,35 @@ const DialogModal = ({
                                         onChange={(e) => itemData.updateValFunc(e.target.value)}
                                     />
                                 ) : itemData?.field === 'fileType' ? (
-                                    // Handle fileType as per your existing logic
-                                    // ...
-                                        <></>
+                                    <OutlinedInput
+                                        id={itemData.id}
+                                        type="file"
+                                        inputProps={{
+                                            accept: itemData?.fileAccept || '*',
+                                        }}
+                                        fullWidth
+                                        onChange={(e) => {
+                                            const file = e.target.files[0];
+                                            itemData.updateValFunc(file);
+                                        }}
+                                    />
                                     ) : itemData?.field === 'select' ? (
-                                        <Select
-                                            id={itemData.id}
-                                            fullWidth
-                                            displayEmpty
-                                            value={itemData?.value}
-                                            onChange={(e) => itemData.updateValFunc(e.target.value)}
-                                        >
-                                            <MenuItem value="" disabled>
-                                                -- Select --
-                                            </MenuItem>
-                                            {itemData?.fieldOptions.map((option) => (
-                                                <MenuItem key={option.optionId} value={option.optionValue}>
-                                                    {option.optionName}
+                                            <Select
+                                                id={itemData.id}
+                                                fullWidth
+                                                displayEmpty
+                                                value={itemData?.value}
+                                                onChange={(e) => itemData.updateValFunc(e.target.value)}
+                                            >
+                                                <MenuItem value="" disabled>
+                                                    -- Select --
                                                 </MenuItem>
-                                            ))}
-                                        </Select>
+                                                {(itemData?.fieldOptions || []).map((option) => (
+                                                    <MenuItem key={option.optionId} value={option.optionValue}>
+                                                        {option.optionName}
+                                                    </MenuItem>
+                                                ))}
+                                            </Select>
                                 ) : null}
                             </Grid>
                         ))}

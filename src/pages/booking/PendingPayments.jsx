@@ -64,15 +64,54 @@ const CustomButton = styled(Button)(() => ({
 }));
 
 const columns = [
-  { id: 'bookingNo', label: 'Booking Number', minWidth: 170 },
-  { id: 'guestName', label: 'Guest', minWidth: 100, align: 'center' },
-  { id: 'checkInCheckOut', label: 'Check In | Check Out', align: 'center' },
-  { id: 'totalAmount', label: 'Total Amount', minWidth: 100, align: 'center' },
-  { id: 'totalPaid', label: 'Total Paid', minWidth: 100, align: 'center' },
-  { id: 'due', label: 'Due', minWidth: 100, align: 'center' },
+  { id: 'gatewayTransaction', label: 'Gateway | Transaction', minWidth: 170 },
+  { id: 'initiated', label: 'Initiated', minWidth: 100, align: 'center' },
+  { id: 'user', label: 'User', align: 'center' },
+  { id: 'amount', label: 'Amount', minWidth: 100, align: 'center' },
+  { id: 'conversion', label: 'Conversion', minWidth: 100, align: 'center' },
   { id: 'status', label: 'Status', minWidth: 100, align: 'center' },
   { id: 'action', label: 'Action', minWidth: 170, align: 'right' },
 ];
+
+const data = [
+  {
+    gateway: "BKash",
+    transactionId: "3FDJFF8JPTC1",
+    date: "2024-11-26 07:52 PM",
+    user: "John Doe",
+    username: "@username",
+    amount: 3465.0,
+    fee: 23.43,
+    total: 3472.43,
+    conversion: 381967.3,
+    status: "Pending",
+  },
+  {
+    gateway: "BKash",
+    transactionId: "3FDJFF8JPTC88",
+    date: "2024-11-26 07:52 PM",
+    user: "abhi",
+    username: "@abhi",
+    amount: 3465.0,
+    fee: 7.43,
+    total: 3472.43,
+    conversion: 381967.3,
+    status: "Pending",
+  },
+  {
+    gateway: "BKash",
+    transactionId: "3FDJFF8JPTC88",
+    date: "2024-11-26 07:52 PM",
+    user: "rajat",
+    username: "@raj",
+    amount: 3465.0,
+    fee: 7.43,
+    total: 3472.43,
+    conversion: 381967.3,
+    status: "Pending",
+  },
+];
+
 
 const fetcher = (url) => axios.get(url, { headers: { Authorization: token } }).then(res => res.data);
 
@@ -159,18 +198,18 @@ const PendingPayments = () => {
   useEffect(() => {
     if (data) {
       console.log(data, 'data');
-      const transformedRows = data.bookings.map((booking) => {
-        const checkInDate = new Date(booking.checkInDate).toISOString().split('T')[0];
-        const checkOutDate = new Date(booking.checkOutDate).toISOString().split('T')[0];
+      const transformedRows = data.map((payments) => {
+        const checkInDate = new Date(payments.checkInDate).toISOString().split('T')[0];
+        const checkOutDate = new Date(payments.checkOutDate).toISOString().split('T')[0];
 
         return {
-          ...booking,
+          ...payments,
           checkInCheckOut: `${checkInDate} | ${checkOutDate}`,
-          // image: booking.icon === null ? '-' : booking.icon.split('/').pop(),
+          // image: payments.icon === null ? '-' : payments.icon.split('/').pop(),
           status: <CustomEnableButton variant="outlined"> Pending </CustomEnableButton>,
           action: (
             <Stack justifyContent='end' spacing={2} direction="row">
-              <DetailsButton variant="outlined" size="small" startIcon={<ComputerSharp />} href={`bookingDetailsPage/${booking.bookingId}`}>Details</DetailsButton>
+              <DetailsButton variant="outlined" size="small" startIcon={<ComputerSharp />} href={`bookingDetailsPage/${payments.bookingId}`}>Details</DetailsButton>
             </Stack>
           ),
         }
@@ -196,12 +235,10 @@ const PendingPayments = () => {
         </Grid>
         <Grid display='flex'>
           {/**Search Bar */}
-          <Stack direction="row" mr={2}>
-            {/* <TextField sx={{ flex: 1, borderRadius: "10px 0px 0px 10px !important", bgcolor: "white", width: { xs: "100%", sm: "auto" }, }} variant="outlined" placeholder="Username / Email" value={search} onChange={(e) => setSearch(e.target.value)} /> */}
-            <OutlinedInput type='email' placeholder="Enter your email"
-              sx={{borderRadius: '10px 0px 0px 10px !important', backgroundColor: '#fff'}} />
-            <Button sx={{ bgcolor: "blue", p:0, width:'' }}>
-              <IconButton sx={{p:0}}>
+          <Stack direction="row">
+            <TextField sx={{ flex: 1, borderRadius: "10px", bgcolor: "white", width: { xs: "100%", sm: "auto" }, }} variant="outlined" placeholder="Username / Email" value={search} onChange={(e) => setSearch(e.target.value)} />
+            <Button sx={{ bgcolor: "blue" }}>
+              <IconButton>
                 <SearchIcon sx={{ color: "white" }} />
               </IconButton>
             </Button>

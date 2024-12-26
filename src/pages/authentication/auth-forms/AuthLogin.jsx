@@ -59,6 +59,9 @@ export default function AuthLogin({ isDemo = false }) {
       if (response.status === 200) {
         if(response?.data?.status === 'success'){
           localStorage.setItem('token', response.data.token);
+          localStorage.setItem('roleType', response.data.roleType);
+          localStorage.setItem('name', response.data.name);
+          localStorage.setItem('email', response.data.email);
           window.location.reload()
           // navigate('/');
           // console.log(token, 'try2')
@@ -131,7 +134,7 @@ export default function AuthLogin({ isDemo = false }) {
                     }
                     label={<Typography variant="h6">Keep me sign in</Typography>}
                   />
-                  <Link variant="h6" component={RouterLink} color="text.primary">
+                  <Link variant="h6" component={RouterLink} color="text.primary" to='/forgetPass'>
                     Forgot Password?
                   </Link>
                 </Stack>
@@ -148,14 +151,6 @@ export default function AuthLogin({ isDemo = false }) {
                   </Button>
                 </AnimateButton>
               </Grid>
-              {/* <Grid item xs={12}>
-                <Divider>
-                  <Typography variant="caption"> Login with</Typography>
-                </Divider>
-              </Grid>
-              <Grid item xs={12}>
-                <FirebaseSocial />
-              </Grid> */}
             </Grid>
           </form>
         )}

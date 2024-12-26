@@ -3,11 +3,13 @@ import { Edit } from '@mui/icons-material';
 import { styled } from '@mui/material/styles';
 import DynamicDataTable from 'components/DynamicDataTable';
 import { EyeFilled, EyeInvisibleFilled } from '@ant-design/icons';
-import { Box, Button, Snackbar, Stack, Typography } from '@mui/material';
-import useSWR from "swr";
+import { Box, Button, Stack, Typography } from '@mui/material';
+import useSWR, { mutate } from "swr";
 import axios from 'axios';
+import { Link } from 'react-router-dom';
+import { updateHotelApi } from 'api/api';
+import { Snackbar, Alert } from '@mui/material';
 
-const LocalGirjesh = 'http://192.168.20.109:5001';
 const ServerIP = 'http://89.116.122.211:5001'
 const token = `Bearer ${localStorage.getItem('token')}`;
 
@@ -42,18 +44,12 @@ const fetcher = (url) => axios.get(url, { headers: { Authorization: token } }).t
 const HotelDetails = () => {
 
   const [rows, setRows] = useState([]);
-
-  const [toaster, setToaster] = useState(false)
-  const [msgToaster, setMsgToaster] = useState('')
-
   const { data, error } = useSWR(`${ServerIP}/hotel/getAllHotels`, fetcher);
+  const [snackbar, setSnackbar] = useState({ open: false, message: '', severity: '' });
 
-  const handleOpeningToasterState = () => {
-    setToaster(true);
-  };
 
-  const handleClosingToasterState = () => {
-    setToaster(false);
+  const handleCloseSnackbar = () => {
+    setSnackbar((prev) => ({ ...prev, open: false }));
   };
 
   useEffect(() => {
@@ -64,17 +60,47 @@ const HotelDetails = () => {
         status: <CustomButton variant="outlined" status={`${hotels.status? 'enable' : 'disable'}`}> {hotels.status ? 'Active' : 'InActive'} </CustomButton>,
         action: (
           <Stack justifyContent='end' spacing={2} direction="row">
-            <Button variant="outlined" size="small" startIcon={<Edit />} onClick={() => handleDialogState('Update New Amenities', 'Update')}>Edit</Button>
-            <Button variant="outlined" size="small" startIcon={hotels.status ? <EyeInvisibleFilled /> : <EyeFilled />} color={`${hotels.status ? 'error' : 'success'}`} onClick={() => UpdateAmenitiesStatus(hotels?.amenitiesId, hotels.status)}>{`${hotels.status ? 'Disable' : 'Enable'}`}</Button>
+            <Button component={Link} to={`/hotelForm/${hotels.hotelId}`} variant="outlined" size="small" startIcon={<Edit />}>Edit</Button>
+            <Button variant="outlined" size="small" startIcon={hotels.status ? <EyeInvisibleFilled /> : <EyeFilled />} color={`${hotels.status ? 'error' : 'success'}`} onClick={() => handleDisableHotel(hotels?.hotelId, hotels.status)}>{`${hotels.status ? 'Disable' : 'Enable'}`}</Button>
           </Stack>
         ),
       }));
       setRows(transformedRows);
     }
-    if (msgToaster) {
-      handleOpeningToasterState();
+  }, [data]);
+
+  const refreshData = () => {
+    mutate(`${ServerIP}/hotel/getAllHotels`);
+  };
+
+
+  const handleDisableHotel = async (hotelId, status) => {
+    console.log('start')
+    try {
+      console.log('try')
+      console.log(status)
+      const formData = new FormData();
+      formData.append('status', !status)
+
+      const response = await updateHotelApi(hotelId, formData);
+      console.log(response, 'try1')
+      if (response.status === 200) {
+        if (response?.data?.status === 'success') {
+          console.log(response?.data?.message, 'success');
+          setSnackbar({ open: true, message: response?.data?.message, severity: 'success' });
+          refreshData();
+        }
+        else {
+          setSnackbar({ open: true, message: response?.data?.msg || 'Error occurred', severity: 'error' });
+        }
+      }
+    } catch (error) {
+      setSnackbar({ open: true, message: error.message || 'Error occurred', severity: 'error' });
+      console.error(error);
+    } finally {
+      console.log('finally')
     }
-  }, [data, msgToaster]);
+  };
 
 
 
@@ -87,7 +113,18 @@ const HotelDetails = () => {
       <DynamicDataTable columns={columns} rows={rows} />
 
       {/* SnackBar */}
-      <Snackbar open={toaster} autoHideDuration={5000} onClose={handleClosingToasterState} message={msgToaster} />
+
+      <Snackbar
+        open={snackbar.open}
+        autoHideDuration={4000}
+        onClose={handleCloseSnackbar}
+        anchorOrigin={{ vertical: 'top', horizontal: 'right' }}
+      >
+        <Alert onClose={handleCloseSnackbar} variant="filled" severity={snackbar.severity} sx={{ width: '100%', color: '#fff' }}>
+          {snackbar.message}
+        </Alert>
+      </Snackbar>
+      
     </Box>
   );
 }
