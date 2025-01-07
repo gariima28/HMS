@@ -1,11 +1,13 @@
 // assets
 import { DashboardOutlined } from '@ant-design/icons';
 import NightShelterOutlinedIcon from '@mui/icons-material/NightShelterOutlined';
+import { ChromeOutlined } from '@ant-design/icons';
 
 // icons
 const icons = {
   DashboardOutlined,
-  NightShelterOutlinedIcon
+  NightShelterOutlinedIcon,
+  ChromeOutlined
 };
 
 // ==============================|| MENU ITEMS - DASHBOARD ||============================== //
@@ -27,7 +29,7 @@ const manageHotel = {
           type: 'item',
           url: '/amenities',
           breadcrumbs: false,
-          icon: icons.NightShelterOutlinedIcon
+          icon: icons.ChromeOutlined
         },
         {
           id: 'facilities',
@@ -35,7 +37,7 @@ const manageHotel = {
           type: 'item',
           url: '/facilities',
           breadcrumbs: false,
-          icon: icons.NightShelterOutlinedIcon
+          icon: icons.ChromeOutlined
         },
         {
           id: 'bedTypes',
@@ -43,7 +45,7 @@ const manageHotel = {
           type: 'item',
           url: '/bedTypes',
           breadcrumbs: false,
-          icon: icons.NightShelterOutlinedIcon
+          icon: icons.ChromeOutlined
         },
         {
           id: 'roomTypes',
@@ -51,7 +53,7 @@ const manageHotel = {
           type: 'item',
           url: '/roomTypes',
           breadcrumbs: false,
-          icon: icons.NightShelterOutlinedIcon
+          icon: icons.ChromeOutlined
         },
         {
           id: 'room',
@@ -59,7 +61,7 @@ const manageHotel = {
           type: 'item',
           url: '/room',
           breadcrumbs: false,
-          icon: icons.NightShelterOutlinedIcon
+          icon: icons.ChromeOutlined
         },
         {
           id: 'premiumServices',
@@ -67,7 +69,7 @@ const manageHotel = {
           type: 'item',
           url: '/premiumServices',
           breadcrumbs: false,
-          icon: icons.NightShelterOutlinedIcon
+          icon: icons.ChromeOutlined
         }
       ],
     }

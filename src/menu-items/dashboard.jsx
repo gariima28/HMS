@@ -1,11 +1,12 @@
 // assets
 import { DashboardOutlined } from '@ant-design/icons';
 import NightShelterOutlinedIcon from '@mui/icons-material/NightShelterOutlined';
+import { ChromeOutlined } from '@ant-design/icons';
 
 // icons
 const icons = {
   DashboardOutlined,
-  NightShelterOutlinedIcon
+  NightShelterOutlinedIcon, ChromeOutlined
 };
 
 const roleType = localStorage.getItem('roleType')
@@ -35,14 +36,14 @@ const dashboard = {
           title: 'Hotel Details',
           type: 'item',
           url: '/hotels',
-          icon: icons.NightShelterOutlinedIcon
+          icon: icons.ChromeOutlined
         },
         {
           id: 'hotelForm',
           title: 'Create Hotels',
           type: 'item',
           url: '/hotelForm/add',
-          icon: icons.NightShelterOutlinedIcon
+          icon: icons.ChromeOutlined
         }
       ],
     }] : []),

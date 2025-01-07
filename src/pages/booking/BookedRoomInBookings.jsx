@@ -70,9 +70,8 @@ const BookedRoomInBookings = () => {
   useEffect(() => {
     if (data) {
       console.log(data, 'data');
-      const transformedRows = data.bookedRooms.map((bookedRooms) => ({
+      const transformedRows = data?.rooms?.map((bookedRooms) => ({
         ...bookedRooms,
-        // image: bookedRooms.icon === null ? '-' : bookedRooms.icon.split('/').pop(),
         roomNum: <RoomButton variant="outlined" status='roomNo'><Typography variant='h6'>{bookedRooms.roomNo}</Typography><Typography variant='h6'>{bookedRooms.roomType}</Typography></RoomButton>,
         action: <CustomEnableButton variant="outlined" disabled={true} status='cancel'>Cancel Booking </CustomEnableButton>,
       }));

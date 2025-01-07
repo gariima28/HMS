@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { useEffect, useState } from 'react'
 import { Box, Button, InputAdornment, OutlinedInput, Stack, Typography } from '@mui/material';
 import Grid from '@mui/material/Unstable_Grid2/Grid2';
 import { styled } from '@mui/material/styles';
@@ -12,6 +12,7 @@ import TableContainer from '@mui/material/TableContainer';
 import TableRow from '@mui/material/TableRow';
 import { Computer } from '@mui/icons-material';
 import { updateCheckOutOfUserApi } from 'api/api';
+import useSWR, { mutate } from 'swr';
 
 const CustomEnableButton = styled(Button)(({ status }) => ({
   borderRadius: '50px',
@@ -29,36 +30,39 @@ const CustomEnableButton = styled(Button)(({ status }) => ({
   },
 }));
 
+const ServerIP = 'http://89.116.122.211:5001'
+const token = `Bearer ${localStorage.getItem('token')}`;
+
+
+// API Call when ever data updates 
+const fetcher = (url) => axios.get(url, { headers: { Authorization: token } }).then(res => res.data);
 
 const CheckOutInBookings = () => {
 
   const { id } = useParams();
   const navigate = useNavigate();
 
-  const guestInfoData = [
-    { key: 'Name', value: 'ol' },
-    { key: 'Email', value: 'ol@ol.com' },
-    { key: 'Phone', value: '+123' },
-    { key: 'Address', value: 'asdasd' },
-  ]
+  // get API
+  const { data, error } = useSWR(`${ServerIP}/payment/getBookingDetails/46`, fetcher);
 
-  const paymentSummaryData = [
-    { key: 'Total Payment', value: '+$1,771.00' },
-    { key: 'Payment Received', value: '-$1,771.00' },
-    { key: 'Refunded', value: '-$0.00' },
-    { key: 'Receivable from User', value: '= $0.00' },
-  ]
+  // Function to refresh the data
+  const refreshData = () => {
+    mutate(`${ServerIP}/booking/getBookingDetails/${id}`);
+  };
 
-  const paymentInfoData = [
-    { key: 'Total Fare', value: '+$1,610.00' },
-    { key: 'Tax Charge', value: '+$161.00' },
-    { key: 'Canceled Fare', value: '-$0.00' },
-    { key: 'Canceled Tax Charge', value: '-$0.00' },
-    { key: 'Extra Service Charge', value: '+$0.00' },
-    { key: 'Other Charges', value: '+$0.00' },
-    { key: 'Cancellation Fee', value: '+$0.00' },
-    { key: 'Total Amount', value: '= $1,771.00' },
-  ]
+  const [guestInfoData, setguestInfoData] = useState([]);
+  const [paymentSummaryData, setpaymentSummaryData] = useState([]);
+  const [paymentInfoData, setpaymentInfoData] = useState([]);
+
+  useEffect(() => {
+    setguestInfoData(data?.bookingDetails?.guestInfoData)
+    setpaymentSummaryData(data?.bookingDetails?.paymentSummaryData)
+    setpaymentInfoData(data?.bookingDetails?.paymentInfoData)
+  }, [data])
+
+  if (error) {
+    return <Typography variant="h6" color="error">Failed to load booking details. Please try again.</Typography>;
+  }
 
   const handleCheckoutOfUser = async () => {
     try {

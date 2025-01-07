@@ -1,11 +1,13 @@
 // assets
 import { DashboardOutlined } from '@ant-design/icons';
-import NightShelterOutlinedIcon from '@mui/icons-material/NightShelterOutlined';
+import NightShelterOutlined from '@mui/icons-material/NightShelterOutlined';
+import { ChromeOutlined } from '@ant-design/icons';
 
 // icons
 const icons = {
   DashboardOutlined,
-  NightShelterOutlinedIcon
+  ChromeOutlined,
+  NightShelterOutlined
 };
 
 // ==============================|| MENU ITEMS - DASHBOARD ||============================== //
@@ -60,7 +62,7 @@ const booking = {
       title: 'Manage Bookings',
       type: 'collapse',
       breadcrumbs: false,
-      icon: icons.NightShelterOutlinedIcon,
+      icon: icons.NightShelterOutlined,
       children: [
         {
           id: 'todaysBooked',
@@ -68,7 +70,7 @@ const booking = {
           type: 'item',
           url: '/todaysBooked',
           breadcrumbs: false,
-          icon: icons.NightShelterOutlinedIcon
+          icon: icons.ChromeOutlined
         },
         {
           id: 'todaysCheckIns',
@@ -76,7 +78,7 @@ const booking = {
           type: 'item',
           url: '/todaysCheckIns',
           breadcrumbs: false,
-          icon: icons.NightShelterOutlinedIcon
+          icon: icons.ChromeOutlined
         },
         {
           id: 'todaysCheckout',
@@ -84,7 +86,7 @@ const booking = {
           type: 'item',
           url: '/todaysCheckout',
           breadcrumbs: false,
-          icon: icons.NightShelterOutlinedIcon
+          icon: icons.ChromeOutlined
         },
         {
           id: 'activeBookings',
@@ -92,7 +94,7 @@ const booking = {
           type: 'item',
           url: '/activeBookings',
           breadcrumbs: false,
-          icon: icons.NightShelterOutlinedIcon
+          icon: icons.ChromeOutlined
         },
         {
           id: 'checkedOutBookings',
@@ -100,7 +102,7 @@ const booking = {
           type: 'item',
           url: '/checkedOutBookings',
           breadcrumbs: false,
-          icon: icons.NightShelterOutlinedIcon
+          icon: icons.ChromeOutlined
         },
         {
           id: 'canceledBookings',
@@ -108,7 +110,7 @@ const booking = {
           type: 'item',
           url: '/canceledBookings',
           breadcrumbs: false,
-          icon: icons.NightShelterOutlinedIcon
+          icon: icons.ChromeOutlined
         },
         {
           id: 'refundableBookings',
@@ -116,7 +118,7 @@ const booking = {
           type: 'item',
           url: '/refundableBookings',
           breadcrumbs: false,
-          icon: icons.NightShelterOutlinedIcon
+          icon: icons.ChromeOutlined
         },
         {
           id: 'delayedCheckoutBooking',
@@ -124,7 +126,7 @@ const booking = {
           type: 'item',
           url: '/delayedCheckoutBooking',
           breadcrumbs: false,
-          icon: icons.NightShelterOutlinedIcon
+          icon: icons.ChromeOutlined
         },
         {
           id: 'allBookings',
@@ -132,7 +134,7 @@ const booking = {
           type: 'item',
           url: '/allBookings',
           breadcrumbs: false,
-          icon: icons.NightShelterOutlinedIcon
+          icon: icons.ChromeOutlined
         },
       ],
     },
@@ -141,7 +143,7 @@ const booking = {
       title: 'Premium Services',
       type: 'collapse',
       breadcrumbs: false,
-      icon: icons.NightShelterOutlinedIcon,
+      icon: icons.NightShelterOutlined,
       children: [
         {
           id: 'addService',
@@ -149,7 +151,7 @@ const booking = {
           type: 'item',
           url: '/addService',
           breadcrumbs: false,
-          icon: icons.NightShelterOutlinedIcon
+          icon: icons.ChromeOutlined
         },
         {
           id: 'addedServices',
@@ -157,7 +159,7 @@ const booking = {
           type: 'item',
           url: '/addedServices',
           breadcrumbs: false,
-          icon: icons.NightShelterOutlinedIcon
+          icon: icons.ChromeOutlined
         },
       ],
     },
@@ -166,7 +168,7 @@ const booking = {
       title: 'Online Payments',
       type: 'collapse',
       breadcrumbs: false,
-      icon: icons.NightShelterOutlinedIcon,
+      icon: icons.NightShelterOutlined,
       children: [
         {
           id: 'pendingPayments',
@@ -174,7 +176,7 @@ const booking = {
           type: 'item',
           url: '/pendingPayments',
           breadcrumbs: false,
-          icon: icons.NightShelterOutlinedIcon
+          icon: icons.ChromeOutlined
         },
         {
           id: 'approvedPayments',
@@ -182,7 +184,7 @@ const booking = {
           type: 'item',
           url: '/approvedPayments',
           breadcrumbs: false,
-          icon: icons.NightShelterOutlinedIcon
+          icon: icons.ChromeOutlined
         },
         {
           id: 'successfullPayments',
@@ -190,7 +192,7 @@ const booking = {
           type: 'item',
           url: '/successfullPayments',
           breadcrumbs: false,
-          icon: icons.NightShelterOutlinedIcon
+          icon: icons.ChromeOutlined
         },
         {
           id: 'rejectedPayments',
@@ -198,7 +200,7 @@ const booking = {
           type: 'item',
           url: '/rejectedPayments',
           breadcrumbs: false,
-          icon: icons.NightShelterOutlinedIcon
+          icon: icons.ChromeOutlined
         },
         {
           id: 'failedPayments',
@@ -206,7 +208,7 @@ const booking = {
           type: 'item',
           url: '/failedPayments',
           breadcrumbs: false,
-          icon: icons.NightShelterOutlinedIcon
+          icon: icons.ChromeOutlined
         },
         {
           id: 'allPayments',
@@ -214,7 +216,7 @@ const booking = {
           type: 'item',
           url: '/allPayments',
           breadcrumbs: false,
-          icon: icons.NightShelterOutlinedIcon
+          icon: icons.ChromeOutlined
         },
       ],
     },

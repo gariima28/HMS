@@ -42,16 +42,49 @@ import PremiumServicesInBookings from 'pages/booking/PremiumServicesInBookings';
 import PaymentInBookings from 'pages/booking/PaymentInBookings';
 import BookedRoomInBookings from 'pages/booking/BookedRoomInBookings';
 
+
+
+// Saqib Pages
+import AllStaff from 'pages/extra-pages/allStaff';
+import Roles from 'pages/extra-pages/roles';
+import AddRolesPage from 'pages/extra-pages/addRolesPage';
+import EditRolesPage from 'pages/extra-pages/editRolesPage';
+import ActiveGuest from 'pages/extra-pages/activeGuest';
+import GuestDetails from 'pages/extra-pages/guestDetails';
+import BannedGuest from 'pages/extra-pages/bannedguest';
+import EmailUnverified from 'pages/extra-pages/emailUnverified';
+import EmailVerDetails from 'pages/extra-pages/emailVerDetails';
+import MobileVerified from 'pages/extra-pages/mobileUnverified';
+import AllGuest from 'pages/extra-pages/allGuest';
+import SendNotification from 'pages/extra-pages/sendNotification';
+import SubscriberPage from 'pages/extra-pages/subscriberPage';
+import Subscriber from 'pages/extra-pages/subscriber';
+import PendingTicket from 'pages/extra-pages/pendingTicket';
+import ClosedTicket from 'pages/extra-pages/closedTicket';
+import AnswerTicket from 'pages/extra-pages/answerTicket';
+import BookingAction from 'pages/extra-pages/bookingAction';
+import ReceivedPayment from 'pages/extra-pages/receivedPayment';
+import ReturnPayment from 'pages/extra-pages/returnPayment';
+import LoginHistory from 'pages/extra-pages/loginHistory';
+import NotificationHistory from 'pages/extra-pages/notificationHistory';
+import ExtraApplication from 'pages/extra-pages/extraApplication';
+import ReplyTicket from 'pages/extra-pages/replyTicket';
+import ExtraServer from 'pages/extra-pages/extraServer';
+import ExtraCache from 'pages/extra-pages/extraCache';
+import ReportRequest from 'pages/extra-pages/reportRequest';
+import ExtraUpdate from 'pages/extra-pages/extraUpdate';
+import SystemSetting from 'pages/extra-pages/systemSetting';
+import GeneralSettingPage from 'pages/extra-pages/generalSettinngPage';
+import SystemSettinglogoFavicon from 'pages/extra-pages/systemSettingLogoFavi';
+import SentMail from 'pages/extra-pages/sentMail';
+import AllTicket from 'pages/extra-pages/allTicket';
+
+
 const Color = Loadable(lazy(() => import('pages/component-overview/color')));
 const Typography = Loadable(lazy(() => import('pages/component-overview/typography')));
 const Shadow = Loadable(lazy(() => import('pages/component-overview/shadows')));
 const DashboardDefault = Loadable(lazy(() => import('pages/dashboard/index')));
 
-// render - sample page
-const SamplePage = Loadable(lazy(() => import('pages/extra-pages/sample-page')));
-const SamplePage1 = Loadable(lazy(() => import('pages/extra-pages/sample-page1')));
-const SamplePage2 = Loadable(lazy(() => import('pages/extra-pages/sample-page2')));
-const SamplePage3 = Loadable(lazy(() => import('pages/extra-pages/sample-page3')));
 
 // ==============================|| MAIN ROUTING ||============================== //
 
@@ -222,6 +255,142 @@ const MainRoutes = {
     {
       path: '/*',
       element: <NoPageFound />
+    },
+
+
+    // Saqib
+    {
+      path: 'allstaff',
+      element: <AllStaff />
+    },
+    {
+      path: 'roles',
+      element: <Roles />
+    },
+    {
+      path: 'addrolespage',
+      element: <AddRolesPage />
+    },
+    {
+      path: 'editrolespage/:id',
+      element: <EditRolesPage />
+    },
+    {
+      path: 'activeguest',
+      element: <ActiveGuest />
+    },
+    {
+      path: 'guestdetails/:id',
+      element: <GuestDetails />
+    },
+    {
+      path: 'bannedguest',
+      element: <BannedGuest />
+    },
+    {
+      path: 'emailunverified',
+      element: <EmailUnverified />
+    },
+    {
+      path: 'emailverdetails',
+      element: <EmailVerDetails />
+    },
+    {
+      path: 'mobileverified',
+      element: <MobileVerified />
+    },
+    {
+      path: 'allguest',
+      element: <AllGuest />
+    },
+    {
+      path: 'sendnotification',
+      element: <SendNotification />
+    },
+    {
+      path: 'subscriber',
+      element: <Subscriber />
+    },
+    {
+      path: 'subscriberPage',
+      element: <SubscriberPage />
+    },
+    {
+      path: 'pendingticket',
+      element: <PendingTicket />
+    },
+    {
+      path: 'closedticket',
+      element: <ClosedTicket />
+    },
+    {
+      path: 'answertickets',
+      element: <AnswerTicket />
+    },
+    {
+      path: 'allticket',
+      element: <AllTicket />
+    },
+    {
+      path: 'bookingaction',
+      element: <BookingAction />
+    },
+    {
+      path: 'receivedpayment',
+      element: <ReceivedPayment />
+    },
+    {
+      path: 'returnpayment',
+      element: <ReturnPayment />
+    },
+    {
+      path: 'loginhistory',
+      element: <LoginHistory />
+    },
+    {
+      path: 'notificationhistory',
+      element: <NotificationHistory />
+    },
+    {
+      path: 'extraapplication',
+      element: <ExtraApplication />
+    },
+    {
+      path: 'extraserver',
+      element: <ExtraServer />
+    },
+    {
+      path: 'extracache',
+      element: <ExtraCache />
+    },
+    {
+      path: 'reportrequest',
+      element: <ReportRequest />
+    },
+    {
+      path: 'extraupdate',
+      element: <ExtraUpdate />
+    },
+    {
+      path: 'sysytemsetting',
+      element: <SystemSetting />
+    },
+    {
+      path: 'generalsettingPage',
+      element: <GeneralSettingPage />
+    },
+    {
+      path: 'systemsettinglogofavicon',
+      element: <SystemSettinglogoFavicon />
+    },
+    {
+      path: 'sentMail',
+      element: <SentMail />
+    },
+    {
+      // path: 'replyticket/:id',
+      path: 'replyticket/:id',
+      element: <ReplyTicket />
     }
   ]
 };

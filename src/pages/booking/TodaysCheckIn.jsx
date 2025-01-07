@@ -205,7 +205,7 @@ const TodaysCheckIn = () => {
           </Stack>
         </Grid>
       </Grid>
-      <Grid container spacing={1} sx={{ backgroundColor: '#ffffff', p: 1, mb: 4 }}>
+      {/* <Grid container spacing={1} sx={{ backgroundColor: '#ffffff', p: 1, mb: 4 }}>
         <Grid xs={12} sm={6} md={6} lg={3} >
           <Stack spacing={1}>
             <InputLabel htmlFor="Keywords">Keywords</InputLabel>
@@ -225,8 +225,6 @@ const TodaysCheckIn = () => {
             <InputLabel htmlFor="subTitle">Checkout </InputLabel>
             <LocalizationProvider dateAdapter={AdapterDayjs}>
               <DatePicker />
-              {/* <DemoContainer components={['DatePicker']}>
-              </DemoContainer> */}
             </LocalizationProvider>
           </Stack>
         </Grid>
@@ -235,7 +233,7 @@ const TodaysCheckIn = () => {
             <FilterAltIcon sx={{ color: '#fff' }} /> &nbsp; Search
           </CustomButton>
         </Grid>
-      </Grid>
+      </Grid> */}
       <DynamicDataTable columns={columns} rows={rows} />
     </Box>
   );

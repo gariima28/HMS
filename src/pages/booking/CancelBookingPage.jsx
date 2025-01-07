@@ -43,12 +43,9 @@ const columns = [
   { id: 'sno', label: 'S.No', minWidth: 100 },
   { id: 'roomNo', label: 'Room Number', minWidth: 120 },
   { id: 'roomType', label: 'Room Type', minWidth: 120 },
-  { id: 'roomNo', label: 'Date', minWidth: 100 },
-  { id: 'service', label: 'Service', minWidth: 100 },
-  { id: 'quantity', label: 'Quantity', minWidth: 100 },
-  { id: 'cost', label: 'Cost', minWidth: 100 },
-  { id: 'total', label: 'Total', minWidth: 100 },
-  { id: 'addedBy', label: 'Added By', minWidth: 100 },
+  { id: 'fare', label: 'Fare', minWidth: 100 },
+  { id: 'cancelationFee', label: 'Cancellation Fee', minWidth: 100 },
+  { id: 'refundable', label: 'Refundable', minWidth: 100 },
   // { id: 'action', label: 'Action', minWidth: 100, align: 'center' },
 ];
 
@@ -84,26 +81,26 @@ const CancelBookingPage = () => {
   useEffect(() => {
     if (data) {
       // setMsgToaster(data?.message)
-      console.log(data?.booking, 'data');
-      // const transformedRows = data.booking.map((booking, index) => ({
-      //   ...booking,
-      //   sno: index + 1,
-      //   cost: booking.cost ?? '-',
-      //   total: booking.total ?? '-',
-      //   addedBy: booking.addedBy ?? '-',
-      //   quantity: booking.quantity[0] ?? '-',
-      //   service: booking.premiumServiceList ?? '-',
-      //   status: <CustomButton variant="outlined" status={`${booking.status ? 'enable' : 'disable'}`}> {booking.status ? 'Enabled' : 'Disabled'} </CustomButton>,
-      //   // action: (
-      //   //   <Stack justifyContent='end' spacing={2} direction="row">
-      //   //     <Stack justifyContent='end' spacing={2} direction="row">
-      //   //       <Button variant="outlined" size="small" startIcon={<Edit />} onClick={() => handleDialogState('Update New BedTypes', 'Update', BedType.bedTypeId)}>Edit</Button>
-      //   //       <Button variant="outlined" size="small" startIcon={<DeleteOutline />} color="error" onClick={() => handleDeleteButton(BedType?.bedTypeId)}>Delete</Button>
-      //   //     </Stack>
-      //   //   </Stack>
-      //   // ),
-      // }));
-      // setRows(transformedRows);
+    console.log(data?.booking, 'data');
+    // const transformedRows = data.booking.map((booking, index) => ({
+    //   ...booking,
+    //   sno: index + 1,
+    //   cost: booking.cost ?? '-',
+    //   total: booking.total ?? '-',
+    //   addedBy: booking.addedBy ?? '-',
+    //   quantity: booking.quantity[0] ?? '-',
+    //   service: booking.premiumServiceList ?? '-',
+    //   status: <CustomButton variant="outlined" status={`${booking.status ? 'enable' : 'disable'}`}> {booking.status ? 'Enabled' : 'Disabled'} </CustomButton>,
+    //   // action: (
+    //   //   <Stack justifyContent='end' spacing={2} direction="row">
+    //   //     <Stack justifyContent='end' spacing={2} direction="row">
+    //   //       <Button variant="outlined" size="small" startIcon={<Edit />} onClick={() => handleDialogState('Update New BedTypes', 'Update', BedType.bedTypeId)}>Edit</Button>
+    //   //       <Button variant="outlined" size="small" startIcon={<DeleteOutline />} color="error" onClick={() => handleDeleteButton(BedType?.bedTypeId)}>Delete</Button>
+    //   //     </Stack>
+    //   //   </Stack>
+    //   // ),
+    // }));
+    // setRows(transformedRows);
     }
   }, [data]);
 
@@ -150,9 +147,7 @@ const CancelBookingPage = () => {
                 <TableCell>{data?.booking?.roomNo}</TableCell>
                 <TableCell>{data?.booking?.roomNo}</TableCell>
                 <TableCell>{data?.booking?.roomNo}</TableCell>
-                <TableCell>{data?.booking?.roomNo}</TableCell>
-                <TableCell>{data?.booking?.roomNo}</TableCell>
-                <TableCell>{data?.booking?.roomNo}</TableCell>
+                <TableCell>{data?.booking?.refundable ? data?.booking?.refundable : 0}</TableCell>
               </TableRow>
               {/* {rows.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
                 .map((row, index) => (
