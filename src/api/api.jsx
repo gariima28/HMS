@@ -3,7 +3,7 @@ const token = `Bearer ${localStorage.getItem('token')}`;
 const forgetToken = `Bearer ${localStorage.getItem('forgetToken')}`;
 
 const LocalGirjesh = 'http://192.168.20.109:5001'
-const ServerIP = 'http://89.116.122.211:5001'
+const ServerIP = 'https://www.auth.edu2all.in/hms/'
 
 // ******************************************************************************************************
 //  Login  //
@@ -94,7 +94,7 @@ export const updateHotelApi = async (id, data) => {
 export const getAvailableRoomApi = async (roomType, noOfRooms, checkInDate, checkOutDate) => { //
     axios.defaults.headers.common["Authorization"] = token;
     // var res = await axios.get(`${ServerIP}/booking/availRoom`, data);
-    var res = await axios.get(`${LocalGirjesh}/booking/availRoomByRoomType?roomTypeId=${roomType}&totalRoom=${noOfRooms}&checkInDate=${checkInDate}&checkOutDate=${checkOutDate}`);
+    var res = await axios.get(`${ServerIP}/booking/availRoomByRoomType?roomTypeId=${roomType}&totalRoom=${noOfRooms}&checkInDate=${checkInDate}&checkOutDate=${checkOutDate}`);
     if (res) {
         return res;
     } else {
