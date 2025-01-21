@@ -8,6 +8,7 @@ import { styled } from '@mui/material/styles';
 import DialogModal from 'components/DialogModal';
 import useSWR, { mutate } from 'swr';
 import axios from 'axios';
+import HashLoader from 'components/HashLoader';
 import { addRoomApi, allRoomTypesApi, getRoomDataByIdApi, updateRoomApi } from 'api/api';
 
 const ServerIP = 'http://89.116.122.211:5001';
@@ -51,6 +52,8 @@ const Room = () => {
   const [roomId, setRoomId] = useState();
 
   const [snackbar, setSnackbar] = useState({ open: false, message: '', severity: '' });
+
+  const [showLoader, setShowLoader] = useState(false);
 
   // Add Room State Function
   const [formDataa, setFormDataa] = useState({
@@ -149,7 +152,10 @@ const Room = () => {
   ];
 
   // SWR for fetching room data
-  const { data, error } = useSWR(`${ServerIP}/room/getAll`, fetcher);
+  const { data, error } = useSWR(`${ServerIP}/room/getAll`, fetcher, {
+    onLoadingSlow: () => setShowLoader(true),
+    onSuccess: () => setShowLoader(false),
+  });
 
   // Function to refresh the data
   const refreshData = () => {
@@ -188,6 +194,7 @@ const Room = () => {
   // useEffect to handle data fetching and transformation
   useEffect(() => {
     if (data) {
+      setShowLoader(true)
       const transformedRows = data.room.map((room) => ({
         ...room,
         roomNumber: room.roomNo,
@@ -224,7 +231,11 @@ const Room = () => {
           </Stack>
         ),
       }));
-      setRows(transformedRows);
+
+      setTimeout(() => {
+        setShowLoader(false)
+        setRows(transformedRows);
+      }, 1000);
     }
   }, [data]);
 
@@ -357,7 +368,7 @@ const Room = () => {
 
   return (
     <Box>
-      {/* Heading */}
+      {showLoader && <HashLoader />}
       <Grid sx={{ display: 'flex', mb: 3 }}>
         <Grid alignContent="center" sx={{ flexGrow: 1 }}>
           <Typography variant="h5">All Rooms</Typography>

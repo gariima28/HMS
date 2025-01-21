@@ -10,6 +10,8 @@ import { Link } from 'react-router-dom';
 import { updateHotelApi } from 'api/api';
 import { Snackbar, Alert } from '@mui/material';
 
+import HashLoader from 'components/HashLoader';
+
 const ServerIP = 'http://89.116.122.211:5001'
 const token = `Bearer ${localStorage.getItem('token')}`;
 
@@ -44,9 +46,13 @@ const fetcher = (url) => axios.get(url, { headers: { Authorization: token } }).t
 const HotelDetails = () => {
 
   const [rows, setRows] = useState([]);
-  const { data, error } = useSWR(`${ServerIP}/hotel/getAllHotels`, fetcher);
+  const [showLoader, setShowLoader] = useState(false);
   const [snackbar, setSnackbar] = useState({ open: false, message: '', severity: '' });
 
+  const { data, error, isValidating } = useSWR(`${ServerIP}/hotel/getAllHotels`, fetcher, {
+    onLoadingSlow: () => setShowLoader(true),
+    onSuccess: () => setShowLoader(false),
+  });
 
   const handleCloseSnackbar = () => {
     setSnackbar((prev) => ({ ...prev, open: false }));
@@ -54,7 +60,7 @@ const HotelDetails = () => {
 
   useEffect(() => {
     if (data) {
-      console.log(data, 'data');
+      setShowLoader(true)
       const transformedRows = data.map((hotels) => ({
         ...hotels,
         status: <CustomButton variant="outlined" status={`${hotels.status? 'enable' : 'disable'}`}> {hotels.status ? 'Active' : 'InActive'} </CustomButton>,
@@ -65,7 +71,10 @@ const HotelDetails = () => {
           </Stack>
         ),
       }));
-      setRows(transformedRows);
+      setTimeout(() => {
+        setShowLoader(false)
+        setRows(transformedRows);
+      }, 1000);
     }
   }, [data]);
 
@@ -75,6 +84,7 @@ const HotelDetails = () => {
 
 
   const handleDisableHotel = async (hotelId, status) => {
+    setShowLoader(true)
     console.log('start')
     try {
       console.log('try')
@@ -98,6 +108,9 @@ const HotelDetails = () => {
       setSnackbar({ open: true, message: error.message || 'Error occurred', severity: 'error' });
       console.error(error);
     } finally {
+      setTimeout(() => {
+        setShowLoader(false)
+      }, 1000);
       console.log('finally')
     }
   };
@@ -105,11 +118,12 @@ const HotelDetails = () => {
 
 
   if (error) return <Typography variant="subtitle1">Error loading data</Typography>;
-  if (!data) return <Typography variant="subtitle1">Speed is slow from Backend &nbsp; : - &nbsp; Loading Data...</Typography>;
+  if (!data) return <Typography variant="subtitle1"><HashLoader /></Typography>;
 
 
   return (
     <Box>
+      {showLoader && <HashLoader />}
       <DynamicDataTable columns={columns} rows={rows} />
 
       {/* SnackBar */}

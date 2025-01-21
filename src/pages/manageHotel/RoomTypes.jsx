@@ -9,6 +9,7 @@ import { useEffect, useState } from 'react';
 import DialogModal from 'components/DialogModal';
 import useSWR, { mutate } from "swr";
 import axios from 'axios';
+import HashLoader from 'components/HashLoader';
 import { addRoomTypesApi, getRoomTypesDataByIdApi, updateRoomTypesApi } from 'api/api';
 // import { useForm } from 'react-hook-form';
 
@@ -77,6 +78,8 @@ const RoomTypes = () => {
   const [msgToaster, setMsgToaster] = useState('');
   const [toaterErrorSuccessState, setToaterErrorSuccessState] = useState('success');
 
+  const [showLoader, setShowLoader] = useState(false);
+  
   // Add RoomTypes State Function
   const [formDataa, setFormDataa] = useState({
     roomTypesName: '',
@@ -140,7 +143,10 @@ const RoomTypes = () => {
     ];
 
   // get API
-  const { data, error } = useSWR(`${ServerIP}/roomTypes/getAll`, fetcher);
+  const { data, error } = useSWR(`${ServerIP}/roomTypes/getAll`, fetcher, {
+    onLoadingSlow: () => setShowLoader(true),
+    onSuccess: () => setShowLoader(false),
+  });
 
   // Function to refresh the data
   const refreshData = () => {
@@ -178,6 +184,7 @@ const RoomTypes = () => {
   // useEffect
   useEffect(() => {
     if (data) {
+      setShowLoader(true)
       setMsgToaster(data?.message)
       console.log(data?.roomTypes, 'data');
       const transformedRows = data.roomTypes.map((roomType) => ({
@@ -191,7 +198,11 @@ const RoomTypes = () => {
           </Stack>
         ),
       }));
-      setRows(transformedRows);
+
+      setTimeout(() => {
+        setShowLoader(false)
+        setRows(transformedRows);
+      }, 1000);
     }
     if (msgToaster) {
       handleOpeningToasterState();
@@ -203,7 +214,7 @@ const RoomTypes = () => {
 
   return (
     <Box>
-      {/* Heading */}
+      {showLoader && <HashLoader />}
       <Grid sx={{ display: 'flex', mb: 3 }}>
         <Grid alignContent='center' sx={{ flexGrow: 1 }}>
           <Typography variant="h5">All RoomTypes</Typography>

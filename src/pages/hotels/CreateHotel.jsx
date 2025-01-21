@@ -6,15 +6,17 @@ import { useNavigate, useParams } from 'react-router';
 import { createHotelApi, getHotelByIdApi, updateHotelApi } from 'api/api';
 import { useForm } from 'react-hook-form';
 import { Snackbar, Alert } from '@mui/material';
+import HashLoader from 'components/HashLoader';
 
 const CreateHotel = () => {
 
   const {id}= useParams();
   
   const navigate = useNavigate();
+  const [showLoader, setShowLoader] = React.useState(false);
   const [snackbar, setSnackbar] = React.useState({ open: false, message: '', severity: '' });
   
-  const { register , handleSubmit , formState: {errors} , setValue, trigger, watch } = useForm({
+  const { register, handleSubmit, formState: { errors }, setValue, trigger, watch, reset } = useForm({
     mode: 'onChange',
     reValidateMode: 'onChange', 
   });
@@ -26,6 +28,9 @@ const CreateHotel = () => {
   React.useEffect(() => {
     if(id !== 'add'){
     getHotelById();
+    }
+    if(id === 'add'){
+      reset()
     }
   }, [id])
   
@@ -43,20 +48,24 @@ const CreateHotel = () => {
   // Get Amenities data by id
   const getHotelById = async () => {
     try {
+      setShowLoader(true)
       var response = await getHotelByIdApi(id);
       console.log(response, 'get by id')
       if (response?.status === 200) {
-        setValue('hotelName', response?.data?.hotelName);
-        setValue('subTitle', response?.data?.subTitle);
-        setValue('destination', response?.data?.destination);
-        setValue('status', response?.data?.status);
-        setValue('hotelClass', response?.data?.hotelClass);
-        setValue('phoneNo', response?.data?.phoneNo);
-        setValue('address', response?.data?.address);
-        setValue('hotelEmail', response?.data?.hotelEmail);
-        setValue('description', response?.data?.description);
-        setValue('hotelId', response?.data?.stHotelId?.split('-')[0] || '');
-        setValue('hotelImage', response?.data?.hotelImageUrl);
+        setTimeout(() => {
+          setValue('hotelName', response?.data?.hotelName);
+          setValue('subTitle', response?.data?.subTitle);
+          setValue('destination', response?.data?.destination);
+          setValue('status', response?.data?.status);
+          setValue('hotelClass', response?.data?.hotelClass);
+          setValue('phoneNo', response?.data?.phoneNo);
+          setValue('address', response?.data?.address);
+          setValue('hotelEmail', response?.data?.hotelEmail);
+          setValue('description', response?.data?.description);
+          setValue('hotelId', response?.data?.stHotelId?.split('-')[0] || '');
+          setValue('hotelImage', response?.data?.hotelImageUrl);
+          setShowLoader(false)
+        }, 1000);
       }
       else {
         console.log(response?.data?.message);
@@ -66,12 +75,16 @@ const CreateHotel = () => {
       console.log('catch')
     }
     finally {
+      setTimeout(() => {
+        setShowLoader(false)
+      }, 1500);
       console.log('finally')
     }
   }
 
   
   const onSubmit = async (data) => {
+    setShowLoader(true)
     console.log('start')
     try {
       console.log('try')
@@ -113,12 +126,25 @@ const CreateHotel = () => {
       setSnackbar({ open: true, message: error.message || 'Error occurred', severity: 'error' });
       console.error(error);
     } finally {
+      setTimeout(() => {
+        setShowLoader(false)
+      }, 1500);
       console.log('finally')
     }
   };
 
+  const handleCancelButton = () => {
+    if (id === 'add'){
+      reset();
+    }
+    else{
+      navigate('/hotels')
+    }
+  }
+
   return (
     <Box sx={{ flexGrow: 1 }}>
+      {showLoader && <HashLoader />}
       <form onSubmit={handleSubmit(onSubmit)}>
         <Grid container spacing={3}>
           <Grid  xs={12} sm={6} md={6} lg={4} >
@@ -143,17 +169,16 @@ const CreateHotel = () => {
             </Stack>
             <FormHelperText error id="standard-weight-helper-text-destination">{errors.destination?.message}</FormHelperText>
           </Grid>
-          <Grid  xs={12} sm={6} md={6} lg={4} >
+          <Grid xs={12} sm={6} md={6} lg={4}>
             <Stack spacing={1}>
               <InputLabel htmlFor="status">Status</InputLabel>
-              <Select {...register("status", { required: 'This Field is required', validate: (value) => value === 'true' || value === 'false' || 'Invalid status value', })} onChange={handleChange} fullWidth displayEmpty error={Boolean(errors.status)} value={hotelStatus ?? ''} >
+              <Select {...register("status", { required: 'This Field is required', validate: (value) => typeof value === 'boolean' || 'Invalid status value', })} onChange={(e) => { setValue("status", e.target.value === 'true'); trigger("status"); }} fullWidth displayEmpty error={Boolean(errors.status)} value={hotelStatus !== undefined ? String(hotelStatus) : ''} >
                 <MenuItem value='' disabled>Select Status</MenuItem>
-                <MenuItem value='true'>Active</MenuItem>
-                <MenuItem value='false'>Inactive</MenuItem>
+                <MenuItem value="true">Active</MenuItem>
+                <MenuItem value="false">Inactive</MenuItem>
               </Select>
-
             </Stack>
-            <FormHelperText error id="standard-weight-helper-text-status">{errors.status?.message}</FormHelperText>
+            <FormHelperText error id="standard-weight-helper-text-status"> {errors.status?.message} </FormHelperText>
           </Grid>
           <Grid  xs={12} sm={6} md={6} lg={4} >
             <Stack spacing={1}>
@@ -193,7 +218,7 @@ const CreateHotel = () => {
           <Grid  xs={12} sm={6} md={6} lg={4} >
             <Stack spacing={1}>
               <InputLabel htmlFor="hotelId">Hotel Id (Prefix)</InputLabel>
-              <OutlinedInput id="hotelId" type="text" {...register("hotelId" , {required : 'This Field is required' , minLength : { value:3 , message: 'Minimum Length is 3' } , pattern: /[A-Z]{3}/})} placeholder="Enter Hotel Id" fullWidth error={Boolean(errors.hotelId)} />
+              <OutlinedInput id="hotelId" type="text" {...register("hotelId", { required: 'This Field is required', minLength: { value: 3, message: 'Minimum Length is 3' }, pattern: { value: /^[A-Z]{3,6}$/, message: 'Must be between 3 to 6 uppercase letters', } })} placeholder="Enter Hotel Id" fullWidth error={Boolean(errors.hotelId)} />
             </Stack>
             <FormHelperText error id="standard-weight-helper-text-hotelId">{errors.hotelId?.message}</FormHelperText>
           </Grid>
@@ -205,7 +230,7 @@ const CreateHotel = () => {
             <FormHelperText error id="standard-weight-helper-text-hotelImage">{errors.hotelImage?.message}</FormHelperText>
           </Grid>
         </Grid>
-       {!id &&(
+       {id ==='add' &&(
         <>
             <Grid sx={{ mt: 4, mb: 4 }} >
               <Typography variant="h5">Admin Details</Typography>
@@ -245,9 +270,9 @@ const CreateHotel = () => {
 
         <Grid xs={12} gap={2}>
           <Button size="sm" type="submit" variant="contained" color="primary">
-            {id ? 'Update' : 'Create'}
+            {id === 'add' ? 'Create' : 'Update'}
           </Button>
-          <Button size="sm" variant="outlined" sx={{ m: 2 }}>Cancel</Button>
+          <Button size="sm" variant="outlined" sx={{ m: 2 }} onClick={()=> handleCancelButton()}>Cancel</Button>
         </Grid>
       </form>
 

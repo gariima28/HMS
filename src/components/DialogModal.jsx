@@ -1,8 +1,9 @@
-import { Button, Dialog, DialogActions, DialogContent, DialogTitle, IconButton, InputLabel, MenuItem, OutlinedInput, Select, Divider } from '@mui/material';
+import { Button, Dialog, DialogContent, DialogTitle, IconButton, InputLabel, MenuItem, OutlinedInput, Select, Divider, FormHelperText } from '@mui/material';
 import CloseIcon from '@mui/icons-material/Close';
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import Grid from '@mui/material/Unstable_Grid2/Grid2';
 import { styled } from '@mui/material/styles';
+import { useForm } from 'react-hook-form';
 
 const SaveButton = styled(Button)(() => ({
     borderRadius: '5px',
@@ -12,117 +13,155 @@ const SaveButton = styled(Button)(() => ({
     padding: '8px',
     fontSize: '0.875rem',
     textTransform: 'none',
-
     '&:hover': {
         backgroundColor: '#1801FF',
         borderColor: '#1801FF',
-        color: '#fff'
+        color: '#fff',
     },
 }));
 
-const DialogModal = ({
-    handleClosingDialogState,
-    modalOpen,
-    title,
-    buttonName,
-    InputFields,
-    onSubmit
-}) => {
-    const [fileState, setFileState] = useState(true);
-    const Items = InputFields;
+const DialogModal = ({ handleClosingDialogState, modalOpen, title, buttonName, InputFields, onSubmit, reset, updateFormDataa }) => {
+
+    const { register, handleSubmit, formState: { errors }, setValue, trigger } = useForm();
+    const [imageType, setImageType] = useState(false)
+
+    const handleFileChange = (e, id) => {
+        const file = e.target.files[0];
+        if (file) {
+            setValue(id, [file]);
+            trigger(id);
+        }
+    };
+
+    // Update form fields when updateFormDataa changes
+    useEffect(() => {
+        if (modalOpen && updateFormDataa) {
+            Object.keys(updateFormDataa).forEach((key) => {
+                setValue(key, updateFormDataa[key]);
+            });
+        }
+    }, [modalOpen, updateFormDataa, setValue]);
+
+
+    const handleDialogClose = () => {
+        handleClosingDialogState();
+    };
+
 
     return (
-        <Dialog
-            onClose={handleClosingDialogState}
-            aria-labelledby="dialogModal"
-            open={modalOpen}
-            maxWidth="xs"
-            fullWidth
-        >
-            <DialogTitle
-                sx={{ m: 0, p: 2, typography: 'h6' }}
-                id="dialogModal"
-            >
+        <Dialog onClose={handleDialogClose} aria-labelledby="dialogModal" open={modalOpen} maxWidth="xs" fullWidth>
+            <DialogTitle sx={{ m: 0, p: 2, typography: 'h6' }} id="dialogModal">
                 {title}
-                <IconButton
-                    aria-label="close"
-                    onClick={handleClosingDialogState}
-                    sx={(theme) => ({
-                        position: 'absolute',
-                        right: 8,
-                        top: 8,
-                        color: theme.palette.grey[500],
-                    })}
-                >
+                <IconButton aria-label="close" onClick={handleDialogClose} sx={(theme) => ({ position: 'absolute', right: 8, top: 8, color: theme.palette.grey[500] })} >
                     <CloseIcon />
                 </IconButton>
             </DialogTitle>
             <Divider />
             <DialogContent>
-                <form>
+                <form onSubmit={handleSubmit(onSubmit)}>
                     <Grid container spacing={2}>
-                        {Items.map((itemData) => (
+                        {InputFields.map((itemData) => (
                             <Grid xs={12} sx={{ p: 1 }} key={itemData.id}>
                                 <InputLabel htmlFor={itemData.id} sx={{ mb: 1 }}>
                                     {itemData.fieldName}
                                 </InputLabel>
                                 {itemData?.field === 'textInput' ? (
-                                    <OutlinedInput
-                                        id={itemData.id}
-                                        type={itemData?.fieldType}
-                                        placeholder={itemData?.placeholder}
-                                        fullWidth
-                                        value={itemData?.value}
-                                        onChange={(e) => itemData.updateValFunc(e.target.value)}
-                                    />
+                                    <>
+                                        <OutlinedInput id={itemData.id} type={itemData?.fieldType} placeholder={itemData?.placeholder} fullWidth {...register(itemData.id, { required: itemData.validation?.required && `${itemData.fieldName} field is required`, pattern: { value: itemData.validation?.pattern || /.*/, message: itemData.validation?.patternMsg || '', }, })} error={Boolean(errors[itemData.id])} />
+                                        <FormHelperText error>
+                                            {errors[itemData.id]?.message}
+                                        </FormHelperText>
+                                    </>
                                 ) : itemData?.field === 'fileType' ? (
-                                    <OutlinedInput
-                                        id={itemData.id}
-                                        type="file"
-                                        inputProps={{
-                                            accept: itemData?.fileAccept || '*',
-                                        }}
-                                        fullWidth
-                                        onChange={(e) => {
-                                            const file = e.target.files[0];
-                                            itemData.updateValFunc(file);
-                                        }}
-                                    />
-                                    ) : itemData?.field === 'select' ? (
-                                            <Select
-                                                id={itemData.id}
-                                                fullWidth
-                                                displayEmpty
-                                                value={itemData?.value}
-                                                onChange={(e) => itemData.updateValFunc(e.target.value)}
-                                            >
-                                                <MenuItem value="" disabled>
-                                                    -- Select --
+                                        <>
+                                            {/* Check if there is an existing image */}
+                                            {buttonName === 'Update' ? (
+                                                <Grid display='flex' justifyContent='space-between' sx={{ border: '1px solid #D8D8D8', borderRadius: '4px'}}>
+                                                    {updateFormDataa.amenitiesIcon !== null && imageType ?
+                                                        <Grid sx={{py:0}} display='flex'>
+                                                            <img
+                                                                src={updateFormDataa.amenitiesIcon}
+                                                                alt="Amenity Icon"
+                                                                width='10%'
+                                                            />
+                                                        </Grid>
+                                                        :
+                                                        <OutlinedInput
+                                                            id={itemData.id}
+                                                            type="file"
+                                                            inputProps={{ accept: itemData.allowedTypes?.join(',') || '*' }}
+                                                            fullWidth
+                                                            onChange={(e) => handleFileChange(e, itemData.id)}
+                                                            error={Boolean(errors[itemData.id])}
+                                                            sx={{
+                                                                p: 0,
+                                                                '& .MuiOutlinedInput-notchedOutline': {
+                                                                    border: 'none',
+                                                                    boxShadow: 'none',
+                                                                },
+                                                                '&:hover .MuiOutlinedInput-notchedOutline': {
+                                                                    border: 'none',
+                                                                    boxShadow: 'none',
+                                                                },
+                                                                '&.Mui-focused .MuiOutlinedInput-notchedOutline': {
+                                                                    border: 'none',
+                                                                    boxShadow: 'none',
+                                                                },
+                                                                '&.MuiInputBase-root': {
+                                                                    border: 'none',
+                                                                    boxShadow: 'none',
+                                                                },
+                                                                '& .MuiOutlinedInput-input': {
+                                                                    px: 0,
+                                                                },
+                                                            }}
+                                                        />
+
+                                                    }
+                                                    <Button
+                                                        variant="outlined"
+                                                        onClick={() => setImageType(!imageType)}
+                                                        disabled={updateFormDataa.amenitiesIcon === null}
+                                                    >
+                                                        {imageType ? 'Edit' : 'View' }
+                                                    </Button>
+                                                </Grid>
+                                            ) : (
+                                                // Show file input if no image is set
+                                                <OutlinedInput
+                                                    id={itemData.id}
+                                                    type="file"
+                                                    inputProps={{ accept: itemData.allowedTypes?.join(',') || '*' }}
+                                                    fullWidth
+                                                    onChange={(e) => handleFileChange(e, itemData.id)}
+                                                    error={Boolean(errors[itemData.id])}
+                                                />
+                                            )}
+                                            <FormHelperText error>{errors[itemData.id]?.message}</FormHelperText>
+                                        </>
+                                ) : itemData?.field === 'select' ? (
+                                    <>
+                                                <Select id={itemData.id} fullWidth displayEmpty defaultValue="" {...register(itemData.id, { required: itemData.validation?.required && `${itemData.fieldName} field is required`, })} error={Boolean(errors[itemData.id])} >
+                                            <MenuItem value="" disabled> -- Select -- </MenuItem>
+                                            {(itemData?.fieldOptions || []).map((option) => (
+                                                <MenuItem key={option.optionId} value={option.optionValue}>
+                                                    {option.optionName}
                                                 </MenuItem>
-                                                {(itemData?.fieldOptions || []).map((option) => (
-                                                    <MenuItem key={option.optionId} value={option.optionValue}>
-                                                        {option.optionName}
-                                                    </MenuItem>
-                                                ))}
-                                            </Select>
+                                            ))}
+                                        </Select>
+                                        <FormHelperText error>
+                                            {errors[itemData.id]?.message}
+                                        </FormHelperText>
+                                    </>
                                 ) : null}
                             </Grid>
                         ))}
                     </Grid>
-                    <SaveButton
-                        variant="outlined"
-                        type="button"
-                        fullWidth
-                        sx={{ mt: 3 }}
-                        onClick={onSubmit}
-                    >
+                    <SaveButton variant="outlined" type="submit" fullWidth sx={{ mt: 3 }}>
                         {buttonName}
                     </SaveButton>
                 </form>
             </DialogContent>
-            <DialogActions sx={{ m: 0, p: 1 }}>
-                {/* You can add additional actions here if needed */}
-            </DialogActions>
         </Dialog>
     );
 };
@@ -130,6 +169,114 @@ const DialogModal = ({
 export default DialogModal;
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+// import { Button, Dialog, DialogContent, DialogTitle, IconButton, InputLabel, MenuItem, OutlinedInput, Select, Divider } from '@mui/material';
+// import CloseIcon from '@mui/icons-material/Close';
+// import React, { useState } from 'react';
+// import Grid from '@mui/material/Unstable_Grid2/Grid2';
+// import { styled } from '@mui/material/styles';
+
+// const SaveButton = styled(Button)(() => ({
+//     borderRadius: '5px',
+//     backgroundColor: '#4634FF',
+//     borderColor: '#4634FF',
+//     color: '#fff',
+//     padding: '8px',
+//     fontSize: '0.875rem',
+//     textTransform: 'none',
+
+//     '&:hover': {
+//         backgroundColor: '#1801FF',
+//         borderColor: '#1801FF',
+//         color: '#fff'
+//     },
+// }));
+
+// const DialogModal = ({
+//     handleClosingDialogState,
+//     modalOpen,
+//     title,
+//     buttonName,
+//     InputFields,
+//     onSubmit
+// }) => {
+//     const [fileState, setFileState] = useState(true);
+//     const Items = InputFields;
+
+//     return (
+//         <Dialog onClose={handleClosingDialogState} aria-labelledby="dialogModal" open={modalOpen} maxWidth="xs" fullWidth >
+//             <DialogTitle sx={{ m: 0, p: 2, typography: 'h6' }} id="dialogModal" >
+//                 {title}
+//                 <IconButton aria-label="close" onClick={handleClosingDialogState} sx={(theme) => ({ position: 'absolute', right: 8, top: 8, color: theme.palette.grey[500], })} >
+//                     <CloseIcon />
+//                 </IconButton>
+//             </DialogTitle>
+//             <Divider />
+//             <DialogContent>
+//                 <form>
+//                     <Grid container spacing={2}>
+//                         {Items.map((itemData) => (
+//                             <Grid xs={12} sx={{ p: 1 }} key={itemData.id}>
+//                                 <InputLabel htmlFor={itemData.id} sx={{ mb: 1 }}>
+//                                     {itemData.fieldName}
+//                                 </InputLabel>
+//                                 {itemData?.field === 'textInput' ? (
+//                                     <OutlinedInput id={itemData.id} type={itemData?.fieldType} placeholder={itemData?.placeholder} fullWidth value={itemData?.value} onChange={(e) => itemData.updateValFunc(e.target.value)} />
+//                                 ) : itemData?.field === 'fileType' ? (
+//                                     <OutlinedInput id={itemData.id} type="file" inputProps={{ accept: itemData?.fileAccept || '*', }} fullWidth onChange={(e) => { const file = e.target.files[0]; itemData.updateValFunc(file); }} />
+//                                     ) : itemData?.field === 'select' ? (
+//                                             <Select id={itemData.id} fullWidth displayEmpty value={itemData?.value} onChange={(e) => itemData.updateValFunc(e.target.value)} >
+//                                                 <MenuItem value="" disabled> -- Select -- </MenuItem>
+//                                                 {(itemData?.fieldOptions || []).map((option) => (
+//                                                     <MenuItem key={option.optionId} value={option.optionValue}>
+//                                                         {option.optionName}
+//                                                     </MenuItem>
+//                                                 ))}
+//                                             </Select>
+//                                 ) : null}
+//                             </Grid>
+//                         ))}
+//                     </Grid>
+//                     <SaveButton variant="outlined" type="button" fullWidth sx={{ mt: 3 }} onClick={onSubmit} >
+//                         {buttonName}
+//                     </SaveButton>
+//                 </form>
+//             </DialogContent>
+//         </Dialog>
+//     );
+// };
+
+// export default DialogModal;
+
+
+// <DialogActions sx={{ m: 0, p: 1 }}>
+//     {/* You can add additional actions here if needed */}
+// </DialogActions>
 
 
 

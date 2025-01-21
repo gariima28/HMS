@@ -8,6 +8,7 @@ import { styled } from '@mui/material/styles';
 import DialogModal from 'components/DialogModal';
 import useSWR, { mutate } from "swr";
 import axios from 'axios';
+import HashLoader from 'components/HashLoader';
 import { addFacilitiesApi, getFacilitiesDataByIdApi, updateFacilitiesApi } from 'api/api';
 
 const ServerIP = 'http://89.116.122.211:5001';
@@ -45,6 +46,8 @@ const Facilities = () => {
   const [facilitiesId, setFacilitiesId] = useState();
   const [snackbar, setSnackbar] = useState({ open: false, message: '', severity: '' });
 
+  const [showLoader, setShowLoader] = useState(false);
+
   const [formData, setFormData] = useState({
     facilityName: '',
     status: '',
@@ -77,7 +80,10 @@ const Facilities = () => {
     { id: 'facilityImage', field: 'fileType', fieldType: 'file', fieldName: 'Icon *', value: updateFormData.facilityImage, updateValFunc: (val) => setUpdateFormData({ ...updateFormData, facilityImage: val }) },
   ];
 
-  const { data, error } = useSWR(`${ServerIP}/facilities/getAll`, fetcher);
+  const { data, error } = useSWR(`${ServerIP}/facilities/getAll`, fetcher, {
+    onLoadingSlow: () => setShowLoader(true),
+    onSuccess: () => setShowLoader(false),
+  });
 
   const refreshData = () => {
     mutate(`${ServerIP}/facilities/getAll`);
@@ -98,6 +104,7 @@ const Facilities = () => {
 
   useEffect(() => {
     if (data) {
+      setShowLoader(true)
       const transformedRows = data.Facilities.map((facility) => ({
         ...facility,
         image: facility.icon ? facility.facilityImage.split('/').pop() : '-',
@@ -109,13 +116,22 @@ const Facilities = () => {
           </Stack>
         ),
       }));
-      setRows(transformedRows);
+
+      setTimeout(() => {
+        setShowLoader(false)
+        setRows(transformedRows);
+      }, 1000);
     }
   }, [data]);
+
   const AddNewFacility = async () => {
+    setShowLoader(true)
     // Validate that all fields are correctly populated
     if (!formData.facilityName || !formData.status || !formData.facilityImage) {
-      handleSnackbarMessage('Please fill in all fields before submitting.', 'error');
+      setTimeout(() => {
+        handleSnackbarMessage('Please fill in all fields before submitting.', 'error');
+        setShowLoader(false)
+      }, 1000);
       return;
     }
 
@@ -128,19 +144,33 @@ const Facilities = () => {
       const response = await addFacilitiesApi(formDataToSend);
 
       if (response.status === 200 && response?.data?.status === 'success') {
-        handleSnackbarMessage('Facility Added Successfully', 'success');
-        setModalOpen(false);
-        refreshData();
+        setTimeout(() => {
+          handleSnackbarMessage('Facility Added Successfully', 'success');
+          setModalOpen(false);
+          refreshData();
+          setShowLoader(false)
+        }, 1000); 
       } else {
-        handleSnackbarMessage(response?.data?.message || 'Error adding facility', 'error');
+        setTimeout(() => {
+          setShowLoader(false)
+          handleSnackbarMessage(response?.data?.message || 'Error adding facility', 'error');
+        }, 1000);
       }
     } catch (error) {
       console.error('Error adding facility:', error);
-      handleSnackbarMessage('Error adding facility', 'error');
+      setTimeout(() => {
+        setShowLoader(false)
+        handleSnackbarMessage('Error adding facility', 'error');
+      }, 1000);
+    } finally {
+      setTimeout(() => {
+        setShowLoader(false)
+      }, 1000);
     }
   };
 
   const getFacilitiesDataById = async (id) => {
+    setShowLoader(true)
     setFacilitiesId(id);
     try {
       const response = await getFacilitiesDataByIdApi(id);
@@ -154,27 +184,46 @@ const Facilities = () => {
       }
     } catch (error) {
       console.log('Error fetching facility data:', error);
+    } finally {
+      setTimeout(() => {
+        setShowLoader(false)
+      }, 1000);
     }
   };
 
   const UpdateFacilitiesStatus = async (id, facilityStatus) => {
+    setShowLoader(true)
     try {
       const formData = new FormData();
       formData.append('status', !facilityStatus);
       const response = await updateFacilitiesApi(id, formData);
       if (response?.status === 200 && response?.data?.status === 'success') {
-        handleSnackbarMessage(response?.data?.message, 'success');
-        refreshData();
+        setTimeout(() => {
+          setShowLoader(false)
+          handleSnackbarMessage(response?.data?.message, 'success');
+          refreshData();
+        }, 1000);
       } else {
-        handleSnackbarMessage(response?.data?.message, 'error');
+        setTimeout(() => {
+          setShowLoader(false)
+          handleSnackbarMessage(response?.data?.message, 'error');
+        }, 1000);
       }
     } catch (error) {
       console.error('Error during update:', error);
-      handleSnackbarMessage('Error during update', 'error');
+      setTimeout(() => {
+        setShowLoader(false)
+        handleSnackbarMessage('Error during update', 'error');
+      }, 1000);
+    } finally {
+      setTimeout(() => {
+        setShowLoader(false)
+      }, 1000);
     }
   };
 
   const UpdateFacilitiesData = async () => {
+    setShowLoader(true)
     try {
       const formData = new FormData();
       if (updateFormData.facilityName !== updateFormData.facilityNameOriginal) {
@@ -185,23 +234,37 @@ const Facilities = () => {
       }
       const response = await updateFacilitiesApi(facilitiesId, formData);
       if (response?.status === 200 && response?.data?.status === 'success') {
-        handleSnackbarMessage(response?.data?.message, 'success');
-        setModalOpen(false);
-        refreshData();
+        setTimeout(() => {
+          setShowLoader(false)
+          handleSnackbarMessage(response?.data?.message, 'success');
+          setModalOpen(false);
+          refreshData();
+        }, 1000);
       } else {
-        handleSnackbarMessage(response?.data?.message, 'error');
+        setTimeout(() => {
+          setShowLoader(false)
+          handleSnackbarMessage(response?.data?.message, 'error');
+        }, 1000);
       }
     } catch (error) {
       console.error('Error during update:', error);
-      handleSnackbarMessage('Error during update', 'error');
+      setTimeout(() => {
+        setShowLoader(false)
+        handleSnackbarMessage('Error during update', 'error');
+      }, 1000);
+    } finally {
+      setTimeout(() => {
+        setShowLoader(false)
+      }, 1000);
     }
   };
 
   if (error) return <Typography variant="subtitle1">Error loading data</Typography>;
-  if (!data) return <Typography variant="subtitle1">Loading data...</Typography>;
+  if (!data) return <Typography variant="subtitle1"><HashLoader /></Typography>;
 
   return (
     <Box>
+      {showLoader && <HashLoader />}
       <Grid sx={{ display: 'flex', mb: 3 }}>
         <Grid alignContent="center" sx={{ flexGrow: 1 }}>
           <Typography variant="h5">All Facilities</Typography>

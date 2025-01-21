@@ -2,8 +2,8 @@ import axios from 'axios'
 const token = `Bearer ${localStorage.getItem('token')}`;
 const forgetToken = `Bearer ${localStorage.getItem('forgetToken')}`;
 
-const LocalGirjesh = 'http://192.168.20.109:5001'
-const ServerIP = 'https://www.auth.edu2all.in/hms/'
+// const ServerIP = 'http://192.168.20.109:5001'
+const ServerIP = 'https://www.auth.edu2all.in/hms'
 
 // ******************************************************************************************************
 //  Login  //

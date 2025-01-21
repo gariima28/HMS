@@ -36,7 +36,7 @@ const LoginRoutes = {
     },
     {
       path: '/*',
-      element: <NoPageFound />
+      element: <AuthLogin />
     }
   ]
 };

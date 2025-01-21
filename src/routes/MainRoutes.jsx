@@ -254,7 +254,7 @@ const MainRoutes = {
     },
     {
       path: '/*',
-      element: <NoPageFound />
+      element: <DashboardDefault />
     },
 
 

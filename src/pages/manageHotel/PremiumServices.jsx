@@ -9,6 +9,7 @@ import { useEffect, useState } from 'react';
 import DialogModal from 'components/DialogModal';
 import useSWR, { mutate } from "swr";
 import axios from 'axios';
+import HashLoader from 'components/HashLoader';
 import { addPremiumServicesApi, getPremiumServicesDataByIdApi, updatePremiumServicesApi } from 'api/api';
 // import { useForm } from 'react-hook-form';
 
@@ -55,6 +56,7 @@ const PremiumService = () => {
   const [rows, setRows] = useState([]);
   const [preServiceId, setPreServiceId] = useState();
 
+  const [showLoader, setShowLoader] = useState(false);
 
 
   const [snackbar, setSnackbar] = useState({ open: false, message: '', severity: '' });
@@ -119,7 +121,10 @@ const PremiumService = () => {
 
 
   // get API
-  const { data, error } = useSWR(`${ServerIP}/preServ/getAll`, fetcher);
+  const { data, error } = useSWR(`${ServerIP}/preServ/getAll`, fetcher, {
+    onLoadingSlow: () => setShowLoader(true),
+    onSuccess: () => setShowLoader(false),
+  });
 
   // Function to refresh the data
   const refreshData = () => {
@@ -152,6 +157,7 @@ const PremiumService = () => {
   // useEffect
   useEffect(() => {
     if (data) {
+      setShowLoader(true)
       const transformedRows = data.map((premiumService) => ({
         ...premiumService,
         PremiumService: premiumService.preSerName,
@@ -164,7 +170,11 @@ const PremiumService = () => {
           </Stack>
         ),
       }));
-      setRows(transformedRows);
+
+      setTimeout(() => {
+        setShowLoader(false)
+        setRows(transformedRows);
+      }, 1000);
     }
   }, [data]);
 
@@ -280,7 +290,7 @@ const PremiumService = () => {
 
   return (
     <Box>
-      {/* Heading */}
+      {showLoader && <HashLoader />}
       <Grid sx={{ display: 'flex', mb: 3 }}>
         <Grid alignContent='center' sx={{ flexGrow: 1 }}>
           <Typography variant="h5">All PremiumService</Typography>

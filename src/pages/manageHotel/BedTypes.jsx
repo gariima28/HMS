@@ -8,6 +8,7 @@ import { styled } from '@mui/material/styles';
 import DialogModal from 'components/DialogModal';
 import useSWR, { mutate } from "swr";
 import axios from 'axios';
+import HashLoader from 'components/HashLoader';
 import { addBedTypesApi, deleteBedTypesApi, getBedTypesDataByIdApi, updateBedTypesApi } from 'api/api';
 
 import Dialog from '@mui/material/Dialog';
@@ -54,6 +55,8 @@ const BedTypes = () => {
   const [deleteId, setDeleteId] = useState();
   const [snackbar, setSnackbar] = useState({ open: false, message: '', severity: '' });
 
+  const [showLoader, setShowLoader] = useState(false);
+
   const [formData, setFormData] = useState({
     bedTypeName: '',
     status: '',
@@ -89,7 +92,10 @@ const BedTypes = () => {
     { id: 'bedTypeImage', field: 'fileType', fieldType: 'file', fieldName: 'Icon *', value: updateFormData.bedTypeImage, updateValFunc: (val) => setUpdateFormData({ ...updateFormData, bedTypeImage: val }) },
   ];
 
-  const { data, error } = useSWR(`${ServerIP}/bedTypes/getAll`, fetcher);
+  const { data, error } = useSWR(`${ServerIP}/bedTypes/getAll`, fetcher, {
+    onLoadingSlow: () => setShowLoader(true),
+    onSuccess: () => setShowLoader(false),
+  });
 
   const refreshData = () => {
     mutate(`${ServerIP}/bedTypes/getAll`);
@@ -110,6 +116,7 @@ const BedTypes = () => {
 
   useEffect(() => {
     if (data) {
+      setShowLoader(true)
       const transformedRows = data.bedTypes.map((bedType, index) => ({
         ...bedType,
         SNo: index+1,
@@ -121,7 +128,11 @@ const BedTypes = () => {
           </Stack>
         ),
       }));
-      setRows(transformedRows);
+
+      setTimeout(() => {
+        setShowLoader(false)
+        setRows(transformedRows);
+      }, 1000);
     }
   }, [data]);
 
@@ -137,21 +148,40 @@ const BedTypes = () => {
   };
 
   const handleDeleteBedType = async() => {
+    setShowLoader(true)
     console.log(deleteId)
     try {
       const response = await deleteBedTypesApi(deleteId);
       console.log(response, 'beddd dltt')
       if (response?.status === 200 && response?.data?.status === 'success') {
-        handleSnackbarMessage('Bed Type Deleted Successfully', 'success');
-        setConfirmationAlertOpen(false);
-        refreshData();
+        setTimeout(() => {
+          setShowLoader(false)
+          handleSnackbarMessage('Bed Type Deleted Successfully', 'success');
+          setConfirmationAlertOpen(false);
+          refreshData();
+        }, 1000);
+      }
+      else{
+        setTimeout(() => {
+          setShowLoader(false)
+          handleSnackbarMessage(response?.data?.message || 'Error during deletion');
+        }, 1000);
       }
     } catch (error) {
-      console.log('Error fetching bedType data:', error);
+      setTimeout(() => {
+        setShowLoader(false)
+        handleSnackbarMessage('Error occur during deletion: ', error);
+      }, 1000);
+      console.log('Error during deletion of bedType data:', error);
+    } finally {
+      setTimeout(() => {
+        setShowLoader(false)
+      }, 1000);
     }
   }
 
   const AddNewBedType = async () => {
+    setShowLoader(true)
     // Validate that all fields are correctly populated
     if (!formData.bedTypeName || !formData.status || !formData.bedTypeImage) {
       handleSnackbarMessage('Please fill in all fields before submitting.', 'error');
@@ -167,19 +197,33 @@ const BedTypes = () => {
       const response = await addBedTypesApi(formDataToSend);
 
       if (response.status === 200 && response?.data?.status === 'success') {
-        handleSnackbarMessage('Bed Type Added Successfully', 'success');
-        setModalOpen(false);
-        refreshData();
+        setTimeout(() => {
+          setShowLoader(false)
+          handleSnackbarMessage('Bed Type Added Successfully', 'success');
+          setModalOpen(false);
+          refreshData();
+        }, 1000);
       } else {
-        handleSnackbarMessage(response?.data?.message || 'Error adding bedType', 'error');
+        setTimeout(() => {
+          setShowLoader(false)
+          handleSnackbarMessage(response?.data?.message || 'Error adding bedType', 'error');
+        }, 1000);
       }
     } catch (error) {
       console.error('Error adding bedType:', error);
-      handleSnackbarMessage('Error adding bedType', 'error');
+      setTimeout(() => {
+        setShowLoader(false)
+        handleSnackbarMessage('Error adding bedType', 'error');
+      }, 1000);
+    } finally {
+      setTimeout(() => {
+        setShowLoader(false)
+      }, 1000);
     }
   };
 
   const getBedTypesDataById = async (id) => {
+    setShowLoader(true)
     setBedTypesId(id);
     try {
       const response = await getBedTypesDataByIdApi(id);
@@ -196,10 +240,15 @@ const BedTypes = () => {
       }
     } catch (error) {
       console.log('Error fetching bedType data:', error);
+    } finally {
+      setTimeout(() => {
+        setShowLoader(false)
+      }, 1000);
     }
   };
 
   const UpdateBedTypesData = async () => {
+    setShowLoader(true)
     try {
       const formData = new FormData();
       if (updateFormData.bedTypeName !== updateFormData.bedTypeNameOriginal) {
@@ -213,23 +262,37 @@ const BedTypes = () => {
       }
       const response = await updateBedTypesApi(bedTypesId, formData);
       if (response?.status === 200 && response?.data?.status === 'success') {
-        handleSnackbarMessage(response?.data?.message, 'success');
-        setModalOpen(false);
-        refreshData();
+        setTimeout(() => {
+          setShowLoader(false)
+          handleSnackbarMessage(response?.data?.message, 'success');
+          setModalOpen(false);
+          refreshData();
+        }, 1000);
       } else {
-        handleSnackbarMessage(response?.data?.message, 'error');
+        setTimeout(() => {
+          setShowLoader(false)
+          handleSnackbarMessage(response?.data?.message, 'error');
+        }, 1000);
       }
     } catch (error) {
       console.error('Error during update:', error);
-      handleSnackbarMessage('Error during update', 'error');
+      setTimeout(() => {
+        setShowLoader(false)
+        handleSnackbarMessage('Error during update', 'error');
+      }, 1000);
+    } finally {
+      setTimeout(() => {
+        setShowLoader(false)
+      }, 1000);
     }
   };
 
   if (error) return <Typography variant="subtitle1">Error loading data</Typography>;
-  if (!data) return <Typography variant="subtitle1">Loading data...</Typography>;
+  if (!data) return <Typography variant="subtitle1"><HashLoader /></Typography>;
 
   return (
     <Box>
+      {showLoader && <HashLoader />}
       <Grid sx={{ display: 'flex', mb: 3 }}>
         <Grid alignContent="center" sx={{ flexGrow: 1 }}>
           <Typography variant="h5">All BedTypes</Typography>

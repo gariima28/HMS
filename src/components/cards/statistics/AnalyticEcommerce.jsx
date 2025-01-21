@@ -1,3 +1,99 @@
+// import PropTypes from 'prop-types';
+
+// // material-ui
+// import Chip from '@mui/material/Chip';
+// import Grid from '@mui/material/Grid';
+// import Stack from '@mui/material/Stack';
+// import Typography from '@mui/material/Typography';
+// import Box from '@mui/material/Box';
+
+// // project import
+// import MainCard from 'components/MainCard';
+// import React from 'react';
+
+
+// export default function AnalyticEcommerce({ color = 'primary', title, count, icon, iconColor, iconBorderColor, percentage, isLoss, extra }) {
+
+//   const iconContainerSX = {
+//     border: `1.3px solid ${iconBorderColor}`,
+//     borderRadius: '8px',
+//     width: '40px',
+//     height: '40px',
+//     display: 'flex',
+//     justifyContent: 'center',
+//     alignItems: 'center',
+//     color: iconColor
+//   };
+
+//   const iconSX = { fontSize: '25px' };
+
+//   return (
+//     <MainCard contentSX={{ p: 2.25 }}>
+
+//       <Grid container alignItems="center">
+//         <Grid item xs={12} md={8}>
+//           <Stack spacing={0.5}>
+//             <Typography variant="h6" color="text.secondary">
+//               {title}
+//             </Typography>
+//             <Typography variant="h4" color="inherit">
+//               {count}
+//             </Typography>
+//           </Stack>
+//         </Grid>
+//         <Grid item xs={12} md={4} display='flex' justifyContent='end'>
+//           <Box sx={iconContainerSX}>
+//             {icon && React.cloneElement(icon, { sx: iconSX })}
+//           </Box>
+//         </Grid>
+//       </Grid>
+//       <Box sx={{ pt: 1.25 }}>
+//         {<Typography variant="caption" color="text.secondary">
+//           You made an lil extra{' '}
+//           <Typography variant="caption" sx={{ color: `${color || 'primary'}.main` }}>
+//             {extra}
+//           </Typography>{' '}
+//           this year
+//         </Typography>}
+//       </Box>
+//     </MainCard>
+//   );
+// }
+
+// AnalyticEcommerce.propTypes = {
+//   color: PropTypes.string,
+//   title: PropTypes.string,
+//   count: PropTypes.string,
+//   percentage: PropTypes.number,
+//   isLoss: PropTypes.bool,
+//   extra: PropTypes.string
+// };
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 import PropTypes from 'prop-types';
 
 // material-ui

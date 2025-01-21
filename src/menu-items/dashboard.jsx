@@ -36,6 +36,7 @@ const dashboard = {
           title: 'Hotel Details',
           type: 'item',
           url: '/hotels',
+          breadcrumbs: true,
           icon: icons.ChromeOutlined
         },
         {
@@ -43,6 +44,7 @@ const dashboard = {
           title: 'Create Hotels',
           type: 'item',
           url: '/hotelForm/add',
+          breadcrumbs: true,
           icon: icons.ChromeOutlined
         }
       ],
