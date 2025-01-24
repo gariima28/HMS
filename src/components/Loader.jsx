@@ -1,6 +1,9 @@
 // material-ui
 import { styled } from '@mui/material/styles';
-import LinearProgress from '@mui/material/LinearProgress';
+import CircularProgress from '@mui/material/CircularProgress';
+import Box from '@mui/material/Box';
+import Typography from '@mui/material/Typography';
+import { useEffect, useState } from 'react';
 
 // loader style
 const LoaderWrapper = styled('div')(({ theme }) => ({
@@ -9,17 +12,42 @@ const LoaderWrapper = styled('div')(({ theme }) => ({
   left: 0,
   zIndex: 2001,
   width: '100%',
-  '& > * + *': {
-    marginTop: theme.spacing(2)
-  }
+  height: '100%',
+  display: 'flex',
+  justifyContent: 'center',
+  alignItems: 'center',
+  backgroundColor: theme.palette.background.default,
+  flexDirection: 'column',
+  textAlign: 'center',
 }));
 
-// ==============================|| Loader ||============================== //
+const Loader = ({ delay = 0 }) => {
+  const [showLoader, setShowLoader] = useState(false);
 
-const Loader = () => (
-  <LoaderWrapper>
-    <LinearProgress color="primary" />
+  useEffect(() => {
+    const timeoutId = setTimeout(() => {
+      setShowLoader(true);
+    }, delay);
+
+    return () => clearTimeout(timeoutId);
+  }, [delay]);
+
+
+  return (
+    showLoader && <LoaderWrapper>
+    <Box sx={{ mb: 3 }}>
+      <img
+        src="/logo.png"
+        alt="Logo"
+        style={{ width: '150px', height: 'auto' }}
+      />
+    </Box>
+    <CircularProgress color="primary" size={80} />
+    <Typography variant="h6" sx={{ mt: 2 }}>
+      Loading, please wait...
+    </Typography>
   </LoaderWrapper>
-);
+  )
+}
 
 export default Loader;

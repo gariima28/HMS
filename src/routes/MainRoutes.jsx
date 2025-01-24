@@ -79,23 +79,13 @@ import SystemSettinglogoFavicon from 'pages/extra-pages/systemSettingLogoFavi';
 import SentMail from 'pages/extra-pages/sentMail';
 import AllTicket from 'pages/extra-pages/allTicket';
 
-
-const Color = Loadable(lazy(() => import('pages/component-overview/color')));
-const Typography = Loadable(lazy(() => import('pages/component-overview/typography')));
-const Shadow = Loadable(lazy(() => import('pages/component-overview/shadows')));
 const DashboardDefault = Loadable(lazy(() => import('pages/dashboard/index')));
 
-
-// ==============================|| MAIN ROUTING ||============================== //
 
 const MainRoutes = {
   path: '/',
   element: <Dashboard />,
   children: [
-    {
-      path: 'color',
-      element: <Color />
-    },
     {
       path: '/',
       element: <DashboardDefault />
@@ -247,10 +237,6 @@ const MainRoutes = {
     {
       path: 'allPayments',
       element: <AllPayments />
-    },
-    {
-      path: 'typography',
-      element: <Typography />
     },
     {
       path: '/*',

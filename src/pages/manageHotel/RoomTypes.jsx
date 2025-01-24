@@ -9,7 +9,7 @@ import { useEffect, useState } from 'react';
 import DialogModal from 'components/DialogModal';
 import useSWR, { mutate } from "swr";
 import axios from 'axios';
-import HashLoader from 'components/HashLoader';
+import HashLoader from 'components/Skeleton/HashLoader';
 import { addRoomTypesApi, getRoomTypesDataByIdApi, updateRoomTypesApi } from 'api/api';
 // import { useForm } from 'react-hook-form';
 
@@ -193,7 +193,8 @@ const RoomTypes = () => {
         roomTypeStatus: <CustomButton variant="outlined" status={`${roomType.roomTypeStatus ? 'enable' : 'disable'}`}> {roomType.roomTypeStatus ? 'Enabled' : 'Disabled'} </CustomButton>,
         action: (
           <Stack justifyContent='end' spacing={2} direction="row">
-            <Button variant="outlined" size="small" startIcon={<Edit />} onClick={() => handleDialogState('Update New RoomTypes', 'Update', roomType.roomTypesId)}>Edit</Button>
+            <Button variant="outlined" size="small" startIcon={<Edit />} href={`addUpdateRoomType/${roomType.roomTypesId}`}>Edit</Button>
+            {/* <Button variant="outlined" size="small" startIcon={<Edit />} onClick={() => handleDialogState('Update New RoomTypes', 'Update', roomType.roomTypesId)}>Edit</Button> */}
             <Button variant="outlined" size="small" startIcon={roomType.roomTypeStatus ? <EyeInvisibleFilled /> : <EyeFilled />} color={`${roomType.roomTypeStatus ? 'error' : 'success'}`} onClick={() => UpdateRoomTypesStatus(roomType?.roomTypesId, roomType.roomTypeStatus)}>{`${roomType.roomTypeStatus ? 'Disable' : 'Enable'}`}</Button>
           </Stack>
         ),

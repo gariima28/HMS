@@ -4,6 +4,7 @@ import React, { useEffect, useState } from 'react';
 import Grid from '@mui/material/Unstable_Grid2/Grid2';
 import { styled } from '@mui/material/styles';
 import { useForm } from 'react-hook-form';
+import CircularProgressLoader from './Skeleton/CircularProgressLoader';
 
 const SaveButton = styled(Button)(() => ({
     borderRadius: '5px',
@@ -20,7 +21,7 @@ const SaveButton = styled(Button)(() => ({
     },
 }));
 
-const DialogModal = ({ handleClosingDialogState, modalOpen, title, buttonName, InputFields, onSubmit, reset, updateFormDataa }) => {
+const DialogModal = ({ handleClosingDialogState, modalOpen, title, buttonName, InputFields, onSubmit, reset, updateFormDataa, showModalLoader }) => {
 
     const { register, handleSubmit, formState: { errors }, setValue, trigger } = useForm();
     const [imageType, setImageType] = useState(false)
@@ -48,8 +49,9 @@ const DialogModal = ({ handleClosingDialogState, modalOpen, title, buttonName, I
     };
 
 
+
     return (
-        <Dialog onClose={handleDialogClose} aria-labelledby="dialogModal" open={modalOpen} maxWidth="xs" fullWidth>
+        <Dialog onClose={null} disableBackdropClick disableEscapeKeyDown aria-labelledby="dialogModal" open={modalOpen} maxWidth="xs" fullWidth>
             <DialogTitle sx={{ m: 0, p: 2, typography: 'h6' }} id="dialogModal">
                 {title}
                 <IconButton aria-label="close" onClick={handleDialogClose} sx={(theme) => ({ position: 'absolute', right: 8, top: 8, color: theme.palette.grey[500] })} >
@@ -57,7 +59,13 @@ const DialogModal = ({ handleClosingDialogState, modalOpen, title, buttonName, I
                 </IconButton>
             </DialogTitle>
             <Divider />
-            <DialogContent>
+            {showModalLoader && <CircularProgressLoader />}
+            <DialogContent
+                sx={{
+                    position: 'relative',
+                    pointerEvents: showModalLoader ? 'none' : 'auto',
+                }}
+            >
                 <form onSubmit={handleSubmit(onSubmit)}>
                     <Grid container spacing={2}>
                         {InputFields.map((itemData) => (
@@ -67,7 +75,7 @@ const DialogModal = ({ handleClosingDialogState, modalOpen, title, buttonName, I
                                 </InputLabel>
                                 {itemData?.field === 'textInput' ? (
                                     <>
-                                        <OutlinedInput id={itemData.id} type={itemData?.fieldType} placeholder={itemData?.placeholder} fullWidth {...register(itemData.id, { required: itemData.validation?.required && `${itemData.fieldName} field is required`, pattern: { value: itemData.validation?.pattern || /.*/, message: itemData.validation?.patternMsg || '', }, })} error={Boolean(errors[itemData.id])} />
+                                        <OutlinedInput id={itemData.id} type={itemData?.fieldType} placeholder={itemData?.placeholder} defaultValue={itemData.value} fullWidth {...register(itemData.id, { required: itemData.validation?.required && `${itemData.fieldName} field is required`, pattern: { value: itemData.validation?.pattern || /.*/, message: itemData.validation?.patternMsg || '', }, })} error={Boolean(errors[itemData.id])} />
                                         <FormHelperText error>
                                             {errors[itemData.id]?.message}
                                         </FormHelperText>
@@ -78,7 +86,7 @@ const DialogModal = ({ handleClosingDialogState, modalOpen, title, buttonName, I
                                             {buttonName === 'Update' ? (
                                                 <Grid display='flex' justifyContent='space-between' sx={{ border: '1px solid #D8D8D8', borderRadius: '4px'}}>
                                                     {updateFormDataa.amenitiesIcon !== null && imageType ?
-                                                        <Grid sx={{py:0}} display='flex'>
+                                                        <Grid>
                                                             <img
                                                                 src={updateFormDataa.amenitiesIcon}
                                                                 alt="Amenity Icon"
@@ -141,7 +149,7 @@ const DialogModal = ({ handleClosingDialogState, modalOpen, title, buttonName, I
                                         </>
                                 ) : itemData?.field === 'select' ? (
                                     <>
-                                                <Select id={itemData.id} fullWidth displayEmpty defaultValue="" {...register(itemData.id, { required: itemData.validation?.required && `${itemData.fieldName} field is required`, })} error={Boolean(errors[itemData.id])} >
+                                                <Select id={itemData.id} fullWidth displayEmpty defaultValue={itemData.value} {...register(itemData.id, { required: itemData.validation?.required && `${itemData.fieldName} field is required`, })} error={Boolean(errors[itemData.id])} >
                                             <MenuItem value="" disabled> -- Select -- </MenuItem>
                                             {(itemData?.fieldOptions || []).map((option) => (
                                                 <MenuItem key={option.optionId} value={option.optionValue}>

@@ -29,7 +29,7 @@ import AnimateButton from 'components/@extended/AnimateButton';
 import EyeOutlined from '@ant-design/icons/EyeOutlined';
 import EyeInvisibleOutlined from '@ant-design/icons/EyeInvisibleOutlined';
 import { loginApi } from 'api/api';
-import HashLoader from 'components/HashLoader';
+import HashLoader from 'components/Skeleton/HashLoader';
 
 export default function AuthLogin({ isDemo = false }) {
   const navigate = useNavigate();

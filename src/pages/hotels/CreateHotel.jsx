@@ -6,7 +6,7 @@ import { useNavigate, useParams } from 'react-router';
 import { createHotelApi, getHotelByIdApi, updateHotelApi } from 'api/api';
 import { useForm } from 'react-hook-form';
 import { Snackbar, Alert } from '@mui/material';
-import HashLoader from 'components/HashLoader';
+import HashLoader from 'components/Skeleton/HashLoader';
 
 const CreateHotel = () => {
 

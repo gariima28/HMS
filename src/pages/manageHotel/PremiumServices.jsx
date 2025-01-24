@@ -1,20 +1,21 @@
-import React from 'react'
+
+import React, { useState, useEffect } from 'react';
 import { EyeFilled, EyeInvisibleFilled } from '@ant-design/icons';
 import { Edit } from '@mui/icons-material';
 import { Alert, Box, Button, Snackbar, Stack, Typography } from '@mui/material';
 import Grid from '@mui/material/Unstable_Grid2/Grid2';
 import DynamicDataTable from 'components/DynamicDataTable';
 import { styled } from '@mui/material/styles';
-import { useEffect, useState } from 'react';
 import DialogModal from 'components/DialogModal';
 import useSWR, { mutate } from "swr";
 import axios from 'axios';
-import HashLoader from 'components/HashLoader';
+import HashLoader from 'components/Skeleton/HashLoader';
+import NoDataFound from '../NoDataFound';
+import { useForm } from 'react-hook-form';
+import ErrorPage from 'components/ErrorPage';
 import { addPremiumServicesApi, getPremiumServicesDataByIdApi, updatePremiumServicesApi } from 'api/api';
-// import { useForm } from 'react-hook-form';
 
-// const LocalGirjesh = 'http://192.168.20.109:5001';
-const ServerIP = 'http://89.116.122.211:5001'
+const ServerIP = 'https://www.auth.edu2all.in/hms';
 const token = `Bearer ${localStorage.getItem('token')}`;
 
 // Custom Button CSS using Material UI Styles
@@ -26,147 +27,118 @@ const CustomButton = styled(Button)(({ status }) => ({
   padding: '2px 26px',
   fontSize: '12px',
   textTransform: 'none',
-
   '&:hover': {
     backgroundColor: status === 'enable' ? '#D4ECD9' : '#fccfcf',
     borderColor: status === 'enable' ? '#57C168' : 'red',
-    color: status === 'enable' ? '#57C168' : 'red'
+    color: status === 'enable' ? '#57C168' : 'red',
   },
 }));
 
 // Table Columns
 
 const columns = [
-  { id: 'PremiumService', label: 'Name', minWidth: 120 },
-  { id: 'price', label: 'Cost', minWidth: 120 },
-  { id: 'status', label: 'Status', minWidth: 120, align: 'center' },
-  { id: 'action', label: 'Action', minWidth: 120, align: 'right' },
+  { id: 'preSerName', label: 'Name', minWidth: 170 },
+  { id: 'price', label: 'Price', minWidth: 100 },
+  { id: 'status', label: 'Status', minWidth: 170, align: 'center' },
+  { id: 'action', label: 'Action', minWidth: 170, align: 'right' },
 ];
 
-
-// API Call when ever data updates 
+// API Call when data updates
 const fetcher = (url) => axios.get(url, { headers: { Authorization: token } }).then(res => res.data);
 
-const PremiumService = () => {
-
-  // All useStates
-  const [modalTitle, setModalTitle] = useState('Add New PremiumService');
+const PremiumServices = () => {
+  const [snackbar, setSnackbar] = useState({ open: false, message: '', severity: '' });
+  const [modalTitle, setModalTitle] = useState('Add New PremiumServices');
   const [buttonName, setButtonName] = useState('Save Changes');
   const [modalOpen, setModalOpen] = useState(false);
   const [rows, setRows] = useState([]);
-  const [preServiceId, setPreServiceId] = useState();
-
+  const [premiumServiceId, setPremiumServiceId] = useState();
+  const { reset } = useForm();
   const [showLoader, setShowLoader] = useState(false);
 
-
-  const [snackbar, setSnackbar] = useState({ open: false, message: '', severity: '' });
-
-
-  // Add Premium Service State Function
   const [formDataa, setFormDataa] = useState({
-    preSerName: '',
-    price: ''
-  })
-
-  // Update Premium Service State Function
-  const [updateFormDataa, setUpdateFormDataa] = useState({
-    preSerName: '',
-    price: '',
-    PremiumServiceNameOriginal: '',
-    PriceOriginal: ''
+    premiumServiceName: '',
+    premiumServiceCost: '',
+    status: '',
   });
 
-  // Add Premium Service Name
-  const handleFormDataaPremiumServiceName = (val) => {
-    setFormDataa({
-      ...formDataa,
-      preSerName: val
-    });
-  }
 
-  // Add Premium Service Cost
-  const handleFormDataaCost = (val) => {
-    setFormDataa({
-      ...formDataa,
-      price: val
-    });
-  }
+  const [updateFormDataa, setUpdateFormDataa] = useState({
+    premiumServiceName: '',
+    premiumServiceCost: '',
+    premiumServiceNameOriginal: '',
+    premiumServiceCostOriginal: '',
+  });
 
-  // Update Premium Service Name
-  const handleUpdateFormDataaPremiumServiceName = (val) => {
-    setUpdateFormDataa({
-      ...updateFormDataa,
-      preSerName: val
-    });
-  }
 
-  // Update Premium Service Cost
-  const handleUpdateFormDataaCost = (val) => {
-    setUpdateFormDataa({
-      ...updateFormDataa,
-      price: val
-    });
-  }
+  const handleFormDataaPremiumServicesName = (val) => setFormDataa((prev) => ({ ...prev, premiumServiceName: val }));
+  const handleFormDataaPremiumServicesCost = (val) => setFormDataa((prev) => ({ ...prev, premiumServiceCost: val }));
+  const handleFormDataaPremiumServicesStatus = (val) => setFormDataa((prev) => ({ ...prev, status: val }));
+  const handleUpdateFormDataaPremiumServicesName = (val) => setUpdateFormDataa((prev) => ({ ...prev, premiumServiceName: val }));
+  const handleUpdateFormDataaPremiumServicesCost = (val) => setUpdateFormDataa((prev) => ({ ...prev, premiumServiceCost: val }));
 
-  const AddInputFields =
-    [
-      { id: 'preSerName', field: 'textInput', fieldType: 'text', fieldName: 'Service Name *', placeholder: 'Enter Service Name', updateValFunc: handleFormDataaPremiumServiceName },
-      { id: 'price', field: 'textInput', fieldType: 'text', fieldName: 'Cost *', placeholder: 'Enter Cost', updateValFunc: handleFormDataaCost },
-    ];
-
-  const UpdateInputFields = [
-    { id: 'preSerName', field: 'textInput', fieldType: 'text', fieldName: 'Service Name *', placeholder: 'Enter Service Name', value: updateFormDataa.preSerName || '', updateValFunc: handleUpdateFormDataaPremiumServiceName },
-    { id: 'price', field: 'textInput', fieldType: 'text', fieldName: 'Cost *', placeholder: 'Enter Cost', value: updateFormDataa.price || '', updateValFunc: handleUpdateFormDataaCost }
+  const AddInputFields = [
+    { id: 'premiumServiceName', field: 'textInput', fieldType: 'text', validation: { required: true, pattern: /^[A-Za-z\s]+$/, patternMsg: 'This field can only contain characters and spaces', }, fieldName: 'Premium Service Name *', placeholder: 'Enter Premium Service Name', updateValFunc: handleFormDataaPremiumServicesName, },
+    { id: 'status', field: 'select', fieldName: 'Status *', validation: { required: true, }, fieldOptions: [{ optionId: 'active', optionName: 'Active', optionValue: 'true' }, { optionId: 'inActive', optionName: 'Inactive', optionValue: 'false' },], value: formDataa.status, updateValFunc: handleFormDataaPremiumServicesStatus, },
+    { id: 'price', field: 'textInput', fieldType: 'number', validation: { required: true, pattern: /^\d+(\.\d{1,2})?$/, patternMsg: 'Please enter a valid price (e.g., 100 or 100.50)', }, fieldName: 'Price *', placeholder: 'Enter Service Price', updateValFunc: handleFormDataaPremiumServicesCost, },
   ];
 
+  const UpdateInputFields = [
+    { id: 'premiumServiceName', field: 'textInput', fieldType: 'text', validation: { required: true, pattern: /^[A-Za-z\s]+$/, patternMsg: 'This field can only contain characters and spaces', }, fieldName: 'Premium Service Name *', placeholder: 'Enter Premium Service Name', value: updateFormDataa.premiumServiceName, updateValFunc: handleUpdateFormDataaPremiumServicesName, },
+    { id: 'premiumServiceCost', field: 'textInput', fieldType: 'number', validation: { required: true, pattern: /^\d+(\.\d{1,2})?$/, patternMsg: 'Please enter a valid price (e.g., 100 or 100.50)', }, fieldName: 'Price *', placeholder: 'Enter Service Price', value: updateFormDataa.premiumServiceCost, updateValFunc: handleUpdateFormDataaPremiumServicesCost, },
+  ];
 
-  // get API
+  // Get API
   const { data, error } = useSWR(`${ServerIP}/preServ/getAll`, fetcher, {
     onLoadingSlow: () => setShowLoader(true),
     onSuccess: () => setShowLoader(false),
   });
 
-  // Function to refresh the data
   const refreshData = () => {
     mutate(`${ServerIP}/preServ/getAll`);
   };
 
-  // Dialog Open Handle
-  const handleDialogState = (title, button, preServiceId) => {
+  const handleDialogState = (title, button, premiumServiceId) => {
     setModalTitle(title);
     setButtonName(button);
     if (button === 'Update') {
-      getPremiumServicesDataById(preServiceId);
+      getPremiumServicesDataById(premiumServiceId);
     }
-    setModalOpen(true);
+    setModalOpen(!modalOpen);
   };
 
-  // Dialog Close Handle
   const handleClosingDialogState = () => {
-    setModalOpen(false);
+    setModalOpen(!modalOpen);
   };
 
   const handleSnackbarClose = () => {
     setSnackbar((prev) => ({ ...prev, open: false }));
   };
 
-  const handleSnackbarMessage = (message, severity) => {
-    setSnackbar({ open: true, message, severity });
-  };
-
-  // useEffect
   useEffect(() => {
     if (data) {
       setShowLoader(true)
+      const formatPrice = (price) => {
+        if (Number.isInteger(price)) {
+          return `₹ ${price}.00`;
+        }
+
+        const priceString = price.toString();
+        if (priceString.split('.')[1]?.length === 1) {
+          return `₹ ${price.toFixed(2)}`;
+        }
+
+        return `₹ ${price}`;
+      };
+
       const transformedRows = data.map((premiumService) => ({
         ...premiumService,
-        PremiumService: premiumService.preSerName,
-        price: `$ ${premiumService.price}.00`,
-        status: <CustomButton variant="outlined" status={`${premiumService.status ? 'enable' : 'disable'}`}> {premiumService.status ? 'Enabled' : 'Disabled'} </CustomButton>,
+        price: formatPrice(premiumService.price),
+        status: <CustomButton variant="outlined" status={premiumService.status ? 'enable' : 'disable'}>{premiumService.status ? 'Enabled' : 'Disabled'}</CustomButton>,
         action: (
-          <Stack justifyContent='end' spacing={2} direction="row">
-            <Button variant="outlined" size="small" startIcon={<Edit />} onClick={() => handleDialogState('Update New PremiumService', 'Update', premiumService.preServiceId)}>Edit</Button>
-            <Button variant="outlined" size="small" startIcon={premiumService.status ? <EyeInvisibleFilled /> : <EyeFilled />} color={`${premiumService.status ? 'error' : 'success'}`} onClick={() => UpdatePremiumServicesStatus(premiumService?.preServiceId, premiumService?.status)}>{`${premiumService.status ? 'Disable' : 'Enable'}`}</Button>
+          <Stack justifyContent="end" spacing={2} direction="row">
+            <Button variant="outlined" size="small" startIcon={<Edit />} onClick={() => handleDialogState('Update Premium Services', 'Update', premiumService.preServiceId)}>Edit</Button>
+            <Button variant="outlined" size="small" startIcon={premiumService.status ? <EyeInvisibleFilled /> : <EyeFilled />} color={premiumService.status ? 'error' : 'success'} onClick={() => UpdatePremiumServicesStatus(premiumService.preServiceId, premiumService.status)}>{premiumService.status ? 'Disable' : 'Enable'}</Button>
           </Stack>
         ),
       }));
@@ -178,126 +150,197 @@ const PremiumService = () => {
     }
   }, [data]);
 
-  // Add Function
-  const AddNewPremiumServices = async () => {
+  const handleSnackbarMessage = (message, severity) => {
+    setSnackbar({ open: true, message, severity });
+  };
+
+  const AddNewPremiumService = async (formData) => {
+    setShowLoader(true);
+
+    console.log(formData.premiumServiceName, formData.premiumServiceCost);
+    if (!formData.premiumServiceName || !formData.premiumServiceCost) {
+      setTimeout(() => {
+        handleSnackbarMessage('Please fill in all fields before submitting.', 'error');
+        setShowLoader(false);
+      }, 1000);
+      return;
+    }
+
     try {
-      const data = {
-        'preSerName': formDataa.preSerName,
-        'price': formDataa.price
+      const jsonData = {
+        'preSerName': formData.premiumServiceName,
+        'price': formData.premiumServiceCost
       }
-      const response = await addPremiumServicesApi(data);
-      if (response.status === 200) {
-        if (response?.data?.status === 'success') {
-          handleSnackbarMessage('Premium Services Added Successfully', 'success');
+
+      const response = await addPremiumServicesApi(jsonData);
+      if (response.status === 200 && response?.data?.status === 'success') {
+        setTimeout(() => {
+          setShowLoader(false);
+          handleSnackbarMessage('Premium Service Added Successfully', 'success');
           setModalOpen(false);
           refreshData();
-        }
-        else{
-          handleSnackbarMessage(response?.data?.message, 'error');
-        }
+
+          reset({
+            premiumServiceName: '',
+            premiumServiceCost: '',
+          });
+        }, 1000);
+      } else {
+        setTimeout(() => {
+          setShowLoader(false);
+          handleSnackbarMessage('Error adding Premium Service', 'error');
+        }, 1000);
       }
-    }
-    catch (error) {
-      setModalOpen(false);
-      console.log('catch')
+    } catch (error) {
+      setTimeout(() => {
+        setShowLoader(false);
+        handleSnackbarMessage(`Error adding Premium Service, ${error}`, 'error');
+      }, 1000);
     }
   };
 
 
-  // Get PremiumService data by id
+
   const getPremiumServicesDataById = async (id) => {
-    setPreServiceId(id)
+    setShowLoader(true);
+    setPremiumServiceId(id);
     try {
-      var response = await getPremiumServicesDataByIdApi(id);
-      console.log(response, 'get by id')
-      if (response?.status === 200) {
-        console.log(response.data, 'hjdnbghjnsbdfhjdmsnbdgfhjdsndbhfj')
-        setUpdateFormDataa({
-          preSerName: response?.data?.preSerName,
-          price: response?.data?.price,
-          PremiumServiceNameOriginal: response?.data?.preSerName,
-          PriceOriginal: response?.data?.price
-        });
-      }
-      else {
-        console.log(response?.data?.message);
-      }
-    }
-    catch (error) {
-      console.log('catch')
-    }
-    finally {
-      console.log('finally')
-    }
-  }
-
-  // Update Function
-  const UpdatePremiumServicesStatus = async (id, PremiumServicesStatus) => {
-    try {
-      const formDataToSend = new FormData();
-      formDataToSend.append('status', PremiumServicesStatus ? false : true);
-
-      var response = await updatePremiumServicesApi(id, formDataToSend);
+      const response = await getPremiumServicesDataByIdApi(id);
       if (response?.status === 200) {
         if (response?.data?.status === 'success') {
-          handleSnackbarMessage('Premium Services Updated Successfully', 'success');
-          setModalOpen(false);
-          refreshData();
+          setUpdateFormDataa({
+            premiumServiceName: response?.data?.premiumService?.preSerName,
+            premiumServiceCost: response?.data?.premiumService?.price,
+            premiumServiceNameOriginal: response?.data?.premiumService?.preSerName,
+            premiumServiceCostOriginal: response?.data?.premiumService?.price,
+          });
+          // reset();
+        }
+        // else {
+        //   setTimeout(() => {
+        //     setShowLoader(false);
+        //     handleSnackbarMessage(response?.data?.message, 'error');
+        //   }, 1000);
+        // }
+      }
+    } catch (error) {
+      console.error('Error fetching premiumService data by id:', error);
+    } finally {
+      setShowLoader(false);
+    }
+  };
+
+
+  const UpdatePremiumServicesStatus = async (id, premiumServiceStatus) => {
+    setShowLoader(true)
+    try {
+      const formData = new FormData();
+      formData.append('status', premiumServiceStatus ? false : true);
+      const response = await updatePremiumServicesApi(id, formData);
+      if (response?.status === 200) {
+        if (response?.data?.status === 'success') {
+          setTimeout(() => {
+            handleSnackbarMessage(response?.data?.message, 'success');
+            refreshData();
+            setShowLoader(false)
+          }, 1000);
         }
         else {
-          handleSnackbarMessage(response?.data?.message, 'error');
+          setTimeout(() => {
+            handleSnackbarMessage(response?.data?.message, 'error');
+            refreshData();
+            setShowLoader(false)
+          }, 1000);
         }
+      } else {
+        setTimeout(() => {
+          setShowLoader(false)
+          handleSnackbarMessage(response?.data?.message, 'error');
+        }, 1000);
       }
     } catch (error) {
-      console.log(error, 'error')
-    }
-  }
-
-  // Update Status Function
-  const UpdatePremiumServicesData = async () => {
-    try {
-      // Create the data object dynamically
-      const formDataToSend = new FormData();
-      if (updateFormDataa.preSerName !== updateFormDataa.PremiumServiceNameOriginal) {
-        formDataToSend.append('preSerName', updateFormDataa.preSerName);
-      }
-      if (updateFormDataa.price !== updateFormDataa.PriceOriginal) {
-        formDataToSend.append('price', updateFormDataa.price);
-      }
-
-      console.log("Data to update:", data);
-
-      var response = await updatePremiumServicesApi(preServiceId, formDataToSend);
-      console.log(response, 'facili');
-
-      if (response?.status === 200) {
-        if (response?.data?.status === 'success') {
-          handleSnackbarMessage('Premium Services Updated Successfully', 'success');
-          setModalOpen(false);
-          refreshData();
-        } else {
-          handleSnackbarMessage(response?.data?.message, 'error');
-        }
-      } 
-    } catch (error) {
-      setModalOpen(false);
-      console.error('Error during update:', error);
+      setTimeout(() => {
+        setShowLoader(false)
+        handleSnackbarMessage('Error during update', 'error');
+      }, 1000);
+    } finally {
+      setTimeout(() => {
+        setShowLoader(false)
+      }, 1000);
     }
   };
 
-  if (error) { <Typography variant="subtitle1">- Error loading data</Typography> };
-  if (!data) return <Typography variant="subtitle1">Speed is slow from Backend &nbsp; : - &nbsp; Loading Data...</Typography>;
+  const UpdatePremiumServicesData = async (data) => {
+    setShowLoader(true);
+
+    try {
+      const formData = new FormData();
+
+      // Only append the updated name if it's different
+      if (data.premiumServiceName !== updateFormDataa.premiumServiceNameOriginal) {
+        formData.append('preSerName', data.premiumServiceName);
+      }
+
+      // Only append the updated price if it's different
+      if (data.premiumServiceCost !== updateFormDataa.premiumServiceCostOriginal) {
+        formData.append('price', data.premiumServiceCost);
+      }
+
+      // If the formData has any changes, make the API call
+      if (formData.has('preSerName') || formData.has('price')) {
+        const response = await updatePremiumServicesApi(premiumServiceId, formData);
+        if (response?.status === 200) {
+          setTimeout(() => {
+            setShowLoader(false);
+            refreshData();
+            handleSnackbarMessage(response?.data?.message, 'success');
+            setModalOpen(false);
+          }, 1000);
+        } else {
+          setTimeout(() => {
+            setShowLoader(false);
+            handleSnackbarMessage(response?.data?.message, 'error');
+          }, 1000);
+        }
+      } else {
+        // No changes to submit
+        setShowLoader(false);
+        handleSnackbarMessage('No changes made.', 'warning');
+      }
+    } catch (error) {
+      setTimeout(() => {
+        setShowLoader(false);
+        handleSnackbarMessage('Error during update', 'error');
+      }, 1000);
+    } finally {
+      setTimeout(() => {
+        setShowLoader(false);
+      }, 1000);
+    }
+  };
+
+
+
+  if (error) return (
+    <ErrorPage
+      errorMessage={`${error}`}
+      onReload={() => { window.location.reload(), console.log(error, 'dhbj') }}
+      statusCode={`${error.status}`}
+    />
+  );
+  // if (error) return <Typography variant="subtitle1"><NoDataFound/></Typography>;
+  if (!data) return <Typography variant="subtitle1"><HashLoader /></Typography>;
 
   return (
     <Box>
       {showLoader && <HashLoader />}
       <Grid sx={{ display: 'flex', mb: 3 }}>
         <Grid alignContent='center' sx={{ flexGrow: 1 }}>
-          <Typography variant="h5">All PremiumService</Typography>
+          <Typography variant="h5">All PremiumServices</Typography>
         </Grid>
         <Grid>
           <Stack justifyContent='start' spacing={2} direction="row">
-            <Button variant="outlined" onClick={() => handleDialogState('Add New PremiumService', 'Create')}>
+            <Button variant="outlined" onClick={() => handleDialogState('Add New PremiumServices', 'Create')}>
               + Add New
             </Button>
           </Stack>
@@ -307,16 +350,7 @@ const PremiumService = () => {
       <DynamicDataTable columns={columns} rows={rows} />
 
       {/* Modals for all Add and Update */}
-      <DialogModal
-        key={preServiceId}
-        handleClosingDialogState={handleClosingDialogState}
-        modalOpen={modalOpen}
-        title={modalTitle}
-        buttonName={buttonName}
-        InputFields={buttonName === 'Create' ? AddInputFields : UpdateInputFields}
-        onSubmit={buttonName === 'Create' ? AddNewPremiumServices : UpdatePremiumServicesData}
-      />
-
+      <DialogModal handleClosingDialogState={handleClosingDialogState} modalOpen={modalOpen} title={modalTitle} buttonName={buttonName} InputFields={buttonName === 'Create' ? AddInputFields : UpdateInputFields} onSubmit={buttonName === 'Create' ? AddNewPremiumService : UpdatePremiumServicesData} reset={reset} updateFormDataa={updateFormDataa} />
 
       {/* Snackbar for Notifications */}
       <Snackbar open={snackbar.open} autoHideDuration={3000} onClose={handleSnackbarClose} anchorOrigin={{ vertical: 'top', horizontal: 'right' }}>
@@ -324,160 +358,9 @@ const PremiumService = () => {
           {snackbar.message}
         </Alert>
       </Snackbar>
-
     </Box>
   );
 };
 
-export default PremiumService;
+export default PremiumServices;
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-// import { EyeInvisibleFilled } from '@ant-design/icons';
-// import { AcUnitRounded, Edit } from '@mui/icons-material';
-// import { Box, Button, Stack, Typography } from '@mui/material';
-// import Grid from '@mui/material/Unstable_Grid2/Grid2';
-// import DynamicDataTable from 'components/DynamicDataTable';
-// import { styled } from '@mui/material/styles';
-// import { useState } from 'react';
-// import DialogModal from 'components/DialogModal';
-
-// const CustomButton = styled(Button)(() => ({
-//   borderRadius: '50px',
-//   backgroundColor: '#E6F4EA',
-//   borderColor: '#57C168',
-//   color: '#57C168',
-//   padding: '2px 26px',
-//   fontSize: '12px',
-//   textTransform: 'none',
-
-//   '&:hover': {
-//     backgroundColor: '#D4ECD9',
-//     borderColor: '#57C168',
-//     color: '#57C168',
-//   },
-// }));
-
-// const columns = [
-//   { id: 'name', label: 'Name', minWidth: 170 },
-//   { id: 'price', label: 'Cost', minWidth: 100, align: 'center' },
-//   { id: 'status', label: 'Status', minWidth: 170, align: 'center' },
-//   { id: 'action', label: 'Action', minWidth: 170, align: 'right' },
-// ];
-
-
-// const PremiumServices = () => {
-
-//   const [modalTitle, setModalTitle] = useState('');
-//   const [buttonName, setButtonName] = useState('Save Changes');
-//   const [modalOpen, setModalOpen] = useState(false);
-  
-//   const handleDialogState = (title,button) => {
-//     setModalTitle(title);
-//     setButtonName(button);
-//     setModalOpen(!modalOpen);
-//   };
-  
-//   const handleClosingDialogState = () => {
-//     setModalOpen(!modalOpen);
-//   };
-
-//   const rows = [
-//     {
-//       name: 'Braveer', price:' $10.00',
-//       status: <CustomButton variant="outlined"> Enabled </CustomButton>,
-//       action:
-//         <Stack justifyContent='end' spacing={2} direction="row">
-//           <Button variant="outlined" size="small" startIcon={<Edit />}  onClick={() => handleDialogState('Update Premium Services', 'Update')}>Edit</Button>
-//           <Button variant="outlined" size="small" startIcon={<EyeInvisibleFilled />} color="error">Disable</Button>
-//         </Stack>
-//     },
-//     {
-//       name: 'Braveer', price:' $10.00',
-//       status: <CustomButton variant="outlined"> Enabled </CustomButton>,
-//       action:
-//         <Stack justifyContent='end' spacing={2} direction="row">
-//           <Button variant="outlined" size="small" startIcon={<Edit />}>Edit</Button>
-//           <Button variant="outlined" size="small" startIcon={<EyeInvisibleFilled />} color="error">Disable</Button>
-//         </Stack>
-//     },
-//     {
-//       name: 'Braveer', price:' $10.00',
-//       status: <CustomButton variant="outlined"> Enabled </CustomButton>,
-//       action:
-//         <Stack justifyContent='end' spacing={2} direction="row">
-//           <Button variant="outlined" size="small" startIcon={<Edit />}>Edit</Button>
-//           <Button variant="outlined" size="small" startIcon={<EyeInvisibleFilled />} color="error">Disable</Button>
-//         </Stack>
-//     },
-//     {
-//       name: 'Braveer', price:' $10.00',
-//       status: <CustomButton variant="outlined"> Enabled </CustomButton>,
-//       action:
-//         <Stack justifyContent='end' spacing={2} direction="row">
-//           <Button variant="outlined" size="small" startIcon={<Edit />}>Edit</Button>
-//           <Button variant="outlined" size="small" startIcon={<EyeInvisibleFilled />} color="error">Disable</Button>
-//         </Stack>
-//     },
-//     {
-//       name: 'Braveer', price:' $10.00',
-//       status: <CustomButton variant="outlined"> Enabled </CustomButton>,
-//       action:
-//         <Stack justifyContent='end' spacing={2} direction="row">
-//           <Button variant="outlined" size="small" startIcon={<Edit />}>Edit</Button>
-//           <Button variant="outlined" size="small" startIcon={<EyeInvisibleFilled />} color="error">Disable</Button>
-//         </Stack>
-//     },
-//     {
-//       name: 'Braveer', price:' $10.00',
-//       status: <CustomButton variant="outlined"> Enabled </CustomButton>,
-//       action:
-//         <Stack justifyContent='end' spacing={2} direction="row">
-//           <Button variant="outlined" size="small" startIcon={<Edit />}>Edit</Button>
-//           <Button variant="outlined" size="small" startIcon={<EyeInvisibleFilled />} color="error">Disable</Button>
-//         </Stack>
-//     },
-//   ];
-
-//   const InputFields = [
-//     { id:'A1', fieldName : 'Service Name *'},
-//     { id:'A2', fieldName : 'Cost *'}
-//   ]
-
-//   return (
-//     <Box>
-//       <Grid sx={{ display: 'flex', mb: 3 }}>
-//         <Grid alignContent='center' sx={{ flexGrow: 1 }}>
-//           <Typography variant="subtitle1">All Premium Services</Typography>
-//         </Grid>
-//         <Grid>
-//           <Stack justifyContent='start' spacing={2} direction="row">
-//             <Button variant="outlined" onClick={()=> handleDialogState('Add PremiumServices', 'Create')}>+ Add New</Button>
-//           </Stack>
-//         </Grid>
-//       </Grid>
-//       <DynamicDataTable columns={columns} rows={rows} />
-
-//       {/* Modals for all */}
-//       <DialogModal handleClosingDialogState={handleClosingDialogState} modalOpen={modalOpen} title={modalTitle} buttonName={buttonName} InputFields={InputFields}/>
-
-
-//     </Box>
-//   );
-// }
-
-// export default PremiumServices

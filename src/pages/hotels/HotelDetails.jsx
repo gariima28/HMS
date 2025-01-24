@@ -10,14 +10,14 @@ import { Link } from 'react-router-dom';
 import { updateHotelApi } from 'api/api';
 import { Snackbar, Alert } from '@mui/material';
 
-import HashLoader from 'components/HashLoader';
+import HashLoader from 'components/Skeleton/HashLoader';
 
 const ServerIP = 'http://89.116.122.211:5001'
 const token = `Bearer ${localStorage.getItem('token')}`;
 
-const CustomButton = styled(Button)(({status}) => ({
+const CustomButton = styled(Button)(({ status }) => ({
   borderRadius: '50px',
-  backgroundColor:  status === 'enable' ? '#E6F4EA' : '#fee5e5',
+  backgroundColor: status === 'enable' ? '#E6F4EA' : '#fee5e5',
   borderColor: status === 'enable' ? '#57C168' : 'red',
   color: status === 'enable' ? '#57C168' : 'red',
   padding: '2px 26px',
@@ -25,7 +25,7 @@ const CustomButton = styled(Button)(({status}) => ({
   textTransform: 'none',
 
   '&:hover': {
-    backgroundColor:  status === 'enable' ? '#D4ECD9' : '#fccfcf',
+    backgroundColor: status === 'enable' ? '#D4ECD9' : '#fccfcf',
     borderColor: status === 'enable' ? '#57C168' : 'red',
     color: status === 'enable' ? '#57C168' : 'red'
   },
@@ -63,7 +63,7 @@ const HotelDetails = () => {
       setShowLoader(true)
       const transformedRows = data.map((hotels) => ({
         ...hotels,
-        status: <CustomButton variant="outlined" status={`${hotels.status? 'enable' : 'disable'}`}> {hotels.status ? 'Active' : 'InActive'} </CustomButton>,
+        status: <CustomButton variant="outlined" status={`${hotels.status ? 'enable' : 'disable'}`}> {hotels.status ? 'Active' : 'InActive'} </CustomButton>,
         action: (
           <Stack justifyContent='end' spacing={2} direction="row">
             <Button component={Link} to={`/hotelForm/${hotels.hotelId}`} variant="outlined" size="small" startIcon={<Edit />}>Edit</Button>
@@ -138,7 +138,7 @@ const HotelDetails = () => {
           {snackbar.message}
         </Alert>
       </Snackbar>
-      
+
     </Box>
   );
 }
