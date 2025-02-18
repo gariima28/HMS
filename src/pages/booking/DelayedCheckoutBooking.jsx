@@ -12,6 +12,8 @@ import { RightOutlined } from '@ant-design/icons';
 import DynamicDataTable from 'components/DynamicDataTable';
 import useSWR from 'swr';
 import axios from 'axios';
+import PlaceholderTable from 'components/Skeleton/PlaceholderTable';
+import NoDataFound from 'pages/NoDataFound';
 
 // const LocalGirjesh = 'http://192.168.20.109:5001';
 const ServerIP = 'http://89.116.122.211:5001'
@@ -76,6 +78,13 @@ const CustomButton = styled(Button)(() => ({
     borderColor: '#4634ff',
     color: '#fff',
   },
+
+  '&:disabled': {
+    backgroundColor: '#7d72fa',
+    borderColor: '#7d72fa',
+    color: '#fff',
+  },
+
 }));
 
 const columns = [
@@ -95,6 +104,12 @@ const DelayedCheckoutBooking = () => {
 
   const [rows, setRows] = useState([]);
 
+  const [checkIn, setCheckIn] = useState(null);
+  const [checkOut, setCheckOut] = useState(null);
+  const [showDataTableLoader, setShowDataTableLoader] = useState(false);
+
+  const isButtonEnabled = checkIn && checkOut;
+
   const [toaster, setToaster] = useState(false)
   const [msgToaster, setMsgToaster] = useState('')
   const [anchorEl, setAnchorEl] = useState(null);
@@ -113,11 +128,16 @@ const DelayedCheckoutBooking = () => {
 
   useEffect(() => {
     if (data) {
+      setShowDataTableLoader(true)
       console.log(data?.delayedCheckOut, 'data');
-      const transformedRows = data.delayedCheckOut.map((booking) => ({
-        ...booking,
-        // checkInCheckOut: booking.checkInDate - booking.checkOutDate,
-        // image: booking.icon === null ? '-' : booking.icon.split('/').pop(),
+      const transformedRows = data.delayedCheckOut.map((booking) => {
+        const checkInDate = new Date(booking.checkInDate).toISOString().split('T')[0];
+        const checkOutDate = new Date(booking.checkOutDate).toISOString().split('T')[0];
+
+        return {
+          ...booking,
+          due: booking.pendingAmount,
+          checkInCheckOut: `${checkInDate} | ${checkOutDate}`,
         status: <CustomEnableButton variant="outlined" status={`${booking.status ? 'running' : 'upcoming'}`}> {booking.status ? 'Running' : 'Upcoming'} </CustomEnableButton>,
         action: (
           <Stack justifyContent='end' spacing={2} direction="row">
@@ -147,10 +167,15 @@ const DelayedCheckoutBooking = () => {
                 <MenuItem onClick={handleClose}>Logout</MenuItem>
               </Menu>
             </div> */}
-          </Stack>
-        ),
-      }));
+            </Stack>
+          ),
+        }
+
+      });
       setRows(transformedRows);
+      setTimeout(() => {
+        setShowDataTableLoader(false)
+      }, 1800);
     }
     if (msgToaster) {
       handleOpeningToasterState();
@@ -177,37 +202,29 @@ const DelayedCheckoutBooking = () => {
         </Grid>
       </Grid>
       <Grid container spacing={1} sx={{ backgroundColor: '#ffffff', p: 1, mb: 4 }}>
-        <Grid xs={12} sm={6} md={6} lg={3} >
+        <Grid item xs={12} sm={6} md={6} lg={4}>
           <Stack spacing={1}>
-            <InputLabel htmlFor="Keywords">Keywords</InputLabel>
-            <OutlinedInput id="Keywords" type="text" name="roomType" placeholder="" fullWidth />
-          </Stack>
-        </Grid>
-        <Grid xs={12} sm={6} md={6} lg={3} >
-          <Stack spacing={1}>
-            <InputLabel htmlFor="subTitle">Check In </InputLabel>
+            <InputLabel htmlFor="checkIn">Check In</InputLabel>
             <LocalizationProvider dateAdapter={AdapterDayjs}>
-              <DatePicker />
+              <DatePicker value={checkIn} onChange={(newValue) => setCheckIn(newValue)} renderInput={(params) => <OutlinedInput {...params} fullWidth />} />
             </LocalizationProvider>
           </Stack>
         </Grid>
-        <Grid xs={12} sm={6} md={6} lg={3} >
+        <Grid item xs={12} sm={6} md={6} lg={4}>
           <Stack spacing={1}>
-            <InputLabel htmlFor="subTitle">Checkout </InputLabel>
+            <InputLabel htmlFor="checkOut">Checkout</InputLabel>
             <LocalizationProvider dateAdapter={AdapterDayjs}>
-              <DatePicker />
-              {/* <DemoContainer components={['DatePicker']}>
-              </DemoContainer> */}
+              <DatePicker value={checkOut} onChange={(newValue) => setCheckOut(newValue)} renderInput={(params) => <OutlinedInput {...params} fullWidth />} />
             </LocalizationProvider>
           </Stack>
         </Grid>
-        <Grid alignContent='end' xs={12} sm={6} md={6} lg={3} >
-          <CustomButton variant="outlined" fullWidth sx={{ p: 1 }}>
+        <Grid item xs={12} sm={6} md={6} lg={4} display="flex" alignItems="flex-end">
+          <CustomButton variant="outlined" fullWidth sx={{ p: 1 }} disabled={!isButtonEnabled} >
             <FilterAltIcon sx={{ color: '#fff' }} /> &nbsp; Search
           </CustomButton>
         </Grid>
       </Grid>
-      <DynamicDataTable columns={columns} rows={rows} />
+      {showDataTableLoader ? <PlaceholderTable /> : rows.length > 0 ? <DynamicDataTable columns={columns} rows={rows} /> : <NoDataFound />}
     </Box>
   );
 }

@@ -4,8 +4,12 @@ import CardContent from '@mui/material/CardContent';
 import Typography from '@mui/material/Typography';
 import { UserOutlined } from '@ant-design/icons';
 import { Grid } from '@mui/material';
+import { useNavigate } from 'react-router';
 
-const CheckInCheckoutCards = ({ name, mobile, bookingNo, totalRooms }) => {
+const CheckInCheckoutCards = ({ name, mobile, bookingNo, bookingId, totalRooms }) => {
+
+  const navigate = useNavigate()
+
   return (
     <Card
       sx={{
@@ -25,11 +29,11 @@ const CheckInCheckoutCards = ({ name, mobile, bookingNo, totalRooms }) => {
         <Typography variant='subtitle2' sx={{ color: 'text.secondary' }}>
           Mobile : {mobile}
         </Typography>
-        <Grid sx={{display: 'flex'}}>
+        <Grid sx={{ display: 'flex' }}>
           <Typography variant='subtitle2' sx={{ color: 'text.secondary' }}>
             Booking No. :
           </Typography>
-          <Typography variant="subtitle2" sx={{ color: '#0d6efd', '&:hover': { color: '#4634ff' }, ml:0.4 }}>
+          <Typography variant="subtitle2" onClick={() => navigate(`/bookedRoomInBookings/${bookingId}`)} sx={{ color: '#0d6efd', cursor: 'pointer', '&:hover': { color: '#4634ff' }, ml: 0.4 }}>
             {bookingNo}
           </Typography>
         </Grid>

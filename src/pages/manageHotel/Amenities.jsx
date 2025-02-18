@@ -13,9 +13,10 @@ import { addAmenitiesApi, getAmenitiesDataByIdApi, updateAmenitiesApi, updateAme
 import { useForm } from 'react-hook-form';
 import ErrorPage from 'components/ErrorPage';
 import PlaceholderTable from 'components/Skeleton/PlaceholderTable';
-import CircularProgressLoader from 'components/Skeleton/CircularProgressLoader';
+import HashLoader from 'components/Skeleton/HashLoader';
 
 const ServerIP = 'https://www.auth.edu2all.in/hms';
+// const ServerIP = 'http://192.168.20.109:5001'
 const token = `Bearer ${localStorage.getItem('token')}`;
 
 // Custom Button CSS using Material UI Styles
@@ -37,7 +38,7 @@ const CustomButton = styled(Button)(({ status }) => ({
 // Table Columns
 const columns = [
   { id: 'amenitiesName', label: 'Title', minWidth: 170 },
-  { id: 'image', label: 'Icon', minWidth: 100 },
+  { id: 'image', label: 'Icon', minWidth: 100, align: 'center' },
   { id: 'status', label: 'Status', minWidth: 170, align: 'center' },
   { id: 'action', label: 'Action', minWidth: 170, align: 'right' },
 ];
@@ -92,10 +93,18 @@ const Amenities = () => {
   ];
 
   // Get API
-  const { data, error } = useSWR(`${ServerIP}/amenites/getAll`, fetcher, {
+  const { data, error, isValidating } = useSWR(`${ServerIP}/amenites/getAll`, fetcher, {
     onLoadingSlow: () => setShowDataTableLoader(true),
     onSuccess: () => setShowDataTableLoader(false),
   });
+
+  // Track if request is pending
+  useEffect(() => {
+    if (isValidating) {
+      console.log(isValidating, 'isValidating')
+      console.log("API request is pending...");
+    }
+  }, [isValidating]);
 
   const refreshData = () => {
     mutate(`${ServerIP}/amenites/getAll`);
@@ -123,7 +132,8 @@ const Amenities = () => {
       setShowDataTableLoader(true)
       const transformedRows = data.Amenities.map((amenity) => ({
         ...amenity,
-        image: amenity.icon === null ? '-' : amenity.icon.split('/').pop(),
+        image: amenity.icon === null ? '-' : <img src={amenity?.icon} alt="" height={28} />,
+        // image: amenity.icon === null ? '-' : amenity.icon.split('/').pop(),
         status: <CustomButton variant="outlined" status={`${amenity.status ? 'enable' : 'disable'}`}> {amenity.status ? 'Enabled' : 'Disabled'} </CustomButton>,
         action: (
           <Stack justifyContent='end' spacing={2} direction="row">
@@ -145,10 +155,10 @@ const Amenities = () => {
         ),
       }));
 
+      setRows(transformedRows);
       setTimeout(() => {
         setShowDataTableLoader(false)
-        setRows(transformedRows);
-      }, 1000);
+      }, 1800);
     }
   }, [data]);
 
@@ -227,11 +237,6 @@ const Amenities = () => {
       setShowLoader(false);
     }
   };
-  useEffect(() => {
-    console.log("showStatusLoader:", showStatusLoader);
-    console.log("statusLoaderId:", statusLoaderId);
-  }, [showStatusLoader, statusLoaderId]);
-
 
   const UpdateAmenitiesStatus = async (id, amenityStatus) => {
     setShowStatusLoader(true)
@@ -243,7 +248,7 @@ const Amenities = () => {
       if (response?.status === 200) {
         setTimeout(() => {
           handleSnackbarMessage(response?.data?.message, 'success');
-          // refreshData();
+          refreshData();
           setShowStatusLoader(false)
         }, 1000);
       } else {
@@ -326,9 +331,17 @@ const Amenities = () => {
     />
   );
 
+  if (isValidating) return (
+    <ErrorPage
+      errorMessage={`The request is taking longer than expected. Please wait or try again.`}
+      onReload={() => { window.location.reload(), console.log(error, 'dhbj') }}
+      statusCode={`Pending`}
+    />
+  );
+
   return (
     <Box>
-      {/* {showLoader && <HashLoader />} */}
+      {showStatusLoader && <HashLoader />}
       <Grid sx={{ display: 'flex', mb: 3 }}>
         <Grid alignContent='center' sx={{ flexGrow: 1 }}>
           <Typography variant="h5">All Amenities</Typography>
@@ -342,7 +355,7 @@ const Amenities = () => {
         </Grid>
       </Grid>
       {/* Data Table */}
-      {showDataTableLoader ? <PlaceholderTable/> : <DynamicDataTable columns={columns} rows={rows} /> }
+      {showDataTableLoader ? <PlaceholderTable /> : <DynamicDataTable columns={columns} rows={rows} /> }
 
       {/* Modals for all Add and Update */}
       <DialogModal handleClosingDialogState={handleClosingDialogState} modalOpen={modalOpen} title={modalTitle} buttonName={buttonName} InputFields={buttonName === 'Create' ? AddInputFields : UpdateInputFields} onSubmit={buttonName === 'Create' ? AddNewAmenity : UpdateAmenitiesData} reset={reset} updateFormDataa={updateFormDataa} showModalLoader={showModalLoader} />

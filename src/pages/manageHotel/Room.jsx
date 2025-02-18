@@ -12,6 +12,7 @@ import HashLoader from 'components/Skeleton/HashLoader';
 import { addRoomApi, allRoomTypesApi, getRoomDataByIdApi, updateRoomApi } from 'api/api';
 import { useForm } from 'react-hook-form';
 import ErrorPage from 'components/ErrorPage';
+import PlaceholderTable from 'components/Skeleton/PlaceholderTable';
 
 const ServerIP = 'https://www.auth.edu2all.in/hms';
 const token = `Bearer ${localStorage.getItem('token')}`;
@@ -54,6 +55,8 @@ const Rooms = () => {
   const [allRoomTypes, setAllRoomTypes] = useState([]);
   const { reset } = useForm();
   const [showLoader, setShowLoader] = useState(false);
+  const [showDataTableLoader, setShowDataTableLoader] = useState(false);
+  const [showModalLoader, setShowModalLoader] = useState(false);
 
   // Add Room State Function
   const [formDataa, setFormDataa] = useState({
@@ -174,8 +177,8 @@ const Rooms = () => {
 
   // Get API
   const { data, error } = useSWR(`${ServerIP}/room/getAll`, fetcher, {
-    onLoadingSlow: () => setShowLoader(true),
-    onSuccess: () => setShowLoader(false),
+    onLoadingSlow: () => setShowDataTableLoader(true),
+    onSuccess: () => setShowDataTableLoader(false),
   });
 
   const refreshData = () => {
@@ -201,7 +204,7 @@ const Rooms = () => {
 
   useEffect(() => {
     if (data) {
-      setShowLoader(true)
+      setShowDataTableLoader(true)
       const transformedRows = data.room.map((room) => ({
         ...room,
         image: room.icon ? room.roomImage.split('/').pop() : '-',
@@ -214,10 +217,10 @@ const Rooms = () => {
         ),
       }));
 
+      setRows(transformedRows);
       setTimeout(() => {
-        setShowLoader(false)
-        setRows(transformedRows);
-      }, 1000);
+        setShowDataTableLoader(false)
+      }, 1800);
     }
   }, [data]);
 
@@ -226,13 +229,13 @@ const Rooms = () => {
   };
 
   const AddNewRoom = async (formData) => {
-    setShowLoader(true);
+    setShowModalLoader(true);
 
     console.log(formData.roomType, formData.roomNumber);
     if (!formData.roomType || !formData.roomNumber) {
       setTimeout(() => {
         handleSnackbarMessage('Please fill in all fields before submitting.', 'error');
-        setShowLoader(false);
+        setShowModalLoader(false);
       }, 1000);
       return;
     }
@@ -246,7 +249,7 @@ const Rooms = () => {
       const response = await addRoomApi(jsonData);
       if (response.status === 200 && response?.data?.status === 'success') {
         setTimeout(() => {
-          setShowLoader(false);
+          setShowModalLoader(false);
           handleSnackbarMessage('Room Added Successfully', 'success');
           setModalOpen(false);
           refreshData();
@@ -258,13 +261,13 @@ const Rooms = () => {
         }, 1000);
       } else {
         setTimeout(() => {
-          setShowLoader(false);
-          handleSnackbarMessage('Error adding room', 'error');
+          setShowModalLoader(false);
+          handleSnackbarMessage(`Error adding room - ${response?.data?.message}`, 'error', );
         }, 1000);
       }
     } catch (error) {
       setTimeout(() => {
-        setShowLoader(false);
+        setShowModalLoader(false);
         handleSnackbarMessage(`Error adding room, ${error}`, 'error');
       }, 1000);
     }
@@ -331,7 +334,7 @@ const Rooms = () => {
 
 
   const UpdateRoomsData = async (data) => {
-    setShowLoader(true);
+    setShowModalLoader(true);
 
     try {
       const jsonData = {};
@@ -351,21 +354,25 @@ const Rooms = () => {
         // Make the API call
         const response = await updateRoomApi(roomId, jsonData);
         if (response?.status === 200 && response?.data?.status === 'success') {
-          setShowLoader(false);
-          refreshData();
-          handleSnackbarMessage(response?.data?.message, 'success');
-          setModalOpen(false);
+          setTimeout(() => {
+            setShowModalLoader(false);
+            refreshData();
+            handleSnackbarMessage(response?.data?.message, 'success');
+            setModalOpen(false);
+          }, 1000);
         } else {
-          setShowLoader(false);
-          handleSnackbarMessage(response?.data?.message || 'Error during update.', 'error');
+          setTimeout(() => {
+            setShowModalLoader(false);
+            handleSnackbarMessage(response?.data?.message, 'error');
+          }, 1000);
         }
       } else {
         // No changes to submit
-        setShowLoader(false);
+        setShowModalLoader(false);
         handleSnackbarMessage('No changes made.', 'warning');
       }
     } catch (error) {
-      setShowLoader(false);
+      setShowModalLoader(false);
       console.error('Error during update:', error);
       handleSnackbarMessage('Error during update. Please try again later.', 'error');
     }
@@ -375,7 +382,7 @@ const Rooms = () => {
   if (error) return (
     <ErrorPage
       errorMessage={`${error}`}
-      onReload={() => { window.location.reload(), console.log(error, 'dhbj') }}
+      onReload={() => { window.location.reload() }}
       statusCode={`${error.status}`}
     />
   );
@@ -397,10 +404,10 @@ const Rooms = () => {
         </Grid>
       </Grid>
       {/* Data Table */}
-      <DynamicDataTable columns={columns} rows={rows} />
+      {showDataTableLoader ? <PlaceholderTable /> : rows.length > 0 && <DynamicDataTable columns={columns} rows={rows} />}
 
       {/* Modals for all Add and Update */}
-      <DialogModal handleClosingDialogState={handleClosingDialogState} modalOpen={modalOpen} title={modalTitle} buttonName={buttonName} InputFields={buttonName === 'Create' ? AddInputFields : UpdateInputFields} onSubmit={buttonName === 'Create' ? AddNewRoom : UpdateRoomsData} reset={reset} updateFormDataa={updateFormDataa} />
+      <DialogModal handleClosingDialogState={handleClosingDialogState} modalOpen={modalOpen} title={modalTitle} buttonName={buttonName} InputFields={buttonName === 'Create' ? AddInputFields : UpdateInputFields} onSubmit={buttonName === 'Create' ? AddNewRoom : UpdateRoomsData} reset={reset} updateFormDataa={updateFormDataa} showModalLoader={showModalLoader} />
 
       {/* Snackbar for Notifications */}
       <Snackbar open={snackbar.open} autoHideDuration={3000} onClose={handleSnackbarClose} anchorOrigin={{ vertical: 'top', horizontal: 'right' }}>

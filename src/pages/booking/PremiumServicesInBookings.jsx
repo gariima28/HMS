@@ -67,8 +67,8 @@ const PremiumServicesInBookings = () => {
   useEffect(() => {
     if (data) {
       // setMsgToaster(data?.message)
-      console.log(data?.premiumBooking, 'data');
-      const transformedRows = data.premiumBooking.map((premiumBooking, index) => ({
+      console.log(data?.allPremBookings, 'data');
+      const transformedRows = data.allPremBookings.map((premiumBooking, index) => ({
         ...premiumBooking,
         sno: index + 1,
         cost: premiumBooking.cost ?? '-',

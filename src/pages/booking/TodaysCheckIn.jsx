@@ -14,6 +14,9 @@ import useSWR from 'swr';
 import axios from 'axios';
 import { MenuItem } from '@mui/base';
 import { Link } from 'react-router-dom';
+import ErrorPage from 'components/ErrorPage';
+import PlaceholderTable from 'components/Skeleton/PlaceholderTable';
+import NoDataFound from 'pages/NoDataFound';
 
 // const LocalGirjesh = 'http://192.168.20.109:5001';
 const ServerIP = 'http://89.116.122.211:5001'
@@ -101,6 +104,7 @@ const TodaysCheckIn = () => {
   const [msgToaster, setMsgToaster] = useState('')
   const [anchorEl, setAnchorEl] = useState(null);
   const [openBookingId, setOpenBookingId] = useState(null);
+  const [showDataTableLoader, setShowDataTableLoader] = useState(false);
   const open = Boolean(anchorEl);
 
   const handleClick = (event) => {
@@ -116,6 +120,7 @@ const TodaysCheckIn = () => {
 
   useEffect(() => {
     if (data) {
+      setShowDataTableLoader(true)
       console.log(data?.todayBooking, 'data');
       const transformedRows = data.todayBooking.map((booking) => {
         const checkInDate = new Date(booking.checkInDate).toISOString().split('T')[0];
@@ -124,8 +129,8 @@ const TodaysCheckIn = () => {
         return{
           ...booking,
           checkInCheckOut: `${checkInDate} | ${checkOutDate}`,
-          // image: booking.icon === null ? '-' : booking.icon.split('/').pop(),
-          // status: <CustomEnableButton variant="outlined" status={`${booking.status ? 'running' : 'upcoming'}`}> {booking.status ? 'Running' : 'Upcoming'} </CustomEnableButton>,
+          due: booking.pendingAmount,
+          status: <CustomEnableButton variant="outlined" status={`${booking.status ? 'running' : 'upcoming'}`}> {booking.status ? 'Running' : 'Upcoming'} </CustomEnableButton>,
           action: (
             <Stack justifyContent='end' spacing={2} direction="row">
               <DetailsButton variant="outlined" size="small" startIcon={<ComputerSharp />} href={`bookingDetailsPage/${booking.bookingId}`}>Details</DetailsButton>
@@ -180,6 +185,9 @@ const TodaysCheckIn = () => {
 
       });
       setRows(transformedRows);
+      setTimeout(() => {
+        setShowDataTableLoader(false)
+      }, 1800);
     }
     if (msgToaster) {
       handleOpeningToasterState();
@@ -187,7 +195,15 @@ const TodaysCheckIn = () => {
   }, [token, data, msgToaster]);
 
 
-  if (error) { <Typography variant="subtitle1">- Error loading data</Typography> };
+
+
+  if (error) return (
+    <ErrorPage
+      errorMessage={`${error}`}
+      onReload={() => { window.location.reload(), console.log(error, 'dhbj') }}
+      statusCode={`${error.status}`}
+    />
+  );
   if (!data) return <Typography variant="subtitle1">Speed is slow from Backend &nbsp; : - &nbsp; Loading Data...</Typography>;
 
 
@@ -205,36 +221,7 @@ const TodaysCheckIn = () => {
           </Stack>
         </Grid>
       </Grid>
-      {/* <Grid container spacing={1} sx={{ backgroundColor: '#ffffff', p: 1, mb: 4 }}>
-        <Grid xs={12} sm={6} md={6} lg={3} >
-          <Stack spacing={1}>
-            <InputLabel htmlFor="Keywords">Keywords</InputLabel>
-            <OutlinedInput id="Keywords" type="text" name="roomType" placeholder="" fullWidth />
-          </Stack>
-        </Grid>
-        <Grid xs={12} sm={6} md={6} lg={3} >
-          <Stack spacing={1}>
-            <InputLabel htmlFor="subTitle">Check In </InputLabel>
-            <LocalizationProvider dateAdapter={AdapterDayjs}>
-              <DatePicker />
-            </LocalizationProvider>
-          </Stack>
-        </Grid>
-        <Grid xs={12} sm={6} md={6} lg={3} >
-          <Stack spacing={1}>
-            <InputLabel htmlFor="subTitle">Checkout </InputLabel>
-            <LocalizationProvider dateAdapter={AdapterDayjs}>
-              <DatePicker />
-            </LocalizationProvider>
-          </Stack>
-        </Grid>
-        <Grid alignContent='end' xs={12} sm={6} md={6} lg={3} >
-          <CustomButton variant="outlined" fullWidth sx={{ p: 1 }}>
-            <FilterAltIcon sx={{ color: '#fff' }} /> &nbsp; Search
-          </CustomButton>
-        </Grid>
-      </Grid> */}
-      <DynamicDataTable columns={columns} rows={rows} />
+      {showDataTableLoader ? <PlaceholderTable /> : rows.length > 0 ? <DynamicDataTable columns={columns} rows={rows} /> : <NoDataFound />}
     </Box>
   );
 }

@@ -22,8 +22,8 @@ const DynamicDataTable = ({ columns, rows, dataViewId }) => {
   };
 
   return (
-    <Paper sx={{ width: '100%', overflow: 'hidden' }}>
-      <TableContainer>
+    <Paper sx={{ width: '100%'}}>
+      <TableContainer sx={{ maxHeight: '500px', overflow: 'scroll' }}>
         <Table stickyHeader aria-label="sticky table">
           <TableHead>
             <TableRow>
@@ -31,7 +31,13 @@ const DynamicDataTable = ({ columns, rows, dataViewId }) => {
                 <TableCell
                   key={column.id}
                   align={column.align}
-                  style={{ minWidth: column.minWidth }}
+                  style={{
+                    minWidth: column.minWidth,
+                    position: 'sticky',
+                    top: 0,
+                    zIndex: 1,
+                    textWrap: 'nowrap'
+                  }}
                 >
                   {column.label}
                 </TableCell>
@@ -45,7 +51,7 @@ const DynamicDataTable = ({ columns, rows, dataViewId }) => {
                   {columns.map((column) => {
                     const value = row[column.id];
                     return (
-                      <TableCell key={column.id} align={column.align}>
+                      <TableCell key={column.id} align={column.align} sx={{ textWrap: 'nowrap' }}>
                         {column.format && typeof value === 'number' ? column.format(value) : value}
                       </TableCell>
                     );

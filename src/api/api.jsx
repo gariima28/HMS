@@ -91,6 +91,22 @@ export const updateHotelApi = async (id, data) => {
 // ******************************************************************************************************
 
 
+export const getAllBookingApi = async (checkInDate, checkOutDate) => { //
+    axios.defaults.headers.common["Authorization"] = token;
+    // var res = await axios.get(`${ServerIP}/booking/availRoom`, data);
+    var res = await axios.get(`${ServerIP}${ServerIP}/booking/getAll?startDate=${checkInDate}&endDate=${checkOutDate}`);
+    if (res) {
+        return res;
+    } else {
+        return [];
+    }
+}
+
+// ******************************************************************************************************
+//  Book Room API  //
+// ******************************************************************************************************
+
+
 export const getAvailableRoomApi = async (roomType, noOfRooms, checkInDate, checkOutDate) => { //
     axios.defaults.headers.common["Authorization"] = token;
     // var res = await axios.get(`${ServerIP}/booking/availRoom`, data);

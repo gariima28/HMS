@@ -7,6 +7,7 @@ import DynamicDataTable from 'components/DynamicDataTable';
 import useSWR from 'swr';
 import axios from 'axios';
 import { useParams } from 'react-router';
+import NoDataFound from 'pages/NoDataFound';
 
 // const LocalGirjesh = 'http://192.168.20.109:5001';
 const ServerIP = 'http://89.116.122.211:5001'
@@ -31,7 +32,7 @@ const RoomButton = styled(Button)(({ status }) => ({
 
 const CustomEnableButton = styled(Button)(({ disabled }) => ({
   backgroundColor: '#eb2222',
-  opacity: disabled ? 0.65 :1,
+  opacity: disabled ? 0.65 : 1,
   borderColor: '#eb2222',
   color: '#fff',
   padding: '8px 26px',
@@ -61,7 +62,7 @@ const fetcher = (url) => axios.get(url, { headers: { Authorization: token } }).t
 
 const BookedRoomInBookings = () => {
 
-  const {id} = useParams();
+  const { id } = useParams();
   const [rows, setRows] = useState([]);
 
   // get API
@@ -70,7 +71,7 @@ const BookedRoomInBookings = () => {
   useEffect(() => {
     if (data) {
       console.log(data, 'data');
-      const transformedRows = data?.rooms?.map((bookedRooms) => ({
+      const transformedRows = data?.data?.rooms?.map((bookedRooms) => ({
         ...bookedRooms,
         roomNum: <RoomButton variant="outlined" status='roomNo'><Typography variant='h6'>{bookedRooms.roomNo}</Typography><Typography variant='h6'>{bookedRooms.roomType}</Typography></RoomButton>,
         action: <CustomEnableButton variant="outlined" disabled={true} status='cancel'>Cancel Booking </CustomEnableButton>,
@@ -90,28 +91,26 @@ const BookedRoomInBookings = () => {
         <Grid alignContent='center' sx={{ flexGrow: 1 }}>
           <Typography variant="h4">Booked Rooms</Typography>
         </Grid>
-        <Grid>
-          <Stack justifyContent='start' spacing={2} direction="row">
-            {/* <CustomButton variant="outlined" href="bookRoom">
-              <RightOutlined />  Book New
-            </CustomButton> */}
-          </Stack>
-        </Grid>
       </Grid>
       <Grid sx={{ display: 'flex', mb: 2 }}>
         <Grid alignContent='center' sx={{ flexGrow: 1 }}>
           <Typography variant="h5">Booking Number: {id}</Typography>
-          <Typography variant="h6" sx={{ mt: 2, display:'flex' }}>Booked By : <Typography variant="h6" sx={{ color: '#1e9ff2', ml:0.6 }}> Receptionist 1</Typography></Typography>
+          <Typography variant="h6" sx={{ mt: 2, display: 'flex' }}>Booked By : <Typography variant="h6" sx={{ color: '#1e9ff2', ml: 0.6 }}> Receptionist 1</Typography></Typography>
         </Grid>
         <Grid alignContent='end'>
           <Stack justifyContent='start' spacing={2} direction="row">
-            <Grid spacing={2} sx={{display: 'flex', alignContent: 'center'}}><Rectangle sx={{ color: '#eb2222', borderRadius: '100px'}}/> <Typography variant="body" ml={0.5}>Canceled</Typography></Grid>
+            <Grid spacing={2} sx={{ display: 'flex', alignContent: 'center' }}><Rectangle sx={{ color: '#eb2222', borderRadius: '100px' }} /> <Typography variant="body" ml={0.5}>Canceled</Typography></Grid>
             <Grid spacing={2} sx={{ display: 'flex', alignContent: 'center' }}><Rectangle sx={{ color: '#071251', borderRadius: '100px' }} /> <Typography variant="body" ml={0.5}>Checked Out</Typography></Grid>
             <Grid spacing={2} sx={{ display: 'flex', alignContent: 'center' }}><Rectangle sx={{ color: '#0779e4', borderRadius: '100px' }} /> <Typography variant="body" ml={0.5}>Booked</Typography></Grid>
           </Stack>
         </Grid>
       </Grid>
-      <DynamicDataTable columns={columns} rows={rows} />
+      {Array.isArray(rows) && rows.length > 0 ? (
+        <DynamicDataTable columns={columns} rows={rows} />
+      )
+        : 
+          <NoDataFound/>
+      }
     </Box>
   );
 }

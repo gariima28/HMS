@@ -10,6 +10,8 @@ import DialogModal from 'components/DialogModal';
 import useSWR, { mutate } from "swr";
 import axios from 'axios';
 import { addAmenitiesApi, getAmenitiesDataByIdApi, updateAmenitiesApi, updateAmenitiesStatus } from 'api/api';
+import NoDataFound from 'pages/NoDataFound';
+import PlaceholderTable from 'components/Skeleton/PlaceholderTable';
 // import { useForm } from 'react-hook-form';
 
 // const LocalGirjesh = 'http://192.168.20.109:5001';
@@ -52,6 +54,8 @@ const fetcher = (url) => axios.get(url, { headers: { Authorization: token } }).t
 const AddedPServices = () => {
 
   const [rows, setRows] = useState([]);
+  const [showDataTableLoader, setShowDataTableLoader] = useState(false);
+
   // get API
   const { data, error } = useSWR(`${ServerIP}/booking/getAllPremBooking`, fetcher);
 
@@ -63,9 +67,10 @@ const AddedPServices = () => {
   // useEffect
   useEffect(() => {
     if (data) {
+      setShowDataTableLoader(true)
       // setMsgToaster(data?.message)
       console.log(data?.allPremBookings, 'data');
-      const transformedRows = data.allPremBookings.map((allPremBookings, index) => ({
+      const transformedRows = data?.allPremBookings?.map((allPremBookings, index) => ({
         ...allPremBookings,
         sno: index+1,
         cost: allPremBookings.cost ?? '-',
@@ -84,6 +89,9 @@ const AddedPServices = () => {
         // ),
       }));
       setRows(transformedRows);
+      setTimeout(() => {
+        setShowDataTableLoader(false)
+      }, 1800);
     }
   }, [data]);
 
@@ -107,8 +115,7 @@ const AddedPServices = () => {
       </Grid>
 
       {/* Data Table */}
-      <DynamicDataTable columns={columns} rows={rows} />
-
+      {showDataTableLoader ? <PlaceholderTable /> : rows?.length > 0 ? <DynamicDataTable columns={columns} rows={rows} /> : <NoDataFound />}
     </Box>
   );
 };

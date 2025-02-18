@@ -19,7 +19,7 @@ import noData from 'assets/images/nodata.svg'
 import { Grid } from '@mui/material'
 import { Box } from '@mui/system'
 
-const NoPageFound = () => {
+const NoDataFound = () => {
   return (
     <Box>
       <Grid container justifyContent='center' sx={{ width: '100%' }}>
@@ -29,4 +29,4 @@ const NoPageFound = () => {
   )
 }
 
-export default NoPageFound
+export default NoDataFound

@@ -15,6 +15,7 @@ import { useForm } from 'react-hook-form';
 import ErrorPage from 'components/ErrorPage';
 import { Dialog, DialogTitle, DialogContent, DialogActions, IconButton } from '@mui/material';
 import CloseIcon from '@mui/icons-material/Close';
+import PlaceholderTable from 'components/Skeleton/PlaceholderTable';
 
 const ServerIP = 'https://www.auth.edu2all.in/hms';
 const token = `Bearer ${localStorage.getItem('token')}`;
@@ -58,6 +59,8 @@ const BedTypes = () => {
   const [confirmationAlertOpen, setConfirmationAlertOpen] = useState(false);
   const { reset } = useForm();
   const [showLoader, setShowLoader] = useState(false);
+  const [showDataTableLoader, setShowDataTableLoader] = useState(false);
+  const [showModalLoader, setShowModalLoader] = useState(false);
 
   const [formDataa, setFormDataa] = useState({
     bedTypeName: '',
@@ -90,14 +93,13 @@ const BedTypes = () => {
 
   const UpdateInputFields = [
     { id: 'bedTypeName', field: 'textInput', fieldType: 'text', fieldName: 'BedTypes Title *', placeholder: 'Enter BedTypes Name', value: updateFormDataa.bedTypeName, updateValFunc: handleUpdateFormDataaBedTypesName },
-    // { id: 'status', field: 'select', fieldName: 'Status *', validation: { required: true }, fieldOptions: [{ optionId: 'active', optionName: 'Active', optionValue: 'true' }, { optionId: 'inActive', optionName: 'Inactive', optionValue: 'false' },], value: updateFormDataa.status, updateValFunc: handleUpdateFormDataaBedTypesStatus, },
     { id: 'bedTypeImage', field: 'fileType', fieldType: 'file', fieldName: 'BedTypes Image *', allowedTypes: ['image/jpeg', 'image/png'], value: updateFormDataa.bedTypeImage, updateValFunc: handleUpdateFormDataaBedTypesIcon }
   ];
 
   // Get API
   const { data, error } = useSWR(`${ServerIP}/bedTypes/getAll`, fetcher, {
-    onLoadingSlow: () => setShowLoader(true),
-    onSuccess: () => setShowLoader(false),
+    onLoadingSlow: () => setShowDataTableLoader(true),
+    onSuccess: () => setShowDataTableLoader(false),
   });
 
   const refreshData = () => {
@@ -124,7 +126,7 @@ const BedTypes = () => {
 
   useEffect(() => {
     if (data) {
-      setShowLoader(true)
+      setShowDataTableLoader(true)
       const transformedRows = data.bedTypes.map((bedType, index) => ({
         ...bedType,
         SNo: index + 1,
@@ -140,10 +142,10 @@ const BedTypes = () => {
         ),
       }));
 
+      setRows(transformedRows);
       setTimeout(() => {
-        setShowLoader(false)
-        setRows(transformedRows);
-      }, 1000);
+        setShowDataTableLoader(false)
+      }, 1800);
     }
   }, [data]);
 
@@ -152,27 +154,27 @@ const BedTypes = () => {
   };
 
   const AddNewBedType = async (formData) => {
-    setShowLoader(true);
+    setShowModalLoader(true);
 
     console.log(formData.bedTypeName, formData.status, formData.bedTypeImage);
     if (!formData.bedTypeName || !formData.status || !formData.bedTypeImage) {
       setTimeout(() => {
         handleSnackbarMessage('Please fill in all fields before submitting.', 'error');
-        setShowLoader(false);
+        setShowModalLoader(false);
       }, 1000);
       return;
     }
 
     try {
       const formDataPayload = new FormData();
-      formDataPayload.append('bedTypeName', formData.bedTypeName);
+      formDataPayload.append('bedName', formData.bedTypeName);
       formDataPayload.append('status', formData.status);
       formDataPayload.append('bedImage', formData.bedTypeImage[0]);
 
       const response = await addBedTypesApi(formDataPayload);
       if (response.status === 200 && response?.data?.status === 'success') {
         setTimeout(() => {
-          setShowLoader(false);
+          setShowModalLoader(false);
           handleSnackbarMessage('Bed Type Added Successfully', 'success');
           setModalOpen(false);
           refreshData();
@@ -185,13 +187,13 @@ const BedTypes = () => {
         }, 1000);
       } else {
         setTimeout(() => {
-          setShowLoader(false);
+          setShowModalLoader(false);
           handleSnackbarMessage('Error adding bed type', 'error');
         }, 1000);
       }
     } catch (error) {
       setTimeout(() => {
-        setShowLoader(false);
+        setShowModalLoader(false);
         handleSnackbarMessage(`Error adding bed type, ${error}`, 'error');
       }, 1000);
     }
@@ -257,7 +259,7 @@ const BedTypes = () => {
   };
 
   const UpdateBedTypesData = async (data) => {
-    setShowLoader(true);
+    setShowModalLoader(true);
     console.log(data)
     try {
       const formData = new FormData();
@@ -280,30 +282,30 @@ const BedTypes = () => {
         const response = await updateBedTypesApi(bedTypeId, formData);
         if (response?.status === 200) {
           setTimeout(() => {
-            setShowLoader(false);
+            setShowModalLoader(false);
             refreshData();
             handleSnackbarMessage(response?.data?.message, 'success');
             setModalOpen(false);
           }, 1000);
         } else {
           setTimeout(() => {
-            setShowLoader(false);
+            setShowModalLoader(false);
             handleSnackbarMessage(response?.data?.message, 'error');
           }, 1000);
         }
       } else {
         // No changes to submit
-        setShowLoader(false);
+        setShowModalLoader(false);
         handleSnackbarMessage('No changes made.', 'warning');
       }
     } catch (error) {
       setTimeout(() => {
-        setShowLoader(false);
+        setShowModalLoader(false);
         handleSnackbarMessage('Error during update', 'error');
       }, 1000);
     } finally {
       setTimeout(() => {
-        setShowLoader(false);
+        setShowModalLoader(false);
       }, 1000);
     }
   };
@@ -355,10 +357,11 @@ const BedTypes = () => {
   if (error) return (
     <ErrorPage
       errorMessage={`${error}`}
-      onReload={() => { window.location.reload(), console.log(error, 'dhbj') }}
+      onReload={() => { window.location.reload()}}
       statusCode={`${error.status}`}
     />
   );
+
   // if (error) return <Typography variant="subtitle1"><NoDataFound/></Typography>;
   if (!data) return <Typography variant="subtitle1"><HashLoader /></Typography>;
 
@@ -378,10 +381,10 @@ const BedTypes = () => {
         </Grid>
       </Grid>
       {/* Data Table */}
-      <DynamicDataTable columns={columns} rows={rows} />
+      {showDataTableLoader ? <PlaceholderTable /> : rows.length > 0 && <DynamicDataTable columns={columns} rows={rows} />}
 
       {/* Modals for all Add and Update */}
-      <DialogModal handleClosingDialogState={handleClosingDialogState} modalOpen={modalOpen} title={modalTitle} buttonName={buttonName} InputFields={buttonName === 'Create' ? AddInputFields : UpdateInputFields} onSubmit={buttonName === 'Create' ? AddNewBedType : UpdateBedTypesData} reset={reset} updateFormDataa={updateFormDataa} />
+      <DialogModal handleClosingDialogState={handleClosingDialogState} modalOpen={modalOpen} title={modalTitle} buttonName={buttonName} InputFields={buttonName === 'Create' ? AddInputFields : UpdateInputFields} onSubmit={buttonName === 'Create' ? AddNewBedType : UpdateBedTypesData} reset={reset} updateFormDataa={updateFormDataa} showModalLoader={showModalLoader} />
 
       {/* Snackbar for Notifications */}
       <Snackbar open={snackbar.open} autoHideDuration={3000} onClose={handleSnackbarClose} anchorOrigin={{ vertical: 'top', horizontal: 'right' }}>

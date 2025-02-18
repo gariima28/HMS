@@ -10,8 +10,8 @@ import DialogModal from 'components/DialogModal';
 import useSWR, { mutate } from "swr";
 import axios from 'axios';
 import HashLoader from 'components/Skeleton/HashLoader';
-import { addRoomTypesApi, getRoomTypesDataByIdApi, updateRoomTypesApi } from 'api/api';
-// import { useForm } from 'react-hook-form';
+import PlaceholderTable from 'components/Skeleton/PlaceholderTable';
+import ErrorPage from 'components/ErrorPage';
 
 // const LocalGirjesh = 'http://192.168.20.109:5001';
 const ServerIP = 'http://89.116.122.211:5001'
@@ -68,104 +68,23 @@ const fetcher = (url) => axios.get(url, { headers: { Authorization: token } }).t
 
 const RoomTypes = () => {
 
-  // All useStates
-  const [modalTitle, setModalTitle] = useState('Add New RoomTypes');
-  const [buttonName, setButtonName] = useState('Save Changes');
-  const [modalOpen, setModalOpen] = useState(false);
   const [rows, setRows] = useState([]);
-  const [roomTypesId, setRoomTypesId] = useState([]);
   const [toaster, setToaster] = useState(false);
   const [msgToaster, setMsgToaster] = useState('');
   const [toaterErrorSuccessState, setToaterErrorSuccessState] = useState('success');
 
   const [showLoader, setShowLoader] = useState(false);
-  
-  // Add RoomTypes State Function
-  const [formDataa, setFormDataa] = useState({
-    roomTypesName: '',
-    roomTypesStatus: '',
-    roomTypesIcon: ''
-  })
-
-  // Update RoomTypes State Function
-  const [updateFormDataa, setUpdateFormDataa] = useState({
-    roomTypesName: '',
-    roomTypesIcon: '',
-    roomTypesNameOriginal: '',
-    roomTypesIconOriginal: ''
-  })
-
-  // Add RoomTypes Name
-  const handleFormDataaRoomTypesName = (val) => {
-    setFormDataa({
-      ...formDataa,
-      roomTypesName: val
-    });
-  }
-
-  // Add RoomTypes Status
-  const handleFormDataaRoomTypesStatus = (val) => {
-    setFormDataa({
-      ...formDataa,
-      roomTypesStatus: val
-    });
-  }
-
-  // Add RoomTypes Icon
-  const handleFormDataaRoomTypesIcon = (val) => {
-    setFormDataa({
-      ...formDataa,
-      roomTypesIcon: val
-    });
-  }
-
-  // Update RoomTypes Name
-  const handleUpdateFormDataaRoomTypesName = (val) => {
-    setUpdateFormDataa({
-      ...updateFormDataa,
-      roomTypesName: val
-    });
-  }
-
-  // Update RoomTypes Icon
-  const handleUpdateFormDataaRoomTypesIcon = (val) => {
-    setUpdateFormDataa({
-      ...updateFormDataa,
-      roomTypesIcon: val
-    });
-  }
-
-  const AddInputFields =
-    [
-      { id: 'roomTypesName', field: 'textInput', fieldType: 'text', fieldName: 'RoomTypes Title *', placeholder: 'Enter RoomTypes Name', updateValFunc: handleFormDataaRoomTypesName },
-      { id: 'roomTypesStatus', field: 'select', feildOptions: [{ optionId: 'active', optionName: 'Active', optionValue: 'true' }, { optionId: 'inActive', optionName: 'InActive', optionValue: 'false' }], fieldName: 'Status *', updateValFunc: handleFormDataaRoomTypesStatus },
-      { id: 'roomTypesIcon', field: 'fileType', fieldType: 'file', fieldName: 'Icon *', allowedTypes: ['image/jpeg', 'image/png'], updateValFunc: handleFormDataaRoomTypesIcon }
-    ];
+  const [showDataTableLoader, setShowDataTableLoader] = useState(false);
 
   // get API
   const { data, error } = useSWR(`${ServerIP}/roomTypes/getAll`, fetcher, {
-    onLoadingSlow: () => setShowLoader(true),
-    onSuccess: () => setShowLoader(false),
+    onLoadingSlow: () => setShowDataTableLoader(true),
+    onSuccess: () => setShowDataTableLoader(false),
   });
 
   // Function to refresh the data
   const refreshData = () => {
     mutate(`${ServerIP}/roomTypes/getAll`);
-  };
-
-  // Dialog Open Handle
-  const handleDialogState = (title, button, roomTypeId) => {
-    setModalTitle(title);
-    setButtonName(button);
-    if (button === 'Update') {
-      getRoomTypesDataById(roomTypeId);
-    }
-    setModalOpen(!modalOpen);
-  };
-
-  // Dialog Close Handle
-  const handleClosingDialogState = () => {
-    setModalOpen(!modalOpen);
   };
 
   // Toast Open Handle
@@ -184,11 +103,12 @@ const RoomTypes = () => {
   // useEffect
   useEffect(() => {
     if (data) {
-      setShowLoader(true)
+      setShowDataTableLoader(true)
       setMsgToaster(data?.message)
       console.log(data?.roomTypes, 'data');
       const transformedRows = data.roomTypes.map((roomType) => ({
         ...roomType,
+        // noOfRooms: roomType.roomTypeImage.join(", "),
         featureStatus: <FeatureButton variant="outlined" status={roomType?.roomTypeStatus ? 'featured' : 'unFeatured'}> {roomType?.roomTypeStatus ? 'Featured' : 'UnFeatured'} </FeatureButton>,
         roomTypeStatus: <CustomButton variant="outlined" status={`${roomType.roomTypeStatus ? 'enable' : 'disable'}`}> {roomType.roomTypeStatus ? 'Enabled' : 'Disabled'} </CustomButton>,
         action: (
@@ -200,18 +120,25 @@ const RoomTypes = () => {
         ),
       }));
 
+      setRows(transformedRows);
       setTimeout(() => {
-        setShowLoader(false)
-        setRows(transformedRows);
-      }, 1000);
+        setShowDataTableLoader(false)
+      }, 1800);
     }
     if (msgToaster) {
       handleOpeningToasterState();
     }
   }, [data]);
 
-  if (error) { <Typography variant="subtitle1">- Error loading data</Typography> };
-  if (!data) return <Typography variant="subtitle1">Speed is slow from Backend &nbsp; : - &nbsp; Loading Data...</Typography>;
+
+  if (error) return (
+    <ErrorPage
+      errorMessage={`${error}`}
+      onReload={() => { window.location.reload() }}
+      statusCode={`${error.status}`}
+    />
+  );
+  if (!data) return <Typography variant="subtitle1"><HashLoader /></Typography>;
 
   return (
     <Box>
@@ -229,7 +156,7 @@ const RoomTypes = () => {
         </Grid>
       </Grid>
       {/* Data Table */}
-      <DynamicDataTable columns={columns} rows={rows} />
+      {showDataTableLoader ? <PlaceholderTable /> : rows.length > 0 && <DynamicDataTable columns={columns} rows={rows} />}
 
       {/* Modals for all Add and Update */}
       {/* <DialogModal handleClosingDialogState={handleClosingDialogState} modalOpen={modalOpen} title={modalTitle} buttonName={buttonName} InputFields={buttonName === 'Create' ? AddInputFields : UpdateInputFields} onSubmit={buttonName === 'Create' ? AddNewAmenity : UpdateRoomTypesData} /> */}

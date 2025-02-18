@@ -27,12 +27,7 @@ import CanceledBookings from 'pages/booking/CanceledBookings';
 import RefundableBookings from 'pages/booking/RefundableBookings';
 import DelayedCheckoutBooking from 'pages/booking/DelayedCheckoutBooking';
 import AllBookings from 'pages/booking/AllBookings';
-import PendingPayments from 'pages/booking/PendingPayments';
-import ApprovedPayments from 'pages/booking/ApprovedPayments';
-import SuccessfulPayments from 'pages/booking/SuccessfulPayments';
-import RejectedPayments from 'pages/booking/RejectedPayments';
-import FailedPayments from 'pages/booking/FailedPayments';
-import AllPayments from 'pages/booking/AllPayments';
+import Payments from 'pages/booking/Payments';
 import AddedPServices from 'pages/booking/AddedPServices';
 import BookingDetailsPage from 'pages/booking/BookingDetailsPage';
 import AddUpdateRoomType from 'pages/manageHotel/AddUpdateRoomType';
@@ -41,6 +36,7 @@ import CheckOutInBookings from 'pages/booking/CheckOutInBookings';
 import PremiumServicesInBookings from 'pages/booking/PremiumServicesInBookings';
 import PaymentInBookings from 'pages/booking/PaymentInBookings';
 import BookedRoomInBookings from 'pages/booking/BookedRoomInBookings';
+import PaymentStatusDetailsPage from 'pages/booking/PaymentStatusDetailsPage';
 
 
 
@@ -78,6 +74,7 @@ import GeneralSettingPage from 'pages/extra-pages/generalSettinngPage';
 import SystemSettinglogoFavicon from 'pages/extra-pages/systemSettingLogoFavi';
 import SentMail from 'pages/extra-pages/sentMail';
 import AllTicket from 'pages/extra-pages/allTicket';
+import Error500Page from 'components/Error500Page';
 
 const DashboardDefault = Loadable(lazy(() => import('pages/dashboard/index')));
 
@@ -215,34 +212,41 @@ const MainRoutes = {
       element: <AddedPServices />
     },
     {
-      path: 'pendingPayments',
-      element: <PendingPayments />
+      path: 'payments/:id',
+      element: <Payments />
     },
     {
-      path: 'approvedPayments',
-      element: <ApprovedPayments />
+      path: 'detailspayments/:id',
+      element: <PaymentStatusDetailsPage />
     },
-    {
-      path: 'successfullPayments',
-      element: <SuccessfulPayments />
-    },
-    {
-      path: 'rejectedPayments',
-      element: <RejectedPayments />
-    },
-    {
-      path: 'failedPayments',
-      element: <FailedPayments />
-    },
-    {
-      path: 'allPayments',
-      element: <AllPayments />
-    },
+    // {
+    //   path: 'error-500',
+    //   element: <Error500Page />
+    // },
+    // {
+    //   path: 'payments/approved',
+    //   element: <ApprovedPayments />
+    // },
+    // {
+    //   path: 'payments/successfull',
+    //   element: <SuccessfulPayments />
+    // },
+    // {
+    //   path: 'payments/rejected',
+    //   element: <RejectedPayments />
+    // },
+    // {
+    //   path: 'payments/failed',
+    //   element: <FailedPayments />
+    // },
+    // {
+    //   path: 'payments/all',
+    //   element: <AllPayments />
+    // },
     {
       path: '/*',
       element: <DashboardDefault />
     },
-
 
     // Saqib
     {

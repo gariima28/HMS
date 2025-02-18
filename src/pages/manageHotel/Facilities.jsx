@@ -14,6 +14,7 @@ import NoDataFound from '../NoDataFound';
 import { addAmenitiesApi, addFacilitiesApi, getAmenitiesDataByIdApi, getFacilitiesDataByIdApi, updateAmenitiesApi, updateAmenitiesStatus, updateFacilitiesApi } from 'api/api';
 import { useForm } from 'react-hook-form';
 import ErrorPage from 'components/ErrorPage';
+import PlaceholderTable from 'components/Skeleton/PlaceholderTable';
 
 const ServerIP = 'https://www.auth.edu2all.in/hms';
 const token = `Bearer ${localStorage.getItem('token')}`;
@@ -55,6 +56,8 @@ const Facilities = () => {
   const [facilityId, setFacilityId] = useState();
   const { reset } = useForm();
   const [showLoader, setShowLoader] = useState(false);
+  const [showDataTableLoader, setShowDataTableLoader] = useState(false);
+  const [showModalLoader, setShowModalLoader] = useState(false);
 
   const [formDataa, setFormDataa] = useState({
     facilityName: '',
@@ -91,8 +94,8 @@ const Facilities = () => {
 
   // Get API
   const { data, error } = useSWR(`${ServerIP}/facilities/getAll`, fetcher, {
-    onLoadingSlow: () => setShowLoader(true),
-    onSuccess: () => setShowLoader(false),
+    onLoadingSlow: () => setShowDataTableLoader(true),
+    onSuccess: () => setShowDataTableLoader(false),
   });
 
   const refreshData = () => {
@@ -118,10 +121,10 @@ const Facilities = () => {
 
   useEffect(() => {
     if (data) {
-      setShowLoader(true)
+      setShowDataTableLoader(true)
       const transformedRows = data.Facilities.map((facility) => ({
         ...facility,
-        image: facility.icon ? facility.facilityImage.split('/').pop() : '-',
+        image: facility.facilityImage === null ? '-' : <img src={facility?.facilityImage} alt="" height={28} />,
         status: <CustomButton variant="outlined" status={facility.status ? 'enable' : 'disable'}>{facility.status ? 'Enabled' : 'Disabled'}</CustomButton>,
         action: (
           <Stack justifyContent="end" spacing={2} direction="row">
@@ -131,10 +134,10 @@ const Facilities = () => {
         ),
       }));
 
+      setRows(transformedRows);
       setTimeout(() => {
-        setShowLoader(false)
-        setRows(transformedRows);
-      }, 1000);
+        setShowDataTableLoader(false)
+      }, 1800);
     }
   }, [data]);
 
@@ -143,13 +146,13 @@ const Facilities = () => {
   };
 
   const AddNewFacility = async (formData) => {
-    setShowLoader(true);
+    setShowModalLoader(true);
 
     console.log(formData.facilityName, formData.facilityStatus, formData.facilityImage);
     if (!formData.facilityName || !formData.facilityStatus || !formData.facilityImage) {
       setTimeout(() => {
         handleSnackbarMessage('Please fill in all fields before submitting.', 'error');
-        setShowLoader(false);
+        setShowModalLoader(false);
       }, 1000);
       return;
     }
@@ -163,7 +166,7 @@ const Facilities = () => {
       const response = await addFacilitiesApi(formDataPayload);
       if (response.status === 200 && response?.data?.status === 'success') {
         setTimeout(() => {
-          setShowLoader(false);
+          setShowModalLoader(false);
           handleSnackbarMessage('Facility Added Successfully', 'success');
           setModalOpen(false);
           refreshData();
@@ -176,13 +179,13 @@ const Facilities = () => {
         }, 1000);
       } else {
         setTimeout(() => {
-          setShowLoader(false);
+          setShowModalLoader(false);
           handleSnackbarMessage('Error adding facility', 'error');
         }, 1000);
       }
     } catch (error) {
       setTimeout(() => {
-        setShowLoader(false);
+        setShowModalLoader(false);
         handleSnackbarMessage(`Error adding facility, ${error}`, 'error');
       }, 1000);
     }
@@ -246,7 +249,7 @@ const Facilities = () => {
   };
 
   const UpdateAmenitiesData = async (data) => {
-    setShowLoader(true);
+    setShowModalLoader(true);
 
     try {
       const formData = new FormData();
@@ -269,30 +272,30 @@ const Facilities = () => {
         const response = await updateFacilitiesApi(facilityId, formData);
         if (response?.status === 200) {
           setTimeout(() => {
-            setShowLoader(false);
+            setShowModalLoader(false);
             refreshData();
             handleSnackbarMessage(response?.data?.message, 'success');
             setModalOpen(false);
           }, 1000);
         } else {
           setTimeout(() => {
-            setShowLoader(false);
+            setShowModalLoader(false);
             handleSnackbarMessage(response?.data?.message, 'error');
           }, 1000);
         }
       } else {
         // No changes to submit
-        setShowLoader(false);
+        setShowModalLoader(false);
         handleSnackbarMessage('No changes made.', 'warning');
       }
     } catch (error) {
       setTimeout(() => {
-        setShowLoader(false);
+        setShowModalLoader(false);
         handleSnackbarMessage('Error during update', 'error');
       }, 1000);
     } finally {
       setTimeout(() => {
-        setShowLoader(false);
+        setShowModalLoader(false);
       }, 1000);
     }
   };
@@ -301,10 +304,11 @@ const Facilities = () => {
   if (error) return (
     <ErrorPage
       errorMessage={`${error}`}
-      onReload={() => { window.location.reload(), console.log(error, 'dhbj') }}
+      onReload={() => { window.location.reload()}}
       statusCode={`${error.status}`}
     />
   );
+
   // if (error) return <Typography variant="subtitle1"><NoDataFound/></Typography>;
   if (!data) return <Typography variant="subtitle1"><HashLoader /></Typography>;
 
@@ -324,10 +328,10 @@ const Facilities = () => {
         </Grid>
       </Grid>
       {/* Data Table */}
-      <DynamicDataTable columns={columns} rows={rows} />
+      {showDataTableLoader ? <PlaceholderTable /> : rows.length > 0 && <DynamicDataTable columns={columns} rows={rows} />}
 
       {/* Modals for all Add and Update */}
-      <DialogModal handleClosingDialogState={handleClosingDialogState} modalOpen={modalOpen} title={modalTitle} buttonName={buttonName} InputFields={buttonName === 'Create' ? AddInputFields : UpdateInputFields} onSubmit={buttonName === 'Create' ? AddNewFacility : UpdateAmenitiesData} reset={reset} updateFormDataa={updateFormDataa} />
+      <DialogModal handleClosingDialogState={handleClosingDialogState} modalOpen={modalOpen} title={modalTitle} buttonName={buttonName} InputFields={buttonName === 'Create' ? AddInputFields : UpdateInputFields} onSubmit={buttonName === 'Create' ? AddNewFacility : UpdateAmenitiesData} reset={reset} updateFormDataa={updateFormDataa} showModalLoader={showModalLoader} />
 
       {/* Snackbar for Notifications */}
       <Snackbar open={snackbar.open} autoHideDuration={3000} onClose={handleSnackbarClose} anchorOrigin={{ vertical: 'top', horizontal: 'right' }}>

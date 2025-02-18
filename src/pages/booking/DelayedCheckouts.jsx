@@ -70,13 +70,14 @@ const DelayedCheckouts = () => {
 
           {cardsData.length > 0 ? (
             <>
-              <Grid container spacing={3} sx={{ minHeight: 500, overflow: 'auto' }}>
+              <Grid container spacing={3} sx={{ maxHeight: 500, overflow: 'auto' }}>
                 {currentCards.map((item) => (
                   <Grid item xs={12} sm={6} md={4} lg={3} key={item.bookingNo}>
                     <CheckInCheckoutCards
                       name={item.guestName}
                       mobile={item.phoneNo}
                       bookingNo={item.bookingNo}
+                      bookingId={item.bookingId}
                       totalRooms={item.totalRoom}
                     />
                   </Grid>

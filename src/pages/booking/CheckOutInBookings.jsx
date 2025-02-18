@@ -43,7 +43,7 @@ const CheckOutInBookings = () => {
   const navigate = useNavigate();
 
   // get API
-  const { data, error } = useSWR(`${ServerIP}/payment/getBookingDetails/46`, fetcher);
+  const { data, error } = useSWR(`${ServerIP}/payment/getBookingDetails/${id}`, fetcher);
 
   // Function to refresh the data
   const refreshData = () => {

@@ -174,7 +174,7 @@ const booking = {
           id: 'pendingPayments',
           title: 'Pending Payments',
           type: 'item',
-          url: '/pendingPayments',
+          url: '/payments/pending',
           breadcrumbs: false,
           icon: icons.ChromeOutlined
         },
@@ -182,7 +182,7 @@ const booking = {
           id: 'approvedPayments',
           title: 'Approved Payments',
           type: 'item',
-          url: '/approvedPayments',
+          url: '/payments/approved',
           breadcrumbs: false,
           icon: icons.ChromeOutlined
         },
@@ -190,7 +190,7 @@ const booking = {
           id: 'successfullPayments',
           title: 'Successfull Payments',
           type: 'item',
-          url: '/successfullPayments',
+          url: '/payments/successfull',
           breadcrumbs: false,
           icon: icons.ChromeOutlined
         },
@@ -198,7 +198,7 @@ const booking = {
           id: 'rejectedPayments',
           title: 'Rejected Payments',
           type: 'item',
-          url: '/rejectedPayments',
+          url: '/payments/rejected',
           breadcrumbs: false,
           icon: icons.ChromeOutlined
         },
@@ -206,7 +206,7 @@ const booking = {
           id: 'failedPayments',
           title: 'Failed Payments',
           type: 'item',
-          url: '/failedPayments',
+          url: '/payments/failed',
           breadcrumbs: false,
           icon: icons.ChromeOutlined
         },
@@ -214,7 +214,7 @@ const booking = {
           id: 'allPayments',
           title: 'All Payments',
           type: 'item',
-          url: '/allPayments',
+          url: '/payments/all',
           breadcrumbs: false,
           icon: icons.ChromeOutlined
         },

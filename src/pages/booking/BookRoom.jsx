@@ -16,6 +16,9 @@ import { addBookingAPI, getAvailableRoomApi } from 'api/api';
 import dayjs from 'dayjs';
 import { useForm } from 'react-hook-form';
 import { useNavigate } from 'react-router';
+import AvailableRoomLoader from 'components/Skeleton/AvailableRoomLoader';
+import NoDataFound from '../NoDataFound';
+import CircularLoader from 'components/Skeleton/CircularLoader';
 
 const ServerIP = 'http://89.116.122.211:5001';
 const token = `Bearer ${localStorage.getItem('token')}`;
@@ -125,11 +128,15 @@ const BookRoom = () => {
 
     const [rows, setRows] = useState([]);
     const [msgToaster, setMsgToaster] = useState('');
+    const [showDataLoader, setShowDataLoader] = useState(false);
+    const [saveDataLoader, setSaveDataLoader] = useState(false);
+    const [isButtonDisabled, setIsButtonDisabled] = useState(true);
+    const [noData, setNoData] = useState(false);
 
     // Fetch data from API
     const { data, error } = useSWR(`${ServerIP}/roomTypes/getAll`, fetcher);
 
-    
+
     useEffect(() => {
         if (data) {
             setRows(data?.roomTypes);
@@ -148,8 +155,12 @@ const BookRoom = () => {
             navigate('/')
         }
     }, [data, msgToaster]);
-    
-    const { register, handleSubmit, formState: { errors }, watch } = useForm();
+
+    const { register, handleSubmit, formState: { errors }, watch } = useForm({
+        defaultValues: {
+            guestName: 'WalkInGuest', // Set the default value for guestName
+        },
+    });
     // const roomType = watch('roomType', '');
     const guesstName = watch('guestName');
 
@@ -178,57 +189,77 @@ const BookRoom = () => {
 
 
     const getAvailableRooms = async () => {
-        // const { roomType, room, dateRange } = formData;
-
-        // Format the selected date range
-        // const checkInDate = dateRange?.[0] ? dayjs(dateRange[0]?.$d).format('YYYY-MM-DDTHH:mm:ss') : null;
-        // const checkOutDate = dateRange?.[1] ? dayjs(dateRange[1]?.$d).format('YYYY-MM-DDTHH:mm:ss') : null;
-
+        setShowDataLoader(true)
         try {
             const response = await getAvailableRoomApi(roomType, noOfRooms, checkInDate, checkOutDate);
 
-            if (response?.status === 200 && response?.data?.status === 'success') {
-                const rooms = response?.data?.available || [];
-
-                const requiredRooms = parseInt(noOfRooms, 10);
-
-                setSelectedRooms(rooms.slice(0, requiredRooms));
-                setAvailableRooms(rooms.slice(requiredRooms));
-                setRooms(rooms);
-            } else {
-                console.error('Failed to fetch rooms:', response?.data?.message);
+            if (response?.status === 200) {
+                if (response?.data?.status === 'success') {
+                    const rooms = response?.data?.available || [];
+                    console.log(rooms)
+                    const requiredRooms = parseInt(noOfRooms, 10);
+                    setNoData(true);
+                    setSelectedRooms(rooms.slice(0, requiredRooms));
+                    setAvailableRooms(rooms.slice(requiredRooms));
+                    setRooms(rooms);
+                    setTimeout(() => {
+                        setShowDataLoader(false)
+                        setIsButtonDisabled(true)
+                    }, 1800);
+                } else {
+                    console.error('Failed to fetch rooms:', response?.data?.message);
+                    setTimeout(() => {
+                        setShowDataLoader(false)
+                    }, 1800);
+                }
             }
         } catch (error) {
+            setTimeout(() => {
+                setShowDataLoader(false)
+            }, 1800);
             console.error('Error fetching available rooms:', error);
         }
     };
 
+    console.log(selectedRooms, availableRooms)
 
     const NewRoomBooking = async (data) => {
+        setSaveDataLoader(true)
         const ids = selectedRooms.map(item => item.roomId);
         try {
             const formData = new FormData();
-            formData.append('roomNumbers', ids)
+            ids.forEach((id) => formData.append('roomNumbers[]', id));
+            if (data?.guestName === 'WalkInGuest') {
+                formData.append('guestName', data?.name)
+                formData.append('phone', data?.phone_number)
+                formData.append('address', data?.address)
+                formData.append('adult', data?.adult)
+                formData.append('children', data?.child)
+            }
             formData.append('checkInDate', checkInDate)
             formData.append('checkOutDate', checkOutDate)
             formData.append('bookingType', data?.guestName)
-            formData.append('guestName', data?.name)
-            formData.append('phone', data?.phone_number)
             formData.append('email', data?.email)
-            formData.append('address', data?.address)
-            formData.append('adult', data?.adult)
-            formData.append('children', data?.child)
             formData.append('totalPaid', data?.payingAmount)
 
             const response = await addBookingAPI(formData);
             if (response.status === 200) {
                 if (response?.data?.status === 'success') {
-                    navigate('/allBookings');
+                    setTimeout(() => {
+                        setSaveDataLoader(false)
+                        navigate('/allBookings');
+                    }, 1800);
                 }
             } else {
+                setTimeout(() => {
+                    setSaveDataLoader(false)
+                }, 1800);
                 console.error('Failed to book room:', response?.data?.message);
             }
         } catch (error) {
+            setTimeout(() => {
+                setSaveDataLoader(false)
+            }, 1800);
             console.error('Error book new rooms:', error);
         }
     };
@@ -245,288 +276,314 @@ const BookRoom = () => {
         setCheckOutDate(date1);
     }
 
+    useEffect(() => {
+        if (roomType && noOfRooms && checkInDate && checkOutDate) {
+            setIsButtonDisabled(false); // Enable button when all fields are filled
+        } else {
+            setIsButtonDisabled(true); // Disable button when any field is missing
+        }
+    }, [roomType, noOfRooms, checkInDate, checkOutDate]);
 
 
     if (error) return <Typography variant="subtitle1">Error loading data</Typography>;
     if (!data) return <Typography variant="subtitle1">Loading Data...</Typography>;
 
     return (
-        <Box>
-            <Grid sx={{ display: 'flex', mb: 4 }}>
-                <Grid alignContent='center' sx={{ flexGrow: 1 }}>
-                    <Typography variant="h4">Book Room</Typography>
+        <>
+            <Box>
+                <Grid sx={{ display: 'flex', mb: 4 }}>
+                    <Grid alignContent='center' sx={{ flexGrow: 1 }}>
+                        <Typography variant="h4">Book Room</Typography>
+                    </Grid>
+                    <Grid>
+                        <Stack justifyContent='start' spacing={2} direction="row">
+                            <CustomButton variant="outlined" href="allBookings">
+                                <ListIcon /> All Bookings
+                            </CustomButton>
+                        </Stack>
+                    </Grid>
                 </Grid>
-                <Grid>
-                    <Stack justifyContent='start' spacing={2} direction="row">
-                        <CustomButton variant="outlined" href="allBookings">
-                            <ListIcon /> All Bookings
+                <Grid container spacing={1} sx={{ backgroundColor: '#ffffff', p: 1, mb: 4 }}>
+                    <Grid xs={12} sm={6} md={6} lg={3} >
+                        <Stack spacing={1}>
+                            <InputLabel htmlFor="roomType">Room Type</InputLabel>
+                            <Select id='roomType' value={roomType} onChange={handleRoomTypeChange} displayEmpty>
+                                <MenuItem value="" disabled>Select One</MenuItem>
+                                {rows.map((menuItem) => (
+                                    <MenuItem key={menuItem?.roomTypesId} value={menuItem?.roomTypesId}>{menuItem?.roomName}</MenuItem>
+                                ))}
+                            </Select>
+                        </Stack>
+                    </Grid>
+                    <Grid xs={12} sm={6} md={6} lg={3} >
+                        <Stack spacing={1}>
+                            <InputLabel htmlFor="subTitle">Check In - Check Out Date</InputLabel>
+                            <LocalizationProvider dateAdapter={AdapterDayjs}>
+                                <DateRangePicker slots={{ field: SingleInputDateRangeField }} fullWidth id="subTitle" name="subTitle" onChange={(newValue) => handleCheckInCheckOutDate(newValue)} />
+                            </LocalizationProvider>
+                        </Stack>
+                    </Grid>
+                    <Grid xs={12} sm={6} md={6} lg={3} >
+                        <Stack spacing={1}>
+                            <InputLabel htmlFor="room">Room</InputLabel>
+                            <OutlinedInput id="room" type="number" name="room" placeholder="How many room?" value={noOfRooms} fullWidth onChange={(e) => setNoOfRooms(e.target.value)} />
+                        </Stack>
+                    </Grid>
+                    <Grid alignContent='end' xs={12} sm={6} md={6} lg={3} >
+                        <CustomButton variant="outlined" fullWidth sx={{ p: 1 }} onClick={getAvailableRooms} disabled={isButtonDisabled} >
+                            <SearchRounded sx={{ rotate: '90deg', me: 5 }} /> Search
                         </CustomButton>
-                    </Stack>
-                </Grid>
-            </Grid>
-            <Grid container spacing={1} sx={{ backgroundColor: '#ffffff', p: 1, mb: 4 }}>
-                <Grid xs={12} sm={6} md={6} lg={3} >
-                    <Stack spacing={1}>
-                        <InputLabel htmlFor="roomType">Room Type</InputLabel>
-                        <Select id='roomType' value={roomType} onChange={handleRoomTypeChange} displayEmpty>
-                            <MenuItem value="" disabled>Select One</MenuItem>
-                            {rows.map((menuItem) => (
-                                <MenuItem key={menuItem?.roomTypesId} value={menuItem?.roomTypesId}>{menuItem?.roomName}</MenuItem>
-                            ))}
-                        </Select>
-                    </Stack>
-                </Grid>
-                <Grid xs={12} sm={6} md={6} lg={3} >
-                    <Stack spacing={1}>
-                        <InputLabel htmlFor="subTitle">Check In - Check Out Date</InputLabel>
-                        <LocalizationProvider dateAdapter={AdapterDayjs}>
-                            <DateRangePicker slots={{ field: SingleInputDateRangeField }} fullWidth id="subTitle" name="subTitle" onChange={(newValue) => handleCheckInCheckOutDate(newValue)} />
-                        </LocalizationProvider>
-                    </Stack>
-                </Grid>
-                <Grid xs={12} sm={6} md={6} lg={3} >
-                    <Stack spacing={1}>
-                        <InputLabel htmlFor="room">Room</InputLabel>
-                        <OutlinedInput id="room" type="text" name="room" placeholder="How many room?" value={noOfRooms} fullWidth onChange={(e) => setNoOfRooms(e.target.value)} />
-                    </Stack>
-                </Grid>
-                <Grid alignContent='end' xs={12} sm={6} md={6} lg={3} >
-                    <CustomButton variant="outlined" fullWidth sx={{ p: 1 }} onClick={getAvailableRooms} disabled={noOfRooms === '' || checkInDate === '' || checkOutDate === '' || roomType === ''}>
-                        <SearchRounded sx={{ rotate: '90deg', me: 5 }} /> Search
-                    </CustomButton>
-                </Grid>
-            </Grid>
-
-            {rooms.length > 0 &&
-                <Grid container spacing={3}>
-                    <Grid xs={12} md={8} sx={{ mb: 4 }}>
-                        <Grid sx={{ backgroundColor: '#fff', p: 2 }}>
-                            <Grid sx={{ display: 'flex' }}>
-                                <Grid alignContent='center' sx={{ flexGrow: 1 }}>
-                                    <Typography variant="h5" gutterBottom>Booking Information</Typography>
-                                </Grid>
-                            </Grid>
-                            <Divider />
-                            <Grid container sx={{ p: 1 }}>
-                                <Grid alignContent='center' sx={{ m: 1 }}>
-                                    <Typography alignContent='center' variant="subTitle2">
-                                        <CircleIcon sx={{ color: '#eb2222' }} />
-                                        Booked
-                                    </Typography>
-                                </Grid>
-                                <Grid alignContent='center' sx={{ m: 1 }}>
-                                    <Typography alignContent='center' variant="subTitle2">
-                                        <CircleIcon sx={{ color: '#28c76f' }} /> Selected
-                                    </Typography>
-                                </Grid>
-                                <Grid alignContent='center' sx={{ m: 1 }}>
-                                    <Typography alignContent='center' variant="subTitle2">
-                                        <CircleIcon sx={{ color: '#4634ff' }} /> Available
-                                    </Typography>
-                                </Grid>
-                            </Grid>
-                            <Grid container sx={{ p: 2 }}>
-                                <Typography variant="body1" sx={{ backgroundColor: '#eff8ff', p: 2 }}>{descText}</Typography>
-                            </Grid>
-                            <Grid>
-                                <TableContainer component={Paper}>
-                                    <Table sx={{ minWidth: 700 }} aria-label="customized table">
-                                        <TableHead>
-                                            <TableRow>
-                                                <StyledTableCell>Date</StyledTableCell>
-                                                <StyledTableCell align="right">Room</StyledTableCell>
-                                            </TableRow>
-                                        </TableHead>
-                                        <TableBody>
-                                            <StyledTableRow>
-                                                <StyledTableCell component="th" scope="row" sx={{ textWrap: 'nowrap' }}>{checkInDate} - {checkOutDate}</StyledTableCell>
-                                                <StyledTableCell align="left">
-                                                    <StyledTableCell align="left">
-                                                        {/* Render selected rooms */}
-                                                        {selectedRooms?.map((item) => (
-                                                            <RoomKey
-                                                                key={item.roomId}
-                                                                status="selected"
-                                                                sx={{ m: 1 }}
-                                                                onClick={() => handleAddRemoveRoomFromSelected(item.roomId)}
-                                                            >
-                                                                {item.roomNo}
-                                                            </RoomKey>
-                                                        ))}
-
-                                                        {/* Render available rooms */}
-                                                        {availableRooms?.map((item) => (
-                                                            <RoomKey
-                                                                key={item.roomId}
-                                                                status="available"
-                                                                sx={{ m: 1 }}
-                                                                onClick={() => handleAddRemoveRoomFromAvailable(item.roomId)}
-                                                            >
-                                                                {item.roomNo}
-                                                            </RoomKey>
-                                                        ))}
-                                                    </StyledTableCell>
-
-                                                </StyledTableCell>
-                                            </StyledTableRow>
-                                        </TableBody>
-                                    </Table>
-                                </TableContainer>
-                            </Grid>
-                        </Grid>
-                    </Grid>
-                    <Grid xs={12} md={4} sx={{ mb: 4 }}>
-                        <Grid sx={{ backgroundColor: '#fff', p: 2 }}>
-                            <Grid sx={{ display: 'flex' }}>
-                                <Grid alignContent='center' sx={{ flexGrow: 1 }}>
-                                    <Typography variant="h5" gutterBottom>Book Room</Typography>
-                                </Grid>
-                            </Grid>
-                            <Divider />
-                            <Grid>
-                                <form onSubmit={handleSubmit(NewRoomBooking)}>
-                                    <Grid xs={12} sx={{ p: 0.7, mt: 1 }} >
-                                        <Stack spacing={1}>
-                                            <InputLabel htmlFor="guestName">Guest Type</InputLabel>
-                                            <Select value={guesstName} {...register('guestName', { required: 'Guest Type is required' })} displayEmpty sx={inputStyles(errors.guestName)} >
-                                                <MenuItem value="" disabled>Select type</MenuItem>
-                                                <MenuItem value="WalkInGuest">Walk-In Guest</MenuItem>
-                                                <MenuItem value="ExistingGuest">Existing Guest</MenuItem>
-                                            </Select>
-                                            {errors.guestName && (
-                                                <Typography color="error" variant="caption">
-                                                    {errors.guestName.message}
-                                                </Typography>
-                                            )}
-                                        </Stack>
-                                    </Grid>
-                                    <Grid xs={12} sx={{ p: 0.7, mt: 1 }} >
-                                        <Stack spacing={1}>
-                                            <InputLabel htmlFor="name">Name *</InputLabel>
-                                            <OutlinedInput {...register('name', { required: 'Name is required', minLength: { value: 3, message: 'Name must be at least 3 characters' }, })} placeholder="Enter your name"
-                                                sx={inputStyles(errors.name)} />
-                                            {errors.name && (
-                                                <Typography color="error" variant="caption">
-                                                    {errors.name.message}
-                                                </Typography>
-                                            )}
-                                        </Stack>
-                                    </Grid>
-                                    <Grid xs={12} sx={{ p: 0.7, mt: 1 }} >
-                                        <Stack spacing={1}>
-                                            <InputLabel htmlFor="email">Email *</InputLabel>
-                                            <OutlinedInput {...register('email', { required: 'Email is required', pattern: { value: /^[^\s@]+@[^\s@]+\.[^\s@]+$/, message: 'Invalid email address' }, })} placeholder="Enter your email"
-                                                sx={inputStyles(errors.email)} />
-                                            {errors.email && (
-                                                <Typography color="error" variant="caption">
-                                                    {errors.email.message}
-                                                </Typography>
-                                            )}
-                                        </Stack>
-                                    </Grid>
-                                    <Grid xs={12} sx={{ p: 0.7, mt: 1 }} >
-                                        <Stack spacing={1}>
-                                            <InputLabel htmlFor="phone_number">Phone Number *</InputLabel>
-                                            <OutlinedInput {...register('phone_number', { required: 'Phone number is required', pattern: { value: /^[0-9]{10}$/, message: 'Phone number must be 10 digits' }, })} placeholder="Enter your Phone number"
-                                                sx={inputStyles(errors.phone_number)} />
-                                            {errors.phone_number && (
-                                                <Typography color="error" variant="caption">
-                                                    {errors.phone_number.message}
-                                                </Typography>
-                                            )}
-                                        </Stack>
-                                    </Grid>
-                                    <Grid xs={12} sx={{ p: 0.7, mt: 1 }} >
-                                        <Stack spacing={1}>
-                                            <InputLabel htmlFor="address">Address *</InputLabel>
-                                            <OutlinedInput {...register('address', { required: 'Address is required', minLength: { value: 3, message: 'Address must be at least 3 characters' }, })} placeholder="Enter address"
-                                                sx={inputStyles(errors.address)} />
-                                            {errors.address && (
-                                                <Typography color="error" variant="caption">
-                                                    {errors.address.message}
-                                                </Typography>
-                                            )}
-                                        </Stack>
-                                    </Grid>
-                                    <Grid xs={12} sx={{ p: 0.7, mt: 1 }} >
-                                        <Stack spacing={1}>
-                                            <InputLabel htmlFor="adult">Adult</InputLabel>
-                                            <OutlinedInput {...register('adult', { required: 'No. of Adults is required', min: 0 })} placeholder="Enter no. of Adults"
-                                                sx={inputStyles(errors.adult)} />
-                                            {errors.adult && (
-                                                <Typography color="error" variant="caption">
-                                                    {errors.adult.message}
-                                                </Typography>
-                                            )}
-                                        </Stack>
-                                    </Grid>
-                                    <Grid xs={12} sx={{ p: 0.7, mt: 1 }} >
-                                        <Stack spacing={1}>
-                                            <InputLabel htmlFor="child">Children</InputLabel>
-                                            <OutlinedInput {...register('child', { required: 'No. of Children is required', min:0 })} placeholder="Enter no. of Children"
-                                                sx={inputStyles(errors.child)} />
-                                            {errors.child && (
-                                                <Typography color="error" variant="caption">
-                                                    {errors.child.message}
-                                                </Typography>
-                                            )}
-                                        </Stack>
-                                    </Grid>
-                                    <Grid xs={12} sx={{ p: 0.7 }}>
-                                        <TableContainer>
-                                            <Table aria-label="customized table">
-                                                <TableHead>
-                                                    <TableRow>
-                                                        <TableCell align='center'>Room</TableCell>
-                                                        <TableCell align='center'>Days</TableCell>
-                                                        <TableCell align='center'>Fare</TableCell>
-                                                        <TableCell align='center'>Subtotal</TableCell>
-                                                    </TableRow>
-                                                </TableHead>
-                                                <TableBody>
-                                                    {selectedRooms?.map((item) => (
-                                                        <StyledTableRow>
-                                                            <TableCell align='center' p={0}><RoomKey status='selected' onClick={() => handleAddRemoveRoomFromSelected(item.roomId)}>{item.roomNo}</RoomKey></TableCell>
-                                                            <TableCell align="center">1</TableCell>
-                                                            <TableCell align="center">250 USD</TableCell>
-                                                            <TableCell align="center">250 USD</TableCell>
-                                                        </StyledTableRow>
-                                                    ))}
-                                                    {availableRooms?.map((item) => (
-                                                        <StyledTableRow>
-                                                            <TableCell align='center' p={0}><RoomKey status='available' onClick={() => handleAddRemoveRoomFromAvailable(item.roomId)}>{item.roomNo}</RoomKey></TableCell>
-                                                            <TableCell align="center">1</TableCell>
-                                                            <TableCell align="center">250 USD</TableCell>
-                                                            <TableCell align="center">250 USD</TableCell>
-                                                        </StyledTableRow>
-                                                    ))}
-                                                </TableBody>
-                                            </Table>
-                                        </TableContainer>
-                                    </Grid>
-                                    <Grid xs={12} sx={{ p: 0.7, mt: 1 }} >
-                                        <Stack spacing={1}>
-                                            <InputLabel htmlFor="payingAmount">Paying Amount</InputLabel>
-                                            <OutlinedInput {...register('payingAmount', { required: 'Paying amount is required', min: { value: 1, message: 'Amount must be at least 1' }, validate: { isNumeric: value => !isNaN(value) || 'Please enter a valid number', }, })} placeholder="Enter maximum amount limit" sx={inputStyles(errors.payingAmount)} />
-                                            {errors.payingAmount && (
-                                                <Typography color="error" variant="caption">
-                                                    {errors.payingAmount.message}
-                                                </Typography>
-                                            )}
-                                        </Stack>
-                                    </Grid>
-                                    <Grid alignContent='end' xs={12} sx={{ p: 0.7, mt: 2 }} >
-                                        <CustomButton variant="outlined" type='submit' fullWidth sx={{ p: 1 }} onClick={() => setSearchOpen(true)}>
-                                            Book Now
-                                        </CustomButton>
-                                    </Grid>
-                                </form>
-                            </Grid>
-                        </Grid>
                     </Grid>
                 </Grid>
+            </Box >
+            {showDataLoader
+                ?
+                <AvailableRoomLoader />
+                :
+                <Box position='relative' sx={{ boxSizing: 'border-box'}}>
+                    {rooms.length > 0 ?
+                        <Grid container spacing={3}>
+                            {saveDataLoader && <CircularLoader />}
+                            <Grid container spacing={3}>
+                                <Grid item xs={12} md={8} sx={{ mb: 4 }}>
+                                    <Grid sx={{ backgroundColor: '#fff', p: 2 }}>
+                                        <Grid sx={{ display: 'flex' }}>
+                                            <Grid alignContent='center' sx={{ flexGrow: 1 }}>
+                                                <Typography variant="h5" gutterBottom>Booking Information</Typography>
+                                            </Grid>
+                                        </Grid>
+                                        <Divider />
+                                        <Grid container sx={{ p: 1 }}>
+                                            <Grid alignContent='center' sx={{ m: 1 }}>
+                                                <Typography alignContent='center' variant="subTitle2">
+                                                    <CircleIcon sx={{ color: '#eb2222' }} />
+                                                    Booked
+                                                </Typography>
+                                            </Grid>
+                                            <Grid alignContent='center' sx={{ m: 1 }}>
+                                                <Typography alignContent='center' variant="subTitle2">
+                                                    <CircleIcon sx={{ color: '#28c76f' }} /> Selected
+                                                </Typography>
+                                            </Grid>
+                                            <Grid alignContent='center' sx={{ m: 1 }}>
+                                                <Typography alignContent='center' variant="subTitle2">
+                                                    <CircleIcon sx={{ color: '#4634ff' }} /> Available
+                                                </Typography>
+                                            </Grid>
+                                        </Grid>
+                                        <Grid container sx={{ p: 2 }}>
+                                            <Typography variant="body1" sx={{ backgroundColor: '#eff8ff', p: 2 }}>{descText}</Typography>
+                                        </Grid>
+                                        <Grid>
+                                            <TableContainer component={Paper}>
+                                                <Table sx={{ minWidth: 700 }} aria-label="customized table">
+                                                    <TableHead>
+                                                        <TableRow>
+                                                            <StyledTableCell>Date</StyledTableCell>
+                                                            <StyledTableCell align="right">Room</StyledTableCell>
+                                                        </TableRow>
+                                                    </TableHead>
+                                                    <TableBody>
+                                                        <StyledTableRow>
+                                                            <StyledTableCell component="th" scope="row" sx={{ textWrap: 'nowrap' }}>{checkInDate} - {checkOutDate}</StyledTableCell>
+                                                            <StyledTableCell align="left">
+                                                                <StyledTableCell align="left">
+                                                                    {/* Render selected rooms */}
+                                                                    {selectedRooms?.map((item) => (
+                                                                        <RoomKey
+                                                                            key={item.roomId}
+                                                                            status="selected"
+                                                                            sx={{ m: 1 }}
+                                                                            onClick={() => handleAddRemoveRoomFromSelected(item.roomId)}
+                                                                        >
+                                                                            {item.roomNo}
+                                                                        </RoomKey>
+                                                                    ))}
+
+                                                                    {/* Render available rooms */}
+                                                                    {availableRooms?.map((item) => (
+                                                                        <RoomKey
+                                                                            key={item.roomId}
+                                                                            status="available"
+                                                                            sx={{ m: 1 }}
+                                                                            onClick={() => handleAddRemoveRoomFromAvailable(item.roomId)}
+                                                                        >
+                                                                            {item.roomNo}
+                                                                        </RoomKey>
+                                                                    ))}
+                                                                </StyledTableCell>
+
+                                                            </StyledTableCell>
+                                                        </StyledTableRow>
+                                                    </TableBody>
+                                                </Table>
+                                            </TableContainer>
+                                        </Grid>
+                                    </Grid>
+                                </Grid>
+                                <Grid item xs={12} md={4} sx={{ mb: 4 }}>
+                                    <Grid sx={{ backgroundColor: '#fff', p: 2 }}>
+                                        <Grid sx={{ display: 'flex' }}>
+                                            <Grid alignContent='center' sx={{ flexGrow: 1 }}>
+                                                <Typography variant="h5" gutterBottom>Book Room</Typography>
+                                            </Grid>
+                                        </Grid>
+                                        <Divider />
+                                        <Grid>
+                                            <form onSubmit={handleSubmit(NewRoomBooking)}>
+                                                <Grid xs={12} sx={{ p: 0.7, mt: 1 }} >
+                                                    <Stack spacing={1}>
+                                                        <InputLabel htmlFor="guestName">Guest Type</InputLabel>
+                                                        <Select value={guesstName} {...register('guestName', { required: 'Guest Type is required' })} displayEmpty sx={inputStyles(errors.guestName)} >
+                                                            <MenuItem value="" disabled>Select type</MenuItem>
+                                                            <MenuItem value="WalkInGuest">Walk-In Guest</MenuItem>
+                                                            <MenuItem value="ExistingGuest">Existing Guest</MenuItem>
+                                                        </Select>
+                                                        {errors.guestName && (
+                                                            <Typography color="error" variant="caption">
+                                                                {errors.guestName.message}
+                                                            </Typography>
+                                                        )}
+                                                    </Stack>
+                                                </Grid>
+                                                {guesstName !== 'ExistingGuest' &&
+                                                    <Grid xs={12} sx={{ p: 0.7, mt: 1 }} >
+                                                        <Stack spacing={1}>
+                                                            <InputLabel htmlFor="name">Name *</InputLabel>
+                                                            <OutlinedInput {...register('name', { required: 'Name is required', minLength: { value: 3, message: 'Name must be at least 3 characters' }, })} placeholder="Enter your name"
+                                                                sx={inputStyles(errors.name)} />
+                                                            {errors.name && (
+                                                                <Typography color="error" variant="caption">
+                                                                    {errors.name.message}
+                                                                </Typography>
+                                                            )}
+                                                        </Stack>
+                                                    </Grid>
+                                                }
+                                                <Grid xs={12} sx={{ p: 0.7, mt: 1 }} >
+                                                    <Stack spacing={1}>
+                                                        <InputLabel htmlFor="email">Email *</InputLabel>
+                                                        <OutlinedInput {...register('email', { required: 'Email is required', pattern: { value: /^[^\s@]+@[^\s@]+\.[^\s@]+$/, message: 'Invalid email address' }, })} placeholder="Enter your email"
+                                                            sx={inputStyles(errors.email)} />
+                                                        {errors.email && (
+                                                            <Typography color="error" variant="caption">
+                                                                {errors.email.message}
+                                                            </Typography>
+                                                        )}
+                                                    </Stack>
+                                                </Grid>
+                                                {guesstName !== 'ExistingGuest' &&
+                                                    <>
+                                                        <Grid xs={12} sx={{ p: 0.7, mt: 1 }} >
+                                                            <Stack spacing={1}>
+                                                                <InputLabel htmlFor="phone_number">Phone Number *</InputLabel>
+                                                                <OutlinedInput {...register('phone_number', { required: 'Phone number is required', pattern: { value: /^[0-9]{10}$/, message: 'Phone number must be 10 digits' }, })} placeholder="Enter your Phone number"
+                                                                    sx={inputStyles(errors.phone_number)} />
+                                                                {errors.phone_number && (
+                                                                    <Typography color="error" variant="caption">
+                                                                        {errors.phone_number.message}
+                                                                    </Typography>
+                                                                )}
+                                                            </Stack>
+                                                        </Grid>
+                                                        <Grid xs={12} sx={{ p: 0.7, mt: 1 }} >
+                                                            <Stack spacing={1}>
+                                                                <InputLabel htmlFor="address">Address *</InputLabel>
+                                                                <OutlinedInput {...register('address', { required: 'Address is required', minLength: { value: 3, message: 'Address must be at least 3 characters' }, })} placeholder="Enter address"
+                                                                    sx={inputStyles(errors.address)} />
+                                                                {errors.address && (
+                                                                    <Typography color="error" variant="caption">
+                                                                        {errors.address.message}
+                                                                    </Typography>
+                                                                )}
+                                                            </Stack>
+                                                        </Grid>
+                                                        <Grid xs={12} sx={{ p: 0.7, mt: 1 }} >
+                                                            <Stack spacing={1}>
+                                                                <InputLabel htmlFor="adult">Adult</InputLabel>
+                                                                <OutlinedInput {...register('adult', { required: 'No. of Adults is required', min: 0 })} placeholder="Enter no. of Adults"
+                                                                    sx={inputStyles(errors.adult)} />
+                                                                {errors.adult && (
+                                                                    <Typography color="error" variant="caption">
+                                                                        {errors.adult.message}
+                                                                    </Typography>
+                                                                )}
+                                                            </Stack>
+                                                        </Grid>
+                                                        <Grid xs={12} sx={{ p: 0.7, mt: 1 }} >
+                                                            <Stack spacing={1}>
+                                                                <InputLabel htmlFor="child">Children</InputLabel>
+                                                                <OutlinedInput {...register('child', { required: 'No. of Children is required', min: 0 })} placeholder="Enter no. of Children"
+                                                                    sx={inputStyles(errors.child)} />
+                                                                {errors.child && (
+                                                                    <Typography color="error" variant="caption">
+                                                                        {errors.child.message}
+                                                                    </Typography>
+                                                                )}
+                                                            </Stack>
+                                                        </Grid>
+                                                    </>
+                                                }
+                                                <Grid xs={12} sx={{ p: 0.7 }}>
+                                                    <TableContainer>
+                                                        <Table aria-label="customized table">
+                                                            <TableHead>
+                                                                <TableRow>
+                                                                    <TableCell align='center'>Room</TableCell>
+                                                                    <TableCell align='center'>Days</TableCell>
+                                                                    <TableCell align='center'>Fare</TableCell>
+                                                                    <TableCell align='center'>Subtotal</TableCell>
+                                                                </TableRow>
+                                                            </TableHead>
+                                                            <TableBody>
+                                                                {selectedRooms?.map((item) => (
+                                                                    <StyledTableRow>
+                                                                        <TableCell align='center' p={0}><RoomKey status='selected' onClick={() => handleAddRemoveRoomFromSelected(item.roomId)}>{item.roomNo}</RoomKey></TableCell>
+                                                                        <TableCell align="center">{item?.noOfDays}</TableCell>
+                                                                        <TableCell align="center">{item?.farePerDay}</TableCell>
+                                                                        <TableCell align="center">₹ {item?.totalFareRoom}</TableCell>
+                                                                    </StyledTableRow>
+                                                                ))}
+                                                                {/* {availableRooms?.map((item) => (
+                                                            <StyledTableRow>
+                                                                <TableCell align='center' p={0}><RoomKey status='available' onClick={() => handleAddRemoveRoomFromAvailable(item.roomId)}>{item.roomNo}</RoomKey></TableCell>
+                                                                <TableCell align="center">1</TableCell>
+                                                                <TableCell align="center">250 USD</TableCell>
+                                                                <TableCell align="center">250 USD</TableCell>
+                                                            </StyledTableRow>
+                                                        ))} */}
+                                                            </TableBody>
+                                                        </Table>
+                                                    </TableContainer>
+                                                </Grid>
+                                                <Grid xs={12} sx={{ p: 0.7, mt: 1 }} >
+                                                    <Stack spacing={1}>
+                                                        <InputLabel htmlFor="payingAmount">Paying Amount</InputLabel>
+                                                        <OutlinedInput {...register('payingAmount', { required: 'Paying amount is required', min: { value: 1, message: 'Amount must be at least 1' }, validate: { isNumeric: value => !isNaN(value) || 'Please enter a valid number', }, })} placeholder="Enter maximum amount limit" sx={inputStyles(errors.payingAmount)} />
+                                                        {errors.payingAmount && (
+                                                            <Typography color="error" variant="caption">
+                                                                {errors.payingAmount.message}
+                                                            </Typography>
+                                                        )}
+                                                    </Stack>
+                                                </Grid>
+                                                <Grid alignContent='end' xs={12} sx={{ p: 0.7, mt: 2 }} >
+                                                    <CustomButton variant="outlined" type='submit' fullWidth sx={{ p: 1 }} onClick={() => setSearchOpen(true)}>
+                                                        Book Now
+                                                    </CustomButton>
+                                                </Grid>
+                                            </form>
+                                        </Grid>
+                                    </Grid>
+                                </Grid>
+                            </Grid>
+                        </Grid>
+                        :
+                        noData ? <NoDataFound /> : ''
+                    }
+                </Box>
             }
-        </Box>
+        </>
     );
 };
 

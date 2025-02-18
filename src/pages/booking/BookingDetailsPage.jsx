@@ -1,11 +1,13 @@
 import { Grid, Typography, Stack, Button, Menu, MenuItem, Accordion, AccordionSummary, AccordionDetails, TableContainer, Table, TableHead, TableRow, TableCell, TableBody, Paper, Box } from '@mui/material';
-import React, { useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import { useParams } from 'react-router'
 import { styled } from '@mui/material/styles';
 import ListIcon from '@mui/icons-material/List';
 import { MoreVertOutlined } from '@mui/icons-material';
 import { CaretDownFilled } from '@ant-design/icons';
 import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
+import useSWR from 'swr';
+import axios from 'axios';
 
 const CustomButton = styled(Button)(() => ({
     borderRadius: '3.2px',
@@ -37,10 +39,43 @@ const MoreButton = styled(Button)(() => ({
     },
 }));
 
+const ServerIP = 'http://89.116.122.211:5001'
+const token = `Bearer ${localStorage.getItem('token')}`;
+
+const columns = [
+    { id: 'bookedFor', label: 'Booked For', minWidth: 300 },
+    { id: 'roomType', label: 'Room Type', minWidth: 300 },
+    { id: 'roomNum', label: 'Room Numbers', minWidth: 50 },
+];
+
+const fetcher = (url) => axios.get(url, { headers: { Authorization: token } }).then(res => res.data);
+
 const BookingDetailsPage = () => {
     let { id } = useParams();
 
-    const data = [
+    const [rows, setRows] = useState([]);
+
+    // get API
+    const { data, error } = useSWR(`${ServerIP}/booking/getByBookingId/${id}`, fetcher);
+
+    // get API
+    const { data: bookedRoomData, error: bookedRoomError } = useSWR(`${ServerIP}/booking/getBookedRoomByBookingId/${id}`, fetcher);
+
+    useEffect(() => {
+        if (bookedRoomData) {
+            console.log(data, 'data');
+            const transformedRows = bookedRoomData?.data?.rooms?.map((bookedRooms) => ({
+                ...bookedRooms,
+                // roomNum: <RoomButton variant="outlined" status='roomNo'><Typography variant='h6'>{bookedRooms.roomNo}</Typography><Typography variant='h6'>{bookedRooms.roomType}</Typography></RoomButton>,
+                // action: <CustomEnableButton variant="outlined" disabled={true} status='cancel'>Cancel Booking </CustomEnableButton>,
+            }));
+            setRows(transformedRows);
+        }
+    }, [token, data]);
+
+
+
+    const dataa = [
         { bookedFor: '01 Nov, 2024', roomType: 'Murphy', roomNo: '301', charges: '$230.00' },
         { bookedFor: '02 Nov, 2024', roomType: 'Murphy', roomNo: '301', charges: '$230.00' },
         { bookedFor: '03 Nov, 2024', roomType: 'Murphy', roomNo: '301', charges: '$230.00' },
@@ -61,6 +96,7 @@ const BookingDetailsPage = () => {
     const handleClose = () => {
         setAnchorEl(null);
     };
+
 
     return (
         <Grid container rowGap={2} sx={{ display: 'flex', flexDirection: 'column' }}>
@@ -92,23 +128,23 @@ const BookingDetailsPage = () => {
                         <Box sx={{ backgroundColor: '#fff', borderRadius: '10px', p:2}}>
                             <Grid mb={2}>
                                 <Typography variant='h6'>Guest Type</Typography>
-                                <Typography variant='h6' sx={{ color: '#5b6e88'}}>Walk In Guest</Typography>
+                                <Typography variant='h6' sx={{ color: '#5b6e88' }}>{data?.booking?.bookingType || '-'}</Typography>
                             </Grid>
                             <Grid mb={2}>
                                 <Typography variant='h6'>Name</Typography>
-                                <Typography variant='h6' sx={{ color: '#5b6e88'}}>ol</Typography>
+                                <Typography variant='h6' sx={{ color: '#5b6e88' }}>{data?.booking?.guestName || '-'}</Typography>
                             </Grid>
                             <Grid mb={2}>
                                 <Typography variant='h6'>Email</Typography>
-                                <Typography variant='h6' sx={{ color: '#5b6e88'}}>ol@ol.com</Typography>
+                                <Typography variant='h6' sx={{ color: '#5b6e88' }}>{data?.booking?.guestEmail || '-'}</Typography>
                             </Grid>
                             <Grid mb={2}>
                                 <Typography variant='h6'>Mobile</Typography>
-                                <Typography variant='h6' sx={{ color: '#5b6e88'}}>+123</Typography>
+                                <Typography variant='h6' sx={{ color: '#5b6e88' }}>{data?.booking?.phoneNo || '-'}</Typography>
                             </Grid>
                             <Grid mb={2}>
                                 <Typography variant='h6'>Address</Typography>
-                                <Typography variant='h6' sx={{ color: '#5b6e88'}}>asdasd</Typography>
+                                <Typography variant='h6' sx={{ color: '#5b6e88' }}>{data?.booking?.address || '-'}</Typography>
                             </Grid>
                         </Box>
                     </Grid>
@@ -117,45 +153,45 @@ const BookingDetailsPage = () => {
                             <Grid flexGrow={1}>
                                 <Grid mb={2}>
                                     <Typography variant='h6'>Booking No.</Typography>
-                                    <Typography variant='h6' sx={{ color: '#5b6e88' }}>#WX3OON7C6F47</Typography>
+                                    <Typography variant='h6' sx={{ color: '#5b6e88' }}>{data?.booking?.bookingNo || '-'}</Typography>
                                 </Grid>
                                 <Grid mb={2}>
                                     <Typography variant='h6'>Total Room</Typography>
-                                    <Typography variant='h6' sx={{ color: '#5b6e88' }}>7</Typography>
+                                    <Typography variant='h6' sx={{ color: '#5b6e88' }}>{data?.booking?.totalRoom || '-'}</Typography>
                                 </Grid>
                                 <Grid mb={2}>
                                     <Typography variant='h6'>Total Charge</Typography>
-                                    <Typography variant='h6' sx={{ color: '#5b6e88' }}>ol@ol.com</Typography>
+                                    <Typography variant='h6' sx={{ color: '#5b6e88' }}>{data?.booking?.totalAmount || '-'}</Typography>
                                 </Grid>
                                 <Grid mb={2}>
                                     <Typography variant='h6'>Paid Amount</Typography>
-                                    <Typography variant='h6' sx={{ color: '#5b6e88' }}>+123</Typography>
+                                    <Typography variant='h6' sx={{ color: '#5b6e88' }}>{data?.booking?.totalPaid || '-'}</Typography>
                                 </Grid>
                                 <Grid mb={2}>
                                     <Typography variant='h6'>Receivable from User</Typography>
-                                    <Typography variant='h6' sx={{ color: '#5b6e88' }}>$0.00</Typography>
+                                    <Typography variant='h6' sx={{ color: '#5b6e88' }}>{data?.booking?.pendingAmount || '-'}</Typography>
                                 </Grid>
                             </Grid>
                             <Grid>
                                 <Grid mb={2}>
                                     <Typography variant='h6'>Booked At</Typography>
-                                    <Typography variant='h6' sx={{ color: '#5b6e88' }}>12 Jun, 2024 03:40 AM</Typography>
+                                    <Typography variant='h6' sx={{ color: '#5b6e88' }}>{data?.booking?.bookingAt || '-'}</Typography>
                                 </Grid>
                                 <Grid mb={2}>
                                     <Typography variant='h6'>Check-In</Typography>
-                                    <Typography variant='h6' sx={{ color: '#5b6e88' }}>01 Nov, 2024</Typography>
+                                    <Typography variant='h6' sx={{ color: '#5b6e88' }}>{data?.booking?.checkInDate.split('T')[0] || '-'}</Typography>
                                 </Grid>
                                 <Grid mb={2}>
                                     <Typography variant='h6'>Checkout</Typography>
-                                    <Typography variant='h6' sx={{ color: '#5b6e88' }}>08 Nov, 2024</Typography>
+                                    <Typography variant='h6' sx={{ color: '#5b6e88' }}>{data?.booking?.checkOutDate.split('T')[0] || '-'}</Typography>
                                 </Grid>
                                 <Grid mb={2}>
                                     <Typography variant='h6'>Checked-In At</Typography>
-                                    <Typography variant='h6' sx={{ color: '#5b6e88' }}>-</Typography>
+                                    <Typography variant='h6' sx={{ color: '#5b6e88' }}>{data?.booking?.checkInDate.split('T')[1] || '-'}</Typography>
                                 </Grid>
                                 <Grid mb={2}>
                                     <Typography variant='h6'>Checked Out At</Typography>
-                                    <Typography variant='h6' sx={{ color: '#5b6e88' }}>N/A</Typography>
+                                    <Typography variant='h6' sx={{ color: '#5b6e88' }}>{data?.booking?.checkOutDate.split('T')[1] || '-'}</Typography>
                                 </Grid>
                             </Grid>
                         </Box>
@@ -179,7 +215,7 @@ const BookingDetailsPage = () => {
                                     </TableRow>
                                 </TableHead>
                                 <TableBody>
-                                    {data.map((row, index) => (
+                                    {dataa.map((row, index) => (
                                         <TableRow
                                             key={row.room}
                                             sx={{

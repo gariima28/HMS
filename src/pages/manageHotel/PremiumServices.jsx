@@ -13,6 +13,7 @@ import HashLoader from 'components/Skeleton/HashLoader';
 import NoDataFound from '../NoDataFound';
 import { useForm } from 'react-hook-form';
 import ErrorPage from 'components/ErrorPage';
+import PlaceholderTable from 'components/Skeleton/PlaceholderTable';
 import { addPremiumServicesApi, getPremiumServicesDataByIdApi, updatePremiumServicesApi } from 'api/api';
 
 const ServerIP = 'https://www.auth.edu2all.in/hms';
@@ -55,6 +56,8 @@ const PremiumServices = () => {
   const [premiumServiceId, setPremiumServiceId] = useState();
   const { reset } = useForm();
   const [showLoader, setShowLoader] = useState(false);
+  const [showDataTableLoader, setShowDataTableLoader] = useState(false);
+  const [showModalLoader, setShowModalLoader] = useState(false);
 
   const [formDataa, setFormDataa] = useState({
     premiumServiceName: '',
@@ -90,8 +93,8 @@ const PremiumServices = () => {
 
   // Get API
   const { data, error } = useSWR(`${ServerIP}/preServ/getAll`, fetcher, {
-    onLoadingSlow: () => setShowLoader(true),
-    onSuccess: () => setShowLoader(false),
+    onLoadingSlow: () => setShowDataTableLoader(true),
+    onSuccess: () => setShowDataTableLoader(false),
   });
 
   const refreshData = () => {
@@ -117,7 +120,7 @@ const PremiumServices = () => {
 
   useEffect(() => {
     if (data) {
-      setShowLoader(true)
+      setShowDataTableLoader(true)
       const formatPrice = (price) => {
         if (Number.isInteger(price)) {
           return `₹ ${price}.00`;
@@ -143,10 +146,10 @@ const PremiumServices = () => {
         ),
       }));
 
+      setRows(transformedRows);
       setTimeout(() => {
-        setShowLoader(false)
-        setRows(transformedRows);
-      }, 1000);
+        setShowDataTableLoader(false)
+      }, 1800);
     }
   }, [data]);
 
@@ -155,13 +158,13 @@ const PremiumServices = () => {
   };
 
   const AddNewPremiumService = async (formData) => {
-    setShowLoader(true);
+    setShowModalLoader(true);
 
     console.log(formData.premiumServiceName, formData.premiumServiceCost);
     if (!formData.premiumServiceName || !formData.premiumServiceCost) {
       setTimeout(() => {
         handleSnackbarMessage('Please fill in all fields before submitting.', 'error');
-        setShowLoader(false);
+        setShowModalLoader(false);
       }, 1000);
       return;
     }
@@ -175,7 +178,7 @@ const PremiumServices = () => {
       const response = await addPremiumServicesApi(jsonData);
       if (response.status === 200 && response?.data?.status === 'success') {
         setTimeout(() => {
-          setShowLoader(false);
+          setShowModalLoader(false);
           handleSnackbarMessage('Premium Service Added Successfully', 'success');
           setModalOpen(false);
           refreshData();
@@ -187,13 +190,13 @@ const PremiumServices = () => {
         }, 1000);
       } else {
         setTimeout(() => {
-          setShowLoader(false);
+          setShowModalLoader(false);
           handleSnackbarMessage('Error adding Premium Service', 'error');
         }, 1000);
       }
     } catch (error) {
       setTimeout(() => {
-        setShowLoader(false);
+        setShowModalLoader(false);
         handleSnackbarMessage(`Error adding Premium Service, ${error}`, 'error');
       }, 1000);
     }
@@ -271,7 +274,7 @@ const PremiumServices = () => {
   };
 
   const UpdatePremiumServicesData = async (data) => {
-    setShowLoader(true);
+    setShowModalLoader(true);
 
     try {
       const formData = new FormData();
@@ -291,25 +294,25 @@ const PremiumServices = () => {
         const response = await updatePremiumServicesApi(premiumServiceId, formData);
         if (response?.status === 200) {
           setTimeout(() => {
-            setShowLoader(false);
+            setShowModalLoader(false);
             refreshData();
             handleSnackbarMessage(response?.data?.message, 'success');
             setModalOpen(false);
           }, 1000);
         } else {
           setTimeout(() => {
-            setShowLoader(false);
+            setShowModalLoader(false);
             handleSnackbarMessage(response?.data?.message, 'error');
           }, 1000);
         }
       } else {
         // No changes to submit
-        setShowLoader(false);
+        setShowModalLoader(false);
         handleSnackbarMessage('No changes made.', 'warning');
       }
     } catch (error) {
       setTimeout(() => {
-        setShowLoader(false);
+        setShowModalLoader(false);
         handleSnackbarMessage('Error during update', 'error');
       }, 1000);
     } finally {
@@ -324,10 +327,11 @@ const PremiumServices = () => {
   if (error) return (
     <ErrorPage
       errorMessage={`${error}`}
-      onReload={() => { window.location.reload(), console.log(error, 'dhbj') }}
+      onReload={() => { window.location.reload()}}
       statusCode={`${error.status}`}
     />
   );
+
   // if (error) return <Typography variant="subtitle1"><NoDataFound/></Typography>;
   if (!data) return <Typography variant="subtitle1"><HashLoader /></Typography>;
 
@@ -347,10 +351,10 @@ const PremiumServices = () => {
         </Grid>
       </Grid>
       {/* Data Table */}
-      <DynamicDataTable columns={columns} rows={rows} />
+      {showDataTableLoader ? <PlaceholderTable /> : rows.length > 0 && <DynamicDataTable columns={columns} rows={rows} />}
 
       {/* Modals for all Add and Update */}
-      <DialogModal handleClosingDialogState={handleClosingDialogState} modalOpen={modalOpen} title={modalTitle} buttonName={buttonName} InputFields={buttonName === 'Create' ? AddInputFields : UpdateInputFields} onSubmit={buttonName === 'Create' ? AddNewPremiumService : UpdatePremiumServicesData} reset={reset} updateFormDataa={updateFormDataa} />
+      <DialogModal handleClosingDialogState={handleClosingDialogState} modalOpen={modalOpen} title={modalTitle} buttonName={buttonName} InputFields={buttonName === 'Create' ? AddInputFields : UpdateInputFields} onSubmit={buttonName === 'Create' ? AddNewPremiumService : UpdatePremiumServicesData} reset={reset} updateFormDataa={updateFormDataa} showModalLoader={showModalLoader} />
 
       {/* Snackbar for Notifications */}
       <Snackbar open={snackbar.open} autoHideDuration={3000} onClose={handleSnackbarClose} anchorOrigin={{ vertical: 'top', horizontal: 'right' }}>

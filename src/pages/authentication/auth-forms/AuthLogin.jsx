@@ -30,12 +30,16 @@ import EyeOutlined from '@ant-design/icons/EyeOutlined';
 import EyeInvisibleOutlined from '@ant-design/icons/EyeInvisibleOutlined';
 import { loginApi } from 'api/api';
 import HashLoader from 'components/Skeleton/HashLoader';
+import { useGeolocated } from 'react-geolocated';
 
 export default function AuthLogin({ isDemo = false }) {
   const navigate = useNavigate();
   const [checked, setChecked] = React.useState(false);
   const [showLoader, setShowLoader] = React.useState(false);
   const [showPassword, setShowPassword] = React.useState(false);
+  // for location
+  const [latiTude, setLatiTude] = React.useState();
+  const [longiTude, setLongiTude] = React.useState();
 
   // Snackbar state
   const [snackbar, setSnackbar] = React.useState({
@@ -43,6 +47,23 @@ export default function AuthLogin({ isDemo = false }) {
     message: '',
     severity: 'info', // 'success', 'error', 'warning', 'info'
   });
+  // for location
+  const { coords } =
+  useGeolocated({
+    positionOptions: {
+      enableHighAccuracy: false,
+    },
+    userDecisionTimeout: 5000,
+  });
+  
+  // for location
+  useEffect(() => {
+    if (coords) {
+      setLatiTude(coords.latitude);
+      setLongiTude(coords.longitude);
+    }
+  }, [coords]);
+  
 
   const handleSnackbarClose = () => {
     setSnackbar((prev) => ({ ...prev, open: false }));
@@ -59,7 +80,7 @@ export default function AuthLogin({ isDemo = false }) {
   const handleLogin = async (values, { setErrors, setStatus, setSubmitting }) => {
     try {
       setShowLoader(true)
-      const data = { email: values.email, password: values.password };
+      const data = { email: values.email, password: values.password, lat: latiTude , log: longiTude };
       const response = await loginApi(data);
 
       if (response.status === 200) {

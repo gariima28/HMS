@@ -1,6 +1,7 @@
+
 import React, { useEffect, useState } from 'react'
 import { styled } from '@mui/material/styles';
-import { Box, Button, InputLabel, Menu, MenuItem, OutlinedInput, Stack, Typography } from '@mui/material';
+import { Box, Button, InputLabel, Menu, MenuItem, OutlinedInput, Stack, Typography, useMediaQuery } from '@mui/material';
 import Grid from '@mui/material/Unstable_Grid2/Grid2';
 import FilterAltIcon from '@mui/icons-material/FilterAlt';
 // Date Picker
@@ -21,6 +22,8 @@ import DialogActions from '@mui/material/DialogActions';
 import IconButton from '@mui/material/IconButton';
 import CloseIcon from '@mui/icons-material/Close';
 import CancelIcon from '@mui/icons-material/Cancel';
+import PlaceholderTable from 'components/Skeleton/PlaceholderTable';
+import NoDataFound from 'pages/NoDataFound';
 
 
 // const LocalGirjesh = 'http://192.168.20.109:5001';
@@ -43,21 +46,6 @@ const CustomEnableButton = styled(Button)(({ status }) => ({
   },
 }));
 
-const DetailsButton = styled(Button)(() => ({
-  borderRadius: '3.2px',
-  backgroundColor: '#fff',
-  borderColor: '#4634ff',
-  color: '#4634ff',
-  fontSize: '0.825rem',
-  textTransform: 'none',
-
-  '&:hover': {
-    backgroundColor: '#4634ff',
-    borderColor: '#4634ff',
-    color: '#fff',
-  },
-}));
-
 const MoreButton = styled(Button)(() => ({
   borderRadius: '3.2px',
   backgroundColor: '#fff',
@@ -69,6 +57,21 @@ const MoreButton = styled(Button)(() => ({
   '&:hover': {
     backgroundColor: '#1e9ff2',
     borderColor: '#1e9ff2',
+    color: '#fff',
+  },
+}));
+
+const DetailsButton = styled(Button)(() => ({
+  borderRadius: '3.2px',
+  backgroundColor: '#fff',
+  borderColor: '#4634ff',
+  color: '#4634ff',
+  fontSize: '0.825rem',
+  textTransform: 'none',
+
+  '&:hover': {
+    backgroundColor: '#4634ff',
+    borderColor: '#4634ff',
     color: '#fff',
   },
 }));
@@ -86,6 +89,13 @@ const CustomButton = styled(Button)(() => ({
     borderColor: '#4634ff',
     color: '#fff',
   },
+
+  '&:disabled': {
+    backgroundColor: '#7d72fa',
+    borderColor: '#7d72fa',
+    color: '#fff',
+  },
+
 }));
 
 const columns = [
@@ -105,6 +115,13 @@ const AllBookings = () => {
 
   const [rows, setRows] = useState([]);
 
+  const [checkIn, setCheckIn] = useState(null);
+  const [checkOut, setCheckOut] = useState(null);
+  const [showDataTableLoader, setShowDataTableLoader] = useState(false);
+  const [issSearched, setIssSearched] = useState(false);
+
+  const isButtonEnabled = checkIn && checkOut;
+
   const [formInputs, setFormInputs] = useState([{ quantity: 0 }]);
 
   const [openMergeDialog, setOpenMergeDialog] = React.useState(false);
@@ -115,18 +132,55 @@ const AllBookings = () => {
 
   const [openBookingId, setOpenBookingId] = useState(null);
 
+  useEffect(() => {
+    console.log("Updated anchorEl:", anchorEl);
+    console.log("Updated openBookingId:", openBookingId);
+  }, [anchorEl, openBookingId]);
+
+
   const handleClick = (event, bookingId) => {
-    setAnchorEl(event.currentTarget);
-    setOpenBookingId(bookingId); // Store the bookingId for the open dropdown
+    console.log("Clicked booking:", bookingId);
+
+    // Close menu if the same button is clicked again
+    if (openBookingId === bookingId) {
+      setAnchorEl(null);
+      setOpenBookingId(null);
+    } else {
+      setAnchorEl(event.currentTarget);
+      setOpenBookingId(bookingId);
+    }
   };
 
   const handleClose = () => {
     setAnchorEl(null);
-    setOpenBookingId(null); // Reset the open bookingId when the menu closes
+    setOpenBookingId(null);
+    console.log(anchorEl, openBookingId)
   };
 
+  const [CheckInDate, setCheckInDate] = useState(checkIn ? checkIn.format('YYYY-MM-DD') : '');
+  const [CheckOutDate, setCheckOutDate] = useState(checkOut ? checkOut.format('YYYY-MM-DD') : '');
+
+
   // get API
-  const { data, error } = useSWR(`${ServerIP}/booking/getAll`, fetcher);
+  // const { data, error } = useSWR(`${ServerIP}/booking/getAll?startDate=${checkIn === null ? '' : checkIn}&endDate=${checkOut === null ? '' : checkOut}`, fetcher);
+
+  const { data, error } = useSWR(
+    issSearched ? `${ServerIP}/booking/getAll?startDate=${CheckInDate}&endDate=${CheckOutDate}` : `${ServerIP}/booking/getAll`,
+    fetcher
+  );
+
+  useEffect(() => {
+    if (issSearched) {
+      setIssSearched(true);
+      setCheckInDate(checkIn.format('YYYY-MM-DD'));
+      setCheckOutDate(checkOut.format('YYYY-MM-DD'));
+    } else {
+      setIssSearched(false);
+      setCheckInDate('');
+      setCheckOutDate('');
+    }
+  }, [checkIn, checkOut]);
+
 
   const addFormFields = () => {
     setFormInputs([...formInputs, { name: '', quantity: '' }]);
@@ -142,6 +196,7 @@ const AllBookings = () => {
 
   useEffect(() => {
     if (data) {
+      setShowDataTableLoader(true)
       console.log(data, 'data');
       const transformedRows = data.bookings.map((booking) => {
         const checkInDate = new Date(booking.checkInDate).toISOString().split('T')[0];
@@ -154,7 +209,7 @@ const AllBookings = () => {
           status: <CustomEnableButton variant="outlined" status={`${booking.status ? 'running' : 'upcoming'}`}> {booking.status ? 'Running' : 'Upcoming'} </CustomEnableButton>,
           action: (
             <Stack justifyContent='end' spacing={2} direction="row">
-              <DetailsButton variant="outlined" size="small" startIcon={<ComputerSharp />} href={`bookingDetailsPage/${booking.bookingId}`}>Details</DetailsButton>
+              <DetailsButton variant="outlined" size="small" startIcon={<ComputerSharp />} component={Link} to={`/bookingDetailsPage/${booking.bookingId}`}>Details</DetailsButton>
               {/* <MoreButton variant="outlined" size="small" startIcon={<MoreVertOutlined />} color={`${booking.status ? 'error' : 'success'}`} >More</MoreButton> */}
 
               <MoreButton
@@ -162,18 +217,17 @@ const AllBookings = () => {
                 size="small"
                 startIcon={<MoreVertOutlined />}
                 endIcon={<CaretDownFilled />}
-                id="basic-button"
                 aria-controls={open ? 'basic-menu' : undefined}
                 aria-haspopup="true"
                 aria-expanded={open ? 'true' : undefined}
-                onClick={(e) => handleClick(e, booking.bookingId)} // Pass bookingId to handleClick
+                onClick={(e) => handleClick(e, booking.bookingId)}
               >
                 More
               </MoreButton>
               <Menu
                 id="basic-menu"
                 anchorEl={anchorEl}
-                open={openBookingId === booking.bookingId} // Dynamically check if the menu for this booking should be open
+                open={openBookingId === booking.bookingId && Boolean(anchorEl)}
                 onClose={handleClose}
                 MenuListProps={{
                   'aria-labelledby': 'basic-button',
@@ -201,24 +255,26 @@ const AllBookings = () => {
                   <Button component={Link} to="/" sx={{ backgroundColor: 'transparent', color: '#000', '&:hover': { color: '#000', backgroundColor: 'transparent' } }}>Print Invoice</Button>
                 </MenuItem>
               </Menu>
-
-
             </Stack>
           ),
         }
 
       });
       setRows(transformedRows);
+      setTimeout(() => {
+        setShowDataTableLoader(false)
+        // setIssSearched(false)
+      }, 1800);
     }
     if (msgToaster) {
       handleOpeningToasterState();
     }
-  }, [token, data, msgToaster, openBookingId]);
+  }, [data]);
+  const isSmUp = useMediaQuery((theme) => theme.breakpoints.up('sm'));
 
 
   if (error) { <Typography variant="subtitle1">- Error loading data</Typography> };
   if (!data) return <Typography variant="subtitle1">Speed is slow from Backend &nbsp; : - &nbsp; Loading Data...</Typography>;
-
 
   return (
     <Box>
@@ -235,35 +291,30 @@ const AllBookings = () => {
         </Grid>
       </Grid>
       <Grid container spacing={1} sx={{ backgroundColor: '#ffffff', p: 1, mb: 4 }}>
-        <Grid xs={12} sm={6} md={6} lg={3} >
+        <Grid item xs={5} sm={4} md={4} lg={4}>
           <Stack spacing={1}>
-            <InputLabel htmlFor="Keywords">Keywords</InputLabel>
-            <OutlinedInput id="Keywords" type="text" name="roomType" placeholder="" fullWidth />
-          </Stack>
-        </Grid>
-        <Grid xs={12} sm={6} md={6} lg={3} >
-          <Stack spacing={1}>
-            <InputLabel htmlFor="subTitle">Check In</InputLabel>
+            <InputLabel htmlFor="checkIn">Check In</InputLabel>
             <LocalizationProvider dateAdapter={AdapterDayjs}>
-              <DatePicker />
+              <DatePicker value={checkIn} onClick={(newValue) => { setCheckIn(newValue); setCheckInDate(newValue.format('YYYY-MM-DD')) }} renderInput={(params) => <OutlinedInput {...params} fullWidth />} />
             </LocalizationProvider>
           </Stack>
         </Grid>
-        <Grid xs={12} sm={6} md={6} lg={3} >
+        <Grid item xs={5} sm={4} md={4} lg={4}>
           <Stack spacing={1}>
-            <InputLabel htmlFor="subTitle">Checkout</InputLabel>
+            <InputLabel htmlFor="checkOut">Checkout</InputLabel>
             <LocalizationProvider dateAdapter={AdapterDayjs}>
-              <DatePicker />
+              <DatePicker value={checkOut} onClick={(newValue) => { setCheckOut(newValue); setCheckOutDate(newValue.format('YYYY-MM-DD')) }} renderInput={(params) => <OutlinedInput {...params} fullWidth />} />
             </LocalizationProvider>
           </Stack>
         </Grid>
-        <Grid alignContent='end' xs={12} sm={6} md={6} lg={3} >
-          <CustomButton variant="outlined" fullWidth sx={{ p: 1 }}>
-            <FilterAltIcon sx={{ color: '#fff' }} /> &nbsp; Search
+        <Grid item xs={2} sm={4} md={4} lg={4} display="flex" alignItems="flex-end">
+          <CustomButton variant="outlined" fullWidth sx={{ p: 1 }} disabled={!isButtonEnabled} onClick={()=> setIssSearched(true)}>
+            <FilterAltIcon sx={{ color: '#fff' }} /> {isSmUp && <span>&nbsp; Search</span>}
           </CustomButton>
         </Grid>
       </Grid>
-      <DynamicDataTable columns={columns} rows={rows} />
+
+      {showDataTableLoader ? <PlaceholderTable /> : rows.length > 0 ?  <DynamicDataTable columns={columns} rows={rows} /> : <NoDataFound />}
 
       <Dialog open={openMergeDialog} onClose={handleClose} aria-labelledby="alert-dialog-title" aria-describedby="alert-dialog-description" maxWidth="xs" PaperProps={{ sx: { position: "absolute", top: 20, margin: 0, width: '100%' }, }} >
         <DialogTitle sx={{ m: 0, p: 2, fontWeight: "bold" }} id="customized-dialog-title" > Merging with:{" "}

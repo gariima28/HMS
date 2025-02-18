@@ -493,7 +493,7 @@ const RoomType = () => {
 
     return (
         <form onSubmit={handleSubmit(onSubmit)}>
-            <Box sx={{ bgcolor: "#f3f3f9", p: 4 }}>
+            <Box>
                 {/* Heading */}
                 <Box item sx={{ display: "flex", justifyContent: "space-between" }}>
                     <Typography

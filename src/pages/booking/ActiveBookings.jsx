@@ -14,6 +14,8 @@ import useSWR from 'swr';
 import axios from 'axios';
 import { MenuItem } from '@mui/base';
 import { Link } from 'react-router-dom';
+import PlaceholderTable from 'components/Skeleton/PlaceholderTable';
+import NoDataFound from 'pages/NoDataFound';
 
 const ServerIP = 'http://89.116.122.211:5001'
 const token = `Bearer ${localStorage.getItem('token')}`;
@@ -77,6 +79,13 @@ const CustomButton = styled(Button)(() => ({
     borderColor: '#4634ff',
     color: '#fff',
   },
+
+  '&:disabled': {
+    backgroundColor: '#7d72fa',
+    borderColor: '#7d72fa',
+    color: '#fff',
+  },
+
 }));
 
 const columns = [
@@ -95,9 +104,14 @@ const fetcher = (url) => axios.get(url, { headers: { Authorization: token } }).t
 const ActiveBookings = () => {
 
   const [rows, setRows] = useState([]);
+  const [checkIn, setCheckIn] = useState(null);
+  const [checkOut, setCheckOut] = useState(null);
+
+  const isButtonEnabled = checkIn && checkOut;
 
   const [openBookingId, setOpenBookingId] = useState(null);
   const [anchorEl, setAnchorEl] = useState(null);
+  const [showDataTableLoader, setShowDataTableLoader] = useState(false);
   const open = Boolean(anchorEl);
 
   const handleClick = (event, bookingId) => {
@@ -113,10 +127,11 @@ const ActiveBookings = () => {
   };
 
   // get API
-  const { data, error } = useSWR(`${ServerIP}/booking/activeBookings`, fetcher);
+  const { data, error } = useSWR(`${ServerIP}/booking/activeBookings?startDate=${checkIn === null ? '' : checkIn}&endDate=${checkOut === null ? '' : checkOut}`, fetcher);
 
   useEffect(() => {
     if (data) {
+      setShowDataTableLoader(true)
       console.log(data?.active, 'data');
       const transformedRows = data.active.map((active) => {
         const checkInDate = new Date(active.checkInDate).toISOString().split('T')[0];
@@ -181,6 +196,9 @@ const ActiveBookings = () => {
       
     });
       setRows(transformedRows);
+      setTimeout(() => {
+        setShowDataTableLoader(false)
+      }, 1800);
     }
   }, [token, data]);
 
@@ -204,37 +222,29 @@ const ActiveBookings = () => {
         </Grid>
       </Grid>
       <Grid container spacing={1} sx={{ backgroundColor: '#ffffff', p: 1, mb: 4 }}>
-        <Grid xs={12} sm={6} md={6} lg={3} >
+        <Grid item xs={12} sm={6} md={6} lg={4}>
           <Stack spacing={1}>
-            <InputLabel htmlFor="Keywords">Keywords</InputLabel>
-            <OutlinedInput id="Keywords" type="text" name="roomType" placeholder="" fullWidth />
-          </Stack>
-        </Grid>
-        <Grid xs={12} sm={6} md={6} lg={3} >
-          <Stack spacing={1}>
-            <InputLabel htmlFor="subTitle">Check In </InputLabel>
+            <InputLabel htmlFor="checkIn">Check In</InputLabel>
             <LocalizationProvider dateAdapter={AdapterDayjs}>
-              <DatePicker />
+              <DatePicker value={checkIn} onChange={(newValue) => setCheckIn(newValue)} renderInput={(params) => <OutlinedInput {...params} fullWidth />} />
             </LocalizationProvider>
           </Stack>
         </Grid>
-        <Grid xs={12} sm={6} md={6} lg={3} >
+        <Grid item xs={12} sm={6} md={6} lg={4}>
           <Stack spacing={1}>
-            <InputLabel htmlFor="subTitle">Checkout </InputLabel>
+            <InputLabel htmlFor="checkOut">Checkout</InputLabel>
             <LocalizationProvider dateAdapter={AdapterDayjs}>
-              <DatePicker />
-              {/* <DemoContainer components={['DatePicker']}>
-              </DemoContainer> */}
+              <DatePicker value={checkOut} onChange={(newValue) => setCheckOut(newValue)} renderInput={(params) => <OutlinedInput {...params} fullWidth />} />
             </LocalizationProvider>
           </Stack>
         </Grid>
-        <Grid alignContent='end' xs={12} sm={6} md={6} lg={3} >
-          <CustomButton variant="outlined" fullWidth sx={{ p: 1 }}>
+        <Grid item xs={12} sm={6} md={6} lg={4} display="flex" alignItems="flex-end">
+          <CustomButton variant="outlined" fullWidth sx={{ p: 1 }} disabled={!isButtonEnabled} >
             <FilterAltIcon sx={{ color: '#fff' }} /> &nbsp; Search
           </CustomButton>
         </Grid>
       </Grid>
-      <DynamicDataTable columns={columns} rows={rows} />
+      {showDataTableLoader ? <PlaceholderTable /> : rows.length > 0 ? <DynamicDataTable columns={columns} rows={rows} /> : <NoDataFound />}
     </Box>
   );
 }
