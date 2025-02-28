@@ -1,29 +1,4 @@
-import {
-  Table,
-  TableBody,
-  TableCell,
-  TableContainer,
-  TableHead,
-  TableRow,
-  Paper,
-  Button,
-  TextField,
-  Box,
-  Typography,
-  Pagination,
-  InputAdornment,
-  IconButton,
-  Menu,
-  MenuItem,
-  Stack,
-  Chip,
-  Grid,
-  Card,
-  Divider,
-  Container,
-  CardContent,
-  OutlinedInput,
-} from "@mui/material";
+import { Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Paper, Button, TextField, Box, Typography, Pagination, InputAdornment, IconButton, Menu, MenuItem, Stack, Chip, Grid, Card, Divider, Container, CardContent, OutlinedInput } from "@mui/material";
 import PersonalVideoIcon from "@mui/icons-material/PersonalVideo";
 import SearchIcon from "@mui/icons-material/Search";
 import { useEffect, useState } from "react";
@@ -43,6 +18,8 @@ import ArrowForwardIosIcon from '@mui/icons-material/ArrowForwardIos';
 import TablePagination from '@mui/material/TablePagination';
 import DynamicDataTable from "components/DynamicDataTable";
 import styled from "styled-components";
+import useSWR from "swr";
+import axios from "axios";
 
 
 export const data = [
@@ -172,6 +149,13 @@ const columns = [
   { id: 'action', label: 'Action', minWidth: 170, align: 'right' },
 ];
 
+// const LocalGirjesh = 'http://192.168.20.109:5001';
+const ServerIP = 'http://89.116.122.211:5001'
+const token = `Bearer ${localStorage.getItem('token')}`;
+
+// API Call when ever data updates 
+const fetcher = (url) => axios.get(url, { headers: { Authorization: token } }).then(res => res.data);
+
 const PaymentsPage = () => {
   const { id } = useParams();
   console.log(id)
@@ -181,34 +165,52 @@ const PaymentsPage = () => {
   const [anchorEl, setAnchorEl] = useState(null);
   const [showCalendar, setShowCalendar] = useState(false);
   const [rows, setRows] = useState([])
+  const [showDataTableLoader, setShowDataTableLoader] = useState(false);
+
+  // get API
+  const { data, error } = useSWR(`${ServerIP}/payment/getAllPayments`, fetcher);
+
+  const [page, setPage] = useState(1);
+  const [rowsPerPage, setRowsPerPage] = useState(50);
+  const [allPayments, setAllPayments] = useState([]);
+  const [snackbar, setSnackbar] = useState({ open: false, message: '', severity: '' });
+  const navigate = useNavigate();
+
 
   useEffect(() => {
     if (data) {
       // setShowDataTableLoader(true)
       console.log(data, 'data');
-      const transformedRows = data.map((payment) => {
+      const transformedRows = data?.payments.map((payment) => {
 
         return {
           ...payment,
           date:
             <>
-              <Typography variant="h6">{payment?.date}</Typography>
-              <Typography variant="h6">{getTimeElapsed(payment?.date)}</Typography>
+              <Typography variant="h6">{payment?.paymentDate.split('T')[0]}</Typography>
+              <Typography variant="h6">{getTimeElapsed(payment?.paymentDate)}</Typography>
             </>,
           gateway:
             <>
-              <Typography variant="h6" sx={{ fontWeight: 900, color: '#0d6efd' }}>{payment?.gateway}</Typography>
-              <Typography variant="h6">{payment?.transactionId}</Typography>
+              <Typography variant="h6" sx={{ fontWeight: 900, color: '#0d6efd' }}>{payment?.paymentType}</Typography>
+              <Typography variant="h6">{payment?.transactionNo}</Typography>
             </>,
           user:
             <>
-              <Typography variant="h6" sx={{ fontWeight: 900 }}>{payment?.user}</Typography>
-              <Typography variant="h6" sx={{ fontWeight: 900, color: '#0d6efd' }}>{payment?.username}</Typography>
+              <Typography variant="h6" sx={{ fontWeight: 900 }}>{payment?.userName}</Typography>
+              <Typography variant="h6" sx={{ fontWeight: 900, color: '#0d6efd' }}>{payment?.userEmail}</Typography>
+            </>,
+          amount:
+            <>
+              <Grid display='flex' justifyContent='center'>
+                <Typography variant="h6" sx={{ color: '#6c6c6c' }}>{payment?.totalAmount}</Typography> + <Typography variant="h6" sx={{ fontWeight: 900, color: 'red' }}>{payment?.extraService}</Typography>
+              </Grid>
+              <Typography variant="h6" sx={{ fontWeight: 900, color: '#6c6c6c' }}>₹{payment.totalAmount + payment.extraService}</Typography>
             </>,
           status: <CustomEnableButton variant="outlined" status={`${payment.status ? 'running' : 'upcoming'}`}> {payment.status ? 'Running' : 'Upcoming'} </CustomEnableButton>,
           action: (
             <Stack justifyContent='end' spacing={2} direction="row">
-              <DetailsButton variant="outlined" size="small" startIcon={<ComputerSharp />} component={Link} to={`/detailspayments/:${payment.transactionId}`}>Details</DetailsButton>
+              <DetailsButton variant="outlined" size="small" startIcon={<ComputerSharp />} component={Link} to={`/detailspayments/${payment.paymentId}`}>Details</DetailsButton>
             </Stack>
           ),
         }
@@ -241,8 +243,10 @@ const PaymentsPage = () => {
       return `${Math.floor(diffInMonths)} month${Math.floor(diffInMonths) > 1 ? 's' : ''} ago`;
     } else if (diffInWeeks >= 1) {
       return `${Math.floor(diffInWeeks)} week${Math.floor(diffInWeeks) > 1 ? 's' : ''} ago`;
-    } else {
+    } else if (diffInDays > 0) {
       return `${Math.floor(diffInDays)} day${Math.floor(diffInDays) > 1 ? 's' : ''} ago`;
+    } else {
+      return "Today";
     }
   }
 

@@ -216,7 +216,7 @@ const MainRoutes = {
       element: <Payments />
     },
     {
-      path: 'detailspayments/:id',
+      path: 'detailspayments/:paymentId',
       element: <PaymentStatusDetailsPage />
     },
     // {
