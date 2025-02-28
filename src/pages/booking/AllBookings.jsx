@@ -27,7 +27,7 @@ import NoDataFound from 'pages/NoDataFound';
 
 
 // const LocalGirjesh = 'http://192.168.20.109:5001';
-const ServerIP = 'http://89.116.122.211:5001'
+const ServerIP = 'https://www.auth.edu2all.in/hms'
 const token = `Bearer ${localStorage.getItem('token')}`;
 
 const CustomEnableButton = styled(Button)(({ status }) => ({

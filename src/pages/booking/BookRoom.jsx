@@ -20,7 +20,7 @@ import AvailableRoomLoader from 'components/Skeleton/AvailableRoomLoader';
 import NoDataFound from '../NoDataFound';
 import CircularLoader from 'components/Skeleton/CircularLoader';
 
-const ServerIP = 'http://89.116.122.211:5001';
+const ServerIP = 'https://www.auth.edu2all.in/hms';
 const token = `Bearer ${localStorage.getItem('token')}`;
 
 const StyledTableCell = styled(TableCell)(({ theme }) => ({
@@ -635,7 +635,7 @@ export default BookRoom;
 // import { getAvailableRoomApi } from 'api/api';
 // import dayjs from 'dayjs';
 
-// const ServerIP = 'http://89.116.122.211:5001'
+// const ServerIP = 'https://www.auth.edu2all.in/hms'
 // const token = `Bearer ${localStorage.getItem('token')}`;
 
 

@@ -12,7 +12,7 @@ import { Snackbar, Alert } from '@mui/material';
 
 import HashLoader from 'components/Skeleton/HashLoader';
 
-const ServerIP = 'http://89.116.122.211:5001'
+const ServerIP = 'https://www.auth.edu2all.in/hms'
 const token = `Bearer ${localStorage.getItem('token')}`;
 
 const CustomButton = styled(Button)(({ status }) => ({

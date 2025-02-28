@@ -9,7 +9,7 @@ import CircularProgressLoader from 'components/Skeleton/CircularProgressLoader';
 import CircularProgressLoaderMain from 'components/Skeleton/CircularProgressLoaderMain';
 
 
-const ServerIP = 'http://89.116.122.211:5001';
+const ServerIP = 'https://www.auth.edu2all.in/hms';
 const token = `Bearer ${localStorage.getItem('token')}`;
 const fetcher = (url) => axios.get(url, { headers: { Authorization: token } }).then(res => res.data);
 
@@ -243,7 +243,7 @@ export default AddPServices;
 // import { addPServiceApi } from 'api/api';
 
 // // const LocalGirjesh = 'http://192.168.20.109:5001';
-// const ServerIP = 'http://89.116.122.211:5001';
+// const ServerIP = 'https://www.auth.edu2all.in/hms';
 // const token = `Bearer ${localStorage.getItem('token')}`;
 // const fetcher = (url) => axios.get(url, { headers: { Authorization: token } }).then(res => res.data);
 
@@ -463,7 +463,7 @@ export default AddPServices;
 // import useSWR from 'swr';
 
 // // const LocalGirjesh = 'http://192.168.20.109:5001';
-// const ServerIP = 'http://89.116.122.211:5001'
+// const ServerIP = 'https://www.auth.edu2all.in/hms'
 // const token = `Bearer ${localStorage.getItem('token')}`;
 // const fetcher = (url) => axios.get(url, { headers: { Authorization: token } }).then(res => res.data);
 

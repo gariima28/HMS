@@ -6,7 +6,7 @@ import axios from 'axios';
 import useSWR from 'swr';
 import ErrorPage from 'components/ErrorPage';
 
-const ServerIP = 'http://89.116.122.211:5001';
+const ServerIP = 'https://www.auth.edu2all.in/hms';
 const token = `Bearer ${localStorage.getItem('token')}`;
 
 const fetcher1 = (url) => axios.get(url, { headers: { Authorization: token } }).then(res => res.data);
@@ -172,7 +172,7 @@ export default TodaysBooked;
 // import axios from 'axios';
 // import useSWR from 'swr';
 
-// const ServerIP = 'http://89.116.122.211:5001';
+// const ServerIP = 'https://www.auth.edu2all.in/hms';
 // const token = `Bearer ${localStorage.getItem('token')}`;
 
 // const fetcher1 = (url) => axios.get(url, { headers: { Authorization: token } }).then(res => res.data);
@@ -282,7 +282,7 @@ export default TodaysBooked;
 
 
 // // const LocalGirjesh = 'http://192.168.20.109:5001';
-// const ServerIP = 'http://89.116.122.211:5001'
+// const ServerIP = 'https://www.auth.edu2all.in/hms'
 // const token = `Bearer ${localStorage.getItem('token')}`;
 
 // const fetcher1 = (url) => axios.get(url, { headers: { Authorization: token } }).then(res => res.data);
