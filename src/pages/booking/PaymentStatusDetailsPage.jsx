@@ -7,9 +7,9 @@ import { useEffect, useState } from "react";
 import axios from "axios";
 import { useForm } from "react-hook-form";
 import useSWR from "swr";
-
+// import { getPaymentDetailsByPaymentId, changePaymentStatus } from "api/api";
 // const LocalGirjesh = 'http://192.168.20.109:5001';
-const ServerIP = 'https://www.auth.edu2all.in/hms'
+const ServerIP = 'http://89.116.122.211:5001'
 const token = `Bearer ${localStorage.getItem('token')}`;
 
 // API Call when ever data updates 
@@ -19,8 +19,7 @@ const Details = () => {
     const { paymentId } = useParams();
     console.log(paymentId, 'paymentId');
 
-
-    const navigate = useNavigate()
+    const navigate = useNavigate();
     const { register, handleSubmit, formState: { errors } } = useForm();
     const [openApprove, setOpenApprove] = useState(false);
     const [openReject, setOpenReject] = useState(false);
@@ -34,9 +33,31 @@ const Details = () => {
     const [status, setStatus] = useState();
     const [snackbar, setSnackbar] = useState({ open: false, message: '', severity: '' });
 
+
     // get API
-    const { data, error } = useSWR(`${ServerIP}/getPaymentDetailsByPaymentId/${paymentId}`, fetcher);
-    console.log(data)
+    const { data, error } = useSWR(`${ServerIP}/payment/getPaymentDetailsByPaymentId/${paymentId}`, fetcher);
+
+    useEffect(() => {
+        if (data) {
+            console.log(data, 'data');
+            if (data.status === "success")
+                setUsername(data?.UserPayment?.userName)
+            setTransactionNumber(data?.UserPayment?.transactionNo)
+            setMethod(data?.UserPayment?.paymentType)
+            setAmount(data?.UserPayment?.totalAmount)
+            setCharge(data?.UserPayment?.extraService)
+            setDate(data?.UserPayment?.paymentDate.split('T')[0]);
+            setStatus(data?.UserPayment?.paymentStatus)
+        }
+    }, [data]);
+
+    useEffect(() => {
+
+    }, []);
+
+
+
+
 
     const handleApproveClick = async () => {
         try {
@@ -53,7 +74,7 @@ const Details = () => {
                 },
                 {
                     headers: {
-                        Authorization: `Bearer ${token}`,
+                        Authorization: token,
                     },
                 }
             );
@@ -62,22 +83,19 @@ const Details = () => {
                 if (response?.data?.status === "success") {
                     console.log("Payment Status Updated", response);
                     setSnackbar({ open: true, message: response.data.message });
-                    navigate("/all")
+                    navigate("/payments/all")
                 }
                 else {
                     setSnackbar({ open: true, message: response.data.message });
                 }
-
         } catch (error) {
             console.error("Error updating payment status:", error);
         }
     };
 
-
     const handleRejectClick = () => {
         setOpenReject(true);
     };
-
 
     const handleCloseReject = () => {
         setOpenReject(false);
@@ -92,51 +110,6 @@ const Details = () => {
         console.log("Transaction rejected. Reason:", rejectionReason);
         setOpenReject(false);
     };
-
-
-
-    // const getPaymentDetails = async () => {
-    //     try {
-    //         console.log("try")
-    //         const response = await axios.get(
-    //             `http://89.116.122.211:5001/payment/getPaymentDetailsByPaymentId/${paymentId}`,
-    //             {
-    //                 headers: {
-    //                     Authorization: `Bearer ${token}`,
-    //                 },
-    //             }
-    //         );
-    //         console.log(response, 'get by id')
-    //         if (response?.status === 200) {
-    //             console.log("fetched")
-    //             console.log(response?.data?.UserPayment)
-    //             setUsername(response?.data?.UserPayment?.userName)
-    //             setTransactionNumber(response?.data?.UserPayment?.transactionNo)
-    //             setMethod(response?.data?.UserPayment?.paymentType)
-    //             setAmount(response?.data?.UserPayment?.totalAmount)
-    //             setCharge(response?.data?.UserPayment?.extraService)
-    //             setDate(response?.data?.UserPayment?.paymentDate)
-    //             setStatus(response?.data?.UserPayment?.paymentStatus)
-    //         }
-    //         else {
-    //             console.log(response?.data?.message);
-    //         }
-    //     }
-    //     catch (error) {
-    //         console.log('catch')
-    //     }
-    //     finally {
-    //         setTimeout(() => {
-    //         }, 1500);
-    //         console.log('finally')
-    //     }
-    // }
-
-    // useEffect(() => {
-    //     getPaymentDetails();
-    // }, []);
-    // // console.log(transactionNumber);
-
 
     const onSubmit = async (data) => {
         try {
@@ -153,7 +126,7 @@ const Details = () => {
                 },
                 {
                     headers: {
-                        Authorization: `Bearer ${token}`,
+                        Authorization: token,
                     },
                 }
             );
@@ -162,7 +135,7 @@ const Details = () => {
                     console.log("Payment Status Updated", response.data);
                     setSnackbar({ open: true, message: response.data.message });
                     handleCloseReject();
-                    navigate("/all")
+                    navigate("/payments/all")
                 }
                 else {
                     console.log("Failed to update payment status");
@@ -172,8 +145,6 @@ const Details = () => {
             setSnackbar({ open: true, message: error.message || 'Error occurred', severity: 'error' });
         }
     };
-
-
 
     return (
         <Box>
@@ -209,12 +180,13 @@ const Details = () => {
                 {status === "PENDING" ?
                     (<Grid
                         item
-                        size={{ xs: 12, sm: 12, md: 6 }}
+                        xs={12}
+                        sm={12}
+                        md={3.7}
                         sx={{
                             bgcolor: "white",
                             padding: "10px",
                             borderRadius: "10px",
-
                         }}
                     >
                         <Typography
@@ -238,7 +210,7 @@ const Details = () => {
                                     Date
                                 </Typography>
                                 <Typography sx={{ fontWeight: 550, color: "#5b6e88" }}>
-                                    2024-11-26 07:52 PM
+                                    {date}
                                 </Typography>
                             </Box>
                             <Divider />
@@ -350,7 +322,7 @@ const Details = () => {
                                     After Rate Conversion
                                 </Typography>
                                 <Typography sx={{ color: "#34495e", fontWeight: 550 }}>
-                                    381,967.30৳
+
                                 </Typography>
                             </Box>
                             <Divider />
@@ -371,13 +343,11 @@ const Details = () => {
                                                 status === "initiated" ? "rgba(7, 18, 81, 0.1)" :
                                                     status === "succeed" || status === "Successful" ? "rgb(40 199 111 / 10%)" :
                                                         "rgba(108, 117, 125, 0.1)", // Default
-
                                         border:
                                             status === "PENDING" ? "1px solid #ff9f43" :
                                                 status === "initiated" ? "1px solid #071251" :
                                                     status === "succeed" || status === "Successful" ? "1px solid #28c76f" :
                                                         "1px solid #6c757d",
-
                                         color:
                                             status === "PENDING" ? "#ff9f43" :
                                                 status === "initiated" ? "#071251" :
@@ -393,231 +363,209 @@ const Details = () => {
                             </Box>
                         </Box>
                     </Grid>) :
-                    (<Grid
-                        item
-                        size={{ xs: 12, sm: 12, md: 6 }}
-                        sx={{
-                            bgcolor: "white",
-                            padding: "10px",
-                            borderRadius: "10px",
-                            display: "flex", flexDirection: "column", justifyContent: "center",
-                            alignItems: "center",
-                            margin: "auto"
-                        }}
-                    >
-                        <Typography
+                    (
+                        <Grid
+                            item
+                            xs={12}
+                            sm={12}
+                            md={6}
                             sx={{
-                                padding: "1px 0px",
-                                color: "#6c757d",
-                                fontWeight: 550,
-                                fontSize: "1.3rem",
-                                mb: 2
+                                bgcolor: "white",
+                                padding: "10px",
+                                borderRadius: "10px",
+                                display: "flex", flexDirection: "column", justifyContent: "center",
+                                alignItems: "center",
+                                margin: "auto"
                             }}
                         >
-                            Payment Via
-                            {method}
-                        </Typography>
-                        <Box sx={{ border: "1px solid #ddd" }}>
-                            <Box
-                                display="flex"
-                                justifyContent="space-between"
-                                marginBottom={2}
-                                sx={{ padding: "10px 10px 0px 10px" }}
+                            <Typography
+                                sx={{
+                                    padding: "1px 0px",
+                                    color: "#6c757d",
+                                    fontWeight: 550,
+                                    fontSize: "1.3rem",
+                                    mb: 2
+                                }}
                             >
-                                <Typography sx={{ color: "#212529", fontSize: "1rem" }}>
-                                    Date
-                                </Typography>
-                                <Typography sx={{ fontWeight: 550, color: "#5b6e88" }}>
-                                    2024-11-26 07:52 PM
-                                </Typography>
-                            </Box>
-                            <Divider />
-                            <Box
-                                display="flex"
-                                justifyContent="space-between"
-                                marginBottom={2}
-                                sx={{ padding: "10px 10px 0px 10px" }}
-                            >
-                                <Typography sx={{ color: "#212529", fontSize: "1rem" }}>
-                                    Transaction Number
-                                </Typography>
-                                <Typography sx={{ fontWeight: 550, color: "#5b6e88" }}>
-                                    {transactionNumber}
-                                </Typography>
-                            </Box>
-                            <Divider />
-                            <Box
-                                display="flex"
-                                justifyContent="space-between"
-                                marginBottom={2}
-                                sx={{ padding: "10px 10px 0px 10px" }}
-                            >
-                                <Typography sx={{ color: "#212529", fontSize: "1rem" }}>
-                                    username
-                                </Typography>
-                                <Typography sx={{ color: "#0d6efd", fontWeight: "700" }}>
-                                    {username}
-                                </Typography>
-                            </Box>
-                            <Divider />
-                            <Box
-                                display="flex"
-                                justifyContent="space-between"
-                                marginBottom={2}
-                                sx={{ padding: "10px 10px 0px 10px" }}
-                            >
-                                <Typography sx={{ color: "#212529", fontSize: "1rem" }}>
-                                    Method
-                                </Typography>
-                                <Typography sx={{ fontWeight: 550, color: "#5b6e88" }}>
-                                    {method}
-                                </Typography>
-                            </Box>
-                            <Divider />
-                            <Box
-                                display="flex"
-                                justifyContent="space-between"
-                                marginBottom={2}
-                                sx={{ padding: "10px 10px 0px 10px" }}
-                            >
-                                <Typography sx={{ color: "#212529", fontSize: "1rem" }}>
-                                    Amount
-                                </Typography>
-                                <Typography sx={{ fontWeight: 550, color: "#5b6e88" }}>
-                                    {amount}
-                                </Typography>
-                            </Box>
-                            <Divider />
-                            <Box
-                                display="flex"
-                                justifyContent="space-between"
-                                marginBottom={2}
-                                sx={{ padding: "10px 10px 0px 10px" }}
-                            >
-                                <Typography sx={{ color: "#212529", fontSize: "1rem" }}>
-                                    Charge
-                                </Typography>
-                                <Typography sx={{ fontWeight: 550, color: "#5b6e88" }}>
-                                    {charge}
-                                </Typography>
-                            </Box>
-                            <Divider />
-                            <Box
-                                display="flex"
-                                justifyContent="space-between"
-                                marginBottom={2}
-                                sx={{ padding: "10px 10px 0px 10px" }}
-                            >
-                                <Typography sx={{ color: "#212529", fontSize: "1rem" }}>
-                                    After Charge
-                                </Typography>
-                                <Typography sx={{ fontWeight: 550, color: "#5b6e88" }}>
-                                    {amount + charge}
-                                </Typography>
-                            </Box>
-                            <Divider />
-                            <Box
-                                display="flex"
-                                justifyContent="space-between"
-                                marginBottom={2}
-                                sx={{ padding: "10px 10px 0px 10px" }}
-                            >
-                                <Typography sx={{ color: "#212529", fontSize: "1rem" }}>
-                                    Rate
-                                </Typography>
-                                <Typography sx={{ fontWeight: 550, color: "#5b6e88" }}>
-                                    {1100}
-                                </Typography>
-                            </Box>
-                            <Divider />
-                            <Box
-                                display="flex"
-                                justifyContent="space-between"
-                                marginBottom={2}
-                                sx={{ padding: "10px 10px 0px 10px" }}
-                            >
-                                <Typography sx={{ color: "#212529", fontSize: "1rem" }}>
-                                    After Rate Conversion
-                                </Typography>
-                                <Typography sx={{ color: "#34495e", fontWeight: 550 }}>
-                                    381,967.30৳
-                                </Typography>
-                            </Box>
-                            <Divider />
-                            <Box
-                                display="flex"
-                                justifyContent="space-between"
-                                marginBottom={2}
-                                sx={{ padding: "10px 10px 0px 10px" }}
-                            >
-                                <Typography sx={{ color: "#212529", fontSize: "1rem" }}>
-                                    Status
-                                </Typography>
-                                <Button
-                                    variant="outlined"
-                                    sx={{
-                                        backgroundColor:
-                                            status === "PENDING" ? "rgba(255, 159, 67, 0.1)" :
-                                                status === "INITIATED" ? "rgba(7, 18, 81, 0.1)" :
-                                                    status === "SUCCESSFUL" ? "rgb(40 199 111 / 10%)" : status === "REJECTED" ? "#eb222278" : "rgba(108, 117, 125, 0.1)", // Default
-                                        // 
-                                        border:
-                                            status === "PENDING" ? "1px solid #ff9f43" :
-                                                status === "INITIATED" ? "1px solid #071251" :
-                                                    status === "SUCCESSFUL" || status === "SUCCESSFUL" ? "1px solid #28c76f" :
-                                                        status === "REJECTED" ? "1px solid rgb(235, 34, 34)" : "1px solid #6c757d",
-
-                                        color:
-                                            status === "PENDING" ? "#ff9f43" :
-                                                status === "INITIATED" ? "#071251" :
-                                                    status === "SUCCESSFUL" ? "#28c76f" : status === "REJECTED" ? "rgb(235, 34, 34)" :
-                                                        "#6c757d",
-
-                                        borderRadius: "20px",
-                                        padding: "0px 15px",
-                                        textTransform: "lowercase",
-                                    }}
+                                Payment Via
+                                {method}
+                            </Typography>
+                            <Box sx={{ border: "1px solid #ddd" }}>
+                                <Box
+                                    display="flex"
+                                    justifyContent="space-between"
+                                    marginBottom={2}
+                                    sx={{ padding: "10px 10px 0px 10px" }}
                                 >
-                                    {status}
-                                </Button>
-                                {/* <Button
-                                    variant="outlined"
-                                    sx={{
-                                        backgroundColor:
-                                            status === "PENDING" ? "rgba(255, 159, 67, 0.1)" :
-                                                status === "initiated" ? "rgba(7, 18, 81, 0.1)" :
-                                                    status === "succeed" || status === "Successful" ? "rgb(40 199 111 / 10%)" :
-                                                        "rgba(108, 117, 125, 0.1)", // Default
-
-                                        border:
-                                            status === "PENDING" ? "1px solid #ff9f43" :
-                                                status === "initiated" ? "1px solid #071251" :
-                                                    status === "succeed" || status === "Successful" ? "1px solid #28c76f" :
-                                                        "1px solid #6c757d",
-
-                                        color:
-                                            status === "PENDING" ? "#ff9f43" :
-                                                status === "initiated" ? "#071251" :
-                                                    status === "succeed" ? "#28c76f" :
-                                                        "#6c757d",
-
-                                        borderRadius: "20px",
-                                        padding: "0px 15px",
-                                        textTransform: "lowercase",
-                                    }}
+                                    <Typography sx={{ color: "#212529", fontSize: "1rem" }}>
+                                        Date
+                                    </Typography>
+                                    <Typography sx={{ fontWeight: 550, color: "#5b6e88" }}>
+                                        {date}
+                                    </Typography>
+                                </Box>
+                                <Divider />
+                                <Box
+                                    display="flex"
+                                    justifyContent="space-between"
+                                    marginBottom={2}
+                                    sx={{ padding: "10px 10px 0px 10px" }}
                                 >
-                                    {status}
-                                </Button> */}
-                            </Box>
-                        </Box>
+                                    <Typography sx={{ color: "#212529", fontSize: "1rem" }}>
+                                        Transaction Number
+                                    </Typography>
+                                    <Typography sx={{ fontWeight: 550, color: "#5b6e88" }}>
+                                        {transactionNumber}
+                                    </Typography>
+                                </Box>
+                                <Divider />
+                                <Box
+                                    display="flex"
+                                    justifyContent="space-between"
+                                    marginBottom={2}
+                                    sx={{ padding: "10px 10px 0px 10px" }}
+                                >
+                                    <Typography sx={{ color: "#212529", fontSize: "1rem" }}>
+                                        username
+                                    </Typography>
+                                    <Typography sx={{ color: "#0d6efd", fontWeight: "700" }}>
+                                        {username}
+                                    </Typography>
+                                </Box>
+                                <Divider />
+                                <Box
+                                    display="flex"
+                                    justifyContent="space-between"
+                                    marginBottom={2}
+                                    sx={{ padding: "10px 10px 0px 10px" }}
+                                >
+                                    <Typography sx={{ color: "#212529", fontSize: "1rem" }}>
+                                        Method
+                                    </Typography>
+                                    <Typography sx={{ fontWeight: 550, color: "#5b6e88" }}>
+                                        {method}
+                                    </Typography>
+                                </Box>
+                                <Divider />
+                                <Box
+                                    display="flex"
+                                    justifyContent="space-between"
+                                    marginBottom={2}
+                                    sx={{ padding: "10px 10px 0px 10px" }}
+                                >
+                                    <Typography sx={{ color: "#212529", fontSize: "1rem" }}>
+                                        Amount
+                                    </Typography>
+                                    <Typography sx={{ fontWeight: 550, color: "#5b6e88" }}>
+                                        {amount}
+                                    </Typography>
+                                </Box>
+                                <Divider />
+                                <Box
+                                    display="flex"
+                                    justifyContent="space-between"
+                                    marginBottom={2}
+                                    sx={{ padding: "10px 10px 0px 10px" }}
+                                >
+                                    <Typography sx={{ color: "#212529", fontSize: "1rem" }}>
+                                        Charge
+                                    </Typography>
+                                    <Typography sx={{ fontWeight: 550, color: "#5b6e88" }}>
+                                        {charge}
+                                    </Typography>
+                                </Box>
+                                <Divider />
+                                <Box
+                                    display="flex"
+                                    justifyContent="space-between"
+                                    marginBottom={2}
+                                    sx={{ padding: "10px 10px 0px 10px" }}
+                                >
+                                    <Typography sx={{ color: "#212529", fontSize: "1rem" }}>
+                                        After Charge
+                                    </Typography>
+                                    <Typography sx={{ fontWeight: 550, color: "#5b6e88" }}>
+                                        {amount + charge}
+                                    </Typography>
+                                </Box>
+                                <Divider />
+                                <Box
+                                    display="flex"
+                                    justifyContent="space-between"
+                                    marginBottom={2}
+                                    sx={{ padding: "10px 10px 0px 10px" }}
+                                >
+                                    <Typography sx={{ color: "#212529", fontSize: "1rem" }}>
+                                        Rate
+                                    </Typography>
+                                    <Typography sx={{ fontWeight: 550, color: "#5b6e88" }}>
+                                        {1100}
+                                    </Typography>
+                                </Box>
+                                <Divider />
+                                <Box
+                                    display="flex"
+                                    justifyContent="space-between"
+                                    marginBottom={2}
+                                    sx={{ padding: "10px 10px 0px 10px" }}
+                                >
+                                    <Typography sx={{ color: "#212529", fontSize: "1rem" }}>
+                                        After Rate Conversion
+                                    </Typography>
+                                    <Typography sx={{ color: "#34495e", fontWeight: 550 }}>
+                                        123332
+                                    </Typography>
+                                </Box>
+                                <Divider />
+                                <Box
+                                    display="flex"
+                                    justifyContent="space-between"
+                                    marginBottom={2}
+                                    sx={{ padding: "10px 10px 0px 10px" }}
+                                >
+                                    <Typography sx={{ color: "#212529", fontSize: "1rem" }}>
+                                        Status
+                                    </Typography>
+                                    <Button
+                                        variant="outlined"
+                                        sx={{
+                                            backgroundColor:
+                                                status === "PENDING" ? "rgba(255, 159, 67, 0.1)" :
+                                                    status === "INITIATED" ? "rgba(7, 18, 81, 0.1)" :
+                                                        status === "SUCCESSFUL" ? "rgb(40 199 111 / 10%)" : status === "REJECTED" ? "#eb222278" : "rgba(108, 117, 125, 0.1)", // Default
+                                            // 
+                                            border:
+                                                status === "PENDING" ? "1px solid #ff9f43" :
+                                                    status === "INITIATED" ? "1px solid #071251" :
+                                                        status === "SUCCESSFUL" || status === "SUCCESSFUL" ? "1px solid #28c76f" :
+                                                            status === "REJECTED" ? "1px solid rgb(235, 34, 34)" : "1px solid #6c757d",
 
-                    </Grid>)
+                                            color:
+                                                status === "PENDING" ? "#ff9f43" :
+                                                    status === "INITIATED" ? "#071251" :
+                                                        status === "SUCCESSFUL" ? "#28c76f" : status === "REJECTED" ? "rgb(235, 34, 34)" :
+                                                            "#6c757d",
+
+                                            borderRadius: "20px",
+                                            padding: "0px 15px",
+                                            textTransform: "lowercase",
+                                        }}
+                                    >
+                                        {status}
+                                    </Button>
+                                </Box>
+                            </Box>
+
+                        </Grid>
+                    )
                 }
 
                 {/* User Payment Info */}
                 {status === "PENDING" && <Grid
                     item
-                    size={{ xs: 12, sm: 12, md: 8.3 }}
+                    xs={12}
+                    sm={12}
+                    md={8.3}
                     sx={{
                         bgcolor: "white",
                         padding: "15px",
@@ -663,7 +611,7 @@ const Details = () => {
                             <IconButton sx={{ color: "blue" }}>
                                 <InsertDriveFileOutlinedIcon />
                             </IconButton>
-                            <Typography sx={{ color: "#0d6efd" }}>Attachement</Typography>
+                            <Typography sx={{ color: "#0d6efd" }}>Attachment</Typography>
                         </Box>
                     </Box>
                     <Box sx={{ mt: 4, display: "flex", gap: "5px" }}>
@@ -750,14 +698,11 @@ const Details = () => {
                                 </FormHelperText>
                             </Stack>
                         </Grid>
-
                         <Button type="submit" variant="contained" sx={{ mt: 2 }}>
                             Submit
                         </Button>
                     </form>
                 </DialogContent>
-
-
             </Dialog>
         </Box>
     );

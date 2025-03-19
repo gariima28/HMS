@@ -18,94 +18,9 @@ import ArrowForwardIosIcon from '@mui/icons-material/ArrowForwardIos';
 import TablePagination from '@mui/material/TablePagination';
 import DynamicDataTable from "components/DynamicDataTable";
 import styled from "styled-components";
-import useSWR from "swr";
+import useSWR, { mutate } from "swr";
 import axios from "axios";
-
-
-export const data = [
-  {
-    gateway: "BKash",
-    transactionId: "3FDJFF8JPTC1",
-    date: "2024-11-26 07:52 PM",
-    user: "John Doe",
-    username: "@johnDoe",
-    amount: 3465.0,
-    fee: 23.43,
-    total: 3472.43,
-    conversion: 381967.3,
-    status: "pending",
-  },
-  {
-    gateway: "BKash",
-    transactionId: "3FDJFF8JPTC82",
-    date: "2024-11-26 07:52 PM",
-    user: "abhi",
-    username: "@abhi",
-    amount: 3465.0,
-    fee: 7.43,
-    total: 3472.43,
-    conversion: 381967.3,
-    status: "initiated",
-  },
-  {
-    gateway: "BKash",
-    transactionId: "3FDJFF8JPTC83",
-    date: "2024-11-26 07:52 PM",
-    user: "rajat",
-    username: "@raj",
-    amount: 3465.0,
-    fee: 7.43,
-    total: 3472.43,
-    conversion: 381967.3,
-    status: "succeed",
-  },
-  {
-    gateway: "BKash",
-    transactionId: "3FDJFF8JPTC4",
-    date: "2024-11-26 07:52 PM",
-    user: "aadi",
-    username: "@aadi",
-    amount: 3465.0,
-    fee: 23.43,
-    total: 3472.43,
-    conversion: 381967.3,
-    status: "pending",
-  }, {
-    gateway: "BKash",
-    transactionId: "3FDJFF8JPTC5",
-    date: "2024-11-26 07:52 PM",
-    user: "rahul",
-    username: "@rahul",
-    amount: 3465.0,
-    fee: 23.43,
-    total: 3472.43,
-    conversion: 381967.3,
-    status: "initiated",
-  }, {
-    gateway: "BKash",
-    transactionId: "3FDJFF8JPTC6",
-    date: "2024-11-26 07:52 PM",
-    user: "rituraj",
-    username: "@rituraj",
-    amount: 3465.0,
-    fee: 23.43,
-    total: 3472.43,
-    conversion: 381967.3,
-    status: "succeed",
-  },
-  {
-    gateway: "BKash",
-    transactionId: "3FDJFF8JPTC7",
-    date: "2024-11-26 07:52 PM",
-    user: "rituraj",
-    username: "@rituraj",
-    amount: 3465.0,
-    fee: 23.43,
-    total: 3472.43,
-    conversion: 381967.3,
-    status: "succeed",
-  },
-];
+// import { getPaymentByStatus, getPaymentBySearch } from "api/api";
 
 
 const DetailsButton = styled(Button)(() => ({
@@ -124,20 +39,48 @@ const DetailsButton = styled(Button)(() => ({
 }));
 
 const CustomEnableButton = styled(Button)(({ status }) => ({
-  borderRadius: '50px',
-  backgroundColor: status === 'running' ? '#E6F4EA' : '#ffa34c25',
-  borderColor: status === 'running' ? '#57C168' : '#ff9f43',
-  color: status === 'running' ? '#57C168' : '#ff9f43',
-  padding: '2px 26px',
-  fontSize: '12px',
-  textTransform: 'none',
+  borderRadius: "50px",
+  padding: "2px 26px",
+  fontSize: "12px",
+  textTransform: "none",
 
-  '&:hover': {
-    backgroundColor: status === 'running' ? '#D4ECD9' : '#ffa24c38',
-    borderColor: status === 'running' ? '#57C168' : '#ff9f43',
-    color: status === 'running' ? '#57C168' : '#ff9f43'
-  },
+  // Background Color
+  backgroundColor:
+    status === "PENDING"
+      ? "rgba(255, 159, 67, 0.1)"
+      : status === "INITIATED"
+        ? "rgba(7, 18, 81, 0.1)"
+        : status === "SUCCESSFUL"
+          ? "rgb(40 199 111 / 10%)"
+          : status === "REJECTED"
+            ? "#eb222278"
+            : "rgba(108, 117, 125, 0.1)", // Default
+
+  // Border Color
+  border:
+    status === "PENDING"
+      ? "1px solid #ff9f43"
+      : status === "INITIATED"
+        ? "1px solid #071251"
+        : status === "SUCCESSFUL"
+          ? "1px solid #28c76f"
+          : status === "REJECTED"
+            ? "1px solid rgb(235, 34, 34)"
+            : "1px solid #6c757d", // Default
+
+  // Text Color
+  color:
+    status === "PENDING"
+      ? "#ff9f43"
+      : status === "INITIATED"
+        ? "#071251"
+        : status === "SUCCESSFUL"
+          ? "#28c76f"
+          : status === "REJECTED"
+            ? "rgb(235, 34, 34)"
+            : "#6c757d", // Default
 }));
+
 
 const columns = [
   { id: 'gateway', label: 'Gateway | Transaction', minWidth: 170 },
@@ -150,7 +93,7 @@ const columns = [
 ];
 
 // const LocalGirjesh = 'http://192.168.20.109:5001';
-const ServerIP = 'https://www.auth.edu2all.in/hms'
+const ServerIP = 'http://89.116.122.211:5001'
 const token = `Bearer ${localStorage.getItem('token')}`;
 
 // API Call when ever data updates 
@@ -158,70 +101,91 @@ const fetcher = (url) => axios.get(url, { headers: { Authorization: token } }).t
 
 const PaymentsPage = () => {
   const { id } = useParams();
-  console.log(id)
-  const [search, setSearch] = useState("");
+  console.log(id);
+  const [searchKey, setSearchKey] = useState("");
   const [selectedPreset, setSelectedPreset] = useState("");
   const [dateRange, setDateRange] = useState([null, null]);
   const [anchorEl, setAnchorEl] = useState(null);
   const [showCalendar, setShowCalendar] = useState(false);
-  const [rows, setRows] = useState([])
+  const [rows, setRows] = useState([]);
+  const [totalPendingAmount, setTotalPendingAmount] = useState(0);
+  const [totalSuccessfulAmount, setTotalSuccessfulAmount] = useState(0);
+  const [totalRejectedAmount, setTotalRejectedAmount] = useState(0);
   const [showDataTableLoader, setShowDataTableLoader] = useState(false);
 
+  const fromDate = dateRange[0]?.format("YYYY-MM-DD") || "";
+  const toDate = dateRange[1]?.format("YYYY-MM-DD") || "";
+
+
   // get API
-  const { data, error } = useSWR(`${ServerIP}/payment/getAllPayments`, fetcher);
+  // const { data, error } = useSWR(`${ServerIP}/payment/getAllPayments?search=${searchKey}${id !== 'all' ? `?status=${id}` : ''}`, fetcher);
 
-  const [page, setPage] = useState(1);
-  const [rowsPerPage, setRowsPerPage] = useState(50);
-  const [allPayments, setAllPayments] = useState([]);
-  const [snackbar, setSnackbar] = useState({ open: false, message: '', severity: '' });
-  const navigate = useNavigate();
+  // const { data, error } = useSWR(
+  //   `${ServerIP}/payment/getAllPayments?${searchKey ? `search=${searchKey}&` : ''}${id !== 'all' ? `status=${id}` : ''}`,
+  //   fetcher
+  // );
 
+  const { data, error } = useSWR(
+    `${ServerIP}/payment/getAllPayments?${searchKey ? `search=${searchKey}&` : ''}${id !== 'all' ? `status=${id}&` : ''}${fromDate ? `fromDate=${fromDate}&` : ''}${toDate ? `toDate=${toDate}` : ''}`,
+    fetcher
+  );
 
   useEffect(() => {
     if (data) {
-      // setShowDataTableLoader(true)
       console.log(data, 'data');
-      const transformedRows = data?.payments.map((payment) => {
+      const totalPending = data?.payments?.filter(payment => payment.paymentStatus === "PENDING").reduce((sum, payment) => sum + payment.totalAmount, 0);
+      const totalSuccessful = data?.payments?.filter(payment => payment.paymentStatus === "SUCCESSFUL").reduce((sum, payment) => sum + payment.totalAmount, 0);
+      const totalRejected = data?.payments?.filter(payment => payment.paymentStatus === "REJECTED").reduce((sum, payment) => sum + payment.totalAmount, 0);
 
-        return {
-          ...payment,
-          date:
-            <>
-              <Typography variant="h6">{payment?.paymentDate.split('T')[0]}</Typography>
-              <Typography variant="h6">{getTimeElapsed(payment?.paymentDate)}</Typography>
-            </>,
-          gateway:
-            <>
-              <Typography variant="h6" sx={{ fontWeight: 900, color: '#0d6efd' }}>{payment?.paymentType}</Typography>
-              <Typography variant="h6">{payment?.transactionNo}</Typography>
-            </>,
-          user:
-            <>
-              <Typography variant="h6" sx={{ fontWeight: 900 }}>{payment?.userName}</Typography>
-              <Typography variant="h6" sx={{ fontWeight: 900, color: '#0d6efd' }}>{payment?.userEmail}</Typography>
-            </>,
-          amount:
-            <>
-              <Grid display='flex' justifyContent='center'>
-                <Typography variant="h6" sx={{ color: '#6c6c6c' }}>{payment?.totalAmount}</Typography> + <Typography variant="h6" sx={{ fontWeight: 900, color: 'red' }}>{payment?.extraService}</Typography>
-              </Grid>
-              <Typography variant="h6" sx={{ fontWeight: 900, color: '#6c6c6c' }}>₹{payment.totalAmount + payment.extraService}</Typography>
-            </>,
-          status: <CustomEnableButton variant="outlined" status={`${payment.status ? 'running' : 'upcoming'}`}> {payment.status ? 'Running' : 'Upcoming'} </CustomEnableButton>,
-          action: (
-            <Stack justifyContent='end' spacing={2} direction="row">
-              <DetailsButton variant="outlined" size="small" startIcon={<ComputerSharp />} component={Link} to={`/detailspayments/${payment.paymentId}`}>Details</DetailsButton>
-            </Stack>
-          ),
-        }
+      // Update state
+      setTotalPendingAmount(totalPending);
+      setTotalSuccessfulAmount(totalSuccessful);
+      setTotalRejectedAmount(totalRejected);
 
-      });
+      const transformedRows = data?.payments?.map((payment) => ({
+        ...payment,
+        date: (
+          <>
+            <Typography variant="h6">{payment?.paymentDate.split('T')[0]}</Typography>
+            <Typography variant="h6">{getTimeElapsed(payment?.paymentDate)}</Typography>
+          </>
+        ),
+        gateway: (
+          <>
+            <Typography variant="h6" sx={{ fontWeight: 900, color: '#0d6efd' }}>
+              {payment?.paymentType}
+            </Typography>
+            <Typography variant="h6">{payment?.transactionNo}</Typography>
+          </>
+        ),
+        user: (
+          <>
+            <Typography variant="h6" sx={{ fontWeight: 900 }}>{payment?.userName}</Typography>
+            <Typography variant="h6" sx={{ fontWeight: 900, color: '#0d6efd' }}>{payment?.userEmail}</Typography>
+          </>
+        ),
+        amount: (
+          <>
+            <Grid display="flex" justifyContent="center">
+              <Typography variant="h6" sx={{ color: '#6c6c6c' }}>{payment?.totalAmount}</Typography> +
+              <Typography variant="h6" sx={{ fontWeight: 900, color: 'red' }}>{payment?.extraService}</Typography>
+            </Grid>
+            <Typography variant="h6" sx={{ fontWeight: 900, color: '#6c6c6c' }}>
+              ₹{payment.totalAmount + payment.extraService}
+            </Typography>
+          </>
+        ),
+        status: <CustomEnableButton variant="outlined" status={payment.paymentStatus}>{payment.paymentStatus}</CustomEnableButton>,
+        action: (
+          <Stack justifyContent="end" spacing={2} direction="row">
+            <DetailsButton variant="outlined" size="small" startIcon={<ComputerSharp />} component={Link} to={`/detailspayments/${payment.paymentId}`}>
+              Details
+            </DetailsButton>
+          </Stack>
+        ),
+      }));
       setRows(transformedRows);
-      // setTimeout(() => {
-      //   setShowDataTableLoader(false)
-      // }, 1800);
     }
-
   }, [data]);
 
   const getTimeElapsed = (dateString) => {
@@ -250,7 +214,6 @@ const PaymentsPage = () => {
     }
   }
 
-
   const handleOpenMenu = (event) => {
     setAnchorEl(event.currentTarget);
   };
@@ -258,7 +221,6 @@ const PaymentsPage = () => {
   const handleCloseMenu = () => {
     setAnchorEl(null);
   };
-
 
   const handlePresetSelect = (preset) => {
     const today = dayjs();
@@ -308,21 +270,25 @@ const PaymentsPage = () => {
     setSelectedPreset("");
     setShowCalendar(false);
   };
+
   const formatDateRange = () => {
     if (dateRange[0] && dateRange[1]) {
       return `${dateRange[0]?.format("YYYY-MM-DD")} - ${dateRange[1]?.format(
         "YYYY-MM-DD"
-      )}`;
+      )
+        }`;
     } else {
       return "Start Date - End Date";
     }
   };
 
+
+
   return (
     <Box>
-      <Box sx={{ display: "flex", flexDirection: { xs: "column", md: "row" }, alignItems: { xs: "flex-start", md: "center" }, justifyContent: "space-between", gap: { xs: 2, md: 0 }, }} >
+      <Box sx={{ display: "flex", flexDirection: { xs: "column", md: "row" }, alignItems: { xs: "flex-start", md: "center" }, justifyContent: "space-between", gap: { xs: 2, md: 0 }, }}>
         <Typography sx={{ fontSize: "1.2rem", fontWeight: 500, color: "#34495e" }}>
-          {id === "all" ? "Payment History" : id === "succeed" ? "Successful Payments" : id === "pending" ? "Pending Payments" : id === "initiated" ? "Initiated Payments" : "Payment History"}
+          {id === "all" ? "Payment History" : id === "SUCCESSFUL" ? "Successful Payments" : id === "PENDING" ? "Pending Payments" : id === "REJECTED" ? "Rejected Payments" : "Payment History"}
         </Typography>
         <Box
           sx={{
@@ -343,15 +309,16 @@ const PaymentsPage = () => {
               }}
               variant="outlined"
               placeholder="Username / Email"
-              value={search}
-              onChange={(e) => setSearch(e.target.value)}
+              value={searchKey}
+              onChange={(e) => setSearchKey(e.target.value)}
             />
-            <Button sx={{ bgcolor: "blue", borderRadius: "0px 10px 10px 0px" }}>
+            <Button sx={{ bgcolor: "blue", borderRadius: "0px 10px 10px 0px" }} onClick={''}>
               <IconButton>
-                <SearchIcon sx={{ color: "white", }} />
+                <SearchIcon sx={{ color: "white" }} />
               </IconButton>
             </Button>
           </Stack>
+
           {/* Date Range Picker */}
           <LocalizationProvider dateAdapter={AdapterDayjs}>
             <Box
@@ -365,6 +332,7 @@ const PaymentsPage = () => {
             >
               {/* Dropdown Button */}
               <Stack direction="row" sx={{ width: { xs: "100%", sm: "auto", } }}>
+
                 <OutlinedInput
                   value={
                     selectedPreset === "Custom Range" &&
@@ -379,25 +347,26 @@ const PaymentsPage = () => {
                     borderRadius: "10px 0px 0px 10px",
                     bgcolor: "white",
                     flex: 1,
+                    pr: 2,
                   }}
-                  InputProps={{
-                    endAdornment: (
+                  endAdornment={
+                    (selectedPreset !== "" || (dateRange[0] && dateRange[1])) && (
                       <InputAdornment position="end">
-                        {selectedPreset || (dateRange[0] && dateRange[1]) ? (
-                          <IconButton onClick={handleClearRange}>
-                            <ClearIcon sx={{ color: "#1b0404" }} />
-                          </IconButton>
-                        ) : null}
+                        <IconButton onClick={handleClearRange}>
+                          <ClearIcon sx={{ color: "black" }} />
+                        </IconButton>
                       </InputAdornment>
-                    ),
-                  }}
+                    )
+                  }
                 />
+
                 <Button sx={{ bgcolor: "blue", borderRadius: "0px 10px 10px 0px" }}>
                   <IconButton>
                     <SearchIcon sx={{ color: "white" }} />
                   </IconButton>
                 </Button>
               </Stack>
+
               <Menu
                 anchorEl={anchorEl}
                 open={Boolean(anchorEl)}
@@ -444,7 +413,6 @@ const PaymentsPage = () => {
                       Custom Range
                     </MenuItem>
                   </Box>
-
                   {showCalendar && (
                     <Box sx={{ mt: 2 }}>
                       <DateRangeCalendar
@@ -459,129 +427,87 @@ const PaymentsPage = () => {
                       />
                     </Box>
                   )}
-
-                  {/* <Box>
-                    {selectedPreset === "Custom Range" && (
-                      <Box sx={{ p: 2 }}>
-                        <DateRangeCalendar
-                          calendars={2}
-                          value={dateRange}
-                          onChange={(newValue) => {
-                            setDateRange(newValue);
-                            if (newValue[0] && newValue[1]) {
-                              handleCloseMenu();
-                            }
-                          }}
-                          renderInput={(startProps, endProps) => (
-                            <Box display="flex" alignItems="center" gap={1}>
-                              <TextField
-                                {...startProps}
-                                placeholder="Start Date"
-                                sx={{
-                                  flex: 1,
-                                  backgroundColor: "#fff",
-                                  borderRadius: "5px",
-                                }}
-                              />
-                              <Box sx={{ mx: 1 }}> - </Box>
-                              <TextField
-                                {...endProps}
-                                placeholder="End Date"
-                                sx={{
-                                  flex: 1,
-                                  backgroundColor: "#fff",
-                                  borderRadius: "5px",
-                                }}
-                              />
-                            </Box>
-                          )}
-                        />
-                      </Box>
-                    )}
-                  </Box> */}
                 </Box>
               </Menu>
+
             </Box>
           </LocalizationProvider>
+
         </Box>
       </Box>
 
       {id === "all" &&
         <Box sx={{ mt: 3 }}>
-          <Grid container sx={{ backgroundColor: '#ffffff', borderRadius: 2, justifyContent: {md:'space-between', sm:'start' } }}>
+          <Grid container sx={{ backgroundColor: '#ffffff', borderRadius: 2, justifyContent: { md: 'space-between', sm: 'start' } }}>
             <Grid item size={{ xs: 12, sm: 6, md: 3 }}>
-              <Link to="/succeed" style={{ textDecoration: "none", width: "100%" }} >
+              <Link to='/payments/SUCCESSFUL' style={{ textDecoration: "none", width: "100%" }} >
                 <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: "space-between", borderRadius: 2, padding: 1 }}>
                   <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: "center", borderRadius: 2, padding: 1 }}>
                     <Box sx={{ backgroundColor: "#8ad3aa", borderRadius: '10%', padding: 1.5, display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-                      < CheckCircleIcon sx={{ color: "green", }} />
+                      <CheckCircleIcon sx={{ color: "green", }} />
                     </Box>
                     <CardContent sx={{ flexGrow: 1 }}>
-                      <Typography variant="h6" sx={{ textDecoration: "none", color: "black", fontWeight: "400" }}>$1686</Typography>
-                      <Typography variant="body2" color="textSecondary" sx={{ textDecoration: "none" }}>Successfull Payment</Typography>
+                      <Typography variant="h6" sx={{ textDecoration: "none", color: "black", fontWeight: "400" }}>₹{totalSuccessfulAmount}</Typography>
+                      <Typography variant="body2" color="textSecondary" sx={{ textDecoration: "none" }}>Successful Payment</Typography>
                     </CardContent>
                   </Box>
                   <Box>
                     <ArrowForwardIosIcon sx={{ color: "#000", fontSize: '18px' }} />
                   </Box>
-
                 </Box>
               </Link>
             </Grid>
             <Grid item size={{ xs: 12, sm: 6, md: 3 }}>
-              <Link to="/pending" style={{ textDecoration: "none", width: "100%" }}>
+              <Link to='/payments/PENDING' style={{ textDecoration: "none", width: "100%" }}>
                 <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: "space-between", borderRadius: 2, padding: 1 }}>
                   <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: "center", borderRadius: 2, padding: 1 }}>
                     <Box sx={{ backgroundColor: "#ca9562", borderRadius: '10%', padding: 1.5, display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-                      < HourglassEmptyIcon sx={{ color: "#ff9f43" }} />
+                      <HourglassEmptyIcon sx={{ color: "#ff9f43" }} />
                     </Box>
                     <CardContent sx={{ flexGrow: 1 }}>
-                      <Typography variant="h6" sx={{ textDecoration: "none", color: "black", fontWeight: "400" }}>$1686</Typography>
-                      <Typography variant="body2" color="textSecondary" sx={{ textDecoration: "none" }}>Pending Payment</Typography>
+                      <Typography variant="h6" sx={{ textDecoration: "none", color: "black", fontWeight: "400" }}>₹{totalPendingAmount}</Typography>
+                      <Typography variant="body2" color="textSecondary" sx={{ textDecoration: "none" }}>Pending Payments</Typography>
                     </CardContent>
                   </Box>
                   <Box>
                     <ArrowForwardIosIcon sx={{ color: "#000", fontSize: '18px' }} />
                   </Box>
-
                 </Box>
               </Link>
             </Grid>
             <Grid item size={{ xs: 12, sm: 6, md: 3 }}>
-              <Link to="/rejected" style={{ textDecoration: "none", width: "100%" }}>
+              <Link to='/payments/REJECTED' style={{ textDecoration: "none", width: "100%" }}>
                 <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: "space-between", borderRadius: 2, padding: 1 }}>
                   <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: "center", borderRadius: 2, padding: 1 }}>
                     <Box sx={{ backgroundColor: "#eb222278", borderRadius: '10%', padding: 1.5, display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
                       <BlockIcon sx={{ color: "#eb2222" }} />
                     </Box>
                     <CardContent sx={{ flexGrow: 1 }}>
-                      <Typography variant="h6" sx={{ textDecoration: "none", color: "black", fontWeight: "400" }}>$1686</Typography>
+                      <Typography variant="h6" sx={{ textDecoration: "none", color: "black", fontWeight: "400" }}>₹{totalRejectedAmount}</Typography>
                       <Typography variant="body2" color="textSecondary" sx={{ textDecoration: "none" }}>Rejected Payment</Typography>
                     </CardContent>
                   </Box>
                   <Box>
                     <ArrowForwardIosIcon sx={{ color: "#000", fontSize: '18px' }} />
                   </Box>
-
                 </Box>
               </Link>
             </Grid>
             <Grid item size={{ xs: 12, sm: 6, md: 3 }}>
-              <Link to="/initiated" style={{ textDecoration: "none", width: "100%" }}>
+              <Link to='/payments/INITIATED' style={{ textDecoration: "none", width: "100%" }}>
                 <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: "space-between", borderRadius: 2, padding: 1 }}>
                   <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: "center", borderRadius: 2, padding: 1 }}>
                     <Box sx={{ backgroundColor: "#ECEFF1", borderRadius: '10%', padding: 1.5, display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
                       <ReceiptIcon sx={{ color: "#071251", }} />
                     </Box>
                     <CardContent sx={{ flexGrow: 1 }}>
-                      <Typography variant="h6" sx={{ textDecoration: "none", color: "black", fontWeight: "400" }}>$1686</Typography>
+                      <Typography variant="h6" sx={{ textDecoration: "none", color: "black", fontWeight: "400" }}>₹1686</Typography>
                       <Typography variant="body2" color="textSecondary" sx={{ textDecoration: "none" }}>Initiated Payment</Typography>
                     </CardContent>
                   </Box>
                   <Box>
                     <ArrowForwardIosIcon sx={{ color: "#000", fontSize: '18px' }} />
                   </Box>
-
                 </Box>
               </Link>
             </Grid>
@@ -592,6 +518,7 @@ const PaymentsPage = () => {
       <Box sx={{ pt: 4 }}>
         <DynamicDataTable columns={columns} rows={rows} />
       </Box>
+
 
     </Box >
   );

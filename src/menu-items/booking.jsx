@@ -12,6 +12,7 @@ const icons = {
 
 // ==============================|| MENU ITEMS - DASHBOARD ||============================== //
 
+
 const booking = {
   id: 'BookingData',
   title: 'Booking',
@@ -174,7 +175,7 @@ const booking = {
           id: 'pendingPayments',
           title: 'Pending Payments',
           type: 'item',
-          url: '/payments/pending',
+          url: '/payments/PENDING',
           breadcrumbs: false,
           icon: icons.ChromeOutlined
         },
@@ -182,7 +183,7 @@ const booking = {
           id: 'approvedPayments',
           title: 'Approved Payments',
           type: 'item',
-          url: '/payments/approved',
+          url: '/payments/APPROVED',
           breadcrumbs: false,
           icon: icons.ChromeOutlined
         },
@@ -190,7 +191,7 @@ const booking = {
           id: 'successfullPayments',
           title: 'Successfull Payments',
           type: 'item',
-          url: '/payments/successfull',
+          url: '/payments/SUCCESSFUL',
           breadcrumbs: false,
           icon: icons.ChromeOutlined
         },
@@ -198,7 +199,7 @@ const booking = {
           id: 'rejectedPayments',
           title: 'Rejected Payments',
           type: 'item',
-          url: '/payments/rejected',
+          url: '/payments/REJECTED',
           breadcrumbs: false,
           icon: icons.ChromeOutlined
         },
@@ -206,7 +207,7 @@ const booking = {
           id: 'failedPayments',
           title: 'Failed Payments',
           type: 'item',
-          url: '/payments/failed',
+          url: '/payments/FAILED',
           breadcrumbs: false,
           icon: icons.ChromeOutlined
         },
