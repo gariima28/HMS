@@ -35,11 +35,11 @@ const inputStyles = (error) => ({
 
 const PaymentInBookings = () => {
 
-  const navigate = useNavigate()
+  const navigate = useNavigate();
   const { id } = useParams();
   const [guestInfoData, setguestInfoData] = useState([]);
   const [paymentSummaryData, setpaymentSummaryData] = useState([]);
-  const [paymentInfoData, setpaymentInfoData] = useState([]);
+  const [paymentInfoData, setPaymentInfoData] = useState([]);
   const [snackbar, setSnackbar] = useState({ open: false, message: '', severity: '' });
 
   const { register, handleSubmit, formState: { errors }, watch } = useForm();
@@ -51,13 +51,12 @@ const PaymentInBookings = () => {
   const refreshData = async () => {
     try {
       const response = await getAllPaymentDetailsByBookingId(id);
-
-      if (response?.status === 200 && response?.data?.status === 'success') {
-        setguestInfoData(response?.data?.bookingDetails?.guestInfoData)
-        setpaymentSummaryData(response?.data?.bookingDetails?.paymentSummaryData)
-        setpaymentInfoData(response?.data?.bookingDetails?.paymentInfoData)
+      console.log(response)
+      if (response?.status === 200) {
+        setPaymentInfoData(response?.data)
+        console.log(paymentInfoData)
       } else {
-        console.error('Failed to fetch rooms:', response?.data?.message);
+        console.error('Failed to fetch rooms:', response?.data);
       }
     } catch (error) {
       console.error('Error fetching available rooms:', error);
@@ -91,7 +90,6 @@ const PaymentInBookings = () => {
     setSnackbar((prev) => ({ ...prev, open: false }));
   };
 
-
   return (
     <Box>
       {/* Heading */}
@@ -112,90 +110,269 @@ const PaymentInBookings = () => {
       </Grid>
 
       <Grid container rowSpacing={3} columnSpacing={2}>
-        {guestInfoData.length !== 0 &&
-          <Grid item xs={12} lg={6}>
-            <Box sx={{ backgroundColor: '#fff', borderRadius: '10px', p: 1 }}>
-              <Typography variant="h5" sx={{ color: '#34495e', fontWeight: 600, my: 1 }}>Guest Info</Typography>
-              <TableContainer >
-                <Table aria-label="simple table" sx={{ border: '1px solid #f1f1f1' }}>
-                  <TableBody>
-                    {guestInfoData?.map((data) => (
-                      <TableRow>
-                        <TableCell align="left">
-                          <Typography variant="h6" sx={{ color: '#34495e', fontWeight: 900 }}>{data?.key}</Typography>
-                        </TableCell>
-                        <TableCell align="right">
-                          <Typography variant="h6" sx={{ color: '#34495e' }}>{data?.value}</Typography>
-                        </TableCell>
-                      </TableRow>
-                    ))}
-                  </TableBody>
-                </Table>
-              </TableContainer>
-            </Box>
-          </Grid>
-        }
-        {paymentSummaryData.lebgth !== 0 &&
-          <Grid item xs={12} lg={6}>
-            <Box sx={{ backgroundColor: '#fff', borderRadius: '10px', p: 1 }}>
-              <Typography variant="h5" sx={{ color: '#34495e', fontWeight: 600, my: 1 }}>Guest Info</Typography>
-              <TableContainer >
-                <Table aria-label="simple table" sx={{ border: '1px solid #f1f1f1' }}>
-                  <TableBody>
-                    {paymentSummaryData?.map((data) => (
-                      <TableRow>
-                        <TableCell align="left">
-                          <Typography variant="h6" sx={{ color: '#34495e', fontWeight: 900 }}>{data?.key}</Typography>
-                        </TableCell>
-                        <TableCell align="right">
-                          <Typography variant="h6" sx={{ color: '#34495e' }}>{data?.value}</Typography>
-                        </TableCell>
-                      </TableRow>
-                    ))}
-                  </TableBody>
-                </Table>
-              </TableContainer>
-            </Box>
-          </Grid>
-        }
-        {paymentInfoData.lebgth !== 0 &&
-          <Grid item xs={12} lg={6}>
-            <Box sx={{ backgroundColor: '#fff', borderRadius: '10px', p: 1 }}>
-              <Grid display='flex' sx={{ p: 0, width: '100%' }}>
-                <Typography variant="h5" sx={{ flexGrow: 1, color: '#34495e', fontWeight: 600, my: 1, alignSelf: 'center' }}>Payment Info</Typography>
-                <Button variant='contained' sx={{ my: 1, py: 0.4, backgroundColor: '#4634ff', '&:hover': { backgroundColor: '#4634ff' } }}><Computer fontSize='20px' sx={{ mr: 1 }} />View Details</Button>
-              </Grid>
-              <TableContainer >
-                <Table aria-label="simple table" sx={{ border: '1px solid #f1f1f1' }}>
-                  <TableBody>
-                    {paymentInfoData?.map((data) => (
-                      <TableRow>
-                        <TableCell align="left">
-                          <Typography variant="h6" sx={{ color: '#34495e', fontWeight: 900 }}>{data?.key}</Typography>
-                        </TableCell>
-                        <TableCell align="right">
-                          <Typography variant="h6" sx={{ color: '#34495e' }}>{data?.value}</Typography>
-                        </TableCell>
-                      </TableRow>
-                    ))}
-                  </TableBody>
-                </Table>
-              </TableContainer>
-            </Box>
-          </Grid>
-        }
+
+        { /*  Guest Info */}
         <Grid item xs={12} lg={6}>
           <Box sx={{ backgroundColor: '#fff', borderRadius: '10px', p: 1 }}>
+            <Typography variant="h5" sx={{ color: '#34495e', fontWeight: 600, my: 1 }}>Guest Info</Typography>
+            <TableContainer >
+              <Table aria-label="simple table" sx={{ border: '1px solid #f1f1f1' }}>
+                <TableBody>
+                  <TableRow>
+                    <TableCell align="left">
+                      <Typography variant="h6" sx={{ color: '#34495e', fontWeight: 900 }}>Name</Typography>
+                    </TableCell>
+                    <TableCell align="right">
+                      <Typography variant="h6" sx={{ color: '#34495e' }}>{ }</Typography>
+                    </TableCell>
+                  </TableRow>
+                  <TableRow>
+                    <TableCell align="left">
+                      <Typography variant="h6" sx={{ color: '#34495e', fontWeight: 900 }}>Email</Typography>
+                    </TableCell>
+                    <TableCell align="right">
+                      <Typography variant="h6" sx={{ color: '#34495e' }}>{ }</Typography>
+                    </TableCell>
+                  </TableRow>
+                  <TableRow>
+                    <TableCell align="left">
+                      <Typography variant="h6" sx={{ color: '#34495e', fontWeight: 900 }}>Phone</Typography>
+                    </TableCell>
+                    <TableCell align="right">
+                      <Typography variant="h6" sx={{ color: '#34495e' }}>{ }</Typography>
+                    </TableCell>
+                  </TableRow>
+                  <TableRow>
+                    <TableCell align="left">
+                      <Typography variant="h6" sx={{ color: '#34495e', fontWeight: 900 }}>Address</Typography>
+                    </TableCell>
+                    <TableCell align="right">
+                      <Typography variant="h6" sx={{ color: '#34495e' }}>{ }</Typography>
+                    </TableCell>
+                  </TableRow>
+                </TableBody>
+              </Table>
+            </TableContainer>
+          </Box>
+        </Grid>
 
+        { /*  Payment Summary */}
+        <Grid item xs={12} lg={6}>
+          <Box sx={{ backgroundColor: '#fff', borderRadius: '10px', p: 1 }}>
+            <Grid display='flex' sx={{ p: 0, width: '100%' }}>
+              <Typography variant="h5" sx={{ flexGrow: 1, color: '#34495e', fontWeight: 600, my: 1, alignSelf: 'center' }}>Payment Summary</Typography>
+            </Grid>
+            <TableContainer>
+              <Table aria-label="simple table" sx={{ border: '1px solid #f1f1f1' }}>
+                <TableBody>
+
+                  <TableRow>
+                    <TableCell align="left">
+                      <Typography variant="h6" sx={{ color: '#34495e', fontWeight: 900 }}>Total Payment</Typography>
+                    </TableCell>
+                    <TableCell align="right">
+                      <Typography variant="h6" sx={{ color: '#34495e' }}></Typography>
+                    </TableCell>
+                  </TableRow>
+
+                  <TableRow>
+                    <TableCell align="left">
+                      <Typography variant="h6" sx={{ color: '#34495e', fontWeight: 900 }}>Payment Recieved</Typography>
+                    </TableCell>
+                    <TableCell align="right">
+                      <Typography variant="h6" sx={{ color: '#34495e' }}></Typography>
+                    </TableCell>
+                  </TableRow>
+
+                  <TableRow>
+                    <TableCell align="left">
+                      <Typography variant="h6" sx={{ color: '#34495e', fontWeight: 900 }}>Refunded</Typography>
+                    </TableCell>
+                    <TableCell align="right">
+                      <Typography variant="h6" sx={{ color: '#34495e' }}></Typography>
+                    </TableCell>
+                  </TableRow>
+
+                  <TableRow>
+                    <TableCell align="left">
+                      <Typography variant="h6" sx={{ color: '#34495e', fontWeight: 900 }}>Recievable from user</Typography>
+                    </TableCell>
+                    <TableCell align="right">
+                      <Typography variant="h6" sx={{ color: '#34495e' }}></Typography>
+                    </TableCell>
+                  </TableRow>
+
+                </TableBody>
+              </Table>
+            </TableContainer>
+          </Box>
+        </Grid>
+
+        { /*  Payment Info */}
+        <Grid item xs={12} lg={6} >
+          <Box sx={{ backgroundColor: '#fff', borderRadius: '10px', p: 1 }}>
+            <Grid display='flex' justifyContent='space-between' alignItems='center' sx={{ p: 0, width: '100%' }}>
+              <Typography variant="h5" sx={{ color: '#34495e', fontWeight: 600, my: 1 }}>Payment Info</Typography>
+              <Button variant='contained' sx={{ my: 1, py: 0.4, backgroundColor: '#4634ff', '&:hover': { backgroundColor: '#4634ff' } }}>
+                <Computer fontSize='20px' sx={{ mr: 1 }} /> View Details
+              </Button>
+            </Grid>
+
+            <TableContainer>
+              <Table aria-label="simple table" sx={{ border: '1px solid #f1f1f1' }}>
+                <TableBody>
+
+                  <TableRow>
+                    <TableCell align="left"><Typography variant="h6" sx={{ color: '#34495e', fontWeight: 900 }}>Total Fare</Typography></TableCell>
+                    <TableCell align="right"><Typography variant="h6" sx={{ color: '#34495e' }}>{ }</Typography></TableCell>
+                  </TableRow>
+
+                  <TableRow>
+                    <TableCell align="left"><Typography variant="h6" sx={{ color: '#34495e', fontWeight: 900 }}>Tax Charge</Typography></TableCell>
+                    <TableCell align="right"><Typography variant="h6" sx={{ color: '#34495e' }}>{ }</Typography></TableCell>
+                  </TableRow>
+
+                  <TableRow>
+                    <TableCell align="left"><Typography variant="h6" sx={{ color: '#34495e', fontWeight: 900 }}>Canceled Fare</Typography></TableCell>
+                    <TableCell align="right"><Typography variant="h6" sx={{ color: '#34495e' }}>{ }</Typography></TableCell>
+                  </TableRow>
+
+                  <TableRow>
+                    <TableCell align="left"><Typography variant="h6" sx={{ color: '#34495e', fontWeight: 900 }}>Canceled Tax charge</Typography></TableCell>
+                    <TableCell align="right"><Typography variant="h6" sx={{ color: '#34495e' }}>{ }</Typography></TableCell>
+                  </TableRow>
+
+                  <TableRow>
+                    <TableCell align="left"><Typography variant="h6" sx={{ color: '#34495e', fontWeight: 900 }}>Extra Service Charge</Typography></TableCell>
+                    <TableCell align="right"><Typography variant="h6" sx={{ color: '#34495e' }}>{ }</Typography></TableCell>
+                  </TableRow>
+
+                  <TableRow>
+                    <TableCell align="left"><Typography variant="h6" sx={{ color: '#34495e', fontWeight: 900 }}>Other Charges</Typography></TableCell>
+                    <TableCell align="right"><Typography variant="h6" sx={{ color: '#34495e' }}>{ }</Typography></TableCell>
+                  </TableRow>
+
+                  <TableRow>
+                    <TableCell align="left"><Typography variant="h6" sx={{ color: '#34495e', fontWeight: 900 }}>Cancellation Fee</Typography></TableCell>
+                    <TableCell align="right"><Typography variant="h6" sx={{ color: '#34495e' }}>{ }</Typography></TableCell>
+                  </TableRow>
+
+                  <TableRow>
+                    <TableCell align="left"><Typography variant="h6" sx={{ color: '#34495e', fontWeight: 900 }}>Total Amount</Typography></TableCell>
+                    <TableCell align="right">
+                      <Typography variant="h6" sx={{ color: '#34495e' }}>
+                        {/* {(
+                          Number(item.totalFare || 0) +
+                          Number(item.taxCharge || 0) -
+                          Number(item.canceledFare || 0) -
+                          Number(item.canceledTaxCharge || 0) +
+                          Number(item.extraService || 0) +
+                          Number(item.otherCharges || 0) +
+                          Number(item.cancellationFee || 0)
+                        ).toFixed(2)} */}
+                      </Typography>
+                    </TableCell>
+                  </TableRow>
+
+                </TableBody>
+              </Table>
+            </TableContainer>
+          </Box>
+        </Grid>
+
+        {/* <Grid item xs={12} lg={6}>
+          <Box sx={{ backgroundColor: '#fff', borderRadius: '10px', p: 1 }}>
+            <Grid display='flex' justifyContent={'space-between'} alignItems={'center'} sx={{ p: 0, width: '100%' }}>
+              <Typography variant="h5" sx={{ color: '#34495e', fontWeight: 600, my: 1 }}>Payment Info</Typography>
+              <Button variant='contained' sx={{ my: 1, py: 0.4, backgroundColor: '#4634ff', '&:hover': { backgroundColor: '#4634ff' } }}><Computer fontSize='20px' sx={{ mr: 1 }} />View Details</Button>
+            </Grid>
+            <TableContainer >
+              <Table aria-label="simple table" sx={{ border: '1px solid #f1f1f1' }}>
+                <TableBody>
+
+                  <TableRow>
+                    <TableCell align="left">
+                      <Typography variant="h6" sx={{ color: '#34495e', fontWeight: 900 }}>Total Fare</Typography>
+                    </TableCell>
+                    <TableCell align="right">
+                      <Typography variant="h6" sx={{ color: '#34495e' }}>{ }</Typography>
+                    </TableCell>
+                  </TableRow>
+                  <TableRow>
+                    <TableCell align="left">
+                      <Typography variant="h6" sx={{ color: '#34495e', fontWeight: 900 }}>Tax Charge</Typography>
+                    </TableCell>
+                    <TableCell align="right">
+                      <Typography variant="h6" sx={{ color: '#34495e' }}>{ }</Typography>
+                    </TableCell>
+                  </TableRow>
+                  <TableRow>
+                    <TableCell align="left">
+                      <Typography variant="h6" sx={{ color: '#34495e', fontWeight: 900 }}>Canceled Fare</Typography>
+                    </TableCell>
+                    <TableCell align="right">
+                      <Typography variant="h6" sx={{ color: '#34495e' }}>{ }</Typography>
+                    </TableCell>
+                  </TableRow>
+                  <TableRow>
+                    <TableCell align="left">
+                      <Typography variant="h6" sx={{ color: '#34495e', fontWeight: 900 }}>Canceled Tax charge</Typography>
+                    </TableCell>
+                    <TableCell align="right">
+                      <Typography variant="h6" sx={{ color: '#34495e' }}>{ }</Typography>
+                    </TableCell>
+                  </TableRow>
+                  <TableRow>
+                    <TableCell align="left">
+                      <Typography variant="h6" sx={{ color: '#34495e', fontWeight: 900 }}>Extra Service Charge</Typography>
+                    </TableCell>
+                    <TableCell align="right">
+                      <Typography variant="h6" sx={{ color: '#34495e' }}>{ }</Typography>
+                    </TableCell>
+                  </TableRow>
+                  <TableRow>
+                    <TableCell align="left">
+                      <Typography variant="h6" sx={{ color: '#34495e', fontWeight: 900 }}>Other Charges</Typography>
+                    </TableCell>
+                    <TableCell align="right">
+                      <Typography variant="h6" sx={{ color: '#34495e' }}>{ }</Typography>
+                    </TableCell>
+                  </TableRow>
+                  <TableRow>
+                    <TableCell align="left">
+                      <Typography variant="h6" sx={{ color: '#34495e', fontWeight: 900 }}>Cancellation Fee</Typography>
+                    </TableCell>
+                    <TableCell align="right">
+                      <Typography variant="h6" sx={{ color: '#34495e' }}>{ }</Typography>
+                    </TableCell>
+                  </TableRow>
+                  <TableRow>
+                    <TableCell align="left">
+                      <Typography variant="h6" sx={{ color: '#34495e', fontWeight: 900 }}>Total Amount</Typography>
+                    </TableCell>
+                    <TableCell align="right">
+                      <Typography variant="h6" sx={{ color: '#34495e' }}>{ }</Typography>
+                    </TableCell>
+                  </TableRow>
+                </TableBody>
+              </Table>
+            </TableContainer>
+          </Box>
+        </Grid> */}
+
+        { /*  Receive Payment */}
+        <Grid item xs={12} lg={6}>
+          <Box sx={{ backgroundColor: '#fff', borderRadius: '10px', p: 1 }}>
             <form onSubmit={handleSubmit(doPayment)}>
               <Typography variant="h5" sx={{ color: '#34495e', fontWeight: 600, my: 1 }}>Receive Payment</Typography>
               <Typography variant="h5" sx={{ color: '#28c76f', fontWeight: 600, my: 1, textAlign: 'center' }}>Receivable Amount: $0.00</Typography>
+
               {/* <OutlinedInput fullWidth
                 id="outlined-adornment-amount" sx={{ p: 0 }}
                 endAdornment={<InputAdornment position="start" sx={{ backgroundColor: '#e9ecef !important', px: 1.4, py: 2.5, m: 0 }}>USD</InputAdornment>}
               /> */}
 
-              <Grid xs={12} sx={{ p: 0.7, mt: 1 }} >
+              <Grid xs={12} sx={{ p: 0.7, mt: 1 }}>
                 <Stack spacing={1}>
                   <OutlinedInput endAdornment={<InputAdornment position="start" sx={{ backgroundColor: '#e9ecef !important', px: 1.4, py: 2.5, m: 0 }}>USD</InputAdornment>}
                     {...register('payingAmount', { required: 'Paying amount is required', min: { value: 1, message: 'Amount must be at least 1' }, validate: { isNumeric: value => !isNaN(value) || 'Please enter a valid number', }, })} placeholder="Enter maximum amount limit" sx={inputStyles(errors.payingAmount)} />
@@ -210,6 +387,7 @@ const PaymentInBookings = () => {
             </form>
           </Box>
         </Grid>
+
       </Grid>
 
       {/* Snackbar for Notifications */}

@@ -357,7 +357,7 @@ const BedTypes = () => {
   if (error) return (
     <ErrorPage
       errorMessage={`${error}`}
-      onReload={() => { window.location.reload()}}
+      onReload={() => { window.location.reload() }}
       statusCode={`${error.status}`}
     />
   );
@@ -381,7 +381,17 @@ const BedTypes = () => {
         </Grid>
       </Grid>
       {/* Data Table */}
-      {showDataTableLoader ? <PlaceholderTable /> : rows.length > 0 && <DynamicDataTable columns={columns} rows={rows} />}
+
+      {/* {showDataTableLoader ? <PlaceholderTable /> : rows.length > 0 && <DynamicDataTable columns={columns} rows={rows} />} */}
+
+      {showDataTableLoader ? (
+        <PlaceholderTable />
+      ) : rows.length > 0 ? (
+        <DynamicDataTable columns={columns} rows={rows} />
+      ) : (
+        <NoDataFound />
+      )}
+
 
       {/* Modals for all Add and Update */}
       <DialogModal handleClosingDialogState={handleClosingDialogState} modalOpen={modalOpen} title={modalTitle} buttonName={buttonName} InputFields={buttonName === 'Create' ? AddInputFields : UpdateInputFields} onSubmit={buttonName === 'Create' ? AddNewBedType : UpdateBedTypesData} reset={reset} updateFormDataa={updateFormDataa} showModalLoader={showModalLoader} />

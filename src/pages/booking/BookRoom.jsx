@@ -111,21 +111,17 @@ const inputStyles = (error) => ({
 const fetcher = (url) => axios.get(url, { headers: { Authorization: token } }).then((res) => res.data);
 
 const BookRoom = () => {
-
     const navigate = useNavigate()
     const descText =
         'Every room can be selected or deselected by a single click without a booked room. Make sure that selected rooms for each date equal the number of rooms you have searched.';
     const [searchOpen, setSearchOpen] = useState(false);
-
     const [rooms, setRooms] = useState([]);
     const [roomType, setRoomType] = useState('');
     const [checkInDate, setCheckInDate] = useState('');
     const [checkOutDate, setCheckOutDate] = useState('');
     const [noOfRooms, setNoOfRooms] = useState('');
-
     const [selectedRooms, setSelectedRooms] = useState([]);
     const [availableRooms, setAvailableRooms] = useState([]);
-
     const [rows, setRows] = useState([]);
     const [msgToaster, setMsgToaster] = useState('');
     const [showDataLoader, setShowDataLoader] = useState(false);
@@ -187,12 +183,10 @@ const BookRoom = () => {
         }
     };
 
-
     const getAvailableRooms = async () => {
         setShowDataLoader(true)
         try {
             const response = await getAvailableRoomApi(roomType, noOfRooms, checkInDate, checkOutDate);
-
             if (response?.status === 200) {
                 if (response?.data?.status === 'success') {
                     const rooms = response?.data?.available || [];
@@ -205,18 +199,18 @@ const BookRoom = () => {
                     setTimeout(() => {
                         setShowDataLoader(false)
                         setIsButtonDisabled(true)
-                    }, 1800);
+                    }, 800);
                 } else {
                     console.error('Failed to fetch rooms:', response?.data?.message);
                     setTimeout(() => {
                         setShowDataLoader(false)
-                    }, 1800);
+                    }, 800);
                 }
             }
         } catch (error) {
             setTimeout(() => {
                 setShowDataLoader(false)
-            }, 1800);
+            }, 800);
             console.error('Error fetching available rooms:', error);
         }
     };
@@ -224,8 +218,10 @@ const BookRoom = () => {
     console.log(selectedRooms, availableRooms)
 
     const NewRoomBooking = async (data) => {
-        setSaveDataLoader(true)
-        const ids = selectedRooms.map(item => item.roomId);
+        // setSaveDataLoader(true)
+        console.log(selectedRooms, 'selectedRooms')
+        const ids = selectedRooms.map(item => { console.log(item.roomNo); return item?.roomNo });
+        console.log(ids, 'idssss')
         try {
             const formData = new FormData();
             ids.forEach((id) => formData.append('roomNumbers[]', id));
@@ -248,19 +244,30 @@ const BookRoom = () => {
                     setTimeout(() => {
                         setSaveDataLoader(false)
                         navigate('/allBookings');
-                    }, 1800);
+                    }, 800);
+                }
+                else {
+                    setTimeout(() => {
+                        setSaveDataLoader(false)
+                    }, 800);
+                    console.error('Failed to book room:', response?.data?.message);
                 }
             } else {
                 setTimeout(() => {
                     setSaveDataLoader(false)
-                }, 1800);
+                }, 800);
                 console.error('Failed to book room:', response?.data?.message);
             }
         } catch (error) {
             setTimeout(() => {
                 setSaveDataLoader(false)
-            }, 1800);
+            }, 800);
             console.error('Error book new rooms:', error);
+        }
+        finally {
+            setTimeout(() => {
+                setSaveDataLoader(false)
+            }, 800);
         }
     };
 
@@ -283,7 +290,6 @@ const BookRoom = () => {
             setIsButtonDisabled(true); // Disable button when any field is missing
         }
     }, [roomType, noOfRooms, checkInDate, checkOutDate]);
-
 
     if (error) return <Typography variant="subtitle1">Error loading data</Typography>;
     if (!data) return <Typography variant="subtitle1">Loading Data...</Typography>;
@@ -335,12 +341,12 @@ const BookRoom = () => {
                         </CustomButton>
                     </Grid>
                 </Grid>
-            </Box >
+            </Box>
             {showDataLoader
                 ?
                 <AvailableRoomLoader />
                 :
-                <Box position='relative' sx={{ boxSizing: 'border-box'}}>
+                <Box position='relative' sx={{ boxSizing: 'border-box' }}>
                     {rooms.length > 0 ?
                         <Grid container spacing={3}>
                             {saveDataLoader && <CircularLoader />}
@@ -385,9 +391,11 @@ const BookRoom = () => {
                                                     </TableHead>
                                                     <TableBody>
                                                         <StyledTableRow>
-                                                            <StyledTableCell component="th" scope="row" sx={{ textWrap: 'nowrap' }}>{checkInDate} - {checkOutDate}</StyledTableCell>
+                                                            <StyledTableCell component="th" scope="row" sx={{ textWrap: 'nowrap' }}>
+                                                                {checkInDate?.split("T")[0]} - {checkOutDate?.split("T")[0]}
+                                                            </StyledTableCell>
                                                             <StyledTableCell align="left">
-                                                                <StyledTableCell align="left">
+                                                                <StyledTableCell align="left" sx={{}}>
                                                                     {/* Render selected rooms */}
                                                                     {selectedRooms?.map((item) => (
                                                                         <RoomKey
@@ -412,7 +420,6 @@ const BookRoom = () => {
                                                                         </RoomKey>
                                                                     ))}
                                                                 </StyledTableCell>
-
                                                             </StyledTableCell>
                                                         </StyledTableRow>
                                                     </TableBody>

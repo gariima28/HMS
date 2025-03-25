@@ -48,8 +48,6 @@ const DialogModal = ({ handleClosingDialogState, modalOpen, title, buttonName, I
         handleClosingDialogState();
     };
 
-
-
     return (
         <Dialog onClose={null} disableBackdropClick disableEscapeKeyDown aria-labelledby="dialogModal" open={modalOpen} maxWidth="xs" fullWidth>
             <DialogTitle sx={{ m: 0, p: 2, typography: 'h6' }} id="dialogModal">

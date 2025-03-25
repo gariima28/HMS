@@ -14,6 +14,7 @@ import { useForm } from 'react-hook-form';
 import ErrorPage from 'components/ErrorPage';
 import PlaceholderTable from 'components/Skeleton/PlaceholderTable';
 import HashLoader from 'components/Skeleton/HashLoader';
+import NoDataFound from 'pages/NoDataFound';
 
 const ServerIP = 'https://www.auth.edu2all.in/hms';
 // const ServerIP = 'http://192.168.20.109:5001'
@@ -66,13 +67,13 @@ const Amenities = () => {
     amenitiesIcon: ''
   });
 
+
   const [updateFormDataa, setUpdateFormDataa] = useState({
     amenitiesName: '',
     amenitiesIcon: '',
     amenitiesNameOriginal: '',
     amenitiesIconOriginal: ''
   });
-
 
   // Input handling functions
   const handleFormDataaAmenitiesName = (val) => setFormDataa({ ...formDataa, amenitiesName: val });
@@ -82,8 +83,8 @@ const Amenities = () => {
   const handleUpdateFormDataaAmenitiesIcon = (val) => setUpdateFormDataa({ ...updateFormDataa, amenitiesIcon: val });
 
   const AddInputFields = [
-    { id: 'amenitiesName', field: 'textInput', fieldType: 'text', validation: { required: true, pattern: /^[A-Z]/, patternMsg: 'This field can only contain characters'}, fieldName: 'Amenities Title *', placeholder: 'Enter Amenities Name', updateValFunc: handleFormDataaAmenitiesName },
-    { id: 'amenitiesStatus', field: 'select', fieldName: 'Status *', validation: { required: true }, fieldOptions: [ { optionId: 'active', optionName: 'Active', optionValue: 'true' }, { optionId: 'inActive', optionName: 'Inactive', optionValue: 'false' }, ], value: formDataa.amenitiesStatus, updateValFunc: handleFormDataaAmenitiesStatus, },
+    { id: 'amenitiesName', field: 'textInput', fieldType: 'text', validation: { required: true, pattern: /^[A-Z]/, patternMsg: 'This field can only contain characters' }, fieldName: 'Amenities Title *', placeholder: 'Enter Amenities Name', updateValFunc: handleFormDataaAmenitiesName },
+    { id: 'amenitiesStatus', field: 'select', fieldName: 'Status *', validation: { required: true }, fieldOptions: [{ optionId: 'active', optionName: 'Active', optionValue: 'true' }, { optionId: 'inActive', optionName: 'Inactive', optionValue: 'false' },], value: formDataa.amenitiesStatus, updateValFunc: handleFormDataaAmenitiesStatus, },
     { id: 'amenitiesIcon', field: 'fileType', fieldType: 'file', validation: { required: true }, fieldName: 'Icon *', allowedTypes: ['image/jpeg', 'image/png'], updateValFunc: handleFormDataaAmenitiesIcon }
   ];
 
@@ -144,7 +145,7 @@ const Amenities = () => {
               onClick={() => UpdateAmenitiesStatus(amenity?.amenitiesId, amenity.status)}
               loading
               loadingPosition="start"
-              startIcon={amenity.status ? <EyeInvisibleFilled /> : <EyeFilled /> }
+              startIcon={amenity.status ? <EyeInvisibleFilled /> : <EyeFilled />}
               variant="outlined"
             >
               {showStatusLoader
@@ -211,7 +212,6 @@ const Amenities = () => {
       }, 1000);
     }
   };
-
 
   const getAmenitiesDataById = async (id) => {
     setShowLoader(true);
@@ -322,12 +322,11 @@ const Amenities = () => {
     }
   };
 
-
   if (error) return (
     <ErrorPage
       errorMessage={`${error}`}
-      onReload={() => {window.location.reload(), console.log(error, 'dhbj')}}
-      statusCode = {`${error.status}`}
+      onReload={() => { window.location.reload(), console.log(error, 'dhbj') }}
+      statusCode={`${error.status}`}
     />
   );
 
@@ -340,6 +339,7 @@ const Amenities = () => {
   );
 
   return (
+
     <Box>
       {showStatusLoader && <HashLoader />}
       <Grid sx={{ display: 'flex', mb: 3 }}>
@@ -354,8 +354,20 @@ const Amenities = () => {
           </Stack>
         </Grid>
       </Grid>
+
       {/* Data Table */}
-      {showDataTableLoader ? <PlaceholderTable /> : <DynamicDataTable columns={columns} rows={rows} /> }
+      {showDataTableLoader ? <PlaceholderTable /> : <DynamicDataTable columns={columns} rows={rows} />}
+
+      {/* {showDataTableLoader ? (
+        <PlaceholderTable />
+      ) : rows.length === 0 ? (
+        <Typography variant="h6" textAlign="center" my={4}>
+          <NoDataFound />
+        </Typography>
+      ) : (
+        <DynamicDataTable columns={columns} rows={rows} />
+      )} */}
+
 
       {/* Modals for all Add and Update */}
       <DialogModal handleClosingDialogState={handleClosingDialogState} modalOpen={modalOpen} title={modalTitle} buttonName={buttonName} InputFields={buttonName === 'Create' ? AddInputFields : UpdateInputFields} onSubmit={buttonName === 'Create' ? AddNewAmenity : UpdateAmenitiesData} reset={reset} updateFormDataa={updateFormDataa} showModalLoader={showModalLoader} />

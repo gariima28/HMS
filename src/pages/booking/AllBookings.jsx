@@ -150,6 +150,10 @@ const AllBookings = () => {
       setOpenBookingId(bookingId);
     }
   };
+  // const handleClick = (event, bookingId) => {
+  //   setAnchorEl(event.currentTarget);
+
+  // }
 
   const handleClose = () => {
     setAnchorEl(null);
@@ -211,7 +215,6 @@ const AllBookings = () => {
             <Stack justifyContent='end' spacing={2} direction="row">
               <DetailsButton variant="outlined" size="small" startIcon={<ComputerSharp />} component={Link} to={`/bookingDetailsPage/${booking.bookingId}`}>Details</DetailsButton>
               {/* <MoreButton variant="outlined" size="small" startIcon={<MoreVertOutlined />} color={`${booking.status ? 'error' : 'success'}`} >More</MoreButton> */}
-
               <MoreButton
                 variant="outlined"
                 size="small"
@@ -308,13 +311,13 @@ const AllBookings = () => {
           </Stack>
         </Grid>
         <Grid item xs={2} sm={4} md={4} lg={4} display="flex" alignItems="flex-end">
-          <CustomButton variant="outlined" fullWidth sx={{ p: 1 }} disabled={!isButtonEnabled} onClick={()=> setIssSearched(true)}>
+          <CustomButton variant="outlined" fullWidth sx={{ p: 1 }} disabled={!isButtonEnabled} onClick={() => setIssSearched(true)}>
             <FilterAltIcon sx={{ color: '#fff' }} /> {isSmUp && <span>&nbsp; Search</span>}
           </CustomButton>
         </Grid>
       </Grid>
 
-      {showDataTableLoader ? <PlaceholderTable /> : rows.length > 0 ?  <DynamicDataTable columns={columns} rows={rows} /> : <NoDataFound />}
+      {showDataTableLoader ? <PlaceholderTable /> : rows.length > 0 ? <DynamicDataTable columns={columns} rows={rows} /> : <NoDataFound />}
 
       <Dialog open={openMergeDialog} onClose={handleClose} aria-labelledby="alert-dialog-title" aria-describedby="alert-dialog-description" maxWidth="xs" PaperProps={{ sx: { position: "absolute", top: 20, margin: 0, width: '100%' }, }} >
         <DialogTitle sx={{ m: 0, p: 2, fontWeight: "bold" }} id="customized-dialog-title" > Merging with:{" "}

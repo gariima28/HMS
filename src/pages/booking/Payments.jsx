@@ -116,7 +116,6 @@ const PaymentsPage = () => {
   const fromDate = dateRange[0]?.format("YYYY-MM-DD") || "";
   const toDate = dateRange[1]?.format("YYYY-MM-DD") || "";
 
-
   // get API
   // const { data, error } = useSWR(`${ServerIP}/payment/getAllPayments?search=${searchKey}${id !== 'all' ? `?status=${id}` : ''}`, fetcher);
 
@@ -129,6 +128,22 @@ const PaymentsPage = () => {
     `${ServerIP}/payment/getAllPayments?${searchKey ? `search=${searchKey}&` : ''}${id !== 'all' ? `status=${id}&` : ''}${fromDate ? `fromDate=${fromDate}&` : ''}${toDate ? `toDate=${toDate}` : ''}`,
     fetcher
   );
+
+  // useEffect(() => {
+  //   if (allDataForTotals) {
+  //     const totalPending = allDataForTotals?.payments?.filter(p => p.paymentStatus === "PENDING")
+  //       .reduce((sum, p) => sum + p.totalAmount, 0);
+  //     const totalSuccessful = allDataForTotals?.payments?.filter(p => p.paymentStatus === "SUCCESSFUL")
+  //       .reduce((sum, p) => sum + p.totalAmount, 0);
+  //     const totalRejected = allDataForTotals?.payments?.filter(p => p.paymentStatus === "REJECTED")
+  //       .reduce((sum, p) => sum + p.totalAmount, 0);
+
+  //     setTotalPendingAmount(totalPending);
+  //     setTotalSuccessfulAmount(totalSuccessful);
+  //     setTotalRejectedAmount(totalRejected);
+  //   }
+  // }, [allDataForTotals]);
+
 
   useEffect(() => {
     if (data) {
@@ -282,8 +297,6 @@ const PaymentsPage = () => {
     }
   };
 
-
-
   return (
     <Box>
       <Box sx={{ display: "flex", flexDirection: { xs: "column", md: "row" }, alignItems: { xs: "flex-start", md: "center" }, justifyContent: "space-between", gap: { xs: 2, md: 0 }, }}>
@@ -332,7 +345,6 @@ const PaymentsPage = () => {
             >
               {/* Dropdown Button */}
               <Stack direction="row" sx={{ width: { xs: "100%", sm: "auto", } }}>
-
                 <OutlinedInput
                   value={
                     selectedPreset === "Custom Range" &&

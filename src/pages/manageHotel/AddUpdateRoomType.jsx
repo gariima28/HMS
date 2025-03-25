@@ -546,7 +546,7 @@ const RoomType = () => {
 
                     <Grid container spacing={2} sx={{ p: 2 }}>
                         {/* Name */}
-                        <Grid item size={{ xs: 12, sm: 6, md: 4 }}>
+                        <Grid item xs={12} sm={6} md={4}>
                             <InputLabel
                                 sx={{
                                     fontSize: {
@@ -575,7 +575,7 @@ const RoomType = () => {
                         </Grid>
 
                         {/* Slug */}
-                        <Grid item size={{ xs: 12, sm: 6, md: 4 }}>
+                        <Grid item xs={12} sm={6} md={4}>
                             <InputLabel
                                 sx={{
                                     fontSize: {
@@ -604,7 +604,7 @@ const RoomType = () => {
                         </Grid>
 
                         {/* Room Fare */}
-                        <Grid item size={{ xs: 12, sm: 6, md: 4 }}>
+                        <Grid item xs={12} sm={6} md={4}>
                             <InputLabel
                                 sx={{
                                     fontSize: {
@@ -662,7 +662,7 @@ const RoomType = () => {
                         </Grid>
 
                         {/* Cancellation Fee */}
-                        <Grid item size={{ xs: 12, sm: 6, md: 4 }}>
+                        <Grid item xs={12} sm={6} md={4}>
                             <InputLabel
                                 sx={{
                                     fontSize: {
@@ -722,7 +722,7 @@ const RoomType = () => {
                         </Grid>
 
                         {/* Total Adult */}
-                        <Grid item size={{ xs: 12, sm: 6, md: 4 }}>
+                        <Grid item xs={12} sm={6} md={4}>
                             <InputLabel
                                 sx={{
                                     fontSize: {
@@ -761,7 +761,7 @@ const RoomType = () => {
                         </Grid>
 
                         {/* Total Child */}
-                        <Grid item size={{ xs: 12, sm: 6, md: 4 }}>
+                        <Grid item xs={12} sm={6} md={4}>
                             <InputLabel
                                 sx={{
                                     fontSize: {
@@ -796,7 +796,7 @@ const RoomType = () => {
                         </Grid>
 
                         {/* Amenities */}
-                        <Grid item size={{ xs: 12, sm: 6 }}>
+                        <Grid item xs={12} sm={6}>
                             <InputLabel
                                 sx={{
                                     fontSize: {
@@ -855,7 +855,7 @@ const RoomType = () => {
                         </Grid>
 
                         {/* Facilities */}
-                        <Grid item size={{ xs: 12, sm: 6 }}>
+                        <Grid item xs={12} sm={6}>
                             <InputLabel
                                 sx={{
                                     fontSize: {
@@ -906,7 +906,7 @@ const RoomType = () => {
                         </Grid>
 
                         {/* Keywords */}
-                        <Grid item size={{ xs: 12, sm: 6 }}>
+                        <Grid item xs={12} sm={6}>
                             <InputLabel htmlFor="keywords"
                                 sx={{
                                     fontSize: {
@@ -939,7 +939,7 @@ const RoomType = () => {
                         </Grid>
 
                         {/* Featured */}
-                        <Grid item size={{ xs: 12, sm: 6 }}>
+                        <Grid item xs={12} sm={6}>
                             <Typography
                                 sx={{
                                     fontSize: {

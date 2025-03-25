@@ -8,6 +8,7 @@ import { CaretDownFilled } from '@ant-design/icons';
 import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
 import useSWR from 'swr';
 import axios from 'axios';
+import dayjs from 'dayjs';
 
 const CustomButton = styled(Button)(() => ({
     borderRadius: '3.2px',
@@ -57,13 +58,16 @@ const BookingDetailsPage = () => {
 
     // get API
     const { data, error } = useSWR(`${ServerIP}/booking/getByBookingId/${id}`, fetcher);
+    const { data: paymentsData } = useSWR(`${ServerIP}/payment/getAllPayments?bookingId=${id}`, fetcher);
+
+    console.log(paymentsData);
 
     // get API
     const { data: bookedRoomData, error: bookedRoomError } = useSWR(`${ServerIP}/booking/getBookedRoomByBookingId/${id}`, fetcher);
 
     useEffect(() => {
         if (bookedRoomData) {
-            console.log(data, 'data');
+            console.log(bookedRoomData, 'data');
             const transformedRows = bookedRoomData?.data?.rooms?.map((bookedRooms) => ({
                 ...bookedRooms,
                 // roomNum: <RoomButton variant="outlined" status='roomNo'><Typography variant='h6'>{bookedRooms.roomNo}</Typography><Typography variant='h6'>{bookedRooms.roomType}</Typography></RoomButton>,
@@ -72,8 +76,6 @@ const BookingDetailsPage = () => {
             setRows(transformedRows);
         }
     }, [token, data]);
-
-
 
     const dataa = [
         { bookedFor: '01 Nov, 2024', roomType: 'Murphy', roomNo: '301', charges: '$230.00' },
@@ -93,10 +95,19 @@ const BookingDetailsPage = () => {
         setAnchorEl(event);
         console.log(event)
     };
+
     const handleClose = () => {
         setAnchorEl(null);
     };
 
+    let days = dayjs(data?.booking?.checkOutDate).diff(dayjs(data?.booking?.checkInDate), 'day');
+    days = days === 0 ? 1 : days;
+    const perDayFare = data?.booking?.roomFare / days;
+    const checkInDate = data?.booking?.checkInDate?.split("T")[0];
+    const checkOutDate = data?.booking?.checkOutDate?.split("T")[0];
+    const totalFare = bookedRoomData?.data?.rooms?.reduce((sum) => {
+        return sum + (days * perDayFare);
+    }, 0);
 
     return (
         <Grid container rowGap={2} sx={{ display: 'flex', flexDirection: 'column' }}>
@@ -110,14 +121,11 @@ const BookingDetailsPage = () => {
                             <ListIcon /> &nbsp; All Bookings
                         </CustomButton>
                         <MoreButton variant="outlined" size="small" startIcon={<MoreVertOutlined />} endIcon={<CaretDownFilled />} id="basic-button" aria-controls={open ? 'basic-menu' : undefined} aria-haspopup="true" aria-expanded={open ? 'true' : undefined} onClick={(e) => handleClick(e.currentTarget)}>More</MoreButton>
-                        <Menu id="basic-menu" anchorEl={anchorEl} open={open} onClose={handleClose} MenuListProps={{ 'aria-labelledby': 'basic-button', }} >
-                            <MenuItem sx={{ p: 0 }}> <Button href={`/bookedRoomInBookings/${id}`} sx={{ backgroundColor: 'transparent', color:'#000', '&:hover': { color:'#000', backgroundColor: 'transparent', }, }}> Booked Rooms </Button> </MenuItem>
-                            <MenuItem sx={{ p: 0 }}> <Button href={`/premiumServicesInBookings/${id}`} sx={{ backgroundColor: 'transparent', color:'#000', '&:hover': { color:'#000', backgroundColor: 'transparent', }, }}> Premium Services </Button> </MenuItem>
-                            <MenuItem sx={{ p: 0 }}> <Button href={`/paymentInBookings/${id}`} sx={{ backgroundColor: 'transparent', color:'#000', '&:hover': { color:'#000', backgroundColor: 'transparent', }, }}> Payment </Button> </MenuItem>
-                            <MenuItem sx={{p:0}}> <Button href='/' sx={{ backgroundColor: 'transparent', color:'#000', '&:hover': { color:'#000', backgroundColor: 'transparent', }, }}> Merge Booking </Button> </MenuItem>
-                            <MenuItem sx={{ p: 0 }}> <Button href={`/cancelBookings/${id}`} sx={{ backgroundColor: 'transparent', color:'#000', '&:hover': { color:'#000', backgroundColor: 'transparent', }, }}> Cancel Booking </Button> </MenuItem>
-                            <MenuItem sx={{ p: 0 }}> <Button href={`/checkOutBookings/${id}`} sx={{ backgroundColor: 'transparent', color:'#000', '&:hover': { color:'#000', backgroundColor: 'transparent', }, }}> Check Out </Button> </MenuItem>
-                            <MenuItem sx={{p:0}}> <Button href='/' sx={{ backgroundColor: 'transparent', color:'#000', '&:hover': { color:'#000', backgroundColor: 'transparent', }, }}> Print Invoice </Button> </MenuItem>
+                        <Menu id="basic-menu" anchorEl={anchorEl} open={open} onClose={handleClose} MenuListProps={{ 'aria-labelledby': 'basic-button', }}>
+                            <MenuItem sx={{ p: 0 }}> <Button href={`/bookedRoomInBookings/${id}`} sx={{ backgroundColor: 'transparent', color: '#000', '&:hover': { color: '#000', backgroundColor: 'transparent', }, }}> Booked Rooms </Button> </MenuItem>
+                            <MenuItem sx={{ p: 0 }}> <Button href={`/premiumServicesInBookings/${id}`} sx={{ backgroundColor: 'transparent', color: '#000', '&:hover': { color: '#000', backgroundColor: 'transparent', }, }}> Premium Services </Button> </MenuItem>
+                            <MenuItem sx={{ p: 0 }}> <Button href={`/paymentInBookings/${id}`} sx={{ backgroundColor: 'transparent', color: '#000', '&:hover': { color: '#000', backgroundColor: 'transparent', }, }}> Payment </Button> </MenuItem>
+                            <MenuItem sx={{ p: 0 }}> <Button href='/' sx={{ backgroundColor: 'transparent', color: '#000', '&:hover': { color: '#000', backgroundColor: 'transparent', }, }}> Print Invoice </Button> </MenuItem>
                         </Menu>
                     </Stack>
                 </Grid>
@@ -125,7 +133,7 @@ const BookingDetailsPage = () => {
             <Grid item xs={12}>
                 <Grid container columnSpacing={2}>
                     <Grid item xs={12} lg={4}>
-                        <Box sx={{ backgroundColor: '#fff', borderRadius: '10px', p:2}}>
+                        <Box sx={{ backgroundColor: '#fff', borderRadius: '10px', p: 2 }}>
                             <Grid mb={2}>
                                 <Typography variant='h6'>Guest Type</Typography>
                                 <Typography variant='h6' sx={{ color: '#5b6e88' }}>{data?.booking?.bookingType || '-'}</Typography>
@@ -215,24 +223,24 @@ const BookingDetailsPage = () => {
                                     </TableRow>
                                 </TableHead>
                                 <TableBody>
-                                    {dataa.map((row, index) => (
+                                    {bookedRoomData?.data?.rooms?.map((row, index) => (
                                         <TableRow
-                                            key={row.room}
+                                            key={row.roomNo}
                                             sx={{
                                                 backgroundColor: index % 2 === 0 ? '#f9f9f9' : '#ffffff',
                                             }}
                                         >
-                                            <TableCell align="center" sx={{ fontWeight: '600', color: '#5b6e88 !important' }}>{row.bookedFor}</TableCell>
+                                            <TableCell align="center" sx={{ fontWeight: '600', color: '#5b6e88 !important' }}>{checkInDate}-{checkOutDate}</TableCell>
                                             <TableCell align="center" sx={{ fontWeight: '600', color: '#5b6e88 !important' }}>{row.roomType}</TableCell>
                                             <TableCell align="center" sx={{ fontWeight: '600', color: '#5b6e88 !important' }}>{row.roomNo}</TableCell>
-                                            <TableCell align="right" sx={{ fontWeight: '600', color: '#5b6e88 !important' }}>{row.charges}</TableCell>
+                                            <TableCell align="right" sx={{ fontWeight: '600', color: '#5b6e88 !important' }}>{perDayFare}</TableCell>
                                         </TableRow>
                                     ))}
                                     <TableRow>
                                         <TableCell></TableCell>
                                         <TableCell></TableCell>
                                         <TableCell align="right" sx={{ fontWeight: '900', color: '#5b6e88 !important' }}>Total Fare</TableCell>
-                                        <TableCell align="right" sx={{ fontWeight: '900', color: '#5b6e88 !important' }}>$1,610.00</TableCell>
+                                        <TableCell align="right" sx={{ fontWeight: '900', color: '#5b6e88 !important' }}>${totalFare}</TableCell>
                                     </TableRow>
                                 </TableBody>
                             </Table>
@@ -270,22 +278,25 @@ const BookingDetailsPage = () => {
                                     </TableRow>
                                 </TableHead>
                                 <TableBody>
-                                    {paymentRecieved.map((row, index) => (
+                                    {paymentsData?.payments?.map((row, index) => (
                                         <TableRow
                                             key={row.room}
                                             sx={{
                                                 backgroundColor: index % 2 === 0 ? '#f9f9f9' : '#ffffff',
                                             }}
                                         >
-                                            <TableCell align="left" sx={{ fontWeight: '600', color: '#5b6e88 !important' }}>{row.time}</TableCell>
+                                            <TableCell align="left" sx={{ fontWeight: '600', color: '#5b6e88 !important' }}>
+                                                {new Date(row.paymentDate).toLocaleString()}
+                                            </TableCell>
+
                                             <TableCell align="center" sx={{ fontWeight: '600', color: '#5b6e88 !important' }}>{row.paymentType}</TableCell>
-                                            <TableCell align="right" sx={{ fontWeight: '600', color: '#5b6e88 !important' }}>{row.charges}</TableCell>
+                                            <TableCell align="right" sx={{ fontWeight: '600', color: '#5b6e88 !important' }}>{row.recievedAmout || 0} </TableCell>
                                         </TableRow>
                                     ))}
                                     <TableRow>
                                         <TableCell></TableCell>
                                         <TableCell align="right" sx={{ fontWeight: '900', color: '#5b6e88 !important' }}>Total Fare</TableCell>
-                                        <TableCell align="right" sx={{ fontWeight: '900', color: '#5b6e88 !important' }}>$1,771.00</TableCell>
+                                        <TableCell align="right" sx={{ fontWeight: '900', color: '#5b6e88 !important' }}>{paymentsData?.payments?.reduce((total, row) => total + Number(row.recievedAmout), 0)}</TableCell>
                                     </TableRow>
                                 </TableBody>
                             </Table>
@@ -295,7 +306,7 @@ const BookingDetailsPage = () => {
             </Grid>
             <Grid item xs={12}>
                 <Accordion defaultExpanded sx={{ boxShadow: 'none', border: '1px solid #e8e8e8', '&.MuiAccordion-root': { '&:first-of-type': { borderTopLeftRadius: '0px !important', borderTopRightRadius: '0px !important', }, '&:last-of-type': { borderBottomLeftRadius: '0px !important', borderBottomRightRadius: '0px !important', }, }, }} >
-                    <AccordionSummary expandIcon={<ExpandMoreIcon />} aria-controls="panel1-content" id="panel1-header" sx={{ minHeight: '48px !important', '&.Mui-expanded': { minHeight: '48px !important', backgroundColor: '#071251', color: '#fff', }, '&:not(.Mui-expanded)': { backgroundColor: '#fff', color: '#000', }, '& .MuiAccordionSummary-expandIconWrapper': { color: '#fff', '&:not(.Mui-expanded)': { color: '#000', }, }, '& .MuiAccordionSummary-content': { margin: '0px !important', '&.Mui-expanded': { margin: '0px !important', }, }, }} >
+                    <AccordionSummary expandIcon={<ExpandMoreIcon />} aria-controls="panel1-content" id="panel1-header" sx={{ minHeight: '48px !important', '&.Mui-expanded': { minHeight: '48px !important', backgroundColor: '#071251', color: '#fff', }, '&:not(.Mui-expanded)': { backgroundColor: '#fff', color: '#000', }, '& .MuiAccordionSummary-expandIconWrapper': { color: '#fff', '&:not(.Mui-expanded)': { color: '#000', }, }, '& .MuiAccordionSummary-content': { margin: '0px !important', '&.Mui-expanded': { margin: '0px !important', }, }, }}>
                         <Typography variant='h5' fontWeight='bolder'>Payments Returned</Typography>
                     </AccordionSummary>
                     <AccordionDetails sx={{ p: 0 }}>
@@ -309,22 +320,22 @@ const BookingDetailsPage = () => {
                                     </TableRow>
                                 </TableHead>
                                 <TableBody>
-                                    {/* {paymentRecieved.map((row, index) => (
+                                    {paymentsData?.payments?.map((row, index) => (
                                         <TableRow
                                             key={row.room}
                                             sx={{
                                                 backgroundColor: index % 2 === 0 ? '#f9f9f9' : '#ffffff',
                                             }}
                                         >
-                                            <TableCell align="left" sx={{ fontWeight: '600', color: '#5b6e88 !important' }}>{row.time}</TableCell>
+                                            <TableCell align="left" sx={{ fontWeight: '600', color: '#5b6e88 !important' }}>{row.paymentDate}</TableCell>
                                             <TableCell align="center" sx={{ fontWeight: '600', color: '#5b6e88 !important' }}>{row.paymentType}</TableCell>
-                                            <TableCell align="right" sx={{ fontWeight: '600', color: '#5b6e88 !important' }}>{row.charges}</TableCell>
+                                            <TableCell align="right" sx={{ fontWeight: '600', color: '#5b6e88 !important' }}>{row.refundAmount}</TableCell>
                                         </TableRow>
-                                    ))} */}
+                                    ))}
                                     <TableRow>
                                         <TableCell></TableCell>
                                         <TableCell align="right" sx={{ fontWeight: '900', color: '#5b6e88 !important' }}>Total Fare</TableCell>
-                                        <TableCell align="right" sx={{ fontWeight: '900', color: '#5b6e88 !important' }}>$0.00</TableCell>
+                                        <TableCell align="right" sx={{ fontWeight: '900', color: '#5b6e88 !important' }}>{paymentsData?.payments?.reduce((total, row) => total + Number(row.refundAmout), 0)}</TableCell>
                                     </TableRow>
                                 </TableBody>
                             </Table>
@@ -347,29 +358,29 @@ const BookingDetailsPage = () => {
                                     </TableRow>
                                 </TableHead> */}
                                 <TableBody>
-                                    {paymentRecieved.map((row, index) => (
+                                    {paymentsData?.payments?.map((row, index) => (
                                         <>
                                             <TableRow key={row.room} sx={{ backgroundColor: '#ffffff', }} >
                                                 <TableCell sx={{ fontWeight: '600', color: '#5b6e88 !important', p: 0 }}>
                                                     <Grid sx={{ display: 'flex', justifyContent: 'space-between', borderBottom: '1px solid #00000020', p: 0.9 }}>
                                                         <Typography>Total Fare</Typography>
-                                                        <Typography>+$1,610.00</Typography>
+                                                        <Typography>{row.totalAmount}</Typography>
                                                     </Grid>
                                                 </TableCell>
                                             </TableRow>
-                                            <TableRow key={row.room} sx={{ backgroundColor: '#f9f9f9' }} >
+                                            <TableRow key={row.room} sx={{ backgroundColor: '#f9f9f9' }}>
                                                 <TableCell sx={{ fontWeight: '600', color: '#5b6e88 !important', p: 0 }}>
                                                     <Grid sx={{ display: 'flex', justifyContent: 'space-between', borderBottom: '1px solid #00000020', p: 0.9 }}>
                                                         <Typography>Tax Charge (10.00%)</Typography>
-                                                        <Typography>+$161.00</Typography>
+                                                        <Typography>+{row.tax}</Typography>
                                                     </Grid>
                                                 </TableCell>
                                             </TableRow>
-                                            <TableRow key={row.room} sx={{ backgroundColor: '#ffffff', }} >
+                                            <TableRow key={row.room} sx={{ backgroundColor: '#ffffff', }}>
                                                 <TableCell sx={{ fontWeight: '600', color: '#5b6e88 !important', p: 0 }}>
                                                     <Grid sx={{ display: 'flex', justifyContent: 'space-between', borderBottom: '1px solid #00000020', p: 0.9 }}>
                                                         <Typography>Canceled Tax</Typography>
-                                                        <Typography>-$0.00</Typography>
+                                                        <Typography>-{row.cancelTax}</Typography>
                                                     </Grid>
                                                 </TableCell>
                                             </TableRow>
@@ -377,7 +388,7 @@ const BookingDetailsPage = () => {
                                                 <TableCell sx={{ fontWeight: '600', color: '#5b6e88 !important', p: 0 }}>
                                                     <Grid sx={{ display: 'flex', justifyContent: 'space-between', borderBottom: '1px solid #00000020', p: 0.9 }}>
                                                         <Typography>Canceled Tax Charge</Typography>
-                                                        <Typography>-$0.00</Typography>
+                                                        <Typography>-{row.cancelTaxCharge}</Typography>
                                                     </Grid>
                                                 </TableCell>
                                             </TableRow>
@@ -385,7 +396,7 @@ const BookingDetailsPage = () => {
                                                 <TableCell sx={{ fontWeight: '600', color: '#5b6e88 !important', p: 0 }}>
                                                     <Grid sx={{ display: 'flex', justifyContent: 'space-between', borderBottom: '1px solid #00000020', p: 0.9 }}>
                                                         <Typography>Extra Service Charge</Typography>
-                                                        <Typography>+$0.00</Typography>
+                                                        <Typography>+{row.extraService}</Typography>
                                                     </Grid>
                                                 </TableCell>
                                             </TableRow>
@@ -393,7 +404,13 @@ const BookingDetailsPage = () => {
                                                 <TableCell sx={{ fontWeight: '600', color: '#5b6e88 !important', p: 0 }}>
                                                     <Grid sx={{ display: 'flex', justifyContent: 'space-between', borderBottom: '1px solid #00000020', p: 0.9 }}>
                                                         <Typography fontWeight={900} sx={{ color: '#5b6e88 !important' }}>Total Amount</Typography>
-                                                        <Typography fontWeight={900} sx={{ color: '#5b6e88 !important' }}>= $1,771.00</Typography>
+                                                        <Typography fontWeight={900} sx={{ color: '#5b6e88 !important' }}>{(
+                                                            Number(row.totalAmount || 0) +
+                                                            Number(row.tax || 0) -
+                                                            Number(row.cancelTax || 0) -
+                                                            Number(row.cancelTaxCharge || 0) +
+                                                            Number(row.extraService || 0)
+                                                        ).toFixed(2)}</Typography>
                                                     </Grid>
                                                 </TableCell>
                                             </TableRow>
@@ -401,7 +418,7 @@ const BookingDetailsPage = () => {
                                                 <TableCell sx={{ fontWeight: '600', color: '#5b6e88 !important', p: 0 }}>
                                                     <Grid sx={{ display: 'flex', justifyContent: 'space-between', borderBottom: '1px solid #00000020', p: 0.9 }}>
                                                         <Typography>Payment Received</Typography>
-                                                        <Typography>$1,771.00</Typography>
+                                                        <Typography>${row.recievedAmount}</Typography>
                                                     </Grid>
                                                 </TableCell>
                                             </TableRow>
@@ -409,7 +426,7 @@ const BookingDetailsPage = () => {
                                                 <TableCell sx={{ fontWeight: '600', color: '#5b6e88 !important', p: 0 }}>
                                                     <Grid sx={{ display: 'flex', justifyContent: 'space-between', borderBottom: '1px solid #00000020', p: 0.9 }}>
                                                         <Typography>Refunded</Typography>
-                                                        <Typography>$0.00</Typography>
+                                                        <Typography>${row.refundAmount}</Typography>
                                                     </Grid>
                                                 </TableCell>
                                             </TableRow>
