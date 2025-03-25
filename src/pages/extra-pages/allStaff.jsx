@@ -1,4 +1,4 @@
-import { Box, Button, Grid, InputLabel, MenuItem, TextField, Typography, } from '@mui/material'
+import { Box, Button, FormControl, Grid, InputLabel, MenuItem, Select, TextField, Typography, } from '@mui/material'
 import React, { useEffect, useState, useRef } from 'react'
 import toast, { Toaster } from 'react-hot-toast';
 import Paper from '@mui/material/Paper';
@@ -11,7 +11,7 @@ import TablePagination from '@mui/material/TablePagination';
 import TableRow from '@mui/material/TableRow';
 import Modal from '@mui/material/Modal';
 import AddIcon, { EditOutlined, LogoutOutlined } from '@ant-design/icons';
-import { borderRadius, margin, padding, width } from '@mui/system';
+import { border, borderColor, borderRadius, margin, padding, width } from '@mui/system';
 import HashLoader from './HashLoaderCom';
 import { color } from 'framer-motion';
 import { GetAllApi } from 'api/api'
@@ -22,6 +22,8 @@ import { AllStaffGetAllApi } from 'api/api'
 import { AllStaffGetAllByIdApi } from 'api/api'
 import { AllStaffUpdateByIdApi } from 'api/api'
 import { AllStaffBanApi } from 'api/api'
+import { set, truncate } from 'lodash';
+import { object } from 'prop-types';
 
 // Style 
 const useStyles = makeStyles({
@@ -42,7 +44,6 @@ const useStyles = makeStyles({
     borderLeft: '0px',
     borderRadius: "0px 3px 3px 0px"
   },
-
   enable: {
     border: '1px solid #ff9f43',
     borderRadius: 10,
@@ -115,6 +116,11 @@ const input = {
   marginTop: 2,
   marginBottom: 1
 }
+const myClass = {
+  border: '1px solid red',
+  borderRadius: '4px',
+  boxShadow: "none"
+}
 // Style 
 
 const allStaff = () => {
@@ -138,15 +144,30 @@ const allStaff = () => {
 
   const [page, setPage] = React.useState(0);
   const [rowsPerPage, setRowsPerPage] = React.useState(5);
+
   const [roleId, setRoleId] = useState();
+  const [roleName, setRoleName] = useState();
+  const [password, setPassword] = useState();
+
   const [name, setName] = useState('');
   const [userName, setUserName] = useState();
   const [email, setEmail] = useState();
-  const [password, setPassword] = useState();
+  const [search, setSearch] = useState('')
+
+  const [nameCheck, setNameCheck] = useState('');
+  const [userNameCheck, setUserNameCheck] = useState();
+  const [emailCheck, setEmailCheck] = useState();
+
   const [idForUpdate, setIdForUpdate] = useState();
   const [idForBan, setIdForBan] = useState();
+  // console.log('my idddd', idForBan)
   const [allData, setAllData] = useState([]);
   const [row, setRow] = useState([]);
+
+  const [isNameValidRequired, setIsNameValidRequired] = useState(false);
+  const [isUserNameValidRequired, setIsUserNameValidRequired] = useState(false);
+  const [isEmailValidRequired, setIsEmailValidRequired] = useState(false);
+  const [isPasswordValidRequired, setIsPasswordValidRequired] = useState(false);
 
   const handleChangePage = (event, newPage) => {
     setPage(newPage);
@@ -167,17 +188,93 @@ const allStaff = () => {
     // setLoader(true)
     try {
       const response = await GetAllApi();
-      // console.log('My role get all DATAAAAAA', response)
+      console.log('My role get all DATAAAAAA', response)
       if (response?.status === 200) {
         setAllData(response?.data?.roles)
-        toast.success(response?.data?.msg)
+        // toast.success(response?.data?.msg)
       } else {
-        toast.error(response?.data?.msg);
+        // toast.error(response?.data?.msg);
       }
     } catch (error) {
       console.log(error)
     }
   }
+
+  const validateFunction = () => {
+    let IsValid = true
+
+    const nameRegex = /^[A-Za-z\s]+$/;
+    if (!name || name === "" || !nameRegex.test(name)) {
+      IsValid = false
+      setLoader(false)
+      setIsNameValidRequired(true)
+    } else {
+      setIsNameValidRequired(false)
+    }
+
+    const userNameRegex = /^[A-Za-z\s]+$/;
+    if (!userName || userName === "" || !userNameRegex.test(userName)) {
+      IsValid = false
+      setLoader(false)
+      setIsUserNameValidRequired(true)
+    } else {
+      setIsUserNameValidRequired(false)
+    }
+
+    const regexEmail = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
+    if (!email || email === "" || !regexEmail.test(email)) {
+      IsValid = false
+      setLoader(false)
+      setIsEmailValidRequired(true)
+    } else {
+      setIsEmailValidRequired(false)
+    }
+    return IsValid
+  }
+
+  // Validation 
+  const HandleName = (e) => {
+    setName(e)
+    const nameRegex = /^[A-Za-z\s]+$/;
+    setIsNameValidRequired(nameRegex.test(e))
+    if (e === '' || !nameRegex.test(e)) {
+      setIsNameValidRequired(true)
+    } else {
+      setIsNameValidRequired(false)
+    }
+  }
+  const HandleUserName = (e) => {
+    setUserName(e)
+    const nameRegex = /^[A-Za-z\s]+$/;
+    setIsUserNameValidRequired(nameRegex.test(e))
+    if (e === '' || !nameRegex.test(e)) {
+      setIsUserNameValidRequired(true)
+    } else {
+      setIsUserNameValidRequired(false)
+    }
+  }
+  const HandleEmail = (e) => {
+    setEmail(e)
+    const regexEmail = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
+    setIsEmailValidRequired(regexEmail.test(e))
+    if (e === '' || !regexEmail.test(e)) {
+      setIsEmailValidRequired(true)
+    } else {
+      setIsEmailValidRequired(false)
+    }
+  }
+  const HandlePassword = (e) => {
+    setPassword(e)
+    const passwordRegex = /^\d{4}(-\d{4})?(\d+)?$/;
+    setIsPasswordValidRequired(passwordRegex.test(e))
+    if (e === '' || !passwordRegex.test(e)) {
+      setIsPasswordValidRequired(true)
+    } else {
+      setIsPasswordValidRequired(false)
+    }
+  }
+
+  // Validation 
 
   // let bootstrap;
   const offcanvasRef = useRef(null);
@@ -186,29 +283,30 @@ const allStaff = () => {
 
   // post api 
   const MyAllStaffPostApi = async () => {
-
-    const formData = {
-      "name": name,
-      "userName": userName,
-      "email": email,
-      "password": password,
-      "roleId": roleId
-    }
-    setLoader(true)
-    try {
-      const response = await AllStaffPostApi(formData);
-      console.log('response of add role api', response)
-      if (response?.data?.status === "success") {
-        toast.success(response?.data?.message);
-        MyAllStaffGetAllDataApi()
-        setLoader(false)
-        setOpen3(false)
-
-      } else {
-        toast.error(response?.data?.message);
+    if (validateFunction()) {
+      const formData = {
+        "name": name,
+        "userName": userName,
+        "email": email,
+        "password": password,
+        "roleId": roleId
       }
-    } catch (error) {
-      console.log(error)
+      setLoader(true)
+      try {
+        const response = await AllStaffPostApi(formData);
+        console.log('response of add role api', response)
+        if (response?.data?.status === "success") {
+          toast.success(response?.data?.message);
+          MyAllStaffGetAllDataApi()
+          setLoader(false)
+          setOpen3(false)
+
+        } else {
+          toast.error(response?.data?.message);
+        }
+      } catch (error) {
+        console.log(error)
+      }
     }
   }
 
@@ -216,11 +314,11 @@ const allStaff = () => {
   const MyAllStaffGetAllDataApi = async () => {
     setLoader(true)
     try {
-      const response = await AllStaffGetAllApi();
+      const response = await AllStaffGetAllApi(search);
       console.log('My All Stafff get all---------------', response)
       if (response?.status === 200) {
         setRow(response?.data?.staffs)
-        toast.success(response?.data?.msg)
+        // toast.success(response?.data?.msg)
         setLoader(false)
 
         const transformedRows = response?.data?.staffs?.map((allRoles, index) => ({
@@ -231,7 +329,7 @@ const allStaff = () => {
           status: <Button sx={{ marginLeft: 1, padding: 0, height: 30, borderColor: '#eb2222', color: '#eb2222' }} className={`${allRoles?.status === 'ENABLED' ? `${classes.enable}` : `${classes.green}`}`} variant="outlined" onClick={() => { setIdForBan(allRoles.id); handleOpen2(); }} >
             <Typography sx={{ paddingTop: .8, paddingRight: .3 }}>
             </Typography> {allRoles?.status === "ENABLED" ? `${'Enable'}` : `${'Disbale'}`}
-            </Button>,
+          </Button>,
           action:
             <>
               <Button sx={{ marginLeft: 0, padding: 0, height: 30, borderColor: '#4634ff', color: '#4634ff' }} variant="outlined" onClick={() => { MyRoleGetByIdApi(allRoles.id); handleOpen(); }}>
@@ -242,26 +340,21 @@ const allStaff = () => {
                       <path d="M6.835 15.803v-2.165c.002-.357.144-.7.395-.953l9.532-9.532a1.36 1.36 0 0 1 1.934 0l2.151 2.151a1.36 1.36 0 0 1 0 1.934l-9.532 9.532a1.36 1.36 0 0 1-.953.395H8.197a1.36 1.36 0 0 1-1.362-1.362M19.09 8.995l-4.085-4.086" />
                     </g>
                   </svg>
-                </Typography> <Typography >{'Edit'}</Typography></Button>
+                </Typography> <Typography >{'Edit'}</Typography>
+              </Button>
 
-              <Button sx={{ marginLeft: .6, padding: 0, height: 30, borderColor: '#10163a', color: '#10163a' }} variant="outlined">
-                <Typography sx={{ paddingTop: .8, paddingRight: .2 }}>
-                  <svg xmlns="http://www.w3.org/2000/svg" width="15" height="15" viewBox="0 0 24 24">
-                    <path fill="#10163a" d="M15 3H9a3 3 0 0 0-3 3v4h1V6a2 2 0 0 1 2-2h6a2 2 0 0 1 2 2v13a2 2 0 0 1-2 2H9a2 2 0 0 1-2-2v-4H6v4a3 3 0 0 0 3 3h6a3 3 0 0 0 3-3V6a3 3 0 0 0-3-3M3 12h10.25L10 8.75l.66-.75l4.5 4.5l-4.5 4.5l-.66-.75L13.25 13H3z" />
-                  </svg>
-                </Typography> Login</Button>
             </>
         }))
         setRow(transformedRows)
       } else {
-        toast.error(response?.data?.msg);
+        // toast.error(response?.data?.msg);
       }
     } catch (error) {
       console.log(error)
     }
   }
 
-  // get by id 
+  // get by id  
   const MyRoleGetByIdApi = async (id) => {
     setIdForUpdate(id)
     // setLoader(true)
@@ -270,14 +363,22 @@ const allStaff = () => {
       console.log('Data by id in staff', response)
       if (response?.status === 200) {
         setRoleId(response?.data?.staff?.id)
+        setRoleName(response?.data?.staff?.role?.roleName)
+
         setName(response?.data?.staff?.name)
         setUserName(response?.data?.staff?.userName)
         setEmail(response?.data?.staff?.email)
+
+        setNameCheck(response?.data?.staff?.name)
+        setUserNameCheck(response?.data?.staff?.userName)
+        setEmailCheck(response?.data?.staff?.email)
+
+
         setPassword(response?.data?.staff?.password)
 
         // toast.success(response?.data?.msg)
       } else {
-        toast.error(response?.data?.msg);
+        // toast.error(response?.data?.msg);
       }
     } catch (error) {
       console.log(error)
@@ -286,31 +387,39 @@ const allStaff = () => {
 
   // update staff 
   const MyRoleUpdateByIdApi = async () => {
-    const formData = new FormData()
-    formData.append('name', name)
-    formData.append('username', userName,)
-    formData.append('email', email)
-    formData.append('roleId', roleId)
-    // formData.append('status',)
-    try {
-      const response = await AllStaffUpdateByIdApi(idForUpdate, formData);
-      console.log('update response in staff', response)
-      if (response?.status === 200) {
-        toast.success(response?.data?.message)
-        MyAllStaffGetAllDataApi()
-        setUpdate(false)
-        const offcanvasInstance = bootstrap.Offcanvas.getInstance(offcanvasRef22.current);
-        offcanvasInstance.hide();
-        setTimeout(() => {
-          setUpdate(true)
-        }, 0.5)
-
-      } else {
-        toast.error(response?.data?.msg);
+    if (validateFunction()) {
+      const formData = new FormData()
+      if (name !== nameCheck) {
+        formData.append('name', name)
       }
-    } catch (error) {
-      console.log(error)
+      if (userName !== userNameCheck) {
+        formData.append('username', userName,)
+      }
+      if (email !== emailCheck) {
+        formData.append('email', email)
+      }
+      formData.append('roleId', roleId)
+      try {
+        const response = await AllStaffUpdateByIdApi(idForUpdate, formData);
+        console.log('update response in staff', response)
+        if (response?.status === 200) {
+          toast.success(response?.data?.message)
+          MyAllStaffGetAllDataApi()
+          setUpdate(false)
+          const offcanvasInstance = bootstrap.Offcanvas.getInstance(offcanvasRef22.current);
+          offcanvasInstance.hide();
+          setTimeout(() => {
+            setUpdate(true)
+          }, 0.5)
+
+        } else {
+          toast.error(response?.data?.message);
+        }
+      } catch (error) {
+        console.log(error)
+      }
     }
+
   }
   // Ban api 
   const MyStaffBanApi = async () => {
@@ -330,7 +439,6 @@ const allStaff = () => {
       console.log(error)
     }
   }
-
   const columns = [
     { id: 'index', label: 'S.N.', minWidth: 140 },
     { id: 'userName', label: 'Username', minWidth: 100 },
@@ -356,6 +464,11 @@ const allStaff = () => {
     }
   ];
 
+  const handleChange = (e) => {
+    const trimmedValue = e.target.value.trimStart();
+    setSearch(trimmedValue);
+  };
+
   return (
     <>
       <Box>
@@ -365,38 +478,47 @@ const allStaff = () => {
           )
         }
       </Box>
-      <Box sx={{ margin: 0, fontSize: 20, display: "flex", justifyContent: "space-between" }}>
-        <Grid>
-          <b>All Staff</b>
-        </Grid>
 
-        <Grid sx={{ display: 'flex' }}>
-          <Grid className={classes.searchBar}>
-            <Grid className={classes.search}>
-              <TextField
-                sx={{
-                  "& .MuiOutlinedInput-root": {
-                    borderRadius: 0,
-                    height: 39,
-                    boxShadow: 'none'
-                  },
-                }}
-                label="Search input" />
-            </Grid>
-            <Grid className={classes.searchIcon}>
-              <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 32 32">
-                <path fill="none" stroke="#fff" stroke-linecap="round" stroke-linejoin="round" stroke-width="0.9" d="m5 27l7.5-7.5M28 13a9 9 0 1 1-18 0a9 9 0 0 1 18 0" />
-              </svg>
+      <Box sx={{ margin: 0, fontSize: 20, display: "flex", justifyContent: "space-between" }}>
+        <Grid container spacing={2}>
+
+          <Grid className={classes.searchBar} item xs={12} sm={3}   >
+            <Grid>
+              <b>All Staff</b>
             </Grid>
           </Grid>
-          <Button sx={{ marginLeft: 2, height: 39, backgroundColor: '#4634ff', color: '#fff' }} variant="outlined" onClick={handleOpen3}>
-            <Typography sx={{ paddingTop: .8, paddingRight: .3 }}>
-              <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24">
-                <path fill="none" stroke="#fff" stroke-linecap="round" stroke-linejoin="round" stroke-miterlimit="10" stroke-width="1.5" d="M6 12h12m-6 6V6" />
-              </svg>
-            </Typography>
-            Add New
-          </Button>
+
+          <Grid item xs={12} sm={9} sx={{ display: "flex", justifyContent: 'right', flexWrap: 'wrap' }}>
+            <Grid className={classes.searchBar}>
+              <Grid className={classes.search}>
+                <TextField
+                  sx={{
+                    "& .MuiOutlinedInput-root": {
+                      borderRadius: 0,
+                      height: 39,
+                      boxShadow: 'none'
+                    },
+                  }}
+                  value={search}
+                  onChange={handleChange}
+                  label="Search By Email" />
+              </Grid>
+              <Grid style={{cursor:'pointer'}} onClick={MyAllStaffGetAllDataApi} className={classes.searchIcon}>
+                <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 32 32">
+                  <path fill="none" stroke="#fff" stroke-linecap="round" stroke-linejoin="round" stroke-width="0.9" d="m5 27l7.5-7.5M28 13a9 9 0 1 1-18 0a9 9 0 0 1 18 0" />
+                </svg>
+              </Grid>
+            </Grid>
+            <Button sx={{ marginLeft: 2, height: 39, backgroundColor: '#4634ff', color: '#fff' }} variant="outlined" onClick={handleOpen3}>
+              <Typography sx={{ paddingTop: .8, paddingRight: .3 }}>
+                <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24">
+                  <path fill="none" stroke="#fff" stroke-linecap="round" stroke-linejoin="round" stroke-miterlimit="10" stroke-width="1.5" d="M6 12h12m-6 6V6" />
+                </svg>
+              </Typography>
+              Add New
+            </Button>
+          </Grid>
+
         </Grid>
 
       </Box>
@@ -418,7 +540,7 @@ const allStaff = () => {
                 </TableRow>
               </TableHead>
               <TableBody>
-                {row.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
+                {row?.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
                   .map((row, index) => {
                     return (
 
@@ -454,91 +576,7 @@ const allStaff = () => {
       </Box>
 
       <Box>
-        {/* first  Modals area  */}
 
-        {
-          update && (
-            <Modal
-              open={open}
-              onClose={handleClose}
-              aria-labelledby="modal-modal-title"
-              aria-describedby="modal-modal-description"
-            >
-              <Box sx={style}>
-                <Box sx={content}>
-                  <Typography sx={{ fontSize: 24, marginBottom: 2 }}>
-                    Update Staff
-                  </Typography>
-                  <Box>
-                    <InputLabel sx={{ marginBottom: -1 }}>
-                      Name
-                    </InputLabel>
-                    <TextField sx={input} required id="outlined-required" value={name} placeholder='Enter Name' onChange={(e) => setName(e.target.value)} InputLabelProps={{ sx: { fontSize: '15px' } }} />
-                    <InputLabel sx={{ marginBottom: -2 }}>
-                      UserName
-                    </InputLabel>
-                    <TextField sx={{ ...input, marginTop: 3 }} required id="outlined-required" value={userName} onChange={(e) => setUserName(e.target.value)} defaultValue="" placeholder='Enter UserName' InputLabelProps={{ sx: { fontSize: '15px' } }} />
-                    <InputLabel sx={{ marginBottom: -2 }}>
-                      Email
-                    </InputLabel>
-                    <TextField sx={{ ...input, marginTop: 3 }} required id="outlined-required" value={email} defaultValue="" onChange={(e) => setEmail(e.target.value)} placeholder='Enter Email' InputLabelProps={{ sx: { fontSize: '15px' } }} />
-                    <InputLabel sx={{ marginBottom: -2 }}>
-                      Role
-                    </InputLabel>
-                    <TextField id="outlined-select-currency" sx={{ ...input, color: "#000" }} select value={roleId} onChange={(e) => setRoleId(e.target.value)} helperText="Enter Role Id" >
-
-                      {allData?.map((option, index) => (
-                        <MenuItem key={index} value={option.id}>
-                          {option.id}
-                        </MenuItem>
-                      ))}
-                    </TextField>
-                    <InputLabel sx={{ marginBottom: -2 }}>
-                      Password
-                    </InputLabel>
-                    {/* <TextField sx={{ ...input, marginTop: 3 }} required id="outlined-required" value={id} label="Role" defaultValue="" placeholder='Enter Role' InputLabelProps={{ sx: { fontSize: '15px' } }} /> */}
-                    <TextField sx={{ ...input, marginTop: 3 }} required id="outlined-required" value={password} onChange={(e) => setPassword(e.target.value)} label="Password" defaultValue="" placeholder='Enter Password' InputLabelProps={{ sx: { fontSize: '15px' } }} />
-
-                    <Box sx={{ textAlign: "center", marginTop: 4, width: '100%' }}>
-                      <Button sx={{ width: '100%' }} variant="contained" disableElevation onClick={MyRoleUpdateByIdApi}>
-                        Update
-                      </Button>
-                      <Toaster />
-                    </Box>
-                  </Box>
-                </Box>
-              </Box>
-            </Modal>
-          )
-        }
-
-        {/* second  Modals area  */}
-
-          <Modal
-              open={open2}
-              onClose={handleClose2}
-              aria-labelledby="modal-modal-title"
-              aria-describedby="modal-modal-description"
-              ref={offcanvasRef33}
-            >
-              <Box sx={style2}>
-                <Typography sx={{ fontSize: 25 }} id="modal-modal-title" variant="h6" component="h2">
-                  Confirmation Alert!
-                </Typography>
-                <hr />
-                <Typography sx={{ ml: 2, mt: 2 }} id="modal-modal-description" >
-                  Are you sure to Enable and Disable this staff?
-                </Typography>
-                <Box sx={{ textAlign: "right",marginTop:2 }}>
-                  <Button sx={{ backgroundColor: "#4634ff", color: '#fff' }} variant="contained" href="#contained-buttons" onClick={MyStaffBanApi}>
-                    Submit
-                  </Button>
-                  <Toaster /> 
-                </Box>
-              </Box>
-            </Modal>
-
-        {/* third  Modals area  */}
         {
           show && (
             <Modal
@@ -554,20 +592,151 @@ const allStaff = () => {
                     Add Staff
                   </Typography>
                   <Box>
-                    <TextField sx={input} required id="outlined-required" label="Name" defaultValue="" placeholder='Enter Name' value={name} onChange={(e) => setName(e.target.value)} InputLabelProps={{ sx: { fontSize: '15px' } }} />
-                    <TextField sx={{ ...input, marginTop: 3 }} required id="outlined-required" label="Username" defaultValue="" value={userName} onChange={(e) => setUserName(e.target.value)} placeholder='Enter UserName' InputLabelProps={{ sx: { fontSize: '15px' } }} />
-                    <TextField sx={{ ...input, marginTop: 3 }} required id="outlined-required" label="Email" defaultValue="" value={email} onChange={(e) => setEmail(e.target.value)} placeholder='Enter Email' InputLabelProps={{ sx: { fontSize: '15px' } }} />
-                    <TextField id="outlined-select-currency" sx={{ ...input, color: "#000" }} select label="Role" value={roleId} onChange={(e) => setRoleId(e.target.value)} helperText="" >
-                      {allData?.map((option, index) => (
-                        <MenuItem Item key={index} value={option.id}>
-                          {option.id}
-                        </MenuItem>
-                      ))}
+                    <TextField
+                      sx={{ ...input, ...(isNameValidRequired === true && myClass), }}
+                      required id="outlined-required" label="Name" defaultValue="" placeholder='Enter Name' onChange={(e) => HandleName(e.target.value)} InputLabelProps={{ sx: { fontSize: '15px' } }} />
+                    <Box sx={{ marginTop: '-9px' }}>
+                      {
+                        isNameValidRequired && (
+                          <Typography sx={{ color: 'red', fontSize: 16 }}>*Valid name required</Typography>
+                        )
+                      }
+                    </Box>
+                    <TextField sx={{ ...input, marginTop: 3, ...(isUserNameValidRequired === true && myClass), }} required id="outlined-required" label="Username" defaultValue="" onChange={(e) => HandleUserName(e.target.value)} placeholder='Enter UserName' InputLabelProps={{ sx: { fontSize: '15px' } }} />
+                    <Box sx={{ marginTop: '-9px' }}>
+                      {
+                        isUserNameValidRequired && (
+                          <Typography sx={{ color: 'red', fontSize: 16 }}>*Valid userName required</Typography>
+                        )
+                      }
+                    </Box>
+                    <TextField sx={{ ...input, marginTop: 3, ...(isEmailValidRequired === true && myClass), }} required id="outlined-required" label="Email" defaultValue="" onChange={(e) => HandleEmail(e.target.value)} placeholder='Enter Email' InputLabelProps={{ sx: { fontSize: '15px' } }} />
+                    <Box sx={{ marginTop: '-9px' }}>
+                      {
+                        isEmailValidRequired && (
+                          <Typography sx={{ color: 'red', fontSize: 16 }}>*Valid Email required</Typography>
+                        )
+                      }
+                    </Box>
+                    <TextField id="outlined-select-currency" sx={{ ...input, color: "#000" }} select label="Role" onChange={(e) => setRoleId(e.target.value)} helperText="" >
+                      {
+                        allData?.map((item, index) => (
+                          <MenuItem Item key={index} value={item.id}>
+                            {item.roleName}
+                          </MenuItem>
+                        ))
+                      }
                     </TextField>
-                    <TextField sx={{ ...input, marginTop: 3 }} required id="outlined-required" label="Password" value={password} defaultValue="" onChange={(e) => setPassword(e.target.value)} placeholder='Enter Password' InputLabelProps={{ sx: { fontSize: '15px' } }} />
+                    {/* <TextField sx={{ ...input, marginTop: 3, ...(isPasswordValidRequired === true && myClass), }} required id="outlined-required" label="Password" defaultValue="" onChange={(e) => HandlePassword(e.target.value)} placeholder='Enter Password' InputLabelProps={{ sx: { fontSize: '15px' } }} />
+                    <Box sx={{ marginTop: '-9px' }}>
+                      {
+                        isPasswordValidRequired && (
+                          <Typography sx={{ color: 'red', fontSize: 16 }}>*Valid password required</Typography>
+                        )
+                      }
+                    </Box> */}
                     <Box sx={{ textAlign: "center", marginTop: 4, width: '100%' }}>
                       <Button sx={{ width: '100%' }} variant="contained" disableElevation onClick={MyAllStaffPostApi}>
                         Submit
+                      </Button>
+                    </Box>
+
+                  </Box>
+                </Box>
+              </Box>
+            </Modal>
+          )
+        }
+        {
+          update && (
+            <Modal
+              open={open}
+              onClose={handleClose}
+              aria-labelledby="modal-modal-title"
+              aria-describedby="modal-modal-description"
+              ref={offcanvasRef22}
+            >
+              <Box sx={style}>
+                <Box sx={content}>
+                  <Typography sx={{ fontSize: 24, marginBottom: 2 }}>
+                    Update Staff
+                  </Typography>
+                  <Box>
+                    <InputLabel sx={{ marginBottom: -1 }}>
+                      Name
+                    </InputLabel>
+                    <TextField sx={input} required id="outlined-required" value={name} placeholder='Enter Name' onChange={(e) => HandleName(e.target.value)} InputLabelProps={{ sx: { fontSize: '15px' } }} />
+                    <Box sx={{ marginTop: '-1px' }}>
+                      {
+                        isNameValidRequired && (
+                          <Typography sx={{ color: 'red', fontSize: 16 }}>*Valid name required</Typography>
+                        )
+                      }
+                    </Box>
+                    <InputLabel sx={{ marginBottom: "-15px" }}>
+                      UserName
+                    </InputLabel>
+                    <TextField sx={{ ...input, marginTop: 3 }} required id="outlined-required" value={userName} onChange={(e) => HandleUserName(e.target.value)} defaultValue="" placeholder='Enter UserName' InputLabelProps={{ sx: { fontSize: '15px' } }} />
+                    <Box sx={{ marginTop: '' }}>
+                      {
+                        isUserNameValidRequired && (
+                          <Typography sx={{ color: 'red', fontSize: 16 }}>*Valid userName required</Typography>
+                        )
+                      }
+                    </Box>
+                    <InputLabel sx={{ marginBottom: -2 }}>
+                      Email
+                    </InputLabel>
+                    <TextField sx={{ ...input, marginTop: 3 }} required id="outlined-required" value={email} defaultValue="" onChange={(e) => HandleEmail(e.target.value)} placeholder='Enter Email' InputLabelProps={{ sx: { fontSize: '15px' } }} />
+                    <Box sx={{ marginTop: '-9px' }}>
+                      {
+                        isEmailValidRequired && (
+                          <Typography sx={{ color: 'red', fontSize: 16 }}>*Valid Email required</Typography>
+                        )
+                      }
+                    </Box>
+                    {/* <InputLabel sx={{ marginBottom: '-8px', marginTop: 1 }}>
+                      Role
+                    </InputLabel>
+                    <TextField id="outlined-select-currency" sx={{ ...input, color: "#000" }} select value={roleId} onChange={(e) => setRoleId(e.target.value)}  >
+
+                      {
+                      allData?.map((item, index) => (
+                        <MenuItem Item key={index} value={item.id}>
+                          {item.roleName}
+                        </MenuItem>
+                      ))
+                      }
+                    </TextField> */}
+                    <Box sx={{ minWidth: 120 }}>
+                      <InputLabel sx={{ marginBottom: '8px', marginTop: 1 }}>
+                        Role
+                      </InputLabel>
+                      <FormControl fullWidth>
+                        <InputLabel id="demo-simple-select-label">Select</InputLabel>
+                        <Select
+                          labelId="demo-simple-select-label"
+                          id="demo-simple-select"
+                          value={roleId}
+                          onChange={(e) => setRoleId(e.target.value)}
+                          label="Age"
+
+                        >
+                          {
+                            allData?.map((item, index) => (
+                              <MenuItem Item key={index} value={item.id}> {item.roleName}</MenuItem>
+                            ))
+                          }
+
+
+                        </Select>
+                      </FormControl>
+                    </Box>
+
+
+                    <Box sx={{ textAlign: "center", marginTop: 4, width: '100%' }}>
+                      <Button sx={{ width: '100%' }} variant="contained" disableElevation onClick={MyRoleUpdateByIdApi}>
+                        Update
                       </Button>
                       <Toaster />
                     </Box>
@@ -577,13 +746,32 @@ const allStaff = () => {
             </Modal>
           )
         }
+        <Modal
+          open={open2}
+          onClose={handleClose2}
+          aria-labelledby="modal-modal-title"
+          aria-describedby="modal-modal-description"
+          ref={offcanvasRef33}
+        >
+          <Box sx={style2}>
+            <Typography sx={{ fontSize: 25 }} id="modal-modal-title" variant="h6" component="h2">
+              Confirmation Alert!
+            </Typography>
+            <hr />
+            <Typography sx={{ ml: 2, mt: 2 }} id="modal-modal-description" >
+              Are you sure to Enable and Disable this staff?
+            </Typography>
+            <Box sx={{ textAlign: "right", marginTop: 2 }}>
+              <Button sx={{ backgroundColor: "#4634ff", color: '#fff' }} variant="contained" href="#contained-buttons" onClick={MyStaffBanApi}>
+                Submit
+              </Button>
+              <Toaster />
+            </Box>
+          </Box>
+        </Modal>
 
       </Box>
-      <Box>
-        <Typography>
 
-        </Typography>
-      </Box>
     </>
   )
 }

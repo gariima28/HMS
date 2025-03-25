@@ -172,7 +172,7 @@ const CreateHotel = () => {
           <Grid xs={12} sm={6} md={6} lg={4}>
             <Stack spacing={1}>
               <InputLabel htmlFor="status">Status</InputLabel>
-              <Select {...register("status", { required: 'This Field is required', validate: (value) => typeof value === 'boolean' || 'Invalid status value', })} onChange={(e) => { setValue("status", e.target.value === 'true'); trigger("status"); }} fullWidth displayEmpty error={Boolean(errors.status)} value={hotelStatus !== undefined ? String(hotelStatus) : ''} >
+              <Select {...register("status", { required: 'This Field is required'})} onChange={(e) => { setValue("status", e.target.value === 'true'); trigger("status"); }} fullWidth displayEmpty error={Boolean(errors.status)} value={hotelStatus !== undefined ? String(hotelStatus) : ''} >
                 <MenuItem value='' disabled>Select Status</MenuItem>
                 <MenuItem value="true">Active</MenuItem>
                 <MenuItem value="false">Inactive</MenuItem>

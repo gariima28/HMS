@@ -19,7 +19,6 @@ export const loginApi = async (data) => {
     }
 }
 
-
 export const getOTPApi = async (data) => {
     var res = await axios.post(`${ServerIP}/login/getOtp`, data);
     if (res) {
@@ -637,7 +636,6 @@ export const RoleGetByIdApi = async (id) => {
 export const AllStaffPostApi = async (formData) => {
     axios.defaults.headers.common["Authorization"] = token;
     const res = await axios.post(`${ServerIP}/staff/create`, formData)
-
     if (res) {
         return res;
     }
@@ -646,16 +644,16 @@ export const AllStaffPostApi = async (formData) => {
     }
 }
 // } get all 
-export const AllStaffGetAllApi = async () => {
+export const AllStaffGetAllApi = async(search) =>{
     axios.defaults.headers.common["Authorization"] = token;
-    const res = await axios.get(`${ServerIP}/staff/getAll`)
-
-    if (res) {
-        return res;
-    }
-    else {
-        return []
-    }
+   const res= await axios.get(`${ServerIP}/staff/getAll?search=${search}`)
+   
+   if(res) {
+    return res;
+   }
+   else{
+    return []
+   }
 }
 
 export const AllStaffGetAllByIdApi = async (id) => {
@@ -695,46 +693,45 @@ export const AllStaffBanApi = async (id) => {
 
 // Banned guest 
 
-export const AllStaffBannedApi = async () => {
+export const AllStaffBannedApi = async(search) =>{
     axios.defaults.headers.common["Authorization"] = token;
-    const res = await axios.get(`${ServerIP}/staff/getBannedGuest`)
-
-    if (res) {
-        return res;
-    }
-    else {
-        return []
-    }
+   const res= await axios.get(`${ServerIP}/guest/getAllBannedGuest?search=${search}`)
+   
+   if(res) {
+    return res;
+   }
+   else{
+    return []
+   }
 }
 
 // active guest 
 
-export const AllActiveguestGetAllApi = async () => {
+export const AllActiveguestGetAllApi = async(search) =>{
     axios.defaults.headers.common["Authorization"] = token;
-    const res = await axios.get(`${ServerIP}/guest/active`)
-    if (res) {
-        return res;
-    }
-    else {
-        return []
-    }
+   const res= await axios.get(`${ServerIP}/guest/active?search=${search}`)
+   if(res) {
+    return res;
+   }
+   else{
+    return []
+   }
 }
-
 // All Guest GetAll Api 
 
-export const AllguestGetAllApi = async () => {
+export const AllguestGetAllApi = async(search) => {
     axios.defaults.headers.common["Authorization"] = token;
-    const res = await axios.get(`${ServerIP}/guest/getAll`)
-    if (res) {
-        return res;
-    }
-    else {
-        return []
-    }
+   const res= await axios.get(`${ServerIP}/guest/getAll?search=${search}`)
+   if(res) {
+    return res;
+   }
+   else{
+    return []
+   }
 }
 
 // get by id api 
-export const AllActiveguestGetByIdApi = async (id) => {
+export const AllActiveguestGetByIdApi = async(id) => {
     axios.defaults.headers.common["Authorization"] = token;
     const res = await axios.get(`${ServerIP}/guest/getOne/${id}`)
 
@@ -746,7 +743,7 @@ export const AllActiveguestGetByIdApi = async (id) => {
     }
 }
 // update api 
-export const AllActiveguestUpdateApi = async (id, formData) => {
+export const AllActiveguestUpdateApi = async(id, formData) => {
     axios.defaults.headers.common["Authorization"] = token;
     const res = await axios.put(`${ServerIP}/guest/update/${id}`, formData)
 
@@ -758,45 +755,57 @@ export const AllActiveguestUpdateApi = async (id, formData) => {
     }
 }
 
+// Ban api 
+export const BanApi = async(id,status) => {
+    axios.defaults.headers.common["Authorization"] = token;
+    const res = await axios.put(`${ServerIP}/guest/banUnbanGuestById/${id}?status=${status}`, )
+
+    if (res) {
+        return res;
+    }
+    else {
+        return []
+    }
+}
 // get all of eamil 
-export const AllActiveEamilUnverifiedapi = async () => {
+export const AllActiveEamilUnverifiedapi = async(search) =>{
     axios.defaults.headers.common["Authorization"] = token;
-    const res = await axios.get(`${ServerIP}/guest/emailUnverified`)
-
-    if (res) {
-        return res;
-    }
-    else {
-        return []
-    }
+   const res= await axios.get(`${ServerIP}/guest/emailUnverified?search=${search}`)
+   
+   if(res) {
+    return res;
+   }
+   else{
+    return []
+   }
 }
+
 // get all of phone 
-export const AllActivePhoneUnverifiedapi = async () => {
+export const AllActivePhoneUnverifiedapi = async(search) =>{
     axios.defaults.headers.common["Authorization"] = token;
-    const res = await axios.get(`${ServerIP}/guest/phoneUnverified`)
+   const res= await axios.get(`${ServerIP}/guest/phoneUnverified?search=${search}`)
 
-    if (res) {
-        return res;
-    }
-    else {
-        return []
-    }
+   if(res) {
+    return res;
+   }
+   else {
+    return []
+   }
 }
 
-// Pending ticket apis 
-
-// get all api 
-export const PendingTicketGetAllApi = async () => {
+// pending ticket 
+export const PendingTicketGetAllApi = async(search) =>{
     axios.defaults.headers.common["Authorization"] = token;
-    const res = await axios.get(`${ServerIP}/support/getPendingTickets`)
+   const res= await axios.get(`${ServerIP}/support/getPendingTickets?search=${search}`)
 
-    if (res) {
-        return res;
-    }
-    else {
-        return []
-    }
+   if(res) {
+    return res;
+   }
+   else{
+    return []
+   }
 }
+
 
 // update api 
 export const PendingTicketUpdateApi = async (id, formData) => {
@@ -823,21 +832,21 @@ export const PendingCloseTicketApi = async (id) => {
     }
 }
 // close ticket 
-export const ClosedTicketGetAllApi = async (id) => {
+export const ClosedTicketGetAllApi = async(search) =>{
     axios.defaults.headers.common["Authorization"] = token;
-    const res = await axios.get(`${ServerIP}/support/getClosedTickets`)
+   const res= await axios.get(`${ServerIP}/support/getClosedTickets?search=${search}`)
 
-    if (res) {
-        return res;
-    }
-    else {
-        return []
-    }
+   if(res) {
+    return res;
+   }
+   else{
+    return []
+   }
 }
 // Answered ticket 
-export const AnsweredTicketGetAllApi = async () => {
+export const AnsweredTicketGetAllApi = async (search) => {
     axios.defaults.headers.common["Authorization"] = token;
-    const res = await axios.get(`${ServerIP}/support/getAnsTickets`)
+    const res = await axios.get(`${ServerIP}/support/getAnsTickets?search=${search}`)
 
     if (res) {
         return res;
@@ -871,9 +880,9 @@ export const GetTicketByIdApi = async (id) => {
     }
 }
 // Get all tickets  
-export const GetAlTicketApi = async () => {
+export const GetAlTicketApi = async (search) => {
     axios.defaults.headers.common["Authorization"] = token;
-    const res = await axios.get(`${ServerIP}/support/getAllTickets`)
+    const res = await axios.get(`${ServerIP}/support/getAllTickets?search=${search}`)
 
     if (res) {
         return res;
@@ -899,7 +908,7 @@ export const SendAllStaffMail = async (formData) => {
 // Get all tickets  
 export const SubscriberGetAllApi = async () => {
     axios.defaults.headers.common["Authorization"] = token;
-    const res = await axios.get(`${ServerIP}`)
+    const res = await axios.get(`${ServerIP}/subscribe/getSubscriberList`)
 
     if (res) {
         return res;
@@ -945,9 +954,9 @@ export const GeneralPostApi = async (formData) => {
     }
 }
 // Booking action report 
-export const BookingActionReport = async () => {
+export const BookingActionReport = async (search) => {
     axios.defaults.headers.common["Authorization"] = token;
-    const res = await axios.get(`${ServerIP}/report/booking/getAll`)
+    const res = await axios.get(`${ServerIP}/report/booking/getAll?search=${search}`)
     if (res) {
         return res;
     }
@@ -957,9 +966,9 @@ export const BookingActionReport = async () => {
 }
 
 // Received payment report 
-export const ReceivedPaymentReport = async () => {
+export const ReceivedPaymentReport = async (search) => {
     axios.defaults.headers.common["Authorization"] = token;
-    const res = await axios.get(`${ServerIP}/records/payments/received/getAllPayments`)
+    const res = await axios.get(`${ServerIP}/records/payments/received/getAllPayments?search=${search}`)
     if (res) {
         return res;
     }
@@ -969,9 +978,9 @@ export const ReceivedPaymentReport = async () => {
 }
 
 // Return payment report 
-export const ReturnPaymentReport = async () => {
+export const ReturnPaymentReport = async (search) => {
     axios.defaults.headers.common["Authorization"] = token;
-    const res = await axios.get(`${ServerIP}/records/payments/returned/getAllPayments`)
+    const res = await axios.get(`${ServerIP}/records/payments/returned/getAllPayments?search=${search}`)
     if (res) {
         return res;
     }
@@ -1035,9 +1044,20 @@ export const CacheExtra = async () => {
     }
 }
 //  Notification history 
-export const NotificationHistory = async () => {
+export const NotificationHistory = async (search) => {
     axios.defaults.headers.common["Authorization"] = token;
-    const res = await axios.get(`${ServerIP}/report/notification/history/getAll`)
+    const res = await axios.get(`${ServerIP}/report/notification/history/getAll?search=${search}`)
+    if (res) {
+        return res;
+    }
+    else {
+        return []
+    }
+}
+//  Login history 
+export const LogInHistory = async (search,fromDate,toDate) => {
+    axios.defaults.headers.common["Authorization"] = token;
+    const res = await axios.get(`${ServerIP}/report/login/history/getAll?search=${search}&fromDate=${fromDate}&toDate=${toDate}`)
     if (res) {
         return res;
     }

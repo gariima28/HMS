@@ -88,6 +88,7 @@ const bookingAction = () => {
   const handleOpen3 = () => setOpen3(true);
   const handleClose3 = () => setOpen3(false);
   const [rowsData, setRowsData] = React.useState([]);
+  const [search, setSearch] = React.useState('');
 
 
   const [page, setPage] = React.useState(0);
@@ -127,11 +128,11 @@ const bookingAction = () => {
   const MyPendingTicketGetAllApi = async () => {
     setLoader(true)
     try {
-      const response = await BookingActionReport();
+      const response = await BookingActionReport(search);
       console.log('Booking Action data', response)
       if (response?.status === 200) {
         setRowsData(response?.data?.bookingReport)
-        toast.success(response?.data?.message)
+        // toast.success(response?.data?.message)
         setLoader(false)
         const transformedRows = response?.data?.bookingReport?.map((booking, index) => ({
           ...booking,
@@ -152,7 +153,10 @@ const bookingAction = () => {
       console.log(error)
     }
   }
-
+  const handleChange = (e) => {
+    const trimmedValue = e.target.value.trimStart();
+    setSearch(trimmedValue);
+  };
 
   return (
     <>
@@ -177,9 +181,11 @@ const bookingAction = () => {
                   boxShadow:'none'
                 },
               }}
-            label="Search input" />
+              value={search}
+              onChange={handleChange}
+            label="Search by booking no" />
           </Grid>
-          <Grid className={classes.searchIcon}>
+          <Grid className={classes.searchIcon} onClick={MyPendingTicketGetAllApi}>
             <svg  xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 32 32">
               <path fill="none" stroke="#fff" stroke-linecap="round" stroke-linejoin="round" stroke-width="0.9" d="m5 27l7.5-7.5M28 13a9 9 0 1 1-18 0a9 9 0 0 1 18 0" />
             </svg>

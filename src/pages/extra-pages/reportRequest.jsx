@@ -116,7 +116,7 @@ const reportRequest = () => {
         { id: 'type', label: 'Type', minWidth: 140 },
         { id: 'message', label: 'Message', minWidth: 100 },
         { id: 'status', label: 'Status', minWidth: 140, align: 'center', format: (value) => value.toLocaleString('en-US'), },
-  
+
     ];
 
     const rows = [
@@ -166,32 +166,34 @@ const reportRequest = () => {
 
     // post api 
     const MyReportAndRequestPostApi = async () => {
-        const formData = new FormData()
-        formData.append('type', type);
-        formData.append('message', message);
+        if (FuncValidate()) {
+            const formData = new FormData()
+            formData.append('type', type);
+            formData.append('message', message);
 
-        setLoader(true)
-        try {
-            const response = await ReportAndRequestPostApi(formData);
-            console.log('Report and request post api response', response)
-            if (response?.data?.status === "success") {
-                toast.success(response?.data?.message);
-                MyReportRequestGetAllApi()
-                setLoader(false)
-                setOpen3(false)
-                const offcanvasInstance = bootstrap.Offcanvas.getInstance(offcanvasRef.current);
-                offcanvasInstance.hide();
-                setShow(false)
-                setTimeout(() => {
-                    setShow(true)
-                }, 0.5)
-
-            } else {
-                toast.error(response?.data?.message);
+            setLoader(true)
+            try {
+                const response = await ReportAndRequestPostApi(formData);
+                console.log('Report and request post api response', response)
+                if (response?.data?.status === "success") {
+                    toast.success(response?.data?.message);
+                    MyReportRequestGetAllApi()
+                    setLoader(false)
+                    setOpen3(false)
+                    const offcanvasInstance = bootstrap.Offcanvas.getInstance(offcanvasRef.current);
+                    offcanvasInstance.hide();
+                    setShow(false)
+                    setTimeout(() => {
+                        setShow(true)
+                    }, 0.5)
+                } else {
+                    toast.error(response?.data?.message);
+                }
+            } catch (error) {
+                console.log(error)
             }
-        } catch (error) {
-            console.log(error)
         }
+
     }
 
     // Get all 
@@ -202,20 +204,20 @@ const reportRequest = () => {
             console.log('Report and request DATAAAAAA', response)
             if (response?.status === 200) {
                 setRowsData(response?.data?.notifications)
-                toast.success(response?.data?.msg)
+                // toast.success(response?.data?.msg)
                 setLoader(false)
                 const transformedRows = response?.data?.reports.map((reports, index) => ({
-                  ...reports,
-                //   dateTime: (<><Grid><Typography>{reports?.dateTime?.split("T")[0]}</Typography> <br />
-                //   </Grid></>),
-                //   action: (
-                //     <Stack justifyContent='end' spacing={2} direction="row">
-                //       <Button variant="outlined" size="small" startIcon={<FundProjectionScreenOutlined />} onClick={() => {
-                //         handleOpen3();
-                //         MyNotificationGetByIdApi(notifications.id);
-                //       }}>Details</Button>
-                //     </Stack>
-                //   )
+                    ...reports,
+                    //   dateTime: (<><Grid><Typography>{reports?.dateTime?.split("T")[0]}</Typography> <br />
+                    //   </Grid></>),
+                    //   action: (
+                    //     <Stack justifyContent='end' spacing={2} direction="row">
+                    //       <Button variant="outlined" size="small" startIcon={<FundProjectionScreenOutlined />} onClick={() => {
+                    //         handleOpen3();
+                    //         MyNotificationGetByIdApi(notifications.id);
+                    //       }}>Details</Button>
+                    //     </Stack>
+                    //   )
                 }))
                 setRow(transformedRows)
             } else {
@@ -341,7 +343,7 @@ const reportRequest = () => {
                                             {
                                                 InValidMessageError && (
                                                     <Typography sx={{ color: 'red', fontSize: 14, }}>
-                                                        Messaged is required
+                                                        Message is required
                                                     </Typography>
                                                 )
                                             }

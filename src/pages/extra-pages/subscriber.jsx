@@ -53,6 +53,7 @@ const subscriber = () => {
     const [selectedValue, setSelectedValue] = useState("");
     const [hideEmail, setHideEmail] = useState(true)
     const [loader, setLoader] = useState(false)
+    const [search, setSearch] = useState('')
 
     const [allStaffMail, setAllStafffMail] = useState();
     const [subject, setSubject] = useState();
@@ -69,11 +70,6 @@ const subscriber = () => {
     const [isValidNumberTwoRequired, setIsValidNumberTwoRequired] = useState(false);
     const [isValidNumberThreeRequired, setIsValidNumberThreeRequired] = useState(false);
 
-    // console.log('subject', subject)
-    // const [startForm, setStartForm] = useState();
-
-    console.log('my all emails', allStaffMail)
-
     const handleChange = (event) => {
         setSelectedValue(event.target.value);
     };
@@ -82,17 +78,17 @@ const subscriber = () => {
         MyAllStaffGetAllDataApi()
     }, [])
 
-    // Get all in role 
+    // Get all staff 
     const MyAllStaffGetAllDataApi = async () => {
         setLoader(true)
         try {
-            const response = await AllStaffGetAllApi();
-            // console.log('My All Stafff get all---------------', response)
+            const response = await AllStaffGetAllApi(search);
+            console.log('My All Stafff get all---------------', response)
 
             if (response?.status === 200) {
-                toast.success(response?.data?.msg)
+                // toast.success(response?.data?.msg)
                 setAllData(response?.data?.staffs)
-                setLoader(false)
+                setLoader(`false`)
 
             } else {
                 toast.error(response?.data?.msg);

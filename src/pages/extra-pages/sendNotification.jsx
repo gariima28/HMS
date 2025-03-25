@@ -20,13 +20,12 @@ const forHover = {
 }
 const conditionClass = {
     color: "#fff",
-    backgroundColor: '#28c76f',
+    backgroundColor: '#4634ff',
 }
 const btn12 = {
     backgroundColor: "#f2f6fbe4",
     border: "0.5px solid #aaa"
 }
-
 
 const currencies = [
     {
@@ -59,6 +58,8 @@ const sendNotification = () => {
     const [textarea, setRextarea] = useState();
     const [startForm, setStartForm] = useState();
     const [perBatch, setPerBatch] = useState();
+    const [search, setSearch] = useState('');
+
     const [coolinPeriod, setCoolinPeriod] = useState();
     const [isValidFromDateRequired, setIsValidFromDateRequired] = useState(false);
     const [isValidToDateRequired, setIsValidToDateRequired] = useState(false);
@@ -82,10 +83,10 @@ const sendNotification = () => {
     const MyAllStaffGetAllDataApi = async () => {
         setLoader(true)
         try {
-            const response = await AllStaffGetAllApi();
+            const response = await AllStaffGetAllApi(search);
             // console.log('My All Stafff get all---------------', response)
             if (response?.status === 200) {
-                toast.success(response?.data?.msg)
+                // toast.success(response?.data?.msg)
                 setAllData(response?.data?.staffs)
                 setLoader(false)
                

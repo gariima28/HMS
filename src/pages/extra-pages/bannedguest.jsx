@@ -1,5 +1,5 @@
-import { Box, Button, Grid, TextField, Typography } from '@mui/material'
-import React, { useEffect,useState } from 'react'
+import { Box, Button, Grid, TextField, Typography, Stack } from '@mui/material'
+import React, { useEffect, useState } from 'react'
 import Paper from '@mui/material/Paper';
 import Table from '@mui/material/Table';
 import TableBody from '@mui/material/TableBody';
@@ -7,13 +7,19 @@ import TableCell from '@mui/material/TableCell';
 import TableContainer from '@mui/material/TableContainer';
 import TableHead from '@mui/material/TableHead';
 import TablePagination from '@mui/material/TablePagination';
+import { useNavigate } from 'react-router';
+
 import TableRow from '@mui/material/TableRow';
 import toast, { Toaster } from 'react-hot-toast';
 import HashLoader from './HashLoaderCom';
 import Modal from '@mui/material/Modal';
 import { makeStyles } from '@mui/styles';
+import { PlusCircleOutlined } from '@ant-design/icons';
+import { BanApi } from 'api/api'
 // import { AllStaffBannedApi } from '@ant-design/icons';
 import { AllStaffBannedApi } from 'api/api'
+import { Link } from 'react-router-dom';
+import { color } from 'framer-motion';
 
 const useStyles = makeStyles({
   searchBar: {
@@ -70,6 +76,7 @@ const input = {
 
 const bannedguest = () => {
   const classes = useStyles();
+    const navigate = useNavigate()
 
   const [open, setOpen] = React.useState(false);
   const handleOpen = () => setOpen(true);
@@ -84,6 +91,10 @@ const bannedguest = () => {
   const [open3, setOpen3] = React.useState(false);
   const handleOpen3 = () => setOpen3(true);
   const handleClose3 = () => setOpen3(false);
+  const [search, setSearch] = useState('')
+  const [myId, setMyId] = useState('')
+  console.log('my banned id ', myId)
+
 
 
   const [page, setPage] = React.useState(0);
@@ -98,26 +109,61 @@ const bannedguest = () => {
     setPage(0);
   };
 
-useEffect(()=>{
-  MyRoleGetAllApi()
-},[])
+  useEffect(() => {
+    MyRoleGetAllApi()
+  }, [])
 
   const MyRoleGetAllApi = async () => {
     setLoader(true)
     try {
-      const response = await AllStaffBannedApi();
+      const response = await AllStaffBannedApi(search);
       console.log('Banned data ', response)
       if (response?.status === 200) {
         // setRowsData(response?.data?.bannedStaff)
-        toast.success(response?.data?.message)
+        // toast.success(response?.data?.message)
         setLoader(false)
-        const transformedRows = response?.data?.bannedStaff?.map((banned,index) => ({
-          ...banned,
-          joined: banned.createdAt?.dateTime,
+        const transformedRows = response?.data?.guest?.map((guest, index) => ({
+          ...guest,
+          createdAt
+            : (<><Grid><Typography>{guest?.createdAt?.dateTime}</Typography> <br />
+              <Typography>{guest?.createdAt?.weekDay}</Typography>
+            </Grid></>),
+          action: (
+            <Stack justifyContent='center' spacing={2} direction="row">
+              {/* <Link to={`/guestdetails/${guest.id}`}> */}
+              <Link to={''}>
+                <Button variant="outlined" size="small" startIcon={<PlusCircleOutlined />} onClick={(e) => {
+                  handleOpen2();
+                  setMyId(guest.id);
+                }}>Unban</Button>
+                {/* <Button variant="outlined" size="small" startIcon={<FundProjectionScreenOutlined />} >Details</Button> */}
+              </Link>
+            </Stack>
+          )
         }))
         setRow(transformedRows)
       } else {
-        toast.error(response?.data?.message);
+        // toast.error(response?.data?.message); 
+      }
+    } catch (error) {
+      console.log(error)
+    }
+  }
+
+  // Ban Ap 
+  const MyBanApi = async () => {
+    // setLoader(true)
+    try {
+      const response = await BanApi(myId, false);
+      console.log('Ban api response ', response)
+      if (response?.status === 200) {
+        toast.success(response?.data?.message)
+        setOpen2(false)
+        setTimeout(() => {
+          navigate('/activeguest')
+        }, 1000)
+      } else {
+        // toast.error(response?.data?.msg);
       }
     } catch (error) {
       console.log(error)
@@ -125,7 +171,7 @@ useEffect(()=>{
   }
 
   const columns = [
-    { id: 'name', label: 'User', minWidth: 170 },
+    { id: 'firstName', label: 'User', minWidth: 170 },
     { id: 'email', label: 'Email-Mobile', minWidth: 100 },
     // {
     //   id: 'country',
@@ -141,7 +187,14 @@ useEffect(()=>{
       align: 'center',
       format: (value) => value.toLocaleString('en-US'),
     },
-  
+    {
+      id: 'action',
+      label: 'Joined At',
+      minWidth: 170,
+      align: 'center',
+      format: (value) => value.toLocaleString('en-US'),
+    },
+
   ];
 
   const rows = [
@@ -155,13 +208,19 @@ useEffect(()=>{
     // }
   ];
 
+
+  const handleChange = (e) => {
+    const trimmedValue = e.target.value.trimStart();
+    setSearch(trimmedValue);
+  };
+
   return (
     <>
-    <Box>
+      <Box>
         {
-        loader && (
-          <HashLoader />
-        )
+          loader && (
+            <HashLoader />
+          )
         }
       </Box>
       <Box sx={{ margin: 0, fontSize: 20, display: "flex", justifyContent: "space-between" }}>
@@ -175,13 +234,15 @@ useEffect(()=>{
                 "& .MuiOutlinedInput-root": {
                   borderRadius: 0,
                   height: 39,
-                  boxShadow:'none'
+                  boxShadow: 'none'
                 },
               }}
-            label="Search input" />
+              value={search}
+              onChange={handleChange}
+              label="Search By Email" />
           </Grid>
-          <Grid className={classes.searchIcon}>
-            <svg  xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 32 32">
+          <Grid className={classes.searchIcon} onClick={MyRoleGetAllApi} >
+            <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 32 32">
               <path fill="none" stroke="#fff" stroke-linecap="round" stroke-linejoin="round" stroke-width="0.9" d="m5 27l7.5-7.5M28 13a9 9 0 1 1-18 0a9 9 0 0 1 18 0" />
             </svg>
           </Grid>
@@ -205,22 +266,22 @@ useEffect(()=>{
                 </TableRow>
               </TableHead>
               <TableBody>
-                {row?.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage).map((row,index) => {
-                    return (
-                      <TableRow hover role="checkbox" tabIndex={-1} key={index}>
-                        {columns.map((column) => {
-                          const value = row[column.id];
-                          return (
-                            <TableCell key={column.id} align={column.align}>
-                              {column.format && typeof value === 'number'
-                                ? column.format(value)
-                                : value}
-                            </TableCell>
-                          );
-                        })}
-                      </TableRow>
-                    );
-                  })}
+                {row?.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage).map((row, index) => {
+                  return (
+                    <TableRow hover role="checkbox" tabIndex={-1} key={index}>
+                      {columns.map((column) => {
+                        const value = row[column.id];
+                        return (
+                          <TableCell key={column.id} align={column.align}>
+                            {column.format && typeof value === 'number'
+                              ? column.format(value)
+                              : value}
+                          </TableCell>
+                        );
+                      })}
+                    </TableRow>
+                  );
+                })}
               </TableBody>
             </Table>
           </TableContainer>
@@ -274,7 +335,7 @@ useEffect(()=>{
           aria-describedby="modal-modal-description"
         >
           <Box sx={style2}>
-            <Typography sx={{ fontSize: 25 }} id="modal-modal-title" variant="h6" component="h2">
+            <Typography sx={{ fontSize: 25, color: 'red' }} id="modal-modal-title" variant="h6" component="h2">
               Confirmation Alert!
             </Typography>
             <hr />
@@ -318,7 +379,29 @@ useEffect(()=>{
           </Box>
         </Modal>
       </Box>
-
+      <Modal
+        open={open2}
+        onClose={handleClose2}
+        aria-labelledby="modal-modal-title"
+        aria-describedby="modal-modal-description"
+      // ref={offcanvasRef33}
+      >
+        <Box sx={style2}>
+          <Typography sx={{ fontSize: 25, color: 'red' }} id="modal-modal-title" variant="h6" component="h2">
+            Confirmation Alert!
+          </Typography>
+          <hr />
+          <Typography sx={{ ml: 2, mt: 2, fontSize: 15 }} id="modal-modal-description" >
+            Are you sure to <b>Unban</b> this Guest?
+          </Typography>
+          <Box sx={{ textAlign: "right", marginTop: 2 }}>
+            <Button sx={{ backgroundColor: "#4634ff", color: '#fff' }} variant="contained" href="#contained-buttons" onClick={MyBanApi}>
+              Submit
+            </Button>
+            <Toaster />
+          </Box>
+        </Box>
+      </Modal>
     </>
   )
 }

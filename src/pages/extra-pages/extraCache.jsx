@@ -90,7 +90,7 @@ const extraCache = () => {
                 setKey3(response?.data?.cacheData?.cache2)
                 setKey4(response?.data?.cacheData?.cache3)
                 setKey5(response?.data?.cacheData?.cache4)
-                toast.success(response?.data?.message)
+                // toast.success(response?.data?.message)
                 setLoader(false)
             } else {
                 toast.error(response?.data?.message);

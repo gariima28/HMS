@@ -85,6 +85,7 @@ const mobileUnverified = () => {
   const handleOpen3 = () => setOpen3(true);
   const handleClose3 = () => setOpen3(false);
 
+  const [search, setSearch] = useState('')
 
   const [page, setPage] = React.useState(0);
   const [rowsPerPage, setRowsPerPage] = React.useState(10);
@@ -105,11 +106,11 @@ const mobileUnverified = () => {
   const MyPhoneUnverifiedGetAllApi = async () => {
     setLoader(true)
     try {
-      const response = await AllActivePhoneUnverifiedapi();
+      const response = await AllActivePhoneUnverifiedapi(search);
       console.log('Phone Unverified data data ', response)
       if (response?.status === 200) {
         // setRowsData(response?.data?.roles)
-        toast.success(response?.data?.message)
+        // toast.success(response?.data?.message)
         setLoader(false)
 
         const transformedRows = response?.data?.guest?.map((EmailUnverified, index) => ({
@@ -118,7 +119,7 @@ const mobileUnverified = () => {
         }))
         setRow(transformedRows)
       } else {
-        toast.error(response?.data?.message);
+        // toast.error(response?.data?.message);
       }
     } catch (error) {
       console.log(error)
@@ -142,13 +143,7 @@ const mobileUnverified = () => {
       align: 'center',
       format: (value) => value.toLocaleString('en-US'),
     },
-    // {
-    //   id: 'size',
-    //   label: 'Action',
-    //   minWidth: 170,
-    //   align: 'right',
-    //   format: (value) => value.toLocaleString('en-US'),
-    // }
+
   ];
 
   const rows = [
@@ -162,6 +157,11 @@ const mobileUnverified = () => {
     }
 
   ];
+
+  const handleChange = (e) => {
+    const trimmedValue = e.target.value.trimStart();
+    setSearch(trimmedValue);
+  };
 
   return (
     <>
@@ -186,9 +186,11 @@ const mobileUnverified = () => {
                   boxShadow: 'none'
                 },
               }}
-              label="Search input" />
+              value={search}
+              onChange={handleChange}
+              label="Search By Email" />
           </Grid>
-          <Grid className={classes.searchIcon}>
+          <Grid className={classes.searchIcon} onClick={MyPhoneUnverifiedGetAllApi}>
             <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 32 32">
               <path fill="none" stroke="#fff" stroke-linecap="round" stroke-linejoin="round" stroke-width="0.9" d="m5 27l7.5-7.5M28 13a9 9 0 1 1-18 0a9 9 0 0 1 18 0" />
             </svg>
@@ -214,7 +216,7 @@ const mobileUnverified = () => {
                 </TableRow>
               </TableHead>
               <TableBody>
-                {row.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage).map((row) => {
+                {row?.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage).map((row) => {
                   return (
                     <TableRow hover role="checkbox" tabIndex={-1} key={row.code}>
                       {columns.map((column) => {

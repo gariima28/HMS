@@ -41,7 +41,7 @@ const extraApplication = () => {
             if (response?.status === 200) {
                 setAdminVersion(response?.data?.application?.ViserAdmin_Version)
                 setHotelVersion(response?.data?.application?.ViserHotel_Version)
-                toast.success(response?.data?.message)
+                // toast.success(response?.data?.message)
                 setLoader(false)
         
             } else {

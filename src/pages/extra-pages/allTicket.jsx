@@ -109,7 +109,7 @@ const allTicket = () => {
   const handleOpen2 = () => setOpen2(true);
   const handleClose2 = () => setOpen2(false);
   const [rows, setRows] = React.useState([]);
-
+  const [search, setSearch] = useState('');
   const [open3, setOpen3] = React.useState(false);
   const handleOpen3 = () => setOpen3(true);
   const handleClose3 = () => setOpen3(false);
@@ -167,11 +167,11 @@ const allTicket = () => {
   const MyPendingTicketGetAllApi = async () => {
     setLoader(true)
     try {
-      const response = await GetAlTicketApi();
+      const response = await GetAlTicketApi(search);
       console.log('All Ticket DATAAAAAA------', response)
       if (response?.status === 200) {
         setRowsData(response?.data?.tickets)
-        toast.success(response?.data?.msg)
+        // toast.success(response?.data?.msg)
         setLoader(false)
         const transformedRows = response?.data?.tickets.map((tickets, index) => ({
           ...tickets,
@@ -202,6 +202,11 @@ const allTicket = () => {
     }
   }
 
+  const handleChange = (e) => {
+    const trimmedValue = e.target.value.trimStart();
+    setSearch(trimmedValue);
+  };
+
   return (
     <>
       <Box>
@@ -213,7 +218,7 @@ const allTicket = () => {
       </Box>
       <Box sx={{ margin: 0, fontSize: 20, display: "flex", justifyContent: "space-between" }}>
         <Grid>
-          <b>Support Tickets</b>
+          <b>All Tickets</b>
         </Grid>
         <Grid className={classes.searchBar}>
           <Grid className={classes.search}>
@@ -225,9 +230,11 @@ const allTicket = () => {
                   boxShadow: 'none'
                 },
               }}
+              value={search}
+              onChange={handleChange}
               label="Search input" />
           </Grid>
-          <Grid className={classes.searchIcon}>
+          <Grid className={classes.searchIcon} onClick={MyPendingTicketGetAllApi}>
             <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 32 32">
               <path fill="none" stroke="#fff" stroke-linecap="round" stroke-linejoin="round" stroke-width="0.9" d="m5 27l7.5-7.5M28 13a9 9 0 1 1-18 0a9 9 0 0 1 18 0" />
             </svg>

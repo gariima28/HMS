@@ -86,6 +86,7 @@ const returnPayment = () => {
 
   const [page, setPage] = React.useState(0);
   const [rowsPerPage, setRowsPerPage] = React.useState(10);
+  const [search, setSearch] = React.useState('');
 
   const handleChangePage = (event, newPage) => {
     setPage(newPage);
@@ -137,11 +138,11 @@ const returnPayment = () => {
   const MyReturnPaymentGetAllApi = async () => {
     setLoader(true)
     try {
-      const response = await ReturnPaymentReport();
+      const response = await ReturnPaymentReport(search);
       console.log('Return payment data', response)
       if (response?.status === 200) {
         setRowsData(response?.data?.returnedPayments)
-        toast.success(response?.data?.message)
+        // toast.success(response?.data?.message)
         setLoader(false)
         const transformedRows = response?.data?.returnedPayments?.map((payments, index) => ({
           ...payments,
@@ -162,6 +163,10 @@ const returnPayment = () => {
     }
   }
 
+  const handleChange = (e) => {
+    const trimmedValue = e.target.value.trimStart();
+    setSearch(trimmedValue);
+  };
   return (
     <>
       <Box>
@@ -185,9 +190,11 @@ const returnPayment = () => {
                   boxShadow: 'none'
                 },
               }}
+              value={search}
+              onChange={handleChange}
               label="Search input" />
           </Grid>
-          <Grid className={classes.searchIcon}>
+          <Grid className={classes.searchIcon}  onClick={MyReturnPaymentGetAllApi}>
             <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 32 32">
               <path fill="none" stroke="#fff" stroke-linecap="round" stroke-linejoin="round" stroke-width="0.9" d="m5 27l7.5-7.5M28 13a9 9 0 1 1-18 0a9 9 0 0 1 18 0" />
             </svg>
@@ -234,7 +241,7 @@ const returnPayment = () => {
           <TablePagination
             rowsPerPageOptions={[10, 25, 100]}
             component="div"
-            count={rows.length}
+            count={rows?.length}
             rowsPerPage={rowsPerPage}
             page={page}
             onPageChange={handleChangePage}

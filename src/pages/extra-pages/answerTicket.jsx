@@ -98,6 +98,7 @@ const answerTicket = () => {
   const handleOpen = () => setOpen(true);
   const handleClose = () => setOpen(false);
   const [loader, setLoader] = useState(false)
+  const [search, setSearch] = useState('')
 
   const [open2, setOpen2] = React.useState(false);
   const handleOpen2 = () => setOpen2(true);
@@ -163,11 +164,11 @@ const answerTicket = () => {
   const MyAnsweredTicketGetAllApi = async () => {
     setLoader(true)
     try {
-      const response = await AnsweredTicketGetAllApi();
+      const response = await AnsweredTicketGetAllApi(search);
       console.log('Answered Ticket DATAAAAAA', response)
       if (response?.status === 200) {
         setRowsData(response?.data?.tickets)
-        toast.success(response?.data?.msg)
+        // toast.success(response?.data?.msg)
         setLoader(false)
         const transformedRows = response?.data?.answerTicket?.map((tickets, index) => ({
           ...tickets,
@@ -202,7 +203,10 @@ const answerTicket = () => {
       console.log(error)
     }
   }
-
+const handleChange = (e) => {
+    const trimmedValue = e.target.value.trimStart();
+    setSearch(trimmedValue);
+  };
   return (
     <>
       <Box>
@@ -226,9 +230,11 @@ const answerTicket = () => {
                   boxShadow: 'none'
                 },
               }}
+              value={search}
+              onChange={handleChange}
               label="Search input" />
           </Grid>
-          <Grid className={classes.searchIcon}>
+          <Grid className={classes.searchIcon} onClick={MyAnsweredTicketGetAllApi}>
             <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 32 32">
               <path fill="none" stroke="#fff" stroke-linecap="round" stroke-linejoin="round" stroke-width="0.9" d="m5 27l7.5-7.5M28 13a9 9 0 1 1-18 0a9 9 0 0 1 18 0" />
             </svg>
@@ -241,7 +247,7 @@ const answerTicket = () => {
             <Table stickyHeader aria-label="sticky table">
               <TableHead>
                 <TableRow>
-                  {columns.map((column) => (
+                  {columns?.map((column) => (
                     <TableCell
                       key={column.id}
                       align={column.align}
@@ -253,7 +259,7 @@ const answerTicket = () => {
                 </TableRow>
               </TableHead>
               <TableBody>
-                {rows.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage).map((row, index) => {
+                {rows?.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage).map((row, index) => {
                   return (
                     <TableRow hover role="checkbox" tabIndex={-1} key={index}>
                       {columns.map((column) => {
@@ -275,7 +281,7 @@ const answerTicket = () => {
           <TablePagination
             rowsPerPageOptions={[10, 25, 100]}
             component="div"
-            count={rows.length}
+            count={rows?.length}
             rowsPerPage={rowsPerPage}
             page={page}
             onPageChange={handleChangePage}
@@ -284,91 +290,6 @@ const answerTicket = () => {
         </Paper>
       </Box>
 
-      <Box>
-        {/* first  Modals area  */}
-        {/* Update modal  */}
-        {/* <Modal
-        open={open}
-        onClose={handleClose}
-        aria-labelledby="modal-modal-title"
-        aria-describedby="modal-modal-description"
-      >
-        <Box sx={style}>
-          <Box sx={content}>
-            <Typography sx={{ fontSize: 24 }}>
-              Update Staff
-            </Typography>
-            <Box>
-              <TextField sx={input} required id="outlined-required" label="Name" defaultValue="" placeholder='Enter Name' InputLabelProps={{ sx: { fontSize: '15px' } }} />
-              <TextField sx={{ ...input, marginTop: 3 }} required id="outlined-required" label="Username" defaultValue="" placeholder='Enter UserName' InputLabelProps={{ sx: { fontSize: '15px' } }} />
-              <TextField sx={{ ...input, marginTop: 3 }} required id="outlined-required" label="Email" defaultValue="" placeholder='Enter Email' InputLabelProps={{ sx: { fontSize: '15px' } }} />
-              <TextField sx={{ ...input, marginTop: 3 }} required id="outlined-required" label="Role" defaultValue="" placeholder='Enter Role' InputLabelProps={{ sx: { fontSize: '15px' } }} />
-              <TextField sx={{ ...input, marginTop: 3 }} required id="outlined-required" label="Password" defaultValue="" placeholder='Enter Password' InputLabelProps={{ sx: { fontSize: '15px' } }} />
-
-              <Box sx={{ textAlign: "center", marginTop: 4, width: '100%' }}>
-                <Button sx={{ width: '100%' }} variant="contained" disableElevation>
-                  Submit
-                </Button>
-              </Box>
-
-            </Box>
-          </Box>
-        </Box>
-      </Modal> */}
-        {/* second  Modals area */}
-        {/* confirm modal */}
-        {/* <Modal
-        open={open2}
-        onClose={handleClose2}
-        aria-labelledby="modal-modal-title"
-        aria-describedby="modal-modal-description"
-      >
-        <Box sx={style2}>
-          <Typography sx={{ fontSize: 25 }} id="modal-modal-title" variant="h6" component="h2">
-            Confirmation Alert!
-          </Typography>
-          <hr />
-          <Typography sx={{ ml: 2, mt: 2 }} id="modal-modal-description" >
-            Are you sure to ban this staff?
-          </Typography>
-          <Box sx={{ textAlign: "right" }}>
-            <Button sx={{backgroundColor:"#eb2222",color:'#fff'}} variant="contained" href="#contained-buttons">
-              Submit
-            </Button>
-          </Box>
-        </Box>
-      </Modal> */}
-        {/* third  Modals area  */}
-        {/* Add modal  */}
-        {/* <Modal
-        open={open3}
-        onClose={handleClose3}
-        aria-labelledby="modal-modal-title"
-        aria-describedby="modal-modal-description"
-      >
-        <Box sx={style}>
-          <Box sx={content}>
-            <Typography sx={{ fontSize: 24 }}>
-              Add Staff
-            </Typography>
-            <Box>
-              <TextField sx={input} required id="outlined-required" label="Name" defaultValue="" placeholder='Enter Name' InputLabelProps={{ sx: { fontSize: '15px' } }} />
-              <TextField sx={{ ...input, marginTop: 3 }} required id="outlined-required" label="Username" defaultValue="" placeholder='Enter UserName' InputLabelProps={{ sx: { fontSize: '15px' } }} />
-              <TextField sx={{ ...input, marginTop: 3 }} required id="outlined-required" label="Email" defaultValue="" placeholder='Enter Email' InputLabelProps={{ sx: { fontSize: '15px' } }} />
-              <TextField sx={{ ...input, marginTop: 3 }} required id="outlined-required" label="Role" defaultValue="" placeholder='Enter Role' InputLabelProps={{ sx: { fontSize: '15px' } }} />
-              <TextField sx={{ ...input, marginTop: 3 }} required id="outlined-required" label="Password" defaultValue="" placeholder='Enter Password' InputLabelProps={{ sx: { fontSize: '15px' } }} />
-
-              <Box sx={{ textAlign: "center", marginTop: 4, width: '100%' }}>
-                <Button sx={{ width: '100%' }} variant="contained" disableElevation>
-                  Submit
-                </Button>
-              </Box>
-
-            </Box>
-          </Box>
-        </Box>
-      </Modal> */}
-      </Box>
 
     </>
   )
