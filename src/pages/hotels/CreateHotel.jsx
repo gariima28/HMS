@@ -147,7 +147,7 @@ const CreateHotel = () => {
       {showLoader && <HashLoader />}
       <form onSubmit={handleSubmit(onSubmit)}>
         <Grid container spacing={3}>
-          <Grid  xs={12} sm={6} md={6} lg={4} >
+          <Grid  xs={12} sm={6} md={6} lg={4}>
             <Stack spacing={1}>
               <InputLabel htmlFor="hotelName">Hotel Name</InputLabel>
               {/* <OutlinedInput id="hotelName" type="text" {...register("hotelName" , {required : 'This Field is required' , validate: { pattern: (value) => /^[A-Z][a-zA-Z\s]+$/.test(value) || `Hotel name must start with an uppercase letter ${<br/>} contain only letters or spaces`}, })} placeholder="Enter Hotel Name" fullWidth error={Boolean(errors.hotelName)} /> */}
@@ -155,14 +155,14 @@ const CreateHotel = () => {
             </Stack>
             <FormHelperText error id="standard-weight-helper-text-hotelName">{errors.hotelName?.message}</FormHelperText>
           </Grid>
-          <Grid  xs={12} sm={6} md={6} lg={4} >
+          <Grid  xs={12} sm={6} md={6} lg={4}>
             <Stack spacing={1}>
               <InputLabel htmlFor="subTitle">Sub Title</InputLabel>
               <OutlinedInput id="subTitle" type="text" {...register("subTitle" , { required: 'This Field is required', validate: { startsWithCapital: (value) =>  /^[A-Z]/.test(value) || 'Sub Title must start with an uppercase letter', minLength: (value) => value.length >= 4 || 'Minimum Length is 4', pattern: (value) => /^[A-Z][a-zA-Z\s]+$/.test(value) ||  'Sub Title must contain only letters, and spaces', } })} placeholder="Enter Sub Title" fullWidth error={Boolean(errors.subTitle)} />
             </Stack>
             <FormHelperText error id="standard-weight-helper-text-subTitle">{errors.subTitle?.message}</FormHelperText>
           </Grid>
-          <Grid  xs={12} sm={6} md={6} lg={4} >
+          <Grid  xs={12} sm={6} md={6} lg={4}>
             <Stack spacing={1}>
               <InputLabel htmlFor="destination">Destination</InputLabel>
               <OutlinedInput id="destination" type="text" {...register("destination" , { required: 'This Field is required', validate: { startsWithCapital: (value) =>  /^[A-Z]/.test(value) || 'Destination must start with an uppercase letter', minLength: (value) => value.length >= 4 || 'Minimum Length is 4', pattern: (value) => /^[A-Z][a-zA-Z\s]+$/.test(value) ||  'Destination must contain only letters, and spaces', } })} placeholder="Enter Destination" fullWidth error={Boolean(errors.destination)} />

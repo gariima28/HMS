@@ -22,7 +22,7 @@ const DynamicDataTable = ({ columns, rows, dataViewId }) => {
   };
 
   return (
-    <Paper sx={{ width: '100%'}}>
+    <Paper sx={{ width: '100%' }}>
       <TableContainer sx={{ maxHeight: '500px', overflow: 'scroll' }}>
         <Table stickyHeader aria-label="sticky table">
           <TableHead>

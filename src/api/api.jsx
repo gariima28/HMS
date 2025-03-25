@@ -532,17 +532,25 @@ export const getPaymentDetailsByBookingId = async (id) => {
     }
 }
 
+// export const getAllPaymentDetailsByBookingId = async (id) => {
+//     axios.defaults.headers.common["Authorization"] = token;
+//     var res = await axios.get(`${ServerIP}/payment/getBookingDetails/${id}`);
+//     if (res) {
+//         return res;
+//     } else {
+//         return [];
+//     }
+// }
 
 export const getAllPaymentDetailsByBookingId = async (id) => {
     axios.defaults.headers.common["Authorization"] = token;
-    var res = await axios.get(`${ServerIP}/payment/getBookingDetails/${id}`);
+    var res = await axios.get(`${ServerIP}/payment/getAllPayments?bookingId=${id}`);
     if (res) {
         return res;
     } else {
         return [];
     }
 }
-
 
 export const postPaymentByBookingId = async (id, data) => {
     axios.defaults.headers.common["Authorization"] = token;

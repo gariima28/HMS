@@ -11,6 +11,7 @@ import useSWR, { mutate } from "swr";
 import axios from 'axios';
 import { addAmenitiesApi, getAmenitiesDataByIdApi, updateAmenitiesApi, updateAmenitiesStatus } from 'api/api'
 import { useParams } from 'react-router';
+import NoDataFound from 'pages/NoDataFound';
 // import { useForm } from 'react-hook-form';
 
 // const LocalGirjesh = 'http://192.168.20.109:5001';
@@ -110,7 +111,14 @@ const PremiumServicesInBookings = () => {
       </Grid>
 
       {/* Data Table */}
-      <DynamicDataTable columns={columns} rows={rows} />
+      {rows.length > 0 ? (
+        <DynamicDataTable columns={columns} rows={rows} />
+      ) : (
+        <Typography variant="h6" align="center" sx={{ mt: 4, color: '#888' }}>
+          <NoDataFound />
+        </Typography>
+      )}
+
 
     </Box>
   );

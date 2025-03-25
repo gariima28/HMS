@@ -108,8 +108,8 @@ const BookedRoomInBookings = () => {
       {Array.isArray(rows) && rows.length > 0 ? (
         <DynamicDataTable columns={columns} rows={rows} />
       )
-        : 
-          <NoDataFound/>
+        :
+        <NoDataFound />
       }
     </Box>
   );

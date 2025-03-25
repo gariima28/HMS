@@ -39,7 +39,6 @@ const TodaysBooked = () => {
       const timer = setTimeout(() => setShowLoader(false), 1500);
       return () => clearTimeout(timer);
     }
-
   }, [bookedRoomData, availableRoomData]);
 
   if (errorAvailableRoomData || errorBookedRoomData) {
