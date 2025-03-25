@@ -85,6 +85,7 @@ const receivedPayment = () => {
   const handleOpen3 = () => setOpen3(true);
   const handleClose3 = () => setOpen3(false);
   const [rowsData, setRowsData] = React.useState([]);
+  const [search, setSearch] = React.useState('');
 
   const [page, setPage] = React.useState(0);
   const [rowsPerPage, setRowsPerPage] = React.useState(10);
@@ -132,11 +133,11 @@ const receivedPayment = () => {
   const MyReceivedPaymentGetAllApi = async () => {
     setLoader(true)
     try {
-      const response = await ReceivedPaymentReport();
+      const response = await ReceivedPaymentReport(search);
       console.log('Received payment data', response)
       if (response?.status === 200) {
         setRowsData(response?.data?.payments)
-        toast.success(response?.data?.message)
+        // toast.success(response?.data?.message)
         setLoader(false)
         const transformedRows = response?.data?.payments?.map((payments, index) => ({
           ...payments,
@@ -163,7 +164,10 @@ const receivedPayment = () => {
       console.log(error)
     }
   }
-
+  const handleChange = (e) => {
+    const trimmedValue = e.target.value.trimStart();
+    setSearch(trimmedValue);
+  };
 
   return (
     <>
@@ -188,9 +192,11 @@ const receivedPayment = () => {
                   boxShadow: 'none'
                 },
               }}
+              value={search}
+              onChange={handleChange}
               label="Search input" />
           </Grid>
-          <Grid className={classes.searchIcon}>
+          <Grid className={classes.searchIcon} onClick={MyReceivedPaymentGetAllApi}>
             <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 32 32">
               <path fill="none" stroke="#ffffff" stroke-linecap="round" stroke-linejoin="round" stroke-width="0.9" d="m5 27l7.5-7.5M28 13a9 9 0 1 1-18 0a9 9 0 0 1 18 0" />
             </svg>
@@ -237,7 +243,7 @@ const receivedPayment = () => {
           <TablePagination
             rowsPerPageOptions={[10, 25, 100]}
             component="div"
-            count={rows.length}
+            count={rows?.length}
             rowsPerPage={rowsPerPage}
             page={page}
             onPageChange={handleChangePage}

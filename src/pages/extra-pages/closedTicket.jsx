@@ -9,6 +9,7 @@ import TableContainer from '@mui/material/TableContainer';
 import TableHead from '@mui/material/TableHead';
 import TablePagination from '@mui/material/TablePagination';
 import HashLoader from './HashLoaderCom';
+import { Link } from 'react-router-dom';
 import TableRow from '@mui/material/TableRow';
 import Modal from '@mui/material/Modal';
 import { ClosedTicketGetAllApi } from 'api/api'
@@ -103,6 +104,7 @@ const closedTicket = () => {
   const handleClose3 = () => setOpen3(false);
   const [rowsData, setRowsData] = React.useState([]);
 
+  const [search, setSearch] = useState('')
 
   const [page, setPage] = React.useState(0);
   const [rowsPerPage, setRowsPerPage] = React.useState(10);
@@ -156,11 +158,11 @@ const closedTicket = () => {
   const MyPendingTicketGetAllApi = async () => {
     setLoader(true)
     try {
-      const response = await ClosedTicketGetAllApi();
+      const response = await ClosedTicketGetAllApi(search);
       console.log('Closed Ticket DATAAAAAA', response)
       if (response?.status === 200) {
         setRowsData(response?.data?.tickets)
-        toast.success(response?.data?.msg)
+        // toast.success(response?.data?.msg)
         setLoader(false)
         const transformedRows = response?.data?.tickets.map((tickets, index) => ({
           ...tickets,
@@ -175,18 +177,26 @@ const closedTicket = () => {
             </Grid></>),
           action: (
             <Stack justifyContent='end' spacing={2} direction="row">
-              <Button variant="outlined" size="small" startIcon={<FundProjectionScreenOutlined />} href={`./replyticket/${tickets.ticketNumber}`}>Details</Button>
+              <Link to={`/replyticket/${tickets.ticketNumber}`}>
+                <Button variant="outlined" size="small" startIcon={<FundProjectionScreenOutlined />} >Details</Button>
+              </Link>
             </Stack>
           )
         }))
         setRows(transformedRows)
       } else {
-        toast.error(response?.data?.msg);
+        toast.error(response?.data?.message);
       }
     } catch (error) {
       console.log(error)
     }
   }
+
+
+  const handleChange = (e) => {
+    const trimmedValue = e.target.value.trimStart();
+    setSearch(trimmedValue);
+  };
 
   return (
     <>
@@ -211,9 +221,11 @@ const closedTicket = () => {
                   boxShadow: 'none'
                 },
               }}
-              label="Search input" />
+              value={search}
+              onChange={handleChange}
+              label="Search By Email" />
           </Grid>
-          <Grid className={classes.searchIcon}>
+          <Grid className={classes.searchIcon} onClick={MyPendingTicketGetAllApi}>
             <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 32 32">
               <path fill="none" stroke="#fff" stroke-linecap="round" stroke-linejoin="round" stroke-width="0.9" d="m5 27l7.5-7.5M28 13a9 9 0 1 1-18 0a9 9 0 0 1 18 0" />
             </svg>

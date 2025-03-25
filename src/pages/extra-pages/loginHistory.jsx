@@ -13,7 +13,7 @@ import TableHead from '@mui/material/TableHead';
 import TablePagination from '@mui/material/TablePagination';
 import TableRow from '@mui/material/TableRow';
 import Modal from '@mui/material/Modal';
-import { LoginHistory } from 'api/api'
+import { LogInHistory } from 'api/api'
 import { EditOutlined, FundProjectionScreenOutlined } from '@ant-design/icons';
 
 import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
@@ -21,7 +21,10 @@ import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
 import { DemoContainer } from '@mui/x-date-pickers/internals/demo';
 import { DateRangePicker } from '@mui/x-date-pickers-pro/DateRangePicker';
 import { SingleInputDateRangeField } from '@mui/x-date-pickers-pro/SingleInputDateRangeField';
-
+import { styled } from '@mui/material/styles';
+// import Button from '@mui/material/Button';
+import Tooltip, { tooltipClasses } from '@mui/material/Tooltip';
+import { filter } from 'lodash';
 
 const useStyles = makeStyles({
   searchBar: {
@@ -57,10 +60,16 @@ const loginHistory = () => {
   const handleOpen = () => setOpen(true);
   const handleClose = () => setOpen(false);
   const [date, setDate] = React.useState([]);
+  console.log('my date', date)
   const [loader, setLoader] = useState(false);
+  const [fromDate, setFromDate] = useState('');
+  const [toDate, setToDate] = useState('');
+  console.log('from date', fromDate)
+  console.log('to date', toDate)
+  const [search, setSearch] = useState('');
 
-  console.log('first date', dayjs(date[0]).format('YYYY-MM-DD'))
-  console.log('second date', dayjs(date[1]).format('YYYY-MM-DD'))
+  // console.log('first date', dayjs(date[0]).format('YYYY-MM-DD'))
+  // console.log('second date', dayjs(date[1]).format('YYYY-MM-DD'))
   const [open2, setOpen2] = React.useState(false);
   const handleOpen2 = () => setOpen2(true);
   const handleClose2 = () => setOpen2(false);
@@ -85,10 +94,10 @@ const loginHistory = () => {
 
   const columns = [
 
-    { id: 'user', label: 'User', minWidth: 170 },
-    { id: 'loginat', label: 'Login at', minWidth: 100 },
+    { id: 'userName', label: 'User', minWidth: 170 },
+    { id: 'loginAt', label: 'Login at', minWidth: 100 },
     {
-      id: 'ip	',
+      id: 'systemIP',
       label: 'IP	',
       minWidth: 170,
       align: 'center',
@@ -102,65 +111,95 @@ const loginHistory = () => {
       format: (value) => value.toLocaleString('en-US'),
     },
     {
-      id: 'browser_|_os',
+      id: 'browser',
       label: 'Browser | OS',
       minWidth: 170,
       align: 'center',
       format: (value) => value.toLocaleString('en-US'),
     }
-    //   {
-    //     id: 'action',
-    //     label: 'Action',
-    //     minWidth: 170,
-    //     align: 'right',
-    //     format: (value) => value.toLocaleString('en-US'),
-    //   }
   ];
 
-  // const row = [
-  //   {
-  //     name: 'India', code: 'IN', population: 'India',valid:'grow',
-  //     size:
-  //       <>
-  //         <Button sx={{ marginLeft: 2, height: 30, borderColor: '#4634ff', color: '#4634ff' }} variant="outlined"  href='./guestdetails'>
-  //           {/* <AddIcon /> */} Details</Button>
-  //       </>
-  //   },
+  useEffect(() => {
+    LogInHistoryGetAllApi()
+  }, [fromDate,toDate])
 
-  // ];
+  const LogInHistoryGetAllApi = async () => {
+    setLoader(true)
+    try {
+      const response = await LogInHistory(search,fromDate,toDate);
+      console.log('Login history data', response)
+      if (response?.status === 200) {
+        setRowsData(response?.data?.returnedPayments)
+        // toast.success(response?.data?.message)
+        setLoader(false)
+        const transformedRows = response?.data?.loginModal?.map((item, index) => ({
+          ...item,
+          userName: <>
+            <Typography>
+              {item.userName} <br />
+              <Typography sx={{ color: '#4634ff' }}>@{item.email}</Typography>
+            </Typography>
+          </>,
+          location: <>
+            {
+              <Typography sx={''}>
+                {(item.location)?.length > 20 ? item?.location.substring(0, 20) + '....' : item.location}
+                {(item.location)?.length > 20 ?
+                  <HtmlTooltip
+                    title={
+                      <React.Fragment>
+                        <Typography color="inherit">{item.location}</Typography>
+                      </React.Fragment>
+                    }
+                  >
+                    <Button >More</Button>
+                  </HtmlTooltip>
+                  :
+                  ''
+                }
+              </Typography>
+            }
+          </>,
+          systemIP: <>
+            {
+              <Typography sx={{ color: '#4634ff' }}>{item.systemIP ? `@${item.systemIP}` : ''}</Typography>
+            }
+          </>,
+          date: item?.date?.split("T")[0],
+        }))
+        setRows(transformedRows)
+      } else {
+        toast.error(response?.data?.message);
+      }
+    } catch (error) {
+      console.log(error)
+    }
+  }
 
-  // useEffect(() => {
-  //   MyReturnPaymentGetAllApi()
-  // }, [])
+  // Tootip area
+  const HtmlTooltip = styled(({ className, ...props }) => (
+    <Tooltip {...props} classes={{ popper: className }} />
+  ))(({ theme }) => ({
+    [`& .${tooltipClasses.tooltip}`]: {
+      backgroundColor: '#f5f5f9',
+      color: 'rgba(0, 0, 0, 0.87)',
+      maxWidth: 220,
+      fontSize: theme.typography.pxToRem(12),
+      border: '1px solid #dadde9',
+    },
+  }));
 
-  // const MyReturnPaymentGetAllApi = async () => {
-  //   setLoader(true)
-  //   try {
-  //     const response = await ReturnPaymentReport();
-  //     console.log('Return payment data', response)
-  //     if (response?.status === 200) {
-  //       setRowsData(response?.data?.returnedPayments)
-  //       toast.success(response?.data?.message)
-  //       setLoader(false)
-  //       const transformedRows = response?.data?.returnedPayments?.map((payments, index) => ({
-  //         ...payments,  
-  //         userName: <>
-  //         <Typography>
-  //         {payments.userName} <br />
-  //         {payments.userEmail}
-  //         </Typography>
-  //         </>,
-  //         date: payments?.date?.split("T")[0],
-  //       }))
-  //       setRows(transformedRows)
-  //     } else {
-  //       toast.error(response?.data?.message);
-  //     }
-  //   } catch (error) {
-  //     console.log(error)
-  //   }
-  // }
-
+  // Date filter
+  const handleDateChange = (dates) => {
+    if (dates && dates[0] && dates[1]) {
+      setFromDate(dates[0].format('YYYY-MM-DD')); 
+      setToDate(dates[1].format('YYYY-MM-DD'));
+    }
+  };
+  const handleChange = (e) => {
+    const trimmedValue = e.target.value.trimStart();
+    setSearch(trimmedValue);
+  };
   return (
     <>
       <Box>
@@ -186,9 +225,11 @@ const loginHistory = () => {
                     boxShadow: 'none'
                   },
                 }}
-                label="Search input" />
+                value={search}
+                onChange={handleChange}
+                label="Search by email" />
             </Grid>
-            <Grid className={classes.searchIcon}>
+            <Grid className={classes.searchIcon} onClick={LogInHistoryGetAllApi}>
               <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 32 32">
                 <path fill="none" stroke="#fff" stroke-linecap="round" stroke-linejoin="round" stroke-width="0.9" d="m5 27l7.5-7.5M28 13a9 9 0 1 1-18 0a9 9 0 0 1 18 0" />
               </svg>
@@ -200,7 +241,7 @@ const loginHistory = () => {
                 <DateRangePicker
                   slots={{ field: SingleInputDateRangeField }}
                   name="allowedRange"
-                  onChange={(range) => setDate(range)} />
+                  onChange={handleDateChange} />
               </DemoContainer>
             </LocalizationProvider>
           </Grid>
@@ -247,7 +288,7 @@ const loginHistory = () => {
           <TablePagination
             rowsPerPageOptions={[10, 25, 100]}
             component="div"
-            count={rows.length}
+            count={rows?.length}
             rowsPerPage={rowsPerPage}
             page={page}
             onPageChange={handleChangePage}
@@ -256,94 +297,13 @@ const loginHistory = () => {
         </Paper>
       </Box>
 
+
       <Box>
-        {/* first  Modals area  */}
-        {/* Update modal  */}
-        {/* <Modal
-        open={open}
-        onClose={handleClose}
-        aria-labelledby="modal-modal-title"
-        aria-describedby="modal-modal-description"
-      >
-        <Box sx={style}>
-          <Box sx={content}>
-            <Typography sx={{ fontSize: 24 }}>
-              Update Staff
-            </Typography>
-            <Box>
-              <TextField sx={input} required id="outlined-required" label="Name" defaultValue="" placeholder='Enter Name' InputLabelProps={{ sx: { fontSize: '15px' } }} />
-              <TextField sx={{ ...input, marginTop: 3 }} required id="outlined-required" label="Username" defaultValue="" placeholder='Enter UserName' InputLabelProps={{ sx: { fontSize: '15px' } }} />
-              <TextField sx={{ ...input, marginTop: 3 }} required id="outlined-required" label="Email" defaultValue="" placeholder='Enter Email' InputLabelProps={{ sx: { fontSize: '15px' } }} />
-              <TextField sx={{ ...input, marginTop: 3 }} required id="outlined-required" label="Role" defaultValue="" placeholder='Enter Role' InputLabelProps={{ sx: { fontSize: '15px' } }} />
-              <TextField sx={{ ...input, marginTop: 3 }} required id="outlined-required" label="Password" defaultValue="" placeholder='Enter Password' InputLabelProps={{ sx: { fontSize: '15px' } }} />
-
-              <Box sx={{ textAlign: "center", marginTop: 4, width: '100%' }}>
-                <Button sx={{ width: '100%' }} variant="contained" disableElevation>
-                  Submit
-                </Button>
-              </Box>
-
-            </Box>
-          </Box>
-        </Box>
-      </Modal> */}
-        {/* second  Modals area */}
-        {/* confirm modal */}
-        {/* <Modal
-        open={open2}
-        onClose={handleClose2}
-        aria-labelledby="modal-modal-title"
-        aria-describedby="modal-modal-description"
-      >
-        <Box sx={style2}>
-          <Typography sx={{ fontSize: 25 }} id="modal-modal-title" variant="h6" component="h2">
-            Confirmation Alert!
-          </Typography>
-          <hr />
-          <Typography sx={{ ml: 2, mt: 2 }} id="modal-modal-description" >
-            Are you sure to ban this staff?
-          </Typography>
-          <Box sx={{ textAlign: "right" }}>
-            <Button sx={{backgroundColor:"#eb2222",color:'#fff'}} variant="contained" href="#contained-buttons">
-              Submit
-            </Button>
-          </Box>
-        </Box>
-      </Modal> */}
-        {/* third  Modals area  */}
-        {/* Add modal  */}
-        {/* <Modal
-        open={open3}
-        onClose={handleClose3}
-        aria-labelledby="modal-modal-title"
-        aria-describedby="modal-modal-description"
-      >
-        <Box sx={style}>
-          <Box sx={content}>
-            <Typography sx={{ fontSize: 24 }}>
-              Add Staff
-            </Typography>
-            <Box>
-              <TextField sx={input} required id="outlined-required" label="Name" defaultValue="" placeholder='Enter Name' InputLabelProps={{ sx: { fontSize: '15px' } }} />
-              <TextField sx={{ ...input, marginTop: 3 }} required id="outlined-required" label="Username" defaultValue="" placeholder='Enter UserName' InputLabelProps={{ sx: { fontSize: '15px' } }} />
-              <TextField sx={{ ...input, marginTop: 3 }} required id="outlined-required" label="Email" defaultValue="" placeholder='Enter Email' InputLabelProps={{ sx: { fontSize: '15px' } }} />
-              <TextField sx={{ ...input, marginTop: 3 }} required id="outlined-required" label="Role" defaultValue="" placeholder='Enter Role' InputLabelProps={{ sx: { fontSize: '15px' } }} />
-              <TextField sx={{ ...input, marginTop: 3 }} required id="outlined-required" label="Password" defaultValue="" placeholder='Enter Password' InputLabelProps={{ sx: { fontSize: '15px' } }} />
-
-              <Box sx={{ textAlign: "center", marginTop: 4, width: '100%' }}>
-                <Button sx={{ width: '100%' }} variant="contained" disableElevation>
-                  Submit
-                </Button>
-              </Box>
-
-            </Box>
-          </Box>
-        </Box>
-      </Modal> */}
       </Box>
 
     </>
   )
 }
+
 
 export default loginHistory

@@ -14,6 +14,9 @@ import { AllguestGetAllApi } from 'api/api'
 import toast, { Toaster } from 'react-hot-toast';
 import { FundProjectionScreenOutlined } from '@ant-design/icons';
 import { makeStyles } from '@mui/styles';
+import { Link } from 'react-router-dom';
+import { border, borderRadius, fontSize, padding, textAlign, width } from '@mui/system';
+import { color } from 'framer-motion';
 
 const useStyles = makeStyles({
   searchBar: {
@@ -61,6 +64,26 @@ const style2 = {
   p: 4,
 };
 
+const ban = {
+  width: '40%',
+  border: '1px solid #ece2df',
+  borderRadius:'5px',
+  color:'red',
+  fontSize:'16px',
+  padding:'1px',
+  backgroundColor:'#ece2df'
+}
+
+const active = {
+  width: '40%',
+  border: '1px solid #daecea',
+  borderRadius:'5px',
+  fontSize:'16px',
+  color:'#008479',
+  padding:'1px',
+  backgroundColor:'#daecea'
+}
+
 const content = {
 
 }
@@ -78,6 +101,7 @@ const allGuest = () => {
   const handleOpen = () => setOpen(true);
   const handleClose = () => setOpen(false);
   const [loader, setLoader] = useState(false)
+  const [search, setSearch] = useState('')
 
   const [rowsData, setRowsData] = React.useState([]);
   const [row, setRow] = React.useState([]);
@@ -108,11 +132,11 @@ const allGuest = () => {
   const MyActiveGuestGetAllApi = async () => {
     setLoader(true)
     try {
-      const response = await AllguestGetAllApi();
+      const response = await AllguestGetAllApi(search);
       console.log('All Guest DATAAAAAA', response)
       if (response?.status === 200) {
         setRowsData(response?.data?.guest)
-        toast.success(response?.data?.msg)
+        // toast.success(response?.data?.msg)
         setLoader(false)
 
         const transformedRows = response?.data?.guest.map((guest, index) => ({
@@ -120,27 +144,29 @@ const allGuest = () => {
           dateTime: (<><Grid><Typography>{guest?.createdAt?.dateTime}</Typography> <br />
             <Typography>{guest?.createdAt?.weekDay}</Typography>
           </Grid></>),
+          status: (<><Grid sx={{textAlign:'-webkit-center'}}><Typography sx={guest?.isActive ? active : ban}>{guest?.isActive ? "Active" : "Ban"}</Typography></Grid></>),
           action: (
             <Stack justifyContent='end' spacing={2} direction="row">
-              <Button variant="outlined" size="small"  href={`./guestdetails/${guest.id}`}>
-              <Typography sx={{ paddingTop: .8, paddingRight: .4 }}>
-                  <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24">
-                    <path fill="#1677ff" d="m20 22.09l2.45 1.49l-.65-2.81l2.2-1.88l-2.89-.25L20 16l-1.13 2.64l-2.87.25l2.18 1.88l-.68 2.81zM14.08 21H2a2.074 2.074 0 0 1-2-2V5c.04-1.09.91-1.96 2-2h20c1.09.04 1.96.91 2 2v10.53c-.58-.53-1.25-.92-2-1.19V5H2v14h12.08c-.05.33-.08.66-.08 1s.03.68.08 1M14 17H4v-1.25c0-1.66 3.34-2.5 5-2.5s5 .84 5 2.5zm0-6h4v1h-4zM9 7C7.63 7 6.5 8.13 6.5 9.5S7.63 12 9 12s2.5-1.13 2.5-2.5S10.37 7 9 7m5 2h6v1h-6zm0-2h6v1h-6z" />
-                  </svg>
-                </Typography>
-              Details</Button>
+              <Link to={`/guestdetails/${guest.id}`}>
+                <Button variant="outlined" size="small"  >
+                  <Typography sx={{ paddingTop: .8, paddingRight: .4 }}>
+                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24">
+                      <path fill="#1677ff" d="m20 22.09l2.45 1.49l-.65-2.81l2.2-1.88l-2.89-.25L20 16l-1.13 2.64l-2.87.25l2.18 1.88l-.68 2.81zM14.08 21H2a2.074 2.074 0 0 1-2-2V5c.04-1.09.91-1.96 2-2h20c1.09.04 1.96.91 2 2v10.53c-.58-.53-1.25-.92-2-1.19V5H2v14h12.08c-.05.33-.08.66-.08 1s.03.68.08 1M14 17H4v-1.25c0-1.66 3.34-2.5 5-2.5s5 .84 5 2.5zm0-6h4v1h-4zM9 7C7.63 7 6.5 8.13 6.5 9.5S7.63 12 9 12s2.5-1.13 2.5-2.5S10.37 7 9 7m5 2h6v1h-6zm0-2h6v1h-6z" />
+                    </svg>
+                  </Typography>
+                  Details</Button>
+              </Link>
             </Stack>
           )
         }))
         setRow(transformedRows)
       } else {
-        toast.error(response?.data?.msg);
+        // toast.error(response?.data?.msg);
       }
     } catch (error) {
       console.log(error)
     }
   }
-
 
   const columns = [
 
@@ -161,6 +187,13 @@ const allGuest = () => {
       format: (value) => value.toLocaleString('en-US'),
     },
     {
+      id: 'status',
+      label: 'Status',
+      minWidth: 170,
+      align: 'center',
+      format: (value) => value.toLocaleString('en-US'),
+    },
+    {
       id: 'action',
       label: 'Action',
       minWidth: 170,
@@ -174,12 +207,22 @@ const allGuest = () => {
       name: 'India', code: 'IN', population: 'India', valid: 'grow',
       size:
         <>
-          <Button sx={{ marginLeft: 2, height: 30, borderColor: '#4634ff', color: '#4634ff' }} variant="outlined" href='./guestdetails'>
-            Details12</Button>
+          {/* <Link to={'/guestdetails'}>
+        <Button sx={{ marginLeft: 2, height: 30, borderColor: '#4634ff', color: '#4634ff' }} variant="outlined" >
+        Details12
+        </Button>
+        </Link> */}
+
         </>
     },
 
   ];
+
+
+  const handleChange = (e) => {
+    const trimmedValue = e.target.value.trimStart();
+    setSearch(trimmedValue);
+  };
 
 
   return (
@@ -205,9 +248,11 @@ const allGuest = () => {
                   boxShadow: 'none'
                 },
               }}
-              label="Search input" />
+              value={search}
+              onChange={handleChange}
+              label="Search By Email" />
           </Grid>
-          <Grid className={classes.searchIcon}>
+          <Grid className={classes.searchIcon} onClick={MyActiveGuestGetAllApi}>
             <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 32 32">
               <path fill="none" stroke="#fff" stroke-linecap="round" stroke-linejoin="round" stroke-width="0.9" d="m5 27l7.5-7.5M28 13a9 9 0 1 1-18 0a9 9 0 0 1 18 0" />
             </svg>
@@ -233,7 +278,7 @@ const allGuest = () => {
               </TableHead>
               <TableBody>
                 {row
-                  .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
+                  ?.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
                   .map((row, index) => {
                     return (
                       <TableRow hover role="checkbox" tabIndex={-1} key={index}>

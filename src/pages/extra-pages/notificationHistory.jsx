@@ -111,6 +111,7 @@ const notificationHistory = () => {
 
   const [page, setPage] = React.useState(0);
   const [rowsPerPage, setRowsPerPage] = React.useState(10);
+  const [search, setSearch] = React.useState('');
 
   const handleOpen3 = () => {
 
@@ -168,11 +169,11 @@ const notificationHistory = () => {
   const MyNotificationGetAllApi = async () => {
     setLoader(true)
     try {
-      const response = await NotificationHistory();
+      const response = await NotificationHistory(search);
       console.log('Notification history DATAAAAAA', response)
       if (response?.status === 200) {
         setRowsData(response?.data?.notifications)
-        toast.success(response?.data?.msg)
+        // toast.success(response?.data?.msg)
         setLoader(false)
         const transformedRows = response?.data?.notifications.map((notifications, index) => ({
           ...notifications,
@@ -217,6 +218,10 @@ const notificationHistory = () => {
     }
   }
 
+  const handleChange = (e) => {
+    const trimmedValue = e.target.value.trimStart();
+    setSearch(trimmedValue);
+  };
   return (
     <>
       <Box>
@@ -241,9 +246,11 @@ const notificationHistory = () => {
                     boxShadow: 'none'
                   },
                 }}
-                label="Search input" />
+                value={search}
+                onChange={handleChange}
+                label="Search by email" />
             </Grid>
-            <Grid className={classes.searchIcon}>
+            <Grid className={classes.searchIcon} onClick={MyNotificationGetAllApi}>
               <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 32 32">
                 <path fill="none" stroke="#fff" stroke-linecap="round" stroke-linejoin="round" stroke-width="0.9" d="m5 27l7.5-7.5M28 13a9 9 0 1 1-18 0a9 9 0 0 1 18 0" />
               </svg>

@@ -52,7 +52,7 @@ const extraServer = () => {
                 setServerPort(response?.data?.serverDetail?.Server_Port)
                 setServerProtocol(response?.data?.serverDetail?.Server_Protocol_Version)
                 setServerSoftware(response?.data?.serverDetail?.Server_Software)
-                toast.success(response?.data?.message)
+                // toast.success(response?.data?.message)
                 setLoader(false)
               
             } else {

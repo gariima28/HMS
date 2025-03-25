@@ -17,6 +17,7 @@ import { AllActiveEamilUnverifiedapi } from 'api/api'
 import { Stack } from '@mui/system';
 import { FundProjectionScreenOutlined, SearchOutlined } from '@ant-design/icons';
 import { color } from 'framer-motion';
+import { Link } from 'react-router-dom';
 
 // Style 
 const useStyles = makeStyles({
@@ -89,6 +90,8 @@ const emailUnverified = () => {
   const handleOpen3 = () => setOpen3(true);
   const handleClose3 = () => setOpen3(false);
 
+  const [search, setSearch] = useState('')
+
 
   const [page, setPage] = React.useState(0);
   const [rowsPerPage, setRowsPerPage] = React.useState(10);
@@ -109,33 +112,35 @@ const emailUnverified = () => {
   const MyEmailUnverifiedGetAllApi = async () => {
     setLoader(true)
     try {
-      const response = await AllActiveEamilUnverifiedapi();
+      const response = await AllActiveEamilUnverifiedapi(search);
       console.log('Unverified data data ', response)
       if (response?.status === 200) {
         // setRowsData(response?.data?.roles)
-        toast.success(response?.data?.message)
+        // toast.success(response?.data?.message)
         setLoader(false)
 
         const transformedRows = response?.data?.guest?.map((EmailUnverified, index) => ({
           ...EmailUnverified,
           valid: EmailUnverified.createdAt?.dateTime,
-
           action: (
             <Stack justifyContent='end' spacing={2} direction="row">
-              <Button variant="outlined" size="small" href={`./guestdetails/${EmailUnverified.id}`}>
-                <Typography sx={{ paddingTop: .8, paddingRight: .4 }}>
-                  <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24">
-                    <path fill="#1677ff" d="m20 22.09l2.45 1.49l-.65-2.81l2.2-1.88l-2.89-.25L20 16l-1.13 2.64l-2.87.25l2.18 1.88l-.68 2.81zM14.08 21H2a2.074 2.074 0 0 1-2-2V5c.04-1.09.91-1.96 2-2h20c1.09.04 1.96.91 2 2v10.53c-.58-.53-1.25-.92-2-1.19V5H2v14h12.08c-.05.33-.08.66-.08 1s.03.68.08 1M14 17H4v-1.25c0-1.66 3.34-2.5 5-2.5s5 .84 5 2.5zm0-6h4v1h-4zM9 7C7.63 7 6.5 8.13 6.5 9.5S7.63 12 9 12s2.5-1.13 2.5-2.5S10.37 7 9 7m5 2h6v1h-6zm0-2h6v1h-6z" />
-                  </svg>
-                </Typography>
-                Details</Button>
+              <Link to={`/guestdetails/${EmailUnverified.id}`}>
+                <Button variant="outlined" size="small" >
+                  <Typography sx={{ paddingTop: .8, paddingRight: .4 }}>
+                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24">
+                      <path fill="#1677ff" d="m20 22.09l2.45 1.49l-.65-2.81l2.2-1.88l-2.89-.25L20 16l-1.13 2.64l-2.87.25l2.18 1.88l-.68 2.81zM14.08 21H2a2.074 2.074 0 0 1-2-2V5c.04-1.09.91-1.96 2-2h20c1.09.04 1.96.91 2 2v10.53c-.58-.53-1.25-.92-2-1.19V5H2v14h12.08c-.05.33-.08.66-.08 1s.03.68.08 1M14 17H4v-1.25c0-1.66 3.34-2.5 5-2.5s5 .84 5 2.5zm0-6h4v1h-4zM9 7C7.63 7 6.5 8.13 6.5 9.5S7.63 12 9 12s2.5-1.13 2.5-2.5S10.37 7 9 7m5 2h6v1h-6zm0-2h6v1h-6z" />
+                    </svg>
+                  </Typography>
+                  Details</Button>
+              </Link>
+
             </Stack>
           )
 
         }))
         setRow(transformedRows)
       } else {
-        toast.error(response?.data?.message);
+        // toast.error(response?.data?.message);
       }
     } catch (error) {
       console.log(error)
@@ -181,6 +186,12 @@ const emailUnverified = () => {
   ];
 
 
+  const handleChange = (e) => {
+    const trimmedValue = e.target.value.trimStart();
+    setSearch(trimmedValue);
+  };
+
+
   return (
     <>
       <Box>
@@ -192,7 +203,7 @@ const emailUnverified = () => {
       </Box>
       <Box sx={{ margin: 0, fontSize: 20, display: "flex", justifyContent: "space-between" }}>
         <Grid>
-          <b>All Staff</b>
+          <b>Email Unverified Guests</b>
         </Grid>
 
         <Grid className={classes.searchBar}>
@@ -201,11 +212,15 @@ const emailUnverified = () => {
               sx={{
                 "& .MuiOutlinedInput-root": {
                   borderRadius: 0,
+                  height: 42,
+                  boxShadow: 'none'
                 },
               }}
-              label="Search input" />
+              value={search}
+              onChange={handleChange}
+              label="Search By Email" />
           </Grid>
-          <Grid className={classes.searchIcon}>
+          <Grid className={classes.searchIcon} onClick={MyEmailUnverifiedGetAllApi}>
             <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 32 32">
               <path fill="none" stroke="#fff" stroke-linecap="round" stroke-linejoin="round" stroke-width="0.9" d="m5 27l7.5-7.5M28 13a9 9 0 1 1-18 0a9 9 0 0 1 18 0" />
             </svg>
@@ -231,7 +246,7 @@ const emailUnverified = () => {
                 </TableRow>
               </TableHead>
               <TableBody>
-                {row.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage).map((row) => {
+                {row?.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage).map((row) => {
                   return (
                     <TableRow hover role="checkbox" tabIndex={-1} key={row.code}>
                       {columns.map((column) => {

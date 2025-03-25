@@ -54,9 +54,9 @@ const roles = () => {
       console.log('My role get all DATAAAAAA', response)
       if (response?.status === 200) {
         setRowsData(response?.data?.roles)
-        toast.success(response?.data?.msg)
+        // toast.success(response?.data?.msg)
         setLoader(false)
-        const transformedRows = response?.data?.roles.map((allRoles) => ({
+        const transformedRows = response?.data?.roles?.map((allRoles) => ({
           ...allRoles,
           createdAt: allRoles?.createdAt?.dateTime,
           action: (

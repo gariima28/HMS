@@ -14,6 +14,7 @@ import { makeStyles } from '@mui/styles';
 import Modal from '@mui/material/Modal';
 import { AllActiveguestGetAllApi } from 'api/api'
 import { EditOutlined, FundProjectionScreenOutlined } from '@ant-design/icons';
+import { Link } from 'react-router-dom';
 
 const useStyles = makeStyles({
   searchBar: {
@@ -86,6 +87,7 @@ const activeGuest = () => {
   const handleClose3 = () => setOpen3(false);
   const [rowsData, setRowsData] = React.useState([]);
 
+  const [search, setSearch] = useState('')
 
   const [page, setPage] = React.useState(0);
   const [rowsPerPage, setRowsPerPage] = React.useState(10);
@@ -101,13 +103,13 @@ const activeGuest = () => {
   const columns = [
     { id: 'firstName', label: 'User', minWidth: 170 },
     { id: 'email', label: 'Email-Mobile', minWidth: 100 },
-    {
-      id: 'countryCode',
-      label: 'country-Code',
-      minWidth: 170,
-      align: 'center',
-      format: (value) => value.toLocaleString('en-US'),
-    },
+    // {
+    //   id: 'countryCode',
+    //   label: 'country-Code',
+    //   minWidth: 170,
+    //   align: 'center',
+    //   format: (value) => value.toLocaleString('en-US'),
+    // },
     {
       id: 'dateTime',
       label: 'Joined At',
@@ -119,35 +121,23 @@ const activeGuest = () => {
       id: 'action',
       label: 'Action',
       minWidth: 170,
-      align: 'right',
+      align: 'center',
       format: (value) => value.toLocaleString('en-US'),
     }
   ];
 
-  // const row = [
-  //   {
-  //     name: 'India', code: 'IN', population: 'India',valid:'grow',
-  //     size:
-  //       <>
-  //         <Button sx={{ marginLeft: 2, height: 30, borderColor: '#4634ff', color: '#4634ff' }} variant="outlined"  href='./guestdetails'>
-  //           {/* <AddIcon /> */} Details</Button>
-  //       </>
-  //   },
-
-  // ];   
   useEffect(() => {
     MyActiveGuestGetAllApi()
   }, [])
 
-
   const MyActiveGuestGetAllApi = async () => {
     setLoader(true)
     try {
-      const response = await AllActiveguestGetAllApi();
-      console.log('Active Guest DATAAAAAA', response)
+      const response = await AllActiveguestGetAllApi(search);
+      console.log('Active Guest DATAAAAAA', response) 
       if (response?.status === 200) {
         setRowsData(response?.data?.guest)
-        toast.success(response?.data?.msg)
+        // toast.success(response?.data?.msg)
         setLoader(false)
         const transformedRows = response?.data?.guest.map((guest, index) => ({
           ...guest,
@@ -155,20 +145,26 @@ const activeGuest = () => {
             <Typography>{guest?.createdAt?.weekDay}</Typography>
           </Grid></>),
           action: (
-            <Stack justifyContent='end' spacing={2} direction="row">
-              <Button variant="outlined" size="small" startIcon={<FundProjectionScreenOutlined />} href={`./guestdetails/${guest.id}`}>Details</Button>
+            <Stack justifyContent='center' spacing={2} direction="row">
+              <Link to={`/guestdetails/${guest.id}`}>
+                <Button variant="outlined" size="small" startIcon={<FundProjectionScreenOutlined />} >Details</Button>
+              </Link>
             </Stack>
           )
         }))
         setRows(transformedRows)
       } else {
-        toast.error(response?.data?.msg);
+        // toast.error(response?.data?.msg);
       }
     } catch (error) {
       console.log(error)
     }
   }
 
+  const handleChange = (e) => {
+    const trimmedValue = e.target.value.trimStart();
+    setSearch(trimmedValue);
+  };
   return (
     <>
       <Box>
@@ -193,9 +189,11 @@ const activeGuest = () => {
                   boxShadow: 'none'
                 },
               }}
-              label="Search input" />
+              value={search}
+              onChange={handleChange}
+              label="Search By Email" />
           </Grid>
-          <Grid className={classes.searchIcon}>
+          <Grid className={classes.searchIcon} onClick={MyActiveGuestGetAllApi}>
             <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 32 32">
               <path fill="none" stroke="#fff" stroke-linecap="round" stroke-linejoin="round" stroke-width="0.9" d="m5 27l7.5-7.5M28 13a9 9 0 1 1-18 0a9 9 0 0 1 18 0" />
             </svg>
@@ -209,7 +207,7 @@ const activeGuest = () => {
             <Table stickyHeader aria-label="sticky table">
               <TableHead>
                 <TableRow>
-                  {columns.map((column) => (
+                  {columns?.map((column) => (
                     <TableCell
                       key={column.id}
                       align={column.align}
@@ -221,10 +219,10 @@ const activeGuest = () => {
                 </TableRow>
               </TableHead>
               <TableBody>
-                {rows.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage).map((row) => {
+                {rows.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage).map((row,index) => {
                   return (
-                    <TableRow hover role="checkbox" tabIndex={-1} key={row.code}>
-                      {columns.map((column) => {
+                    <TableRow hover role="checkbox" tabIndex={-1} key={index}>
+                      {columns?.map((column) => {
                         const value = row[column.id];
                         return (
                           <TableCell key={column.id} align={column.align}>
