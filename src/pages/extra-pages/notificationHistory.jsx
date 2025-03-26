@@ -118,8 +118,8 @@ const notificationHistory = () => {
   const [toDate, setToDate] = useState('');
   console.log('from date', fromDate)
   console.log('to date', toDate)
+  
   const handleOpen3 = () => {
-
     setOpen3(true);
   }
 
