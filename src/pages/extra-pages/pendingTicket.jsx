@@ -5,16 +5,17 @@ import toast, { Toaster } from 'react-hot-toast';
 import { Link } from 'react-router-dom';
 import Table from '@mui/material/Table';
 import TableBody from '@mui/material/TableBody';
+import TableRow from '@mui/material/TableRow';
 import TableCell from '@mui/material/TableCell';
 import TableContainer from '@mui/material/TableContainer';
 import HashLoader from './HashLoaderCom';
 import TableHead from '@mui/material/TableHead';
 import TablePagination from '@mui/material/TablePagination';
-import TableRow from '@mui/material/TableRow';
 import { makeStyles } from '@mui/styles';
 import Modal from '@mui/material/Modal';
 import { PendingTicketGetAllApi } from 'api/api'
 import { EditOutlined, FundProjectionScreenOutlined } from '@ant-design/icons';
+import NoDataFound from 'pages/NoDataFound';
 
 const useStyles = makeStyles({
   searchBar: {
@@ -114,7 +115,7 @@ const pendingTicket = () => {
 
   const [search, setSearch] = useState('')
 
-  const [page, setPage] = React.useState(0);  
+  const [page, setPage] = React.useState(0);
   const [rowsPerPage, setRowsPerPage] = React.useState(10);
 
   const handleChangePage = (event, newPage) => {
@@ -268,22 +269,36 @@ const pendingTicket = () => {
                 </TableRow>
               </TableHead>
               <TableBody>
-                {rows.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage).map((row, index) => {
-                  return (
-                    <TableRow hover role="checkbox" tabIndex={-1} key={index}>
-                      {columns.map((column) => {
-                        const value = row[column.id];
-                        return (
-                          <TableCell key={column.id} align={column.align}>
-                            {column.format && typeof value === 'number'
-                              ? column.format(value)
-                              : value}
-                          </TableCell>
-                        );
-                      })}
-                    </TableRow>
-                  );
-                })}
+                {
+                  rows && rows.length > 0 ? (
+                    rows?.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage).map((row, index) => {
+                      return (
+                        <TableRow hover role="checkbox" tabIndex={-1} key={index}>
+                          {columns.map((column) => {
+                            const value = row[column.id];
+                            return (
+                              <TableCell key={column.id} align={column.align}>
+                                {column.format && typeof value === 'number'
+                                  ? column.format(value)
+                                  : value}
+                              </TableCell>
+                            );
+                          })}
+                        </TableRow>
+                      );
+                    })
+                  )
+                    :
+                    (
+                      <TableRow>
+                        <TableCell colSpan={columns.length} align="center">
+                          <NoDataFound />
+                        </TableCell>
+                      </TableRow>
+
+                    )
+                }
+
               </TableBody>
             </Table>
           </TableContainer>

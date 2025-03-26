@@ -15,6 +15,7 @@ import { SubscriberGetAllApi } from 'api/api'
 import { EditOutlined, UserAddOutlined } from '@ant-design/icons';
 import { Link, useParams } from 'react-router-dom';
 import { padding } from '@mui/system';
+import NoDataFound from 'pages/NoDataFound';
 
 const columns = [
     { id: 'roleName', label: 'Email', minWidth: 170 },
@@ -128,24 +129,37 @@ const subscriberPage = () => {
                                 </TableRow>
                             </TableHead>
                             <TableBody>
-                                {rows.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
-                                    .map((row, index) => {
-                                        return (
-                                            <TableRow hover role="checkbox" tabIndex={-1} key={index}>
-                                                {columns.map((column) => {
-                                                    const value = row[column.id];
+                                {
+                                    rows && rows.length > 0 ? (
+                                        rows.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
+                                            .map((row, index) => {
+                                                return (
+                                                    <TableRow hover role="checkbox" tabIndex={-1} key={index}>
+                                                        {columns.map((column) => {
+                                                            const value = row[column.id];
 
-                                                    return (
-                                                        <TableCell key={column.id} align={column.align}>
-                                                            {column.format && typeof value === 'number'
-                                                                ? column.format(value)
-                                                                : value}
-                                                        </TableCell>
-                                                    );
-                                                })}
+                                                            return (
+                                                                <TableCell key={column.id} align={column.align}>
+                                                                    {column.format && typeof value === 'number'
+                                                                        ? column.format(value)
+                                                                        : value}
+                                                                </TableCell>
+                                                            );
+                                                        })}
+                                                    </TableRow>
+                                                );
+                                            })
+                                    )
+                                        :
+                                        (
+                                            <TableRow>
+                                                <TableCell colSpan={columns.length} align="center">
+                                                    <NoDataFound />
+                                                </TableCell>
                                             </TableRow>
-                                        );
-                                    })}
+                                        )
+                                }
+
                             </TableBody>
                         </Table>
                     </TableContainer>

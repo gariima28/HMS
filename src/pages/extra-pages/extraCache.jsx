@@ -8,6 +8,7 @@ import { CacheExtraPostApi } from 'api/api'
 import { CacheExtra } from 'api/api'
 import toast, { Toaster } from 'react-hot-toast';
 import HashLoader from './HashLoaderCom';
+import NoDataFound from 'pages/NoDataFound'
 
 const contentDiv1 = {
     width: '50%',
@@ -48,7 +49,7 @@ const extraCache = () => {
 
     const [rowsData, setRowsData] = React.useState();
     console.log('all data', rowsData)
-    
+
     const [loader, setLoader] = useState(false);
 
     const [key1, setKey1] = useState();
@@ -56,6 +57,7 @@ const extraCache = () => {
     const [key3, setKey3] = useState();
     const [key4, setKey4] = useState();
     const [key5, setKey5] = useState();
+    const [status, setStatus] = useState(false);
 
     useEffect(() => {
         MyCacheExtraGetAllApi()
@@ -76,7 +78,7 @@ const extraCache = () => {
         } catch (error) {
             console.log(error)
         }
-    } 
+    }
     // get all api 
     const MyCacheExtraGetAllApi = async () => {
         setLoader(true)
@@ -92,6 +94,7 @@ const extraCache = () => {
                 setKey5(response?.data?.cacheData?.cache4)
                 // toast.success(response?.data?.message)
                 setLoader(false)
+                setStatus(true)
             } else {
                 toast.error(response?.data?.message);
             }
@@ -113,72 +116,84 @@ const extraCache = () => {
                 <Box>
                     <Typography sx={{ fontSize: 20 }}><b>Clear System Cache</b></Typography>
                 </Box>
-                <Box sx={forDisplay}>
-                    <Box sx={contentDiv1}>
-                        {/* map below box */}
+                {
+                    status ? (
+                        <Box sx={forDisplay}>
+                            <Box sx={contentDiv1}>
+                                {/* map below box */}
 
-                        {/* {
+                                {/* {
                             rowsData?.map((data)=>{
 
                             })
                         } */}
-                        <Box sx={hrLine}>
-                            <Box sx={contentDiv2}>
-                                <Box sx={{ paddingTop: 0.3 }}>
-                                    <svg xmlns="http://www.w3.org/2000/svg" width="35" height="38" viewBox="0 0 512 512"><path fill="none" stroke="#14ee48" stroke-linecap="round" stroke-linejoin="round" stroke-width="20" d="M464 128L240 384l-96-96m0 96l-96-96m320-160L232 284" /></svg>
+                                <Box sx={hrLine}>
+                                    <Box sx={contentDiv2}>
+                                        <Box sx={{ paddingTop: 0.3 }}>
+                                            <svg xmlns="http://www.w3.org/2000/svg" width="35" height="38" viewBox="0 0 512 512"><path fill="none" stroke="#14ee48" stroke-linecap="round" stroke-linejoin="round" stroke-width="20" d="M464 128L240 384l-96-96m0 96l-96-96m320-160L232 284" /></svg>
+                                        </Box>
+                                        <Box>
+                                            <Typography sx={{ fontSize: 25 }}>{key1}</Typography>
+                                        </Box>
+                                    </Box>
                                 </Box>
-                                <Box>
-                                    <Typography sx={{ fontSize: 25 }}>{key1}</Typography>
+                                <Box sx={hrLine}>
+                                    <Box sx={contentDiv2}>
+                                        <Box sx={{ paddingTop: 0.3 }}>
+                                            <svg xmlns="http://www.w3.org/2000/svg" width="35" height="38" viewBox="0 0 512 512"><path fill="none" stroke="#14ee48" stroke-linecap="round" stroke-linejoin="round" stroke-width="20" d="M464 128L240 384l-96-96m0 96l-96-96m320-160L232 284" /></svg>
+                                        </Box>
+                                        <Box>
+                                            <Typography sx={{ fontSize: 25 }}>{key2}</Typography>
+                                        </Box>
+                                    </Box>
                                 </Box>
-                            </Box>
-                        </Box>
-                        <Box sx={hrLine}>
-                            <Box sx={contentDiv2}>
-                                <Box sx={{ paddingTop: 0.3 }}>
-                                    <svg xmlns="http://www.w3.org/2000/svg" width="35" height="38" viewBox="0 0 512 512"><path fill="none" stroke="#14ee48" stroke-linecap="round" stroke-linejoin="round" stroke-width="20" d="M464 128L240 384l-96-96m0 96l-96-96m320-160L232 284" /></svg>
+                                <Box sx={hrLine}>
+                                    <Box sx={contentDiv2}>
+                                        <Box sx={{ paddingTop: 0.3 }}>
+                                            <svg xmlns="http://www.w3.org/2000/svg" width="35" height="38" viewBox="0 0 512 512"><path fill="none" stroke="#14ee48" stroke-linecap="round" stroke-linejoin="round" stroke-width="20" d="M464 128L240 384l-96-96m0 96l-96-96m320-160L232 284" /></svg>
+                                        </Box>
+                                        <Box>
+                                            <Typography sx={{ fontSize: 25 }}>{key3}</Typography>
+                                        </Box>
+                                    </Box>
                                 </Box>
-                                <Box>
-                                    <Typography sx={{ fontSize: 25 }}>{key2}</Typography>
+                                <Box sx={hrLine}>
+                                    <Box sx={contentDiv2}>
+                                        <Box sx={{ paddingTop: 0.3 }}>
+                                            <svg xmlns="http://www.w3.org/2000/svg" width="35" height="38" viewBox="0 0 512 512"><path fill="none" stroke="#14ee48" stroke-linecap="round" stroke-linejoin="round" stroke-width="20" d="M464 128L240 384l-96-96m0 96l-96-96m320-160L232 284" /></svg>
+                                        </Box>
+                                        <Box>
+                                            <Typography sx={{ fontSize: 25 }}>{key4}</Typography>
+                                        </Box>
+                                    </Box>
                                 </Box>
-                            </Box>
-                        </Box>
-                        <Box sx={hrLine}>
-                            <Box sx={contentDiv2}>
-                                <Box sx={{ paddingTop: 0.3 }}>
-                                    <svg xmlns="http://www.w3.org/2000/svg" width="35" height="38" viewBox="0 0 512 512"><path fill="none" stroke="#14ee48" stroke-linecap="round" stroke-linejoin="round" stroke-width="20" d="M464 128L240 384l-96-96m0 96l-96-96m320-160L232 284" /></svg>
+                                <Box sx={hrLine}>
+                                    <Box sx={contentDiv2}>
+                                        <Box sx={{ paddingTop: 0.3 }}>
+                                            <svg xmlns="http://www.w3.org/2000/svg" width="35" height="38" viewBox="0 0 512 512"><path fill="none" stroke="#14ee48" stroke-linecap="round" stroke-linejoin="round" stroke-width="20" d="M464 128L240 384l-96-96m0 96l-96-96m320-160L232 284" /></svg>
+                                        </Box>
+                                        <Box>
+                                            <Typography sx={{ fontSize: 25 }}>{key5}</Typography>
+                                        </Box>
+                                    </Box>
                                 </Box>
-                                <Box>
-                                    <Typography sx={{ fontSize: 25 }}>{key3}</Typography>
-                                </Box>
-                            </Box>
-                        </Box>
-                        <Box sx={hrLine}>
-                            <Box sx={contentDiv2}>
-                                <Box sx={{ paddingTop: 0.3 }}>
-                                    <svg xmlns="http://www.w3.org/2000/svg" width="35" height="38" viewBox="0 0 512 512"><path fill="none" stroke="#14ee48" stroke-linecap="round" stroke-linejoin="round" stroke-width="20" d="M464 128L240 384l-96-96m0 96l-96-96m320-160L232 284" /></svg>
-                                </Box>
-                                <Box>
-                                    <Typography sx={{ fontSize: 25 }}>{key4}</Typography>
-                                </Box>
-                            </Box>
-                        </Box>
-                        <Box sx={hrLine}>
-                            <Box sx={contentDiv2}>
-                                <Box sx={{ paddingTop: 0.3 }}>
-                                    <svg xmlns="http://www.w3.org/2000/svg" width="35" height="38" viewBox="0 0 512 512"><path fill="none" stroke="#14ee48" stroke-linecap="round" stroke-linejoin="round" stroke-width="20" d="M464 128L240 384l-96-96m0 96l-96-96m320-160L232 284" /></svg>
-                                </Box>
-                                <Box>
-                                    <Typography sx={{ fontSize: 25 }}>{key5}</Typography>
-                                </Box>
-                            </Box>
-                        </Box>
 
-                        <Grid xs={12} sx={{}}>
-                            <Button sx={{ ...forHover, width: '100%', backgroundColor: "#4634ff", color: '#fff',borderRadius:0 }} variant="contained" onClick={MyCacheExtraPostApi} >Click to clear</Button>
-                            <Toaster />
-                        </Grid>
-                    </Box>
-                </Box>
+                                <Grid xs={12} sx={{}}>
+                                    <Button sx={{ ...forHover, width: '100%', backgroundColor: "#4634ff", color: '#fff', borderRadius: 0 }} variant="contained" onClick={MyCacheExtraPostApi} >Click to clear</Button>
+                                    <Toaster />
+                                </Grid>
+                            </Box>
+                        </Box>
+                    )
+                        :
+                        (
+                            <Grid>
+                                <NoDataFound />
+                            </Grid>
+                        )
+                }
+
+
             </Box>
         </>
     )

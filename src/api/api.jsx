@@ -688,7 +688,7 @@ export const AllStaffUpdateByIdApi = async (id, data) => {
 }
 export const AllStaffBanApi = async (id) => {
     axios.defaults.headers.common["Authorization"] = token;
-    const res = await axios.patch(`${ServerIP}/staff/staffBanStatus/${id}`)
+    const res = await axios.put(`${ServerIP}/staff/staffBanStatus/${id}`)
 
     if (res) {
         return res;
@@ -1052,9 +1052,9 @@ export const CacheExtra = async () => {
     }
 }
 //  Notification history 
-export const NotificationHistory = async (search) => {
+export const NotificationHistory = async (search,fromDate, toDate) => {
     axios.defaults.headers.common["Authorization"] = token;
-    const res = await axios.get(`${ServerIP}/report/notification/history/getAll?search=${search}`)
+    const res = await axios.get(`${ServerIP}/report/notification/history/getAll?search=${search}&fromDate=${fromDate}&toDate=${toDate}`)
     if (res) {
         return res;
     }
@@ -1062,6 +1062,7 @@ export const NotificationHistory = async (search) => {
         return []
     }
 }
+
 //  Login history 
 export const LogInHistory = async (search,fromDate,toDate) => {
     axios.defaults.headers.common["Authorization"] = token;

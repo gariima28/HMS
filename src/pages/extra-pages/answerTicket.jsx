@@ -14,6 +14,7 @@ import Modal from '@mui/material/Modal';
 import { AnsweredTicketGetAllApi } from 'api/api'
 import { EditOutlined, FundProjectionScreenOutlined } from '@ant-design/icons';
 import { makeStyles } from '@mui/styles';
+import NoDataFound from 'pages/NoDataFound';
 
 const useStyles = makeStyles({
   searchBar: {
@@ -259,22 +260,35 @@ const handleChange = (e) => {
                 </TableRow>
               </TableHead>
               <TableBody>
-                {rows?.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage).map((row, index) => {
-                  return (
-                    <TableRow hover role="checkbox" tabIndex={-1} key={index}>
-                      {columns.map((column) => {
-                        const value = row[column.id];
-                        return (
-                          <TableCell key={column.id} align={column.align}>
-                            {column.format && typeof value === 'number'
-                              ? column.format(value)
-                              : value}
-                          </TableCell>
-                        );
-                      })}
-                    </TableRow>
-                  );
-                })}
+                {
+                  rows && rows.length > 0 ? (
+                    rows?.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage).map((row, index) => {
+                      return (
+                        <TableRow hover role="checkbox" tabIndex={-1} key={index}>
+                          {columns.map((column) => {
+                            const value = row[column.id];
+                            return (
+                              <TableCell key={column.id} align={column.align}>
+                                {column.format && typeof value === 'number'
+                                  ? column.format(value)
+                                  : value}
+                              </TableCell>
+                            );
+                          })}
+                        </TableRow>
+                      );
+                    })
+                  )
+                  :
+                  (
+                    <TableRow>
+                        <TableCell colSpan={columns.length} align="center">
+                          <NoDataFound />
+                        </TableCell>
+                      </TableRow>
+                  )
+                }
+                
               </TableBody>
             </Table>
           </TableContainer>

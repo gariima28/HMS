@@ -20,6 +20,7 @@ import { BanApi } from 'api/api'
 import { AllStaffBannedApi } from 'api/api'
 import { Link } from 'react-router-dom';
 import { color } from 'framer-motion';
+import NoDataFound from 'pages/NoDataFound';
 
 const useStyles = makeStyles({
   searchBar: {
@@ -266,22 +267,35 @@ const bannedguest = () => {
                 </TableRow>
               </TableHead>
               <TableBody>
-                {row?.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage).map((row, index) => {
-                  return (
-                    <TableRow hover role="checkbox" tabIndex={-1} key={index}>
-                      {columns.map((column) => {
-                        const value = row[column.id];
-                        return (
-                          <TableCell key={column.id} align={column.align}>
-                            {column.format && typeof value === 'number'
-                              ? column.format(value)
-                              : value}
-                          </TableCell>
-                        );
-                      })}
-                    </TableRow>
-                  );
-                })}
+                {
+                 row && row.length > 0 ? (
+                  row?.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage).map((row, index) => {
+                    return (
+                      <TableRow hover role="checkbox" tabIndex={-1} key={index}>
+                        {columns.map((column) => {
+                          const value = row[column.id];
+                          return (
+                            <TableCell key={column.id} align={column.align}>
+                              {column.format && typeof value === 'number'
+                                ? column.format(value)
+                                : value}
+                            </TableCell>
+                          );
+                        })}
+                      </TableRow>
+                    );
+                  })
+                 ) 
+                 :
+                 (
+                  <TableRow>
+                        <TableCell colSpan={columns.length} align="center">
+                          <NoDataFound />
+                        </TableCell>
+                  </TableRow>
+                 )
+                }
+             
               </TableBody>
             </Table>
           </TableContainer>

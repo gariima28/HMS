@@ -25,6 +25,7 @@ import { styled } from '@mui/material/styles';
 // import Button from '@mui/material/Button';
 import Tooltip, { tooltipClasses } from '@mui/material/Tooltip';
 import { filter } from 'lodash';
+import NoDataFound from 'pages/NoDataFound';
 
 const useStyles = makeStyles({
   searchBar: {
@@ -121,12 +122,12 @@ const loginHistory = () => {
 
   useEffect(() => {
     LogInHistoryGetAllApi()
-  }, [fromDate,toDate])
+  }, [fromDate, toDate])
 
   const LogInHistoryGetAllApi = async () => {
     setLoader(true)
     try {
-      const response = await LogInHistory(search,fromDate,toDate);
+      const response = await LogInHistory(search, fromDate, toDate);
       console.log('Login history data', response)
       if (response?.status === 200) {
         setRowsData(response?.data?.returnedPayments)
@@ -192,14 +193,16 @@ const loginHistory = () => {
   // Date filter
   const handleDateChange = (dates) => {
     if (dates && dates[0] && dates[1]) {
-      setFromDate(dates[0].format('YYYY-MM-DD')); 
+      setFromDate(dates[0].format('YYYY-MM-DD'));
       setToDate(dates[1].format('YYYY-MM-DD'));
     }
   };
+  
   const handleChange = (e) => {
     const trimmedValue = e.target.value.trimStart();
     setSearch(trimmedValue);
   };
+
   return (
     <>
       <Box>
@@ -266,22 +269,35 @@ const loginHistory = () => {
                 </TableRow>
               </TableHead>
               <TableBody>
-                {rows?.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage).map((row) => {
-                  return (
-                    <TableRow hover role="checkbox" tabIndex={-1} key={row.code}>
-                      {columns.map((column) => {
-                        const value = row[column.id];
-                        return (
-                          <TableCell key={column.id} align={column.align}>
-                            {column?.format && typeof value === 'number'
-                              ? column.format(value)
-                              : value}
-                          </TableCell>
-                        );
-                      })}
-                    </TableRow>
-                  );
-                })}
+                {
+                  rows && rows.length > 0 ? (
+                    rows?.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage).map((row) => {
+                      return (
+                        <TableRow hover role="checkbox" tabIndex={-1} key={row.code}>
+                          {columns.map((column) => {
+                            const value = row[column.id];
+                            return (
+                              <TableCell key={column.id} align={column.align}>
+                                {column?.format && typeof value === 'number'
+                                  ? column.format(value)
+                                  : value}
+                              </TableCell>
+                            );
+                          })}
+                        </TableRow>
+                      );
+                    })
+                  )
+                    :
+                    (
+                      <TableRow>
+                        <TableCell colSpan={columns.length} align="center">
+                          <NoDataFound />
+                        </TableCell>
+                      </TableRow>
+                    )
+                }
+
               </TableBody>
             </Table>
           </TableContainer>

@@ -157,6 +157,7 @@ const BookRoom = () => {
             guestName: 'WalkInGuest', // Set the default value for guestName
         },
     });
+    
     // const roomType = watch('roomType', '');
     const guesstName = watch('guestName');
 

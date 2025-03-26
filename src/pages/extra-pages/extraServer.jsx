@@ -1,9 +1,10 @@
 import { Box, Button, Grid, Stack, TextField, Typography } from '@mui/material'
-import React, { useEffect,useState } from 'react'
+import React, { useEffect, useState } from 'react'
 
 import { ServerExtra } from 'api/api'
 import toast, { Toaster } from 'react-hot-toast';
 import HashLoader from './HashLoaderCom';
+import NoDataFound from 'pages/NoDataFound';
 
 const contentDiv1 = {
     border: '1px solid rgba(0, 0, 0, 0.125)',
@@ -34,6 +35,7 @@ const extraServer = () => {
     const [serverProtocol, setServerProtocol] = useState();
     const [http, setHttp] = useState();
     const [serverPort, setServerPort] = useState();
+    const [status, setStatus] = useState(false);
 
     useEffect(() => {
         MyServerExtraGetAllApi()
@@ -54,7 +56,9 @@ const extraServer = () => {
                 setServerSoftware(response?.data?.serverDetail?.Server_Software)
                 // toast.success(response?.data?.message)
                 setLoader(false)
-              
+                setStatus(true)
+
+
             } else {
                 toast.error(response?.data?.message);
             }
@@ -75,69 +79,81 @@ const extraServer = () => {
                 <Box>
                     <Typography sx={{ fontSize: 20 }}><b>Server Information</b></Typography>
                 </Box>
-                <Box sx={contentDiv1}>
-                    {/* map below box */}
-                    <Box sx={hrLine}>
-                        <Box sx={contentDiv2}>
-                            <Box>
-                                <Typography sx={{ fontSize: 25 }}>JAVA Version</Typography>
+                {
+                    status ? (
+                        <Box sx={contentDiv1}>
+                            {/* map below box */}
+                            <Box sx={hrLine}>
+                                <Box sx={contentDiv2}>
+                                    <Box>
+                                        <Typography sx={{ fontSize: 25 }}>JAVA Version</Typography>
+                                    </Box>
+                                    <Box >
+                                        <Typography sx={{ fontSize: 22 }}><b>{javaVersion}</b></Typography>
+                                    </Box>
+                                </Box>
                             </Box>
-                            <Box >
-                                <Typography sx={{ fontSize: 22 }}><b>{javaVersion}</b></Typography>
+                            <Box sx={hrLine}>
+                                <Box sx={contentDiv2}>
+                                    <Box>
+                                        <Typography sx={{ fontSize: 25 }}>Server Software</Typography>
+                                    </Box>
+                                    <Box >
+                                        <Typography sx={{ fontSize: 22 }}><b>{serverSoftware}</b></Typography>
+                                    </Box>
+                                </Box>
+                            </Box>
+                            <Box sx={hrLine}>
+                                <Box sx={contentDiv2}>
+                                    <Box>
+                                        <Typography sx={{ fontSize: 25 }}>Server IP Address</Typography>
+                                    </Box>
+                                    <Box >
+                                        <Typography sx={{ fontSize: 22 }}><b>{serverIP}</b></Typography>
+                                    </Box>
+                                </Box>
+                            </Box>
+                            <Box sx={hrLine}>
+                                <Box sx={contentDiv2}>
+                                    <Box>
+                                        <Typography sx={{ fontSize: 25 }}>Server Protocol</Typography>
+                                    </Box>
+                                    <Box >
+                                        <Typography sx={{ fontSize: 22 }}><b>{serverProtocol}</b></Typography>
+                                    </Box>
+                                </Box>
+                            </Box>
+                            <Box sx={hrLine}>
+                                <Box sx={contentDiv2}>
+                                    <Box>
+                                        <Typography sx={{ fontSize: 25 }}>HTTP Host</Typography>
+                                    </Box>
+                                    <Box >
+                                        <Typography sx={{ fontSize: 22 }}><b>{http}</b></Typography>
+                                    </Box>
+                                </Box>
+                            </Box>
+                            <Box sx={hrLine}>
+                                <Box sx={contentDiv2}>
+                                    <Box>
+                                        <Typography sx={{ fontSize: 25 }}>Server Port</Typography>
+                                    </Box>
+                                    <Box >
+                                        <Typography sx={{ fontSize: 22 }}><b>{serverPort}</b></Typography>
+                                    </Box>
+                                </Box>
                             </Box>
                         </Box>
-                    </Box>
-                    <Box sx={hrLine}>
-                        <Box sx={contentDiv2}>
-                            <Box>
-                                <Typography sx={{ fontSize: 25 }}>Server Software</Typography>
-                            </Box>
-                            <Box >
-                                <Typography sx={{ fontSize: 22 }}><b>{serverSoftware}</b></Typography>
-                            </Box>
-                        </Box>
-                    </Box>
-                    <Box sx={hrLine}>
-                        <Box sx={contentDiv2}>
-                            <Box>
-                                <Typography sx={{ fontSize: 25 }}>Server IP Address</Typography>
-                            </Box>
-                            <Box >
-                                <Typography sx={{ fontSize: 22 }}><b>{serverIP}</b></Typography>
-                            </Box>
-                        </Box>
-                    </Box>
-                    <Box sx={hrLine}>
-                        <Box sx={contentDiv2}>
-                            <Box>
-                                <Typography sx={{ fontSize: 25 }}>Server Protocol</Typography>
-                            </Box>
-                            <Box >
-                                <Typography sx={{ fontSize: 22 }}><b>{serverProtocol}</b></Typography>
-                            </Box>
-                        </Box>
-                    </Box>
-                    <Box sx={hrLine}>
-                        <Box sx={contentDiv2}>
-                            <Box>
-                                <Typography sx={{ fontSize: 25 }}>HTTP Host</Typography>
-                            </Box>
-                            <Box >
-                                <Typography sx={{ fontSize: 22 }}><b>{http}</b></Typography>
-                            </Box>
-                        </Box>
-                    </Box>
-                    <Box sx={hrLine}>
-                        <Box sx={contentDiv2}>
-                            <Box>
-                                <Typography sx={{ fontSize: 25 }}>Server Port</Typography>
-                            </Box>
-                            <Box >
-                                <Typography sx={{ fontSize: 22 }}><b>{serverPort}</b></Typography>
-                            </Box>
-                        </Box>
-                    </Box>
-                </Box>
+                    )
+                        :
+                        (
+                            <Grid>
+                                <NoDataFound />
+                            </Grid>
+                        )
+                }
+
+
             </Box>
         </>
     )
