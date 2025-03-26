@@ -4,6 +4,7 @@ import { ApplicationExtra } from 'api/api'
 import toast, { Toaster } from 'react-hot-toast';
 
 import HashLoader from './HashLoaderCom';
+import NoDataFound from 'pages/NoDataFound';
 
 const contentDiv1 = {
     border: '1px solid rgba(0, 0, 0, 0.125)',
@@ -28,6 +29,7 @@ const extraApplication = () => {
     const [loader, setLoader] = useState(false);
     const [adminVersion, setAdminVersion] = useState();
     const [hotelVersion, setHotelVersion] = useState();
+    const [status, setStatus] = useState(false);
 
     useEffect(() => {
         MyApplicationExtraGetAllApi()
@@ -41,9 +43,10 @@ const extraApplication = () => {
             if (response?.status === 200) {
                 setAdminVersion(response?.data?.application?.ViserAdmin_Version)
                 setHotelVersion(response?.data?.application?.ViserHotel_Version)
+                setStatus(true)
                 // toast.success(response?.data?.message)
                 setLoader(false)
-        
+
             } else {
                 toast.error(response?.data?.message);
             }
@@ -65,29 +68,41 @@ const extraApplication = () => {
                 <Box>
                     <Typography sx={{ fontSize: 20 }}><b>Application Information</b></Typography>
                 </Box>
-                <Box sx={contentDiv1}>
-                    {/* map below box */}
-                    <Box sx={hrLine}>
-                        <Box sx={contentDiv2}>
-                            <Box>
-                                <Typography sx={{ fontSize: 25 }}>ViserHotel Version</Typography>
+                {
+                    status ? (
+                        <Box sx={contentDiv1}>
+                            {/* map below box */}
+                            <Box sx={hrLine}>
+                                <Box sx={contentDiv2}>
+                                    <Box>
+                                        <Typography sx={{ fontSize: 25 }}>ViserHotel Version</Typography>
+                                    </Box>
+                                    <Box >
+                                        <Typography sx={{ fontSize: 22 }}><b>{hotelVersion}</b></Typography>
+                                    </Box>
+                                </Box>
                             </Box>
-                            <Box >
-                                <Typography sx={{ fontSize: 22 }}><b>{hotelVersion}</b></Typography>
+                            <Box sx={hrLine}>
+                                <Box sx={contentDiv2}>
+                                    <Box>
+                                        <Typography sx={{ fontSize: 25 }}>ViserAdmin Version</Typography>
+                                    </Box>
+                                    <Box >
+                                        <Typography sx={{ fontSize: 22 }}><b>{adminVersion}</b></Typography>
+                                    </Box>
+                                </Box>
                             </Box>
                         </Box>
-                    </Box>
-                    <Box sx={hrLine}>
-                        <Box sx={contentDiv2}>
-                            <Box>
-                                <Typography sx={{ fontSize: 25 }}>ViserAdmin Version</Typography>
-                            </Box>
-                            <Box >
-                                <Typography sx={{ fontSize: 22 }}><b>{adminVersion}</b></Typography>
-                            </Box>
-                        </Box>
-                    </Box>
-                </Box>
+                    )
+                    :
+                    (
+                        <Grid>
+                         <NoDataFound />
+                      </Grid>
+                    )
+                }
+
+
             </Box>
         </>
     )

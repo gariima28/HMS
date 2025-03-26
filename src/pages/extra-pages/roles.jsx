@@ -15,6 +15,7 @@ import { GetAllApi } from 'api/api'
 import { EditOutlined, UserAddOutlined } from '@ant-design/icons';
 import { Link, useParams } from 'react-router-dom';
 import { padding } from '@mui/system';
+import NoDataFound from 'pages/NoDataFound';
 
 const columns = [
   { id: 'roleName', label: 'Name', minWidth: 170 },
@@ -61,8 +62,8 @@ const roles = () => {
           createdAt: allRoles?.createdAt?.dateTime,
           action: (
             <Stack justifyContent='end' spacing={2} direction="row">
-              <Button variant="outlined" size="small"  href={`/editrolespage/${allRoles.id}`}>
-              <Typography sx={{ paddingTop: .4, paddingRight: .3 }}>
+              <Button variant="outlined" size="small" href={`/editrolespage/${allRoles.id}`}>
+                <Typography sx={{ paddingTop: .4, paddingRight: .3 }}>
                   <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24">
                     <g fill="none" stroke="#1677ff" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5">
                       <path d="M19.09 14.441v4.44a2.37 2.37 0 0 1-2.369 2.369H5.12a2.37 2.37 0 0 1-2.369-2.383V7.279a2.356 2.356 0 0 1 2.37-2.37H9.56" />
@@ -70,7 +71,7 @@ const roles = () => {
                     </g>
                   </svg>
                 </Typography>
-              Edit</Button>
+                Edit</Button>
             </Stack>
           )
         }))
@@ -98,13 +99,17 @@ const roles = () => {
           <b>All Roles</b>
         </Grid>
         <Grid>
-          <Button sx={{ height: 39, backgroundColor: '#4634ff', color: '#fff' }} variant="outlined" href='./addrolespage'>
+          <Link to={'/addrolespage'}>
+          <Button sx={{ height: 39, backgroundColor: '#4634ff', color: '#fff' }} variant="outlined" >
             <Typography sx={{ paddingTop: .8, }}>
               <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24">
                 <path fill="none" stroke="#fff" stroke-linecap="round" stroke-linejoin="round" stroke-miterlimit="10" stroke-width="1.5" d="M6 12h12m-6 6V6" />
               </svg>
             </Typography>
-            <Typography sx={{ paddingLeft: .7 }}>Add New</Typography></Button>
+            <Typography sx={{ paddingLeft: .7 }}>Add New</Typography>
+          </Button>
+          </Link>
+         
         </Grid>
       </Box>
       <Box sx={{ marginTop: 5 }}>
@@ -125,24 +130,37 @@ const roles = () => {
                 </TableRow>
               </TableHead>
               <TableBody>
-                {rows.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
-                  .map((row, index) => {
-                    return (
-                      <TableRow hover role="checkbox" tabIndex={-1} key={index}>
-                        {columns.map((column) => {
-                          const value = row[column.id];
+                {
+                  rows && rows.length > 0 ? (
+                    rows?.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
+                      .map((row, index) => {
+                        return (
+                          <TableRow hover role="checkbox" tabIndex={-1} key={index}>
+                            {columns.map((column) => {
+                              const value = row[column.id];
 
-                          return (
-                            <TableCell key={column.id} align={column.align}>
-                              {column.format && typeof value === 'number'
-                                ? column.format(value)
-                                : value}
-                            </TableCell>
-                          );
-                        })}
+                              return (
+                                <TableCell key={column.id} align={column.align}>
+                                  {column.format && typeof value === 'number'
+                                    ? column.format(value)
+                                    : value}
+                                </TableCell>
+                              );
+                            })}
+                          </TableRow>
+                        );
+                      })
+                  )
+                    :
+                    (
+                      <TableRow>
+                        <TableCell colSpan={columns.length} align="center">
+                          <NoDataFound />
+                        </TableCell>
                       </TableRow>
-                    );
-                  })}
+                    )
+                }
+
               </TableBody>
             </Table>
           </TableContainer>

@@ -25,6 +25,7 @@ import HashLoader from './HashLoaderCom';
 import { border, borderBottom, display, fontSize, textAlign } from '@mui/system';
 import { color } from 'framer-motion';
 import { makeStyles } from '@mui/styles';
+import NoDataFound from 'pages/NoDataFound';
 
 const useStyles = makeStyles({
   searchBar: {
@@ -93,6 +94,7 @@ const notificationHistory = () => {
 
   const [open, setOpen] = React.useState(false);
   const [date, setDate] = React.useState([]);
+ 
   // console.log('first date', dayjs(date[0]).format('YYYY-MM-DD'))
   // console.log('second date', dayjs(date[1]).format('YYYY-MM-DD'))
   const handleOpen = () => setOpen(true);
@@ -112,7 +114,10 @@ const notificationHistory = () => {
   const [page, setPage] = React.useState(0);
   const [rowsPerPage, setRowsPerPage] = React.useState(10);
   const [search, setSearch] = React.useState('');
-
+  const [fromDate, setFromDate] = useState('');
+  const [toDate, setToDate] = useState('');
+  console.log('from date', fromDate)
+  console.log('to date', toDate)
   const handleOpen3 = () => {
 
     setOpen3(true);
@@ -152,26 +157,19 @@ const notificationHistory = () => {
       align: 'center',
       format: (value) => value.toLocaleString('en-US'),
     }
-    //   {
-    //     id: 'action',
-    //     label: 'Action',
-    //     minWidth: 170,
-    //     align: 'right',
-    //     format: (value) => value.toLocaleString('en-US'),
-    //   }
   ];
 
   useEffect(() => {
     MyNotificationGetAllApi()
-  }, [])
+  }, [fromDate,toDate])
 
   // Get all 
   const MyNotificationGetAllApi = async () => {
     setLoader(true)
     try {
-      const response = await NotificationHistory(search);
+      const response = await NotificationHistory(search,fromDate, toDate);
       console.log('Notification history DATAAAAAA', response)
-      if (response?.status === 200) {
+      if (response?.status === 200) { 
         setRowsData(response?.data?.notifications)
         // toast.success(response?.data?.msg)
         setLoader(false)
@@ -217,6 +215,13 @@ const notificationHistory = () => {
       console.log(error)
     }
   }
+    // Date filter
+    const handleDateChange = (dates) => {
+      if (dates && dates[0] && dates[1]) {
+        setFromDate(dates[0].format('YYYY-MM-DD'));
+        setToDate(dates[1].format('YYYY-MM-DD'));
+      }
+    };
 
   const handleChange = (e) => {
     const trimmedValue = e.target.value.trimStart();
@@ -263,7 +268,7 @@ const notificationHistory = () => {
                 <DateRangePicker
                   slots={{ field: SingleInputDateRangeField }}
                   name="allowedRange"
-                  onChange={(range) => setDate(range)} />
+                  onChange={handleDateChange} />
               </DemoContainer>
             </LocalizationProvider>
           </Grid>
@@ -287,22 +292,35 @@ const notificationHistory = () => {
                 </TableRow>
               </TableHead>
               <TableBody>
-                {rows?.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage).map((row, index) => {
-                  return (
-                    <TableRow hover role="checkbox" tabIndex={-1} key={index}>
-                      {columns?.map((column) => {
-                        const value = row[column.id];
-                        return (
-                          <TableCell key={column.id} align={column.align}>
-                            {column.format && typeof value === 'number'
-                              ? column.format(value)
-                              : value}
-                          </TableCell>
-                        );
-                      })}
-                    </TableRow>
-                  );
-                })}
+                {
+                  rows && rows.length > 0 ? (
+                    rows?.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage).map((row, index) => {
+                      return (
+                        <TableRow hover role="checkbox" tabIndex={-1} key={index}>
+                          {columns?.map((column) => {
+                            const value = row[column.id];
+                            return (
+                              <TableCell key={column.id} align={column.align}>
+                                {column.format && typeof value === 'number'
+                                  ? column.format(value)
+                                  : value}
+                              </TableCell>
+                            );
+                          })}
+                        </TableRow>
+                      );
+                    })
+                  )
+                  :
+                  (
+                    <TableRow>
+                        <TableCell colSpan={columns.length} align="center">
+                          <NoDataFound />
+                        </TableCell>
+                      </TableRow>
+                  )
+                }
+                
               </TableBody>
             </Table>
           </TableContainer>

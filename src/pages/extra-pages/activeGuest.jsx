@@ -15,6 +15,7 @@ import Modal from '@mui/material/Modal';
 import { AllActiveguestGetAllApi } from 'api/api'
 import { EditOutlined, FundProjectionScreenOutlined } from '@ant-design/icons';
 import { Link } from 'react-router-dom';
+import NoDataFound from 'pages/NoDataFound';
 
 const useStyles = makeStyles({
   searchBar: {
@@ -103,13 +104,6 @@ const activeGuest = () => {
   const columns = [
     { id: 'firstName', label: 'User', minWidth: 170 },
     { id: 'email', label: 'Email-Mobile', minWidth: 100 },
-    // {
-    //   id: 'countryCode',
-    //   label: 'country-Code',
-    //   minWidth: 170,
-    //   align: 'center',
-    //   format: (value) => value.toLocaleString('en-US'),
-    // },
     {
       id: 'dateTime',
       label: 'Joined At',
@@ -219,29 +213,42 @@ const activeGuest = () => {
                 </TableRow>
               </TableHead>
               <TableBody>
-                {rows.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage).map((row,index) => {
-                  return (
-                    <TableRow hover role="checkbox" tabIndex={-1} key={index}>
-                      {columns?.map((column) => {
-                        const value = row[column.id];
-                        return (
-                          <TableCell key={column.id} align={column.align}>
-                            {column.format && typeof value === 'number'
-                              ? column.format(value)
-                              : value}
-                          </TableCell>
-                        );
-                      })}
-                    </TableRow>
-                  );
-                })}
+                {
+                  rows && rows.length > 0 ? (
+                    rows?.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage).map((row,index) => {
+                      return (
+                        <TableRow hover role="checkbox" tabIndex={-1} key={index}>
+                          {columns?.map((column) => {
+                            const value = row[column.id];
+                            return (
+                              <TableCell key={column.id} align={column.align}>
+                                {column.format && typeof value === 'number'
+                                  ? column.format(value)
+                                  : value}
+                              </TableCell>
+                            );
+                          })}
+                        </TableRow>
+                      );
+                    })
+                  )
+                  :
+                  (
+                    <TableRow>
+                        <TableCell colSpan={columns.length} align="center">
+                          <NoDataFound />
+                        </TableCell>
+                      </TableRow>
+                  )
+                }
+              
               </TableBody>
             </Table>
           </TableContainer>
           <TablePagination
             rowsPerPageOptions={[10, 25, 100]}
             component="div"
-            count={rows.length}
+            count={rows?.length}
             rowsPerPage={rowsPerPage}
             page={page}
             onPageChange={handleChangePage}

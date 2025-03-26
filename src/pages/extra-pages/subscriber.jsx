@@ -88,7 +88,7 @@ const subscriber = () => {
             if (response?.status === 200) {
                 // toast.success(response?.data?.msg)
                 setAllData(response?.data?.staffs)
-                setLoader(`false`)
+                setLoader(false)
 
             } else {
                 toast.error(response?.data?.msg);

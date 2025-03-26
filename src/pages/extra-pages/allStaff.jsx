@@ -16,6 +16,7 @@ import HashLoader from './HashLoaderCom';
 import { color } from 'framer-motion';
 import { GetAllApi } from 'api/api'
 import { makeStyles } from '@mui/styles';
+import NoDataFound from '../NoDataFound';
 
 import { AllStaffPostApi } from 'api/api'
 import { AllStaffGetAllApi } from 'api/api'
@@ -503,7 +504,7 @@ const allStaff = () => {
                   onChange={handleChange}
                   label="Search By Email" />
               </Grid>
-              <Grid style={{cursor:'pointer'}} onClick={MyAllStaffGetAllDataApi} className={classes.searchIcon}>
+              <Grid style={{ cursor: 'pointer' }} onClick={MyAllStaffGetAllDataApi} className={classes.searchIcon}>
                 <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 32 32">
                   <path fill="none" stroke="#fff" stroke-linecap="round" stroke-linejoin="round" stroke-width="0.9" d="m5 27l7.5-7.5M28 13a9 9 0 1 1-18 0a9 9 0 0 1 18 0" />
                 </svg>
@@ -540,25 +541,38 @@ const allStaff = () => {
                 </TableRow>
               </TableHead>
               <TableBody>
-                {row?.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
-                  .map((row, index) => {
-                    return (
+                {
+                  row && row.length > 0 ? (
+                    row?.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
+                      .map((row, index) => {
+                        return (
 
-                      <TableRow hover role="checkbox" tabIndex={-1} key={index}>
-                        {columns.map((column) => {
-                          const value = row[column.id];
-                          return (
-                            <TableCell key={column.id} align={column.align}>
-                              {column.format && typeof value === 'number'
-                                ? column.format(value)
-                                : value}
+                          <TableRow hover role="checkbox" tabIndex={-1} key={index}>
+                            {columns.map((column) => {
+                              const value = row[column.id];
+                              return (
+                                <TableCell key={column.id} align={column.align}>
+                                  {column.format && typeof value === 'number'
+                                    ? column.format(value)
+                                    : value}
 
-                            </TableCell>
-                          );
-                        })}
-                      </TableRow>
-                    );
-                  })}
+                                </TableCell>
+                              );
+                            })}
+                          </TableRow>
+                        );
+                      })
+                  )
+                    :
+                    (
+                      <TableRow>
+                      <TableCell colSpan={columns.length} align="center">
+                        <NoDataFound />
+                      </TableCell>
+                    </TableRow>
+                    )
+                }
+
               </TableBody>
             </Table>
           </TableContainer>
