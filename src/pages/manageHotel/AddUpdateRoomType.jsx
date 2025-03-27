@@ -63,7 +63,7 @@ const RoomType = () => {
 
     const [error, setError] = useState("");
 
-    const token = "eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJMVkktMDkwMzE0MDkiLCJlbWFpbCI6ImdhcmltYUBzY3JpemEuaW4iLCJyb2xlVHlwZSI6IkFETUlOIiwiaWF0IjoxNzM3NTMwNzA3LCJleHAiOjE3Mzc1NzM5MDd9.uvtzCJFWUQG8FHrhNHqtNYBEFNf2R1_CDQRjWN1tfvY";
+    const token = "eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJMRVhVUlktMDMxOTQ4NjEiLCJlbWFpbCI6InJhamF0Lmt1bWFyQHNjcml6YS5pbiIsInJvbGVUeXBlIjoiQURNSU4iLCJpYXQiOjE3NDMwNzQxODAsImV4cCI6MTc0MzExNzM4MH0.yM5hGK2V2yiiyYWMPQnwS1M5XpNJSlut1qemFRzw2h0";
 
 
     { /*  Bed Per room */ }
@@ -363,7 +363,7 @@ const RoomType = () => {
                     if (response?.data?.status === "success") {
                         toast.success(`${response?.data?.message}`);
                         setTimeout(() => {
-                            navigate('/');
+                            navigate('/roomTypes');
                         }, 5000);
                         reset();
                         setImageSrc(null);
@@ -470,7 +470,7 @@ const RoomType = () => {
                     if (response?.data?.status === "success") {
                         toast.success(`${response?.data?.message}`);
                         setTimeout(() => {
-                            navigate('/');
+                            navigate('/roomtypes');
                         }, 5000);
                         reset();
                         setImageSrc(null);
