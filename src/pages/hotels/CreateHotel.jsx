@@ -22,9 +22,8 @@ const CreateHotel = () => {
   });
   
   const hotelStatus = watch('status')
-
-  console.log(id,' jhugfydtxfgchvjhkjgyf')
-
+  console.log(hotelStatus, 'hotelStatus 11')
+  
   React.useEffect(() => {
     if(id !== 'add'){
     getHotelById();
@@ -93,6 +92,8 @@ const CreateHotel = () => {
       formData.append('subTitle', data.subTitle)
       formData.append('destination', data.destination)
       formData.append('status', data.status === 'true')
+      
+
       // formData.append('registerDate', data.registerDate)
       formData.append('hotelClass', data.hotelClass)
       formData.append('phoneNo', data.phoneNo)
@@ -172,11 +173,32 @@ const CreateHotel = () => {
           <Grid xs={12} sm={6} md={6} lg={4}>
             <Stack spacing={1}>
               <InputLabel htmlFor="status">Status</InputLabel>
-              <Select {...register("status", { required: 'This Field is required'})} onChange={(e) => { setValue("status", e.target.value === 'true'); trigger("status"); }} fullWidth displayEmpty error={Boolean(errors.status)} value={hotelStatus !== undefined ? String(hotelStatus) : ''} >
+
+
+              <Select {...register("status", { required: 'This Field is required' })}
+                fullWidth displayEmpty error={Boolean(errors.status)}
+                value={hotelStatus !== undefined ? String(hotelStatus) : ''} >
                 <MenuItem value='' disabled>Select Status</MenuItem>
                 <MenuItem value="true">Active</MenuItem>
                 <MenuItem value="false">Inactive</MenuItem>
-              </Select>
+              </Select> 
+
+              {/* <Select
+                {...register("status", { required: 'This Field is required' })}
+                onChange={(e) => {
+                  setValue("status", e.target.value);  // Ensure it stores the string directly
+                  trigger("status");
+                }}
+                fullWidth
+                displayEmpty
+                error={Boolean(errors.status)}
+                value={watch("status") || ''}  // Ensure correct controlled value
+              >
+                <MenuItem value='' disabled>Select Status</MenuItem>
+                <MenuItem value="true">Active</MenuItem>
+                <MenuItem value="false">Inactive</MenuItem>
+              </Select> */}
+
             </Stack>
             <FormHelperText error id="standard-weight-helper-text-status"> {errors.status?.message} </FormHelperText>
           </Grid>
