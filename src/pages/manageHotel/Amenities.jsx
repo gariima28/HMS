@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import { EyeFilled, EyeInvisibleFilled } from '@ant-design/icons';
 import { Edit } from '@mui/icons-material';
 import { Alert, Box, Button, CircularProgress, Snackbar, Stack, Typography } from '@mui/material';
@@ -94,22 +94,21 @@ const Amenities = () => {
   ];
 
   // Get API
-  const { data, error, isValidating } = useSWR(`${ServerIP}/amenites/getAll`, fetcher, {
+  const { data, error, mutate, isValidating } = useSWR(`${ServerIP}/amenites/getAll`, fetcher, {
+    revalidateIfStale: false,
+    revalidateOnFocus: false,
+    revalidateOnReconnect: false,
+    revalidateOnMount: true,
     onLoadingSlow: () => setShowDataTableLoader(true),
     onSuccess: () => setShowDataTableLoader(false),
   });
 
-  // Track if request is pending
-  useEffect(() => {
-    if (isValidating) {
-      console.log(isValidating, 'isValidating')
-      console.log("API request is pending...");
-    }
-  }, [isValidating]);
+  console.log(isValidating, 'isValidating')
 
-  const refreshData = () => {
-    mutate(`${ServerIP}/amenites/getAll`);
-  };
+
+  const refreshData = useCallback(() => {
+    mutate(); // This will trigger a revalidation
+  }, [mutate]);
 
   const handleDialogState = (title, button, amenityId) => {
     setModalTitle(title);
@@ -324,9 +323,9 @@ const Amenities = () => {
 
   if (error) return (
     <ErrorPage
-      errorMessage={`${error}`}
-      onReload={() => { window.location.reload(), console.log(error, 'dhbj') }}
-      statusCode={`${error.status}`}
+      errorMessage={`${error.message}`}
+      onReload={() => window.location.reload()}
+      statusCode={error.response?.status || 500}
     />
   );
 
@@ -383,20 +382,3 @@ const Amenities = () => {
 };
 
 export default Amenities;
-
-
-
-
-{/* <Button
-  loading={showStatusLoader && statusLoaderId === amenity.amenitiesId ? true : undefined}
-  loadingposition="start"
-  variant="outlined"
-  size="small"
-  color={amenity.status ? 'error' : 'success'}
-
-  disabled={showStatusLoader && statusLoaderId === amenity.amenitiesId}
->
-  {showStatusLoader && statusLoaderId === amenity.amenitiesId
-    ? 'Processing...'
-    : `${amenity.status ? 'Disable' : 'Enable'}`}
-</Button> */}

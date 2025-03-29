@@ -41,6 +41,7 @@ const CustomButton = styled(Button)(({ status }) => ({
 const columns = [
   { id: 'SNo', label: 'S.No', minWidth: 170 },
   { id: 'bedName', label: 'Title', minWidth: 170 },
+  { id: 'bedImage', label: 'Image', minWidth: 170 },
   { id: 'status', label: 'Status', minWidth: 170, align: 'center' },
   { id: 'action', label: 'Action', minWidth: 170, align: 'right' },
 ];
@@ -86,7 +87,7 @@ const BedTypes = () => {
   const handleUpdateFormDataaBedTypesIcon = (val) => setUpdateFormDataa({ ...updateFormDataa, bedTypeImage: val });
 
   const AddInputFields = [
-    { id: 'bedTypeName', field: 'textInput', fieldType: 'text', validation: { required: true, pattern: /^[A-Z]/, patternMsg: 'This field can only contain characters' }, fieldName: 'BedTypes Title *', placeholder: 'Enter BedTypes Name', updateValFunc: handleFormDataaBedTypesName },
+    { id: 'bedTypeName', field: 'textInput', fieldType: 'text', validation: { required: true, pattern: /^[A-Za-z]/, patternMsg: 'This field can only contain characters' }, fieldName: 'BedTypes Title *', placeholder: 'Enter BedTypes Name', updateValFunc: handleFormDataaBedTypesName },
     { id: 'status', field: 'select', fieldName: 'Status *', validation: { required: true }, fieldOptions: [{ optionId: 'active', optionName: 'Active', optionValue: 'true' }, { optionId: 'inActive', optionName: 'Inactive', optionValue: 'false' },], value: formDataa.status, updateValFunc: handleFormDataaBedTypesStatus, },
     { id: 'bedTypeImage', field: 'fileType', fieldType: 'file', validation: { required: true }, fieldName: 'BedTypes Image *', allowedTypes: ['image/jpeg', 'image/png'], updateValFunc: handleFormDataaBedTypesIcon }
   ];
@@ -125,11 +126,13 @@ const BedTypes = () => {
   };
 
   useEffect(() => {
+    console.log(data)
     if (data) {
       setShowDataTableLoader(true)
       const transformedRows = data.bedTypes.map((bedType, index) => ({
         ...bedType,
         SNo: index + 1,
+        bedImage: bedType.bedImage === null ? '-' : <img src={bedType?.bedImage} alt="" height={28} />,
         status:
           // <CustomButton variant="outlined" status={bedType.status ? 'enable' : 'disable'}>{bedType.status ? 'Enabled' : 'Disabled'}</CustomButton>,
           <CustomButton variant="outlined" size="small" status={bedType.status ? 'enable' : 'disable'} onClick={() => UpdateBedTypesStatus(bedType.bedTypeId, bedType.status)}>{bedType.status ? 'Active' : 'Inactive'}</CustomButton>,
