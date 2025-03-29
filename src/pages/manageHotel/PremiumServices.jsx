@@ -65,14 +65,12 @@ const PremiumServices = () => {
     status: '',
   });
 
-
   const [updateFormDataa, setUpdateFormDataa] = useState({
     premiumServiceName: '',
     premiumServiceCost: '',
     premiumServiceNameOriginal: '',
     premiumServiceCostOriginal: '',
   });
-
 
   const handleFormDataaPremiumServicesName = (val) => setFormDataa((prev) => ({ ...prev, premiumServiceName: val }));
   const handleFormDataaPremiumServicesCost = (val) => setFormDataa((prev) => ({ ...prev, premiumServiceCost: val }));
@@ -182,7 +180,6 @@ const PremiumServices = () => {
           handleSnackbarMessage('Premium Service Added Successfully', 'success');
           setModalOpen(false);
           refreshData();
-
           reset({
             premiumServiceName: '',
             premiumServiceCost: '',
@@ -201,8 +198,6 @@ const PremiumServices = () => {
       }, 1000);
     }
   };
-
-
 
   const getPremiumServicesDataById = async (id) => {
     setShowLoader(true);
@@ -232,7 +227,6 @@ const PremiumServices = () => {
       setShowLoader(false);
     }
   };
-
 
   const UpdatePremiumServicesStatus = async (id, premiumServiceStatus) => {
     setShowLoader(true)
@@ -275,7 +269,6 @@ const PremiumServices = () => {
 
   const UpdatePremiumServicesData = async (data) => {
     setShowModalLoader(true);
-
     try {
       const formData = new FormData();
 
@@ -322,12 +315,10 @@ const PremiumServices = () => {
     }
   };
 
-
-
   if (error) return (
     <ErrorPage
       errorMessage={`${error}`}
-      onReload={() => { window.location.reload()}}
+      onReload={() => { window.location.reload() }}
       statusCode={`${error.status}`}
     />
   );
@@ -364,6 +355,7 @@ const PremiumServices = () => {
       </Snackbar>
     </Box>
   );
+
 };
 
 export default PremiumServices;
