@@ -32,7 +32,7 @@ const ErrorPage = ({ errorMessage, onReload, statusCode }) => {
             <Box sx={{ display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "center", height: "100vh", textAlign: "center", padding: 2, }} >
                 <FadeLoader color="#b3b3b3" size={100} />
                 <Typography variant="subtitle1" sx={{ margin: 2, color: '#b3b3b3' }} >
-                    {statusCode === '500' ?  'Server error! we are working to fix this. Please try again later.' : "Something went wrong. Please try again."}
+                    {statusCode === '500' ? 'Server error! we are working to fix this. Please try again later.' : "Something went wrong. Please try again."}
                 </Typography>
                 {statusCode !== 'Pending' &&
                     <Button variant="contained" color="secondary" startIcon={<RefreshIcon />} onClick={handleReload} >

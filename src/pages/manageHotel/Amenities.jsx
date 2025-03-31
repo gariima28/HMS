@@ -8,7 +8,6 @@ import { styled } from '@mui/material/styles';
 import DialogModal from 'components/DialogModal';
 import useSWR, { mutate } from "swr";
 import axios from 'axios';
-// import HashLoader from 'components/HashLoader';
 import { addAmenitiesApi, getAmenitiesDataByIdApi, updateAmenitiesApi, updateAmenitiesStatus } from 'api/api';
 import { useForm } from 'react-hook-form';
 import ErrorPage from 'components/ErrorPage';
@@ -107,7 +106,7 @@ const Amenities = () => {
 
 
   const refreshData = useCallback(() => {
-    mutate(); // This will trigger a revalidation
+    mutate(); 
   }, [mutate]);
 
   const handleDialogState = (title, button, amenityId) => {
@@ -143,7 +142,7 @@ const Amenities = () => {
               color={amenity.status ? 'error' : 'success'}
               onClick={() => UpdateAmenitiesStatus(amenity?.amenitiesId, amenity.status)}
               loading
-              loadingPosition="start"
+              loadingposition="start"
               startIcon={amenity.status ? <EyeInvisibleFilled /> : <EyeFilled />}
               variant="outlined"
             >
@@ -158,7 +157,7 @@ const Amenities = () => {
       setRows(transformedRows);
       setTimeout(() => {
         setShowDataTableLoader(false)
-      }, 1800);
+      }, 1000);
     }
   }, [data]);
 
@@ -249,25 +248,27 @@ const Amenities = () => {
           handleSnackbarMessage(response?.data?.message, 'success');
           refreshData();
           setShowStatusLoader(false)
-        }, 1000);
+
+        }, 100000000000);
       } else {
         setTimeout(() => {
           setShowStatusLoader(false)
           handleSnackbarMessage(response?.data?.message, 'error');
-        }, 1000);
+        }, 100000000000);
       }
     } catch (error) {
       setTimeout(() => {
         setShowStatusLoader(false)
         handleSnackbarMessage('Error during update', 'error');
-      }, 1000);
+      }, 100000000000);
     } finally {
       setTimeout(() => {
         setShowStatusLoader(false)
         setStatusLoaderId(null);
-      }, 1000);
+      }, 100000000000);
     }
   };
+
 
   const UpdateAmenitiesData = async (data) => {
     setShowLoader(true);
@@ -296,7 +297,7 @@ const Amenities = () => {
             setShowLoader(false);
             refreshData();
             handleSnackbarMessage(response?.data?.message, 'success');
-            // setModalOpen(false);
+            setModalOpen(false);
           }, 1000);
         } else {
           setTimeout(() => {
@@ -306,8 +307,10 @@ const Amenities = () => {
         }
       } else {
         // No changes to submit
-        setShowLoader(false);
-        handleSnackbarMessage('No changes made.', 'warning');
+        setTimeout(() => {
+          setShowLoader(false);
+          handleSnackbarMessage('No changes made.', 'warning');
+        }, 1000);
       }
     } catch (error) {
       setTimeout(() => {
@@ -332,7 +335,7 @@ const Amenities = () => {
   if (isValidating) return (
     <ErrorPage
       errorMessage={`The request is taking longer than expected. Please wait or try again.`}
-      onReload={() => { window.location.reload(), console.log(error, 'dhbj') }}
+      onReload={() => { console.log(error, 'error while isValidating') }}
       statusCode={`Pending`}
     />
   );
@@ -355,9 +358,9 @@ const Amenities = () => {
       </Grid>
 
       {/* Data Table */}
-      {showDataTableLoader ? <PlaceholderTable /> : <DynamicDataTable columns={columns} rows={rows} />}
+      {/* {showDataTableLoader ? <PlaceholderTable /> : <DynamicDataTable columns={columns} rows={rows} />} */}
 
-      {/* {showDataTableLoader ? (
+      {showDataTableLoader ? (
         <PlaceholderTable />
       ) : rows.length === 0 ? (
         <Typography variant="h6" textAlign="center" my={4}>
@@ -365,7 +368,7 @@ const Amenities = () => {
         </Typography>
       ) : (
         <DynamicDataTable columns={columns} rows={rows} />
-      )} */}
+      )}
 
 
       {/* Modals for all Add and Update */}

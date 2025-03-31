@@ -28,8 +28,10 @@ const DialogModal = ({ handleClosingDialogState, modalOpen, title, buttonName, I
 
     const handleFileChange = (e, id) => {
         const file = e.target.files[0];
+        console.log(file, 'dsuhdwjbguhdjk')
         if (file) {
             setValue(id, [file]);
+            console.log(id,file, 'dsuhdwjbguhdjk')
             trigger(id);
         }
     };
@@ -41,7 +43,7 @@ const DialogModal = ({ handleClosingDialogState, modalOpen, title, buttonName, I
                 setValue(key, updateFormDataa[key]);
             });
         }
-    }, [modalOpen, updateFormDataa, setValue]);
+    }, [modalOpen, updateFormDataa]);
 
 
     const handleDialogClose = () => {
@@ -49,7 +51,7 @@ const DialogModal = ({ handleClosingDialogState, modalOpen, title, buttonName, I
     };
 
     return (
-        <Dialog onClose={null} disableBackdropClick disableEscapeKeyDown aria-labelledby="dialogModal" open={modalOpen} maxWidth="xs" fullWidth>
+        <Dialog onClose={null} disablebackdropclick disableEscapeKeyDown aria-labelledby="dialogModal" open={modalOpen} maxWidth="xs" fullWidth>
             <DialogTitle sx={{ m: 0, p: 2, typography: 'h6' }} id="dialogModal">
                 {title}
                 <IconButton aria-label="close" onClick={handleDialogClose} sx={(theme) => ({ position: 'absolute', right: 8, top: 8, color: theme.palette.grey[500] })} >

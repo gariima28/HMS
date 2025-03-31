@@ -173,39 +173,20 @@ const CreateHotel = () => {
           <Grid xs={12} sm={6} md={6} lg={4}>
             <Stack spacing={1}>
               <InputLabel htmlFor="status">Status</InputLabel>
-
-
               <Select {...register("status", { required: 'This Field is required' })}
                 fullWidth displayEmpty error={Boolean(errors.status)}
                 value={hotelStatus !== undefined ? String(hotelStatus) : ''} >
                 <MenuItem value='' disabled>Select Status</MenuItem>
                 <MenuItem value="true">Active</MenuItem>
                 <MenuItem value="false">Inactive</MenuItem>
-              </Select> 
-
-              {/* <Select
-                {...register("status", { required: 'This Field is required' })}
-                onChange={(e) => {
-                  setValue("status", e.target.value);  // Ensure it stores the string directly
-                  trigger("status");
-                }}
-                fullWidth
-                displayEmpty
-                error={Boolean(errors.status)}
-                value={watch("status") || ''}  // Ensure correct controlled value
-              >
-                <MenuItem value='' disabled>Select Status</MenuItem>
-                <MenuItem value="true">Active</MenuItem>
-                <MenuItem value="false">Inactive</MenuItem>
-              </Select> */}
-
+              </Select>
             </Stack>
             <FormHelperText error id="standard-weight-helper-text-status"> {errors.status?.message} </FormHelperText>
           </Grid>
-          <Grid  xs={12} sm={6} md={6} lg={4} >
+          <Grid  xs={12} sm={6} md={6} lg={4}>
             <Stack spacing={1}>
               <InputLabel htmlFor="hotelClass">Hotel Class</InputLabel>
-              <OutlinedInput id="hotelClass" type="text" {...register("hotelClass" , { required: 'This Field is required', validate: { startsWithCapital: (value) =>  /^[A-Z]/.test(value) || 'Hotel Class must start with an uppercase letter', minLength: (value) => value.length >= 4 || 'Minimum Length is 4', pattern: (value) => /^[A-Z][a-zA-Z\s]+$/.test(value) ||  'Hotel Class must contain only letters, and spaces', } })} placeholder="Enter Hotel Class" fullWidth error={Boolean(errors.hotelClass)} />
+              <OutlinedInput id="hotelClass" type="text" {...register("hotelClass" , { required: 'This Field is required', validate: { startsWithCapital: (value) =>  /^[A-Z]/.test(value) || 'Hotel Class must start with an uppercase letter', minLength: (value) => value.length >= 4 || 'Minimum Length is 4', pattern: (value) => /^[A-Z][a-zA-Z\s]+$/.test(value) ||  'Hotel Class must contain only letters, and spaces', } })} placeholder="Enter Hotel Class" fullWidth error={Boolean(errors.hotelClass)}/>
             </Stack>
             <FormHelperText error id="standard-weight-helper-text-hotelClass">{errors.hotelClass?.message}</FormHelperText>
           </Grid>

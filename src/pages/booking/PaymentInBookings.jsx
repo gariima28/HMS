@@ -280,6 +280,7 @@ const PaymentInBookings = () => {
           </Box>
         </Grid>
 
+
         {/* <Grid item xs={12} lg={6}>
           <Box sx={{ backgroundColor: '#fff', borderRadius: '10px', p: 1 }}>
             <Grid display='flex' justifyContent={'space-between'} alignItems={'center'} sx={{ p: 0, width: '100%' }}>
