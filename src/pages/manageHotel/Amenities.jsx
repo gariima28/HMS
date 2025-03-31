@@ -102,8 +102,11 @@ const Amenities = () => {
     onSuccess: () => setShowDataTableLoader(false),
   });
 
+  console.log(isValidating, 'isValidating')
+
+
   const refreshData = useCallback(() => {
-    mutate();
+    mutate(); 
   }, [mutate]);
 
   const handleDialogState = (title, button, amenityId) => {
@@ -323,9 +326,9 @@ const Amenities = () => {
 
   if (error) return (
     <ErrorPage
-      errorMessage={`${error}`}
-      onReload={() => { window.location.reload(), console.log(error, 'dhbj') }}
-      statusCode={`${error.status}`}
+      errorMessage={`${error.message}`}
+      onReload={() => window.location.reload()}
+      statusCode={error.response?.status || 500}
     />
   );
 
@@ -382,20 +385,3 @@ const Amenities = () => {
 };
 
 export default Amenities;
-
-
-
-
-{/* <Button
-  loading={showStatusLoader && statusLoaderId === amenity.amenitiesId ? true : undefined}
-  loadingposition="start"
-  variant="outlined"
-  size="small"
-  color={amenity.status ? 'error' : 'success'}
-
-  disabled={showStatusLoader && statusLoaderId === amenity.amenitiesId}
->
-  {showStatusLoader && statusLoaderId === amenity.amenitiesId
-    ? 'Processing...'
-    : `${amenity.status ? 'Disable' : 'Enable'}`}
-</Button> */}
