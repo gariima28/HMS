@@ -87,14 +87,18 @@ const BedTypes = () => {
   const handleUpdateFormDataaBedTypesIcon = (val) => setUpdateFormDataa({ ...updateFormDataa, bedTypeImage: val });
 
   const AddInputFields = [
-    { id: 'bedTypeName', field: 'textInput', fieldType: 'text', validation: { required: true, pattern: /^[A-Za-z]/, patternMsg: 'This field can only contain characters' }, fieldName: 'BedTypes Title *', placeholder: 'Enter BedTypes Name', updateValFunc: handleFormDataaBedTypesName },
-    { id: 'status', field: 'select', fieldName: 'Status *', validation: { required: true }, fieldOptions: [{ optionId: 'active', optionName: 'Active', optionValue: 'true' }, { optionId: 'inActive', optionName: 'Inactive', optionValue: 'false' },], value: formDataa.status, updateValFunc: handleFormDataaBedTypesStatus, },
-    { id: 'bedTypeImage', field: 'fileType', fieldType: 'file', validation: { required: true }, fieldName: 'BedTypes Image *', allowedTypes: ['image/jpeg', 'image/png'], updateValFunc: handleFormDataaBedTypesIcon }
+    {
+      id: 'bedTypeName', field: 'textInput', fieldType: 'text', validation: {
+        required: true, minLength: 3, pattern: /^[A-Z][a-zA-Z\s]*$/, patternMsg: 'This field should start with capital and only contain letters'
+      }, fieldName: 'BedTypes Title ', placeholder: 'Enter BedTypes Name', updateValFunc: handleFormDataaBedTypesName
+    },
+    { id: 'status', field: 'select', fieldName: 'Status ', validation: { required: true }, fieldOptions: [{ optionId: 'active', optionName: 'Active', optionValue: 'true' }, { optionId: 'inActive', optionName: 'Inactive', optionValue: 'false' },], value: formDataa.status, updateValFunc: handleFormDataaBedTypesStatus, },
+    { id: 'bedTypeImage', field: 'fileType', fieldType: 'file', validation: { required: true }, fieldName: 'BedTypes Image ', allowedTypes: ['image/jpeg', 'image/png'], updateValFunc: handleFormDataaBedTypesIcon }
   ];
 
   const UpdateInputFields = [
-    { id: 'bedTypeName', field: 'textInput', fieldType: 'text', fieldName: 'BedTypes Title *', placeholder: 'Enter BedTypes Name', value: updateFormDataa.bedTypeName, updateValFunc: handleUpdateFormDataaBedTypesName },
-    { id: 'bedTypeImage', field: 'fileType', fieldType: 'file', fieldName: 'BedTypes Image *', allowedTypes: ['image/jpeg', 'image/png'], value: updateFormDataa.bedTypeImage, updateValFunc: handleUpdateFormDataaBedTypesIcon }
+    { id: 'bedTypeName', field: 'textInput', fieldType: 'text', fieldName: 'BedTypes Title', placeholder: 'Enter BedTypes Name', value: updateFormDataa.bedTypeName, updateValFunc: handleUpdateFormDataaBedTypesName },
+    { id: 'bedTypeImage', field: 'fileType', fieldType: 'file', fieldName: 'BedTypes Image', allowedTypes: ['image/jpeg', 'image/png'], value: updateFormDataa.bedTypeImage, updateValFunc: handleUpdateFormDataaBedTypesIcon }
   ];
 
   // Get API

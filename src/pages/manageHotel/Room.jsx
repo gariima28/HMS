@@ -107,7 +107,7 @@ const Rooms = () => {
     {
       id: 'roomType',
       field: 'select',
-      fieldName: 'Room Type *',
+      fieldName: 'Room Type ',
       placeholder: 'Select Room Type',
       fieldOptions: allRoomTypes.map((rt) => ({
         optionId: rt.roomTypesId, // Adjust based on your API response
@@ -121,7 +121,7 @@ const Rooms = () => {
       id: 'roomNumber',
       field: 'textInput',
       fieldType: 'text',
-      fieldName: 'Room Number *',
+      fieldName: 'Room Number ',
       placeholder: 'Enter Room Number',
       value: formDataa.roomNumber,
       updateValFunc: handleFormDataaRoomNumber,
@@ -133,7 +133,7 @@ const Rooms = () => {
     {
       id: 'roomType',
       field: 'select',
-      fieldName: 'Room Type *',
+      fieldName: 'Room Type ',
       placeholder: 'Select Room Type',
       fieldOptions: allRoomTypes.map((rt) => ({
         optionId: rt.roomTypesId,
@@ -147,7 +147,7 @@ const Rooms = () => {
       id: 'roomNumber',
       field: 'textInput',
       fieldType: 'text',
-      fieldName: 'Room Number *',
+      fieldName: 'Room Number ',
       placeholder: 'Enter Room Number',
       value: updateFormDataa.roomNumber, // Tied to the fetched data
       updateValFunc: handleUpdateFormDataaRoomNumber,
@@ -262,7 +262,7 @@ const Rooms = () => {
       } else {
         setTimeout(() => {
           setShowModalLoader(false);
-          handleSnackbarMessage(`Error adding room - ${response?.data?.message}`, 'error', );
+          handleSnackbarMessage(`Error adding room - ${response?.data?.message}`, 'error',);
         }, 1000);
       }
     } catch (error) {

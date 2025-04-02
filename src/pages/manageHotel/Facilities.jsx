@@ -82,14 +82,14 @@ const Facilities = () => {
   const handleUpdateFormDataaFacilitiesIcon = (val) => setUpdateFormDataa({ ...updateFormDataa, facilityImage: val });
 
   const AddInputFields = [
-    { id: 'facilityName', field: 'textInput', fieldType: 'text', validation: { required: true, pattern: /^[A-Z]/, patternMsg: 'This field can only contain characters' }, fieldName: 'Facilities Title *', placeholder: 'Enter Facilities Name', updateValFunc: handleFormDataaFacilitiesName },
-    { id: 'facilityStatus', field: 'select', fieldName: 'Status *', validation: { required: true }, fieldOptions: [{ optionId: 'active', optionName: 'Active', optionValue: 'true' }, { optionId: 'inActive', optionName: 'Inactive', optionValue: 'false' },], value: formDataa.facilityStatus, updateValFunc: handleFormDataaFacilitiesStatus, },
-    { id: 'facilityImage', field: 'fileType', fieldType: 'file', validation: { required: true }, fieldName: 'Facilities Image *', allowedTypes: ['image/jpeg', 'image/png'], updateValFunc: handleFormDataaFacilitiesIcon }
+    { id: 'facilityName', field: 'textInput', fieldType: 'text', validation: { required: true, minLength: 3, pattern: /^[A-Z][a-zA-Z\s]*$/, patternMsg: 'This field should start with capital and only contain letters' }, fieldName: 'Facilities Title', placeholder: 'Enter Facilities Name', updateValFunc: handleFormDataaFacilitiesName },
+    { id: 'facilityStatus', field: 'select', fieldName: 'Status ', validation: { required: true }, fieldOptions: [{ optionId: 'active', optionName: 'Active', optionValue: 'true' }, { optionId: 'inActive', optionName: 'Inactive', optionValue: 'false' },], value: formDataa.facilityStatus, updateValFunc: handleFormDataaFacilitiesStatus, },
+    { id: 'facilityImage', field: 'fileType', fieldType: 'file', validation: { required: true }, fieldName: 'Facilities Image ', allowedTypes: ['image/jpeg', 'image/png'], updateValFunc: handleFormDataaFacilitiesIcon }
   ];
 
   const UpdateInputFields = [
-    { id: 'facilityName', field: 'textInput', fieldType: 'text', fieldName: 'Facilities Title *', placeholder: 'Enter Facilities Name', value: updateFormDataa.facilityName, updateValFunc: handleUpdateFormDataaFacilitiesName },
-    { id: 'facilityImage', field: 'fileType', fieldType: 'file', fieldName: 'Facilities Image *', allowedTypes: ['image/jpeg', 'image/png'], value: updateFormDataa.facilityImage, updateValFunc: handleUpdateFormDataaFacilitiesIcon }
+    { id: 'facilityName', field: 'textInput', fieldType: 'text', fieldName: 'Facilities Title ', placeholder: 'Enter Facilities Name', value: updateFormDataa.facilityName, updateValFunc: handleUpdateFormDataaFacilitiesName },
+    { id: 'facilityImage', field: 'fileType', fieldType: 'file', fieldName: 'Facilities Image ', allowedTypes: ['image/jpeg', 'image/png'], value: updateFormDataa.facilityImage, updateValFunc: handleUpdateFormDataaFacilitiesIcon }
   ];
 
   // Get API
@@ -304,7 +304,7 @@ const Facilities = () => {
   if (error) return (
     <ErrorPage
       errorMessage={`${error}`}
-      onReload={() => { window.location.reload()}}
+      onReload={() => { window.location.reload() }}
       statusCode={`${error.status}`}
     />
   );

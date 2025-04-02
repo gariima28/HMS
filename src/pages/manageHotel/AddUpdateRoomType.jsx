@@ -62,8 +62,8 @@ const RoomType = () => {
     });
 
     const [error, setError] = useState("");
-
-    const token = "eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJMRVhVUlktMDMxOTQ4NjEiLCJlbWFpbCI6InJhamF0Lmt1bWFyQHNjcml6YS5pbiIsInJvbGVUeXBlIjoiQURNSU4iLCJpYXQiOjE3NDMwNzQxODAsImV4cCI6MTc0MzExNzM4MH0.yM5hGK2V2yiiyYWMPQnwS1M5XpNJSlut1qemFRzw2h0";
+    const token = localStorage.getItem('token')
+    // const token = "eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJMRVhVUlktMDMxOTQ4NjEiLCJlbWFpbCI6InJhamF0Lmt1bWFyQHNjcml6YS5pbiIsInJvbGVUeXBlIjoiQURNSU4iLCJpYXQiOjE3NDMwNzQxODAsImV4cCI6MTc0MzExNzM4MH0.yM5hGK2V2yiiyYWMPQnwS1M5XpNJSlut1qemFRzw2h0";
 
 
     { /*  Bed Per room */ }

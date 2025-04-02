@@ -82,14 +82,14 @@ const Amenities = () => {
   const handleUpdateFormDataaAmenitiesIcon = (val) => setUpdateFormDataa({ ...updateFormDataa, amenitiesIcon: val });
 
   const AddInputFields = [
-    { id: 'amenitiesName', field: 'textInput', fieldType: 'text', validation: { required: true, pattern: /^[A-Z]/, patternMsg: 'This field can only contain characters' }, fieldName: 'Amenities Title *', placeholder: 'Enter Amenities Name', updateValFunc: handleFormDataaAmenitiesName },
-    { id: 'amenitiesStatus', field: 'select', fieldName: 'Status *', validation: { required: true }, fieldOptions: [{ optionId: 'active', optionName: 'Active', optionValue: 'true' }, { optionId: 'inActive', optionName: 'Inactive', optionValue: 'false' },], value: formDataa.amenitiesStatus, updateValFunc: handleFormDataaAmenitiesStatus, },
-    { id: 'amenitiesIcon', field: 'fileType', fieldType: 'file', validation: { required: true }, fieldName: 'Icon *', allowedTypes: ['image/jpeg', 'image/png'], updateValFunc: handleFormDataaAmenitiesIcon }
+    { id: 'amenitiesName', field: 'textInput', fieldType: 'text', validation: { required: true, minLength: 3, pattern: /^[A-Z][a-zA-Z\s]*$/, patternMsg: 'This field should start with capital and only contain letters' }, fieldName: 'Amenities Title', placeholder: 'Enter Amenities Name', updateValFunc: handleFormDataaAmenitiesName },
+    { id: 'amenitiesStatus', field: 'select', fieldName: 'Status', validation: { required: true }, fieldOptions: [{ optionId: 'active', optionName: 'Active', optionValue: 'true' }, { optionId: 'inActive', optionName: 'Inactive', optionValue: 'false' },], value: formDataa.amenitiesStatus, updateValFunc: handleFormDataaAmenitiesStatus, },
+    { id: 'amenitiesIcon', field: 'fileType', fieldType: 'file', validation: { required: true }, fieldName: 'Icon', allowedTypes: ['image/jpeg', 'image/png'], updateValFunc: handleFormDataaAmenitiesIcon }
   ];
 
   const UpdateInputFields = [
-    { id: 'amenitiesName', field: 'textInput', fieldType: 'text', fieldName: 'Amenities Title *', placeholder: 'Enter Amenities Name', value: updateFormDataa.amenitiesName, updateValFunc: handleUpdateFormDataaAmenitiesName },
-    { id: 'amenitiesIcon', field: 'fileType', fieldType: 'file', fieldName: 'Icon *', allowedTypes: ['image/jpeg', 'image/png'], value: updateFormDataa.amenitiesIcon, updateValFunc: handleUpdateFormDataaAmenitiesIcon }
+    { id: 'amenitiesName', field: 'textInput', fieldType: 'text', fieldName: 'Amenities Title', placeholder: 'Enter Amenities Name', value: updateFormDataa.amenitiesName, updateValFunc: handleUpdateFormDataaAmenitiesName },
+    { id: 'amenitiesIcon', field: 'fileType', fieldType: 'file', fieldName: 'Icon ', allowedTypes: ['image/jpeg', 'image/png'], value: updateFormDataa.amenitiesIcon, updateValFunc: handleUpdateFormDataaAmenitiesIcon }
   ];
 
   // Get API
@@ -106,7 +106,7 @@ const Amenities = () => {
 
 
   const refreshData = useCallback(() => {
-    mutate(); 
+    mutate();
   }, [mutate]);
 
   const handleDialogState = (title, button, amenityId) => {
