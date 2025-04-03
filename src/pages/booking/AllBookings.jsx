@@ -140,7 +140,6 @@ const AllBookings = () => {
 
   const handleClick = (event, bookingId) => {
     console.log("Clicked booking:", bookingId);
-
     // Close menu if the same button is clicked again
     if (openBookingId === bookingId) {
       setAnchorEl(null);
@@ -224,6 +223,7 @@ const AllBookings = () => {
                 aria-haspopup="true"
                 aria-expanded={open ? 'true' : undefined}
                 onClick={(e) => handleClick(e, booking.bookingId)}
+              // onClick={(e) => handleClick(e.currentTarget)}
               >
                 More
               </MoreButton>
@@ -235,6 +235,7 @@ const AllBookings = () => {
                 MenuListProps={{
                   'aria-labelledby': 'basic-button',
                 }}
+
               >
                 <MenuItem sx={{ p: 0 }}>
                   <Button component={Link} to={`/bookedRoomInBookings/${booking.bookingId}`} sx={{ backgroundColor: 'transparent', color: '#000', '&:hover': { color: '#000', backgroundColor: 'transparent' } }}>Booked Rooms</Button>
@@ -261,7 +262,6 @@ const AllBookings = () => {
             </Stack>
           ),
         }
-
       });
       setRows(transformedRows);
       setTimeout(() => {
@@ -351,11 +351,9 @@ const AllBookings = () => {
           </Button>
         </DialogActions>
       </Dialog>
-
-
-
     </Box>
   );
 }
 
 export default AllBookings
+

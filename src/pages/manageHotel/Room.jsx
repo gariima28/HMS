@@ -120,7 +120,7 @@ const Rooms = () => {
     {
       id: 'roomNumber',
       field: 'textInput',
-      fieldType: 'text',
+      fieldType: 'number',
       fieldName: 'Room Number ',
       placeholder: 'Enter Room Number',
       value: formDataa.roomNumber,
@@ -146,7 +146,7 @@ const Rooms = () => {
     {
       id: 'roomNumber',
       field: 'textInput',
-      fieldType: 'text',
+      fieldType: 'number',
       fieldName: 'Room Number ',
       placeholder: 'Enter Room Number',
       value: updateFormDataa.roomNumber, // Tied to the fetched data
