@@ -85,7 +85,6 @@ const PremiumServices = () => {
   ];
 
 
-
   const UpdateInputFields = [
     { id: 'premiumServiceName', field: 'textInput', fieldType: 'text', validation: { required: true, pattern: /^[A-Za-z\s]+$/, patternMsg: 'This field can only contain characters and spaces', }, fieldName: 'Premium Service Name ', placeholder: 'Enter Premium Service Name', value: updateFormDataa.premiumServiceName, updateValFunc: handleUpdateFormDataaPremiumServicesName, },
     { id: 'premiumServiceCost', field: 'textInput', fieldType: 'number', validation: { required: true, pattern: /^\d+(\.\d{1,2})?$/, patternMsg: 'Please enter a valid price (e.g., 100 or 100.50)', }, fieldName: 'Price ', placeholder: 'Enter Service Price', value: updateFormDataa.premiumServiceCost, updateValFunc: handleUpdateFormDataaPremiumServicesCost, },

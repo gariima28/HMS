@@ -156,7 +156,7 @@ const RoomType = () => {
             }
 
             const response = await axios.get(
-                `http://192.168.21.26:5001/bedTypes/getAll`,
+                `https://www.auth.edu2all.in/hms/bedTypes/getAll`,
                 {
                     headers: {
                         Authorization: `Bearer ${token}`,
@@ -179,7 +179,7 @@ const RoomType = () => {
             }
 
             const response = await axios.get(
-                `http://192.168.21.26:5001/amenites/getAll`,
+                `https://www.auth.edu2all.in/hms/amenites/getAll`,
                 {
                     headers: {
                         Authorization: `Bearer ${token}`,
@@ -200,7 +200,7 @@ const RoomType = () => {
             }
 
             const response = await axios.get(
-                `http://192.168.21.26:5001/facilities/getAll`,
+                `https://www.auth.edu2all.in/hms/facilities/getAll`,
                 {
                     headers: {
                         Authorization: `Bearer ${token}`,
@@ -219,7 +219,7 @@ const RoomType = () => {
         if (id !== "add") {
             try {
                 const response = await axios.get(
-                    `http://192.168.21.26:5001/roomTypes/getById/${id}`,
+                    `https://www.auth.edu2all.in/hms/roomTypes/getById/${id}`,
                     {
                         headers: {
                             Authorization: `Bearer ${token}`,
@@ -297,15 +297,11 @@ const RoomType = () => {
 
     const onSubmit = async (data) => {
         if (id === "add") {
-
-
             const sanitizedRoomDescription = String((data.roomDescription || "").replace(/<[^>]*>/g, "").trim());
             const sanitizedCancelDescription = String((data.cancelDescription || "").replace(/<[^>]*>/g, "").trim());
 
             const cleanedBedTypes = data.bedTypesID.filter((bedType) => bedType !== null && bedType !== undefined);
             data.bedTypesID = cleanedBedTypes;
-
-
 
             try {
                 const formDataToSubmit = new FormData();
@@ -332,7 +328,6 @@ const RoomType = () => {
                     formDataToSubmit.append("bedTypesID[]", parseInt(bedTypeId, 10));
                 });
 
-
                 Object.keys(data).forEach((key) => {
                     if (!["roomTypeImage", "roomDescription", "cancelDescription", "amenitiesID", "facilities", "bedTypesID", "bedTypes", "keywords"].includes(key)) {
 
@@ -341,14 +336,11 @@ const RoomType = () => {
                     }
                 });
 
-
-
-
                 console.log(formDataToSubmit, data)
 
                 // Send data to API
                 const response = await axios.post(
-                    "http://192.168.21.26:5001/roomTypes/add",
+                    "https://www.auth.edu2all.in/hms/roomTypes/add",
                     formDataToSubmit,
                     {
                         headers: {
@@ -369,14 +361,11 @@ const RoomType = () => {
                         setImageSrc(null);
                         setMultipleImagesSrc([]);
                         setImagePreview(null);
-                        setMultipleImagesPreviews([])
+                        setMultipleImagesPreviews([]);
                     } else {
                         toast.error(`${response?.data?.message}`);
                     }
                 }
-
-
-
             } catch (err) {
                 console.error("Error Adding Room Type:", err.response?.data || err.message);
                 toast.error(err.response?.data?.message || "Something went wrong.");
@@ -455,7 +444,7 @@ const RoomType = () => {
 
             try {
                 const response = await axios.put(
-                    `http://192.168.21.26:5001/roomTypes/update/${id}`,
+                    `https://www.auth.edu2all.in/hms/roomTypes/update/${id}`,
                     formDataToSubmit,
                     {
                         headers: {
@@ -1029,13 +1018,13 @@ const RoomType = () => {
 
                         <OutlinedInput
                             id="totalBed"
+                            placeholder="0"
                             {...register("totalBed", {
                                 required: "Total bed is required",
                                 valueAsNumber: true,
                                 min: { value: 1, message: "Total bed must be at least 1" },
                                 setValueAs: (value) => parseInt(value, 10),
                             })}
-
                             type="number"
                             sx={{
                                 width: "30%",
@@ -1566,7 +1555,7 @@ const RoomType = () => {
                 </Box>
 
                 {/* Submit Button */}
-                <Box sx={{ bgcolor: "#fffff", mt: 3, borderRadius: 2, p: 1 }}>
+                <Box sx={{ bgcolor: "#fff", mt: 3, borderRadius: 2, p: 1 }}>
                     <Button
                         type="submit"
                         fullWidth
