@@ -113,9 +113,9 @@ const DialogModal = ({ handleClosingDialogState, modalOpen, title, buttonName, I
                                                 required: `${itemData.fieldName} field is required`,
                                                 validate: (value) => {
                                                     // Common validation for all field types
-                                                    if (!value || value.trim() === '') {
-                                                        return `${itemData.fieldName} field is required`;
-                                                    }
+                                                    // if (!value || value.trim() === '') {
+                                                    //     return `${itemData.fieldName} field is required`;
+                                                    // }
 
                                                     // Field type specific validation
                                                     if (itemData.fieldType === 'text') {
