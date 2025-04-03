@@ -65,10 +65,10 @@ export default function AuthForgetPass() {
           setSnackbar({
             open: true,
             message: response.data.message,
-            severity: 'error',
+            severity: 'success',
           });
         }
-        else{
+        else {
           setSnackbar({
             open: true,
             message: response.data.message,
@@ -113,7 +113,7 @@ export default function AuthForgetPass() {
           setSnackbar({
             open: true,
             message: response.data.message,
-            severity: 'error',
+            severity: 'success',
           });
         }
         else {
@@ -186,10 +186,10 @@ export default function AuthForgetPass() {
         console.error('Error:', error.response?.data?.message || 'An error occurred');
         console.log(error)
         setSnackbar({
-        open: true,
+          open: true,
           message: error.response ? error.response.data.message : 'An error occurred during forget password.',
-        severity: 'error',
-      });
+          severity: 'error',
+        });
       }
     }
   };
@@ -285,7 +285,7 @@ export default function AuthForgetPass() {
                 <Grid item xs={12}>
                   <Stack spacing={1}>
                     <InputLabel htmlFor="password">New Password</InputLabel>
-                    <OutlinedInput id="password" type={showPassword ? 'text' : 'password'} placeholder="Enter new password" fullWidth {...register('password', { required: true })} endAdornment={ <IconButton aria-label="toggle password visibility" onClick={() => setShowPassword(!showPassword)} edge="end" > {showPassword ? <VisibilityOff /> : <Visibility />} </IconButton> } />
+                    <OutlinedInput id="password" type={showPassword ? 'text' : 'password'} placeholder="Enter new password" fullWidth {...register('password', { required: true })} endAdornment={<IconButton aria-label="toggle password visibility" onClick={() => setShowPassword(!showPassword)} edge="end" > {showPassword ? <VisibilityOff /> : <Visibility />} </IconButton>} />
                   </Stack>
                 </Grid>
 

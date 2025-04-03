@@ -149,6 +149,7 @@ const AllBookings = () => {
       setOpenBookingId(bookingId);
     }
   };
+
   // const handleClick = (event, bookingId) => {
   //   setAnchorEl(event.currentTarget);
 
@@ -230,7 +231,8 @@ const AllBookings = () => {
               <Menu
                 id="basic-menu"
                 anchorEl={anchorEl}
-                open={openBookingId === booking.bookingId && Boolean(anchorEl)}
+                //open={openBookingId === booking.bookingId && Boolean(anchorEl)}
+                open={Boolean(anchorEl) && openBookingId === booking.bookingId}
                 onClose={handleClose}
                 MenuListProps={{
                   'aria-labelledby': 'basic-button',

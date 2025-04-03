@@ -12,6 +12,8 @@ import axios from 'axios';
 import { addAmenitiesApi, getAmenitiesDataByIdApi, updateAmenitiesApi, updateAmenitiesStatus } from 'api/api';
 import NoDataFound from 'pages/NoDataFound';
 import PlaceholderTable from 'components/Skeleton/PlaceholderTable';
+import { useNavigate } from 'react-router';
+import { Link } from 'react-router-dom';
 // import { useForm } from 'react-hook-form';
 
 // const LocalGirjesh = 'http://192.168.20.109:5001';
@@ -19,9 +21,9 @@ const ServerIP = 'https://www.auth.edu2all.in/hms'
 const token = `Bearer ${localStorage.getItem('token')}`;
 
 // Custom Button CSS using Material UI Styles
-const CustomButton = styled(Button)(({status}) => ({
+const CustomButton = styled(Button)(({ status }) => ({
   borderRadius: '50px',
-  backgroundColor:  status === 'enable' ? '#E6F4EA' : '#fee5e5',
+  backgroundColor: status === 'enable' ? '#E6F4EA' : '#fee5e5',
   borderColor: status === 'enable' ? '#57C168' : 'red',
   color: status === 'enable' ? '#57C168' : 'red',
   padding: '2px 26px',
@@ -29,7 +31,7 @@ const CustomButton = styled(Button)(({status}) => ({
   textTransform: 'none',
 
   '&:hover': {
-    backgroundColor:  status === 'enable' ? '#D4ECD9' : '#fccfcf',
+    backgroundColor: status === 'enable' ? '#D4ECD9' : '#fccfcf',
     borderColor: status === 'enable' ? '#57C168' : 'red',
     color: status === 'enable' ? '#57C168' : 'red'
   },
@@ -52,7 +54,7 @@ const columns = [
 const fetcher = (url) => axios.get(url, { headers: { Authorization: token } }).then(res => res.data);
 
 const AddedPServices = () => {
-
+  const navigate = useNavigate();
   const [rows, setRows] = useState([]);
   const [showDataTableLoader, setShowDataTableLoader] = useState(false);
 
@@ -72,13 +74,13 @@ const AddedPServices = () => {
       console.log(data?.allPremBookings, 'data');
       const transformedRows = data?.allPremBookings?.map((allPremBookings, index) => ({
         ...allPremBookings,
-        sno: index+1,
+        sno: index + 1,
         cost: allPremBookings.cost ?? '-',
         total: allPremBookings.total ?? '-',
         addedBy: allPremBookings.addedBy ?? '-',
         quantity: allPremBookings.quantity[0] ?? '-',
         service: allPremBookings.premiumServiceList ?? '-',
-        status: <CustomButton variant="outlined" status={`${allPremBookings.status? 'enable' : 'disable'}`}> {allPremBookings.status ? 'Enabled' : 'Disabled'} </CustomButton>,
+        status: <CustomButton variant="outlined" status={`${allPremBookings.status ? 'enable' : 'disable'}`}> {allPremBookings.status ? 'Enabled' : 'Disabled'} </CustomButton>,
         // action: (
         //   <Stack justifyContent='end' spacing={2} direction="row">
         //     <Stack justifyContent='end' spacing={2} direction="row">
@@ -95,7 +97,7 @@ const AddedPServices = () => {
     }
   }, [data]);
 
-  if (error) {<Typography variant="subtitle1">- Error loading data</Typography> };
+  if (error) { <Typography variant="subtitle1">- Error loading data</Typography> };
   if (!data) return <Typography variant="subtitle1">Speed is slow from Backend &nbsp; : - &nbsp; Loading Data...</Typography>;
 
   return (
@@ -107,7 +109,8 @@ const AddedPServices = () => {
         </Grid>
         <Grid>
           <Stack justifyContent='start' spacing={2} direction="row">
-            <Button variant="outlined" onClick={() => handleDialogState('Add New Amenities', 'Create')}>
+
+            <Button component={Link} variant="outlined" to='/addService'>
               + Add New
             </Button>
           </Stack>
