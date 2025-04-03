@@ -44,18 +44,18 @@ const RoomType = () => {
     } = useForm({
         defaultValues: {
             roomName: "",
-            roomFare: 0,
+            roomFare: "",
             noOfRooms: 0,
-            adult: 0,
-            children: 0,
-            cancelFee: 0,
+            adult: "",
+            children: "",
+            cancelFee: "",
             facilities: [],
             roomTypeImage: [],
             roomTypeStatus: true,
             featureStatus: false,
             roomDescription: "",
             cancelDescription: "",
-            totalBed: 0,
+            totalBed: "",
             amenitiesID: [],
             bedTypesID: [],
         },
@@ -156,7 +156,7 @@ const RoomType = () => {
             }
 
             const response = await axios.get(
-                `http://89.116.122.211:5001/bedTypes/getAll`,
+                `http://192.168.21.26:5001/bedTypes/getAll`,
                 {
                     headers: {
                         Authorization: `Bearer ${token}`,
@@ -179,7 +179,7 @@ const RoomType = () => {
             }
 
             const response = await axios.get(
-                `http://89.116.122.211:5001/amenites/getAll`,
+                `http://192.168.21.26:5001/amenites/getAll`,
                 {
                     headers: {
                         Authorization: `Bearer ${token}`,
@@ -200,7 +200,7 @@ const RoomType = () => {
             }
 
             const response = await axios.get(
-                `http://89.116.122.211:5001/facilities/getAll`,
+                `http://192.168.21.26:5001/facilities/getAll`,
                 {
                     headers: {
                         Authorization: `Bearer ${token}`,
@@ -219,7 +219,7 @@ const RoomType = () => {
         if (id !== "add") {
             try {
                 const response = await axios.get(
-                    `http://89.116.122.211:5001/roomTypes/getById/${id}`,
+                    `http://192.168.21.26:5001/roomTypes/getById/${id}`,
                     {
                         headers: {
                             Authorization: `Bearer ${token}`,
@@ -348,7 +348,7 @@ const RoomType = () => {
 
                 // Send data to API
                 const response = await axios.post(
-                    "http://89.116.122.211:5001/roomTypes/add",
+                    "http://192.168.21.26:5001/roomTypes/add",
                     formDataToSubmit,
                     {
                         headers: {
@@ -455,7 +455,7 @@ const RoomType = () => {
 
             try {
                 const response = await axios.put(
-                    `http://89.116.122.211:5001/roomTypes/update/${id}`,
+                    `http://192.168.21.26:5001/roomTypes/update/${id}`,
                     formDataToSubmit,
                     {
                         headers: {
@@ -624,6 +624,7 @@ const RoomType = () => {
                                 id="roomFare"
                                 type="number"
                                 step="0.01"
+                                placeholder="0"
                                 {...register("roomFare", {
                                     required: "Room fare is required",
                                     min: { value: 0.01, message: "Fare must be greater than 0" },
@@ -644,6 +645,8 @@ const RoomType = () => {
                                                 textTransform: "none",
                                                 height: "100%",
                                                 minWidth: "50px",
+                                                px: 2,
+                                                py: 2.5,
                                                 "&:hover": {
                                                     bgcolor: "#e0e0e0",
                                                 },
@@ -681,6 +684,7 @@ const RoomType = () => {
                             <OutlinedInput
                                 id="cancelFee"
                                 type="number"
+                                placeholder="0"
                                 {...register("cancelFee", {
                                     required: "Cancellation fee is required",
                                     min: { value: 0, message: "Fee cannot be negative" },
@@ -704,6 +708,8 @@ const RoomType = () => {
                                                 textTransform: "none",
                                                 height: "100%",
                                                 minWidth: "50px",
+                                                px: 2,
+                                                py: 2.5,
                                                 "&:hover": {
                                                     bgcolor: "#e0e0e0",
                                                 },
@@ -741,6 +747,7 @@ const RoomType = () => {
                             <OutlinedInput
                                 id="adult"
                                 type="number"
+                                placeholder="0"
                                 {...register("adult", {
                                     required: "Field is required",
                                     min: {
@@ -780,6 +787,7 @@ const RoomType = () => {
                             <OutlinedInput
                                 id="children"
                                 type="number"
+                                placeholder="0"
                                 {...register("children", {
                                     required: "Field is required",
                                     min: { value: 0, message: "Cannot be negative" },
@@ -1148,9 +1156,8 @@ const RoomType = () => {
                 {/* Main Image and Description */}
                 <Grid
                     container
-                    spacing={2}
+                    spacing={0}
                     sx={{
-                        bgcolor: "#f3f3f9",
                         borderRadius: 2,
                     }}
                 >
@@ -1159,7 +1166,7 @@ const RoomType = () => {
 
                     <Grid
                         item
-                        size={{ xs: 12, md: 4 }}
+                        xs={12} md={4}
                         sx={{ mt: 3, bgcolor: "#fff", borderRadius: 2 }}
                     >
                         <Typography
@@ -1221,11 +1228,9 @@ const RoomType = () => {
                                     <Typography
                                         variant="h1"
                                         sx={{
-                                            fontSize: {
-                                                xs: "6rem",
-                                                md: "3rem"
-                                            },
+
                                             textAlign: "center",
+                                            fontSize: "3 rem"
                                         }}
                                     >
                                         1000X500
@@ -1307,7 +1312,7 @@ const RoomType = () => {
                     {/*  Description */}
                     <Grid
                         item
-                        size={{ xs: 12, md: 8 }}
+                        xs={12} md={8}
                         sx={{ mt: 3, bgcolor: "#fff", borderRadius: 2, pb: 2 }}
                     >
                         <Typography
@@ -1503,7 +1508,7 @@ const RoomType = () => {
                 </Box>
 
                 {/* Cancellation Policy Section */}
-                <Box sx={{ bgcolor: "#fff", mt: 3, borderRadius: 2, pb: 2 }}>
+                <Box sx={{ bgcolor: "#ffffff", mt: 3, borderRadius: 2, pb: 2 }}>
                     <Typography
                         variant="h5"
                         sx={{
@@ -1561,7 +1566,7 @@ const RoomType = () => {
                 </Box>
 
                 {/* Submit Button */}
-                <Box sx={{ bgcolor: "#fff", mt: 3, borderRadius: 2, p: 1 }}>
+                <Box sx={{ bgcolor: "#fffff", mt: 3, borderRadius: 2, p: 1 }}>
                     <Button
                         type="submit"
                         fullWidth
