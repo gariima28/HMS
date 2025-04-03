@@ -21,9 +21,10 @@ const SaveButton = styled(Button)(() => ({
     },
 }));
 
-const DialogModal = ({ handleClosingDialogState, modalOpen, title, buttonName, InputFields, onSubmit, reset, updateFormDataa, showModalLoader }) => {
-
-    const { register, handleSubmit, formState: { errors }, setValue, trigger } = useForm();
+const DialogModal = ({ handleClosingDialogState, modalOpen, title, buttonName, InputFields, onSubmit, updateFormDataa, showModalLoader }) => {
+    const { register, handleSubmit, formState: { errors }, setValue, trigger,reset} = useForm({
+        mode: "onChange",  // Enables real-time validation  
+    });
     const [imageType, setImageType] = useState(false)
 
     const handleFileChange = (e, id) => {
@@ -42,14 +43,15 @@ const DialogModal = ({ handleClosingDialogState, modalOpen, title, buttonName, I
             Object.keys(updateFormDataa).forEach((key) => {
                 setValue(key, updateFormDataa[key]);
             });
+          
         }
-    }, [modalOpen, updateFormDataa]);
-
+    }, [modalOpen, updateFormDataa,setValue]);
 
     const handleDialogClose = () => {
         handleClosingDialogState();
+        reset()
     };
-
+    
     return (
         <Dialog onClose={null} disablebackdropclick disableEscapeKeyDown aria-labelledby="dialogModal" open={modalOpen} maxWidth="xs" fullWidth>
             <DialogTitle sx={{ m: 0, p: 2, typography: 'h6' }} id="dialogModal">
@@ -72,10 +74,79 @@ const DialogModal = ({ handleClosingDialogState, modalOpen, title, buttonName, I
                             <Grid xs={12} sx={{ p: 1 }} key={itemData.id}>
                                 <InputLabel htmlFor={itemData.id} sx={{ mb: 1 }}>
                                     {itemData.fieldName}
+                                    {( buttonName === 'Update' || buttonName === 'Create') && <span style={{ color: 'red' }}> *</span>}
                                 </InputLabel>
                                 {itemData?.field === 'textInput' ? (
-                                    <>
-                                        <OutlinedInput id={itemData.id} type={itemData?.fieldType} placeholder={itemData?.placeholder} defaultValue={itemData.value} fullWidth {...register(itemData.id, { required: itemData.validation?.required && `${itemData.fieldName} field is required`, pattern: { value: itemData.validation?.pattern || /.*/, message: itemData.validation?.patternMsg || '', }, })} error={Boolean(errors[itemData.id])} />
+                                    <>                                       
+                                        {/* <OutlinedInput
+                                            id={itemData.id}
+                                            type={itemData?.fieldType}
+                                            placeholder={itemData?.placeholder}
+                                            defaultValue={itemData.value}
+                                            fullWidth
+                                            {...register(itemData.id, {
+                                                required: `${itemData.fieldName} field is required`,
+                                                validate: (value) => {
+                                                    const patternRegex = itemData.validation?.pattern || /^[A-Z][a-zA-Z\s]*$/;
+                                                    if (!patternRegex.test(value)) {
+                                                        return itemData.validation?.patternMsg || `${itemData.fieldName} should start with a capital letter and contain only letters`;
+                                                    }
+                                                    if (value.length < (itemData.validation?.minLength || 3) ) {
+                                                        return `${itemData.fieldName} must be at least 3 characters long`;
+                                                    }
+                                                    return true; // No error
+                                                }
+                                            })}
+                                            error={Boolean(errors[itemData.id])}
+                                        /> */}
+                                        <OutlinedInput
+                                            id={itemData.id}
+                                            type={itemData?.fieldType}
+                                            placeholder={itemData?.placeholder}
+                                            defaultValue={itemData.value}
+                                            fullWidth
+                                            {...register(itemData.id, {
+                                                required: `${itemData.fieldName} field is required`,
+                                                validate: (value) => {
+                                                    // Common validation for all field types
+                                                    if (!value || value.trim() === '') {
+                                                        return `${itemData.fieldName} field is required`;
+                                                    }
+
+                                                    // Field type specific validation
+                                                    if (itemData.fieldType === 'text') {
+                                                        const patternRegex = itemData.validation?.pattern || /^[A-Z][a-zA-Z\s]*$/;
+                                                        if (!patternRegex.test(value)) {
+                                                            return itemData.validation?.patternMsg ||
+                                                                `${itemData.fieldName} should start with a capital letter and contain only letters`;
+                                                        }
+                                                        if (value.length < (itemData.validation?.minLength || 3)) {
+                                                            return `${itemData.fieldName} must be at least 3 characters long`;
+                                                        }
+                                                    }
+                                                    else if (itemData.fieldType === 'number') {
+                                                        // Convert to number first
+                                                        const numValue = Number(value);
+                                                        if (isNaN(numValue)) {
+                                                            return 'Please enter a valid number';
+                                                        }
+                                                        if (numValue <= 0) {
+                                                            return `${itemData.fieldName} must be a positive number`;
+                                                        }
+                                                       
+                                                    }
+
+                                                    return true; // No error
+                                                }
+                                            })}
+                                            error={Boolean(errors[itemData.id])}
+                                            inputProps={{
+                                                min: itemData.fieldType === 'number' ? (itemData.validation?.minValue || 0) : undefined,
+                                                max: itemData.fieldType === 'number' ? itemData.validation?.maxValue : undefined,
+                                                step: itemData.fieldType === 'number' && itemData.validation?.isPrice ? '0.01' : undefined
+                                            }}
+                                        />
+
                                         <FormHelperText error>
                                             {errors[itemData.id]?.message}
                                         </FormHelperText>
@@ -84,16 +155,27 @@ const DialogModal = ({ handleClosingDialogState, modalOpen, title, buttonName, I
                                         <>
                                             {/* Check if there is an existing image */}
                                             {buttonName === 'Update' ? (
-                                                <Grid display='flex' justifyContent='space-between' sx={{ border: '1px solid #D8D8D8', borderRadius: '4px'}}>
-                                                    {updateFormDataa.amenitiesIcon !== null && imageType ?
+                                                <Grid display='flex' justifyContent='space-between' sx={{ border: '1px solid #D8D8D8', borderRadius: '4px' }}>
+                                                    {/* Determine which image to show based on the field */}
+                                                    {((itemData.id === 'amenitiesIcon' && updateFormDataa.amenitiesIcon && imageType) ||
+                                                        (itemData.id === 'facilityImage' && updateFormDataa.facilityImage && imageType) ||
+                                                        (itemData.id === 'bedTypeImage' && updateFormDataa.bedTypeImage && imageType)) ? (
                                                         <Grid>
                                                             <img
-                                                                src={updateFormDataa.amenitiesIcon}
-                                                                alt="Amenity Icon"
+                                                                src={
+                                                                    itemData.id === 'amenitiesIcon' ? updateFormDataa.amenitiesIcon :
+                                                                        itemData.id === 'facilityImage' ? updateFormDataa.facilityImage :
+                                                                            updateFormDataa.bedTypeImage
+                                                                }
+                                                                alt={
+                                                                    itemData.id === 'amenitiesIcon' ? "Amenity Icon" :
+                                                                        itemData.id === 'facilityImage' ? "Facility Image" :
+                                                                            "Bed Type Image"
+                                                                }
                                                                 width='10%'
                                                             />
                                                         </Grid>
-                                                        :
+                                                    ) : (
                                                         <OutlinedInput
                                                             id={itemData.id}
                                                             type="file"
@@ -107,33 +189,24 @@ const DialogModal = ({ handleClosingDialogState, modalOpen, title, buttonName, I
                                                                     border: 'none',
                                                                     boxShadow: 'none',
                                                                 },
-                                                                '&:hover .MuiOutlinedInput-notchedOutline': {
-                                                                    border: 'none',
-                                                                    boxShadow: 'none',
-                                                                },
-                                                                '&.Mui-focused .MuiOutlinedInput-notchedOutline': {
-                                                                    border: 'none',
-                                                                    boxShadow: 'none',
-                                                                },
-                                                                '&.MuiInputBase-root': {
-                                                                    border: 'none',
-                                                                    boxShadow: 'none',
-                                                                },
-                                                                '& .MuiOutlinedInput-input': {
-                                                                    px: 0,
-                                                                },
+                                                                // ... other styles remain the same
                                                             }}
                                                         />
+                                                    )}
 
-                                                    }
                                                     <Button
                                                         variant="outlined"
                                                         onClick={() => setImageType(!imageType)}
-                                                        disabled={updateFormDataa.amenitiesIcon === null}
+                                                        disabled={
+                                                            (itemData.id === 'amenitiesIcon' && !updateFormDataa.amenitiesIcon) ||
+                                                            (itemData.id === 'facilityImage' && !updateFormDataa.facilityImage) ||
+                                                            (itemData.id === 'bedTypeImage' && !updateFormDataa.bedTypeImage)
+                                                        }
                                                     >
-                                                        {imageType ? 'Edit' : 'View' }
+                                                        {imageType ? 'Edit' : 'View'}
                                                     </Button>
                                                 </Grid>
+                                                
                                             ) : (
                                                 // Show file input if no image is set
                                                 <OutlinedInput
@@ -142,14 +215,25 @@ const DialogModal = ({ handleClosingDialogState, modalOpen, title, buttonName, I
                                                     inputProps={{ accept: itemData.allowedTypes?.join(',') || '*' }}
                                                     fullWidth
                                                     onChange={(e) => handleFileChange(e, itemData.id)}
-                                                    error={Boolean(errors[itemData.id])}
+                                                        error={Boolean(errors[itemData.id])}
+                                                        {...register(itemData.id, {
+                                                            validate: (value) => {
+                                                                if (!value) return `${itemData.fieldName} is required`;
+                                                                return true;
+                                                            }
+                                                        })} 
                                                 />
                                             )}
                                             <FormHelperText error>{errors[itemData.id]?.message}</FormHelperText>
                                         </>
                                 ) : itemData?.field === 'select' ? (
                                     <>
-                                                <Select id={itemData.id} fullWidth displayEmpty defaultValue={itemData.value} {...register(itemData.id, { required: itemData.validation?.required && `${itemData.fieldName} field is required`, })} error={Boolean(errors[itemData.id])} >
+                                                <Select id={itemData.id}
+                                                    fullWidth
+                                                    displayEmpty
+                                                    defaultValue=""
+                                                    {...register(itemData.id, { required: itemData.validation?.required && `${itemData.fieldName} field is required` })}
+                                                    error={Boolean(errors[itemData.id])}>
                                             <MenuItem value="" disabled> -- Select -- </MenuItem>
                                             {(itemData?.fieldOptions || []).map((option) => (
                                                 <MenuItem key={option.optionId} value={option.optionValue}>

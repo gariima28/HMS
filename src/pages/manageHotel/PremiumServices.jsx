@@ -79,14 +79,16 @@ const PremiumServices = () => {
   const handleUpdateFormDataaPremiumServicesCost = (val) => setUpdateFormDataa((prev) => ({ ...prev, premiumServiceCost: val }));
 
   const AddInputFields = [
-    { id: 'premiumServiceName', field: 'textInput', fieldType: 'text', validation: { required: true, pattern: /^[A-Za-z\s]+$/, patternMsg: 'This field can only contain characters and spaces', }, fieldName: 'Premium Service Name *', placeholder: 'Enter Premium Service Name', updateValFunc: handleFormDataaPremiumServicesName, },
-    { id: 'status', field: 'select', fieldName: 'Status *', validation: { required: true, }, fieldOptions: [{ optionId: 'active', optionName: 'Active', optionValue: 'true' }, { optionId: 'inActive', optionName: 'Inactive', optionValue: 'false' },], value: formDataa.status, updateValFunc: handleFormDataaPremiumServicesStatus, },
-    { id: 'price', field: 'textInput', fieldType: 'number', validation: { required: true, pattern: /^\d+(\.\d{1,2})?$/, patternMsg: 'Please enter a valid price (e.g., 100 or 100.50)', }, fieldName: 'Price *', placeholder: 'Enter Service Price', updateValFunc: handleFormDataaPremiumServicesCost, },
+    { id: 'premiumServiceName', field: 'textInput', fieldType: 'text', validation: { required: true, pattern: /^[A-Z][a-zA-Z\s]*$/, patternMsg: 'This field should start with capital and only contain letters' }, fieldName: 'Premium Service Name ', placeholder: 'Enter Premium Service Name', updateValFunc: handleFormDataaPremiumServicesName, },
+    { id: 'status', field: 'select', fieldName: 'Status ', validation: { required: true, }, fieldOptions: [{ optionId: 'active', optionName: 'Active', optionValue: 'true' }, { optionId: 'inActive', optionName: 'Inactive', optionValue: 'false' },], value: formDataa.status, updateValFunc: handleFormDataaPremiumServicesStatus, },
+    { id: 'premiumServiceCost', field: 'textInput', fieldType: 'number', validation: { required: true, pattern: /^\d+(\.\d{1,2})?$/, patternMsg: 'Please enter a valid price (e.g., 100 or 100.50)', }, fieldName: 'Price ', placeholder: 'Enter Service Price', updateValFunc: handleFormDataaPremiumServicesCost, },
   ];
 
+
+
   const UpdateInputFields = [
-    { id: 'premiumServiceName', field: 'textInput', fieldType: 'text', validation: { required: true, pattern: /^[A-Za-z\s]+$/, patternMsg: 'This field can only contain characters and spaces', }, fieldName: 'Premium Service Name *', placeholder: 'Enter Premium Service Name', value: updateFormDataa.premiumServiceName, updateValFunc: handleUpdateFormDataaPremiumServicesName, },
-    { id: 'premiumServiceCost', field: 'textInput', fieldType: 'number', validation: { required: true, pattern: /^\d+(\.\d{1,2})?$/, patternMsg: 'Please enter a valid price (e.g., 100 or 100.50)', }, fieldName: 'Price *', placeholder: 'Enter Service Price', value: updateFormDataa.premiumServiceCost, updateValFunc: handleUpdateFormDataaPremiumServicesCost, },
+    { id: 'premiumServiceName', field: 'textInput', fieldType: 'text', validation: { required: true, pattern: /^[A-Za-z\s]+$/, patternMsg: 'This field can only contain characters and spaces', }, fieldName: 'Premium Service Name ', placeholder: 'Enter Premium Service Name', value: updateFormDataa.premiumServiceName, updateValFunc: handleUpdateFormDataaPremiumServicesName, },
+    { id: 'premiumServiceCost', field: 'textInput', fieldType: 'number', validation: { required: true, pattern: /^\d+(\.\d{1,2})?$/, patternMsg: 'Please enter a valid price (e.g., 100 or 100.50)', }, fieldName: 'Price ', placeholder: 'Enter Service Price', value: updateFormDataa.premiumServiceCost, updateValFunc: handleUpdateFormDataaPremiumServicesCost, },
   ];
 
   // Get API
@@ -107,6 +109,8 @@ const PremiumServices = () => {
     }
     setModalOpen(!modalOpen);
   };
+
+
 
   const handleClosingDialogState = () => {
     setModalOpen(!modalOpen);
@@ -155,11 +159,12 @@ const PremiumServices = () => {
     setSnackbar({ open: true, message, severity });
   };
 
-  const AddNewPremiumService = async (formData) => {
+  const AddNewPremiumService = async (data) => {
+    console.log('start')
     setShowModalLoader(true);
 
-    console.log(formData.premiumServiceName, formData.premiumServiceCost);
-    if (!formData.premiumServiceName || !formData.premiumServiceCost) {
+    console.log(data.premiumServiceName, data.premiumServiceCost, data.status);
+    if (!data.premiumServiceName || !data.premiumServiceCost || !data.status) {
       setTimeout(() => {
         handleSnackbarMessage('Please fill in all fields before submitting.', 'error');
         setShowModalLoader(false);
@@ -169,9 +174,11 @@ const PremiumServices = () => {
 
     try {
       const jsonData = {
-        'preSerName': formData.premiumServiceName,
-        'price': formData.premiumServiceCost
+        'preSerName': data.premiumServiceName,
+        'price': data.premiumServiceCost,
+        'status': data.status
       }
+
 
       const response = await addPremiumServicesApi(jsonData);
       if (response.status === 200 && response?.data?.status === 'success') {
@@ -341,6 +348,7 @@ const PremiumServices = () => {
           </Stack>
         </Grid>
       </Grid>
+
       {/* Data Table */}
       {showDataTableLoader ? <PlaceholderTable /> : rows.length > 0 && <DynamicDataTable columns={columns} rows={rows} />}
 
@@ -353,9 +361,9 @@ const PremiumServices = () => {
           {snackbar.message}
         </Alert>
       </Snackbar>
+
     </Box>
   );
-
 };
 
 export default PremiumServices;

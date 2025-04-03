@@ -42,6 +42,7 @@ const StyledTableRow = styled(TableRow)(({ theme }) => ({
     },
 }));
 
+
 const CustomButton = styled(Button)(() => ({
     borderRadius: '3.2px',
     backgroundColor: '#4634ff',
@@ -54,11 +55,13 @@ const CustomButton = styled(Button)(() => ({
         borderColor: '#4634ff',
         color: '#fff',
     },
-
     '&:disabled': {
         backgroundColor: '#7d72fa',
         borderColor: '#7d72fa',
         color: '#fff',
+        cursor: 'not-allowed', // Ensure cursor is not-allowed for disabled state
+        pointerEvents: 'auto',
+
     },
 }));
 
@@ -157,7 +160,7 @@ const BookRoom = () => {
             guestName: 'WalkInGuest', // Set the default value for guestName
         },
     });
-    
+
     // const roomType = watch('roomType', '');
     const guesstName = watch('guestName');
 
@@ -313,7 +316,7 @@ const BookRoom = () => {
                 <Grid container spacing={1} sx={{ backgroundColor: '#ffffff', p: 1, mb: 4 }}>
                     <Grid xs={12} sm={6} md={6} lg={3} >
                         <Stack spacing={1}>
-                            <InputLabel htmlFor="roomType">Room Type</InputLabel>
+                            <InputLabel htmlFor="roomType">Room Type <span style={{ color: 'red' }}> *</span></InputLabel>
                             <Select id='roomType' value={roomType} onChange={handleRoomTypeChange} displayEmpty>
                                 <MenuItem value="" disabled>Select One</MenuItem>
                                 {rows.map((menuItem) => (
@@ -324,7 +327,7 @@ const BookRoom = () => {
                     </Grid>
                     <Grid xs={12} sm={6} md={6} lg={3} >
                         <Stack spacing={1}>
-                            <InputLabel htmlFor="subTitle">Check In - Check Out Date</InputLabel>
+                            <InputLabel htmlFor="subTitle">Check In - Check Out Date <span style={{ color: 'red' }}> *</span></InputLabel>
                             <LocalizationProvider dateAdapter={AdapterDayjs}>
                                 <DateRangePicker slots={{ field: SingleInputDateRangeField }} fullWidth id="subTitle" name="subTitle" onChange={(newValue) => handleCheckInCheckOutDate(newValue)} />
                             </LocalizationProvider>
@@ -332,7 +335,7 @@ const BookRoom = () => {
                     </Grid>
                     <Grid xs={12} sm={6} md={6} lg={3} >
                         <Stack spacing={1}>
-                            <InputLabel htmlFor="room">Room</InputLabel>
+                            <InputLabel htmlFor="room">Room <span style={{ color: 'red' }}> *</span></InputLabel>
                             <OutlinedInput id="room" type="number" name="room" placeholder="How many room?" value={noOfRooms} fullWidth onChange={(e) => setNoOfRooms(e.target.value)} />
                         </Stack>
                     </Grid>
@@ -357,6 +360,7 @@ const BookRoom = () => {
                                         <Grid sx={{ display: 'flex' }}>
                                             <Grid alignContent='center' sx={{ flexGrow: 1 }}>
                                                 <Typography variant="h5" gutterBottom>Booking Information</Typography>
+
                                             </Grid>
                                         </Grid>
                                         <Divider />
@@ -379,7 +383,7 @@ const BookRoom = () => {
                                             </Grid>
                                         </Grid>
                                         <Grid container sx={{ p: 2 }}>
-                                            <Typography variant="body1" sx={{ backgroundColor: '#eff8ff', p: 2 }}>{descText}</Typography>
+                                            <Typography variant="body1" sx={{ backgroundColor: '#eff8ff', p: 2 }}>{descText}<span style={{ color: 'red' }}> *</span></Typography>
                                         </Grid>
                                         <Grid>
                                             <TableContainer component={Paper}>
@@ -441,7 +445,7 @@ const BookRoom = () => {
                                             <form onSubmit={handleSubmit(NewRoomBooking)}>
                                                 <Grid xs={12} sx={{ p: 0.7, mt: 1 }} >
                                                     <Stack spacing={1}>
-                                                        <InputLabel htmlFor="guestName">Guest Type</InputLabel>
+                                                        <InputLabel htmlFor="guestName">Guest Type <span style={{ color: 'red' }}> *</span></InputLabel>
                                                         <Select value={guesstName} {...register('guestName', { required: 'Guest Type is required' })} displayEmpty sx={inputStyles(errors.guestName)} >
                                                             <MenuItem value="" disabled>Select type</MenuItem>
                                                             <MenuItem value="WalkInGuest">Walk-In Guest</MenuItem>
@@ -457,7 +461,7 @@ const BookRoom = () => {
                                                 {guesstName !== 'ExistingGuest' &&
                                                     <Grid xs={12} sx={{ p: 0.7, mt: 1 }} >
                                                         <Stack spacing={1}>
-                                                            <InputLabel htmlFor="name">Name *</InputLabel>
+                                                            <InputLabel htmlFor="name">Name <span style={{ color: 'red' }}> *</span></InputLabel>
                                                             <OutlinedInput {...register('name', { required: 'Name is required', minLength: { value: 3, message: 'Name must be at least 3 characters' }, })} placeholder="Enter your name"
                                                                 sx={inputStyles(errors.name)} />
                                                             {errors.name && (
@@ -470,7 +474,7 @@ const BookRoom = () => {
                                                 }
                                                 <Grid xs={12} sx={{ p: 0.7, mt: 1 }} >
                                                     <Stack spacing={1}>
-                                                        <InputLabel htmlFor="email">Email *</InputLabel>
+                                                        <InputLabel htmlFor="email">Email <span style={{ color: 'red' }}> *</span></InputLabel>
                                                         <OutlinedInput {...register('email', { required: 'Email is required', pattern: { value: /^[^\s@]+@[^\s@]+\.[^\s@]+$/, message: 'Invalid email address' }, })} placeholder="Enter your email"
                                                             sx={inputStyles(errors.email)} />
                                                         {errors.email && (
@@ -484,7 +488,7 @@ const BookRoom = () => {
                                                     <>
                                                         <Grid xs={12} sx={{ p: 0.7, mt: 1 }} >
                                                             <Stack spacing={1}>
-                                                                <InputLabel htmlFor="phone_number">Phone Number *</InputLabel>
+                                                                <InputLabel htmlFor="phone_number">Phone Number <span style={{ color: 'red' }}> *</span></InputLabel>
                                                                 <OutlinedInput {...register('phone_number', { required: 'Phone number is required', pattern: { value: /^[0-9]{10}$/, message: 'Phone number must be 10 digits' }, })} placeholder="Enter your Phone number"
                                                                     sx={inputStyles(errors.phone_number)} />
                                                                 {errors.phone_number && (
@@ -496,7 +500,7 @@ const BookRoom = () => {
                                                         </Grid>
                                                         <Grid xs={12} sx={{ p: 0.7, mt: 1 }} >
                                                             <Stack spacing={1}>
-                                                                <InputLabel htmlFor="address">Address *</InputLabel>
+                                                                <InputLabel htmlFor="address">Address <span style={{ color: 'red' }}> *</span></InputLabel>
                                                                 <OutlinedInput {...register('address', { required: 'Address is required', minLength: { value: 3, message: 'Address must be at least 3 characters' }, })} placeholder="Enter address"
                                                                     sx={inputStyles(errors.address)} />
                                                                 {errors.address && (
@@ -508,7 +512,7 @@ const BookRoom = () => {
                                                         </Grid>
                                                         <Grid xs={12} sx={{ p: 0.7, mt: 1 }} >
                                                             <Stack spacing={1}>
-                                                                <InputLabel htmlFor="adult">Adult</InputLabel>
+                                                                <InputLabel htmlFor="adult">Adult <span style={{ color: 'red' }}> *</span></InputLabel>
                                                                 <OutlinedInput {...register('adult', { required: 'No. of Adults is required', min: 0 })} placeholder="Enter no. of Adults"
                                                                     sx={inputStyles(errors.adult)} />
                                                                 {errors.adult && (
@@ -520,7 +524,7 @@ const BookRoom = () => {
                                                         </Grid>
                                                         <Grid xs={12} sx={{ p: 0.7, mt: 1 }} >
                                                             <Stack spacing={1}>
-                                                                <InputLabel htmlFor="child">Children</InputLabel>
+                                                                <InputLabel htmlFor="child">Children <span style={{ color: 'red' }}> *</span></InputLabel>
                                                                 <OutlinedInput {...register('child', { required: 'No. of Children is required', min: 0 })} placeholder="Enter no. of Children"
                                                                     sx={inputStyles(errors.child)} />
                                                                 {errors.child && (
@@ -566,7 +570,7 @@ const BookRoom = () => {
                                                 </Grid>
                                                 <Grid xs={12} sx={{ p: 0.7, mt: 1 }} >
                                                     <Stack spacing={1}>
-                                                        <InputLabel htmlFor="payingAmount">Paying Amount</InputLabel>
+                                                        <InputLabel htmlFor="payingAmount">Paying Amount <span style={{ color: 'red' }}> *</span></InputLabel>
                                                         <OutlinedInput {...register('payingAmount', { required: 'Paying amount is required', min: { value: 1, message: 'Amount must be at least 1' }, validate: { isNumeric: value => !isNaN(value) || 'Please enter a valid number', }, })} placeholder="Enter maximum amount limit" sx={inputStyles(errors.payingAmount)} />
                                                         {errors.payingAmount && (
                                                             <Typography color="error" variant="caption">

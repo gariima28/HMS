@@ -150,7 +150,7 @@ const CreateHotel = () => {
         <Grid container spacing={3}>
           <Grid  xs={12} sm={6} md={6} lg={4}>
             <Stack spacing={1}>
-              <InputLabel htmlFor="hotelName">Hotel Name</InputLabel>
+              <InputLabel htmlFor="hotelName">Hotel Name <span style={{ color: 'red' }}> *</span></InputLabel>
               {/* <OutlinedInput id="hotelName" type="text" {...register("hotelName" , {required : 'This Field is required' , validate: { pattern: (value) => /^[A-Z][a-zA-Z\s]+$/.test(value) || `Hotel name must start with an uppercase letter ${<br/>} contain only letters or spaces`}, })} placeholder="Enter Hotel Name" fullWidth error={Boolean(errors.hotelName)} /> */}
               <OutlinedInput id="hotelName" type="text" { ...register("hotelName", { required: 'This Field is required', validate: { startsWithCapital: (value) =>  /^[A-Z]/.test(value) || 'Hotel name must start with an uppercase letter', minLength: (value) => value.length >= 4 || 'Minimum Length is 4', pattern: (value) => /^[A-Z][a-zA-Z\s]+$/.test(value) ||  'Hotel name must contain only letters, and spaces', } }) } placeholder="Enter Hotel Name" fullWidth error={Boolean(errors.hotelName)}  />
             </Stack>
@@ -158,21 +158,21 @@ const CreateHotel = () => {
           </Grid>
           <Grid  xs={12} sm={6} md={6} lg={4}>
             <Stack spacing={1}>
-              <InputLabel htmlFor="subTitle">Sub Title</InputLabel>
+              <InputLabel htmlFor="subTitle">Sub Title <span style={{ color: 'red' }}> *</span></InputLabel>
               <OutlinedInput id="subTitle" type="text" {...register("subTitle" , { required: 'This Field is required', validate: { startsWithCapital: (value) =>  /^[A-Z]/.test(value) || 'Sub Title must start with an uppercase letter', minLength: (value) => value.length >= 4 || 'Minimum Length is 4', pattern: (value) => /^[A-Z][a-zA-Z\s]+$/.test(value) ||  'Sub Title must contain only letters, and spaces', } })} placeholder="Enter Sub Title" fullWidth error={Boolean(errors.subTitle)} />
             </Stack>
             <FormHelperText error id="standard-weight-helper-text-subTitle">{errors.subTitle?.message}</FormHelperText>
           </Grid>
           <Grid  xs={12} sm={6} md={6} lg={4}>
             <Stack spacing={1}>
-              <InputLabel htmlFor="destination">Destination</InputLabel>
+              <InputLabel htmlFor="destination">Destination <span style={{ color: 'red' }}> *</span></InputLabel>
               <OutlinedInput id="destination" type="text" {...register("destination" , { required: 'This Field is required', validate: { startsWithCapital: (value) =>  /^[A-Z]/.test(value) || 'Destination must start with an uppercase letter', minLength: (value) => value.length >= 4 || 'Minimum Length is 4', pattern: (value) => /^[A-Z][a-zA-Z\s]+$/.test(value) ||  'Destination must contain only letters, and spaces', } })} placeholder="Enter Destination" fullWidth error={Boolean(errors.destination)} />
             </Stack>
             <FormHelperText error id="standard-weight-helper-text-destination">{errors.destination?.message}</FormHelperText>
           </Grid>
           <Grid xs={12} sm={6} md={6} lg={4}>
             <Stack spacing={1}>
-              <InputLabel htmlFor="status">Status</InputLabel>
+              <InputLabel htmlFor="status">Status <span style={{ color: 'red' }}> *</span></InputLabel>
               <Select {...register("status", { required: 'This Field is required' })}
                 fullWidth displayEmpty error={Boolean(errors.status)}
                 value={hotelStatus !== undefined ? String(hotelStatus) : ''} >
@@ -185,49 +185,49 @@ const CreateHotel = () => {
           </Grid>
           <Grid  xs={12} sm={6} md={6} lg={4}>
             <Stack spacing={1}>
-              <InputLabel htmlFor="hotelClass">Hotel Class</InputLabel>
+              <InputLabel htmlFor="hotelClass">Hotel Class <span style={{ color: 'red' }}> *</span></InputLabel>
               <OutlinedInput id="hotelClass" type="text" {...register("hotelClass" , { required: 'This Field is required', validate: { startsWithCapital: (value) =>  /^[A-Z]/.test(value) || 'Hotel Class must start with an uppercase letter', minLength: (value) => value.length >= 4 || 'Minimum Length is 4', pattern: (value) => /^[A-Z][a-zA-Z\s]+$/.test(value) ||  'Hotel Class must contain only letters, and spaces', } })} placeholder="Enter Hotel Class" fullWidth error={Boolean(errors.hotelClass)}/>
             </Stack>
             <FormHelperText error id="standard-weight-helper-text-hotelClass">{errors.hotelClass?.message}</FormHelperText>
           </Grid>
           <Grid  xs={12} sm={6} md={6} lg={4} >
             <Stack spacing={1}>
-              <InputLabel htmlFor="phoneNo">Phone No</InputLabel>
+              <InputLabel htmlFor="phoneNo">Phone No <span style={{ color: 'red' }}> *</span></InputLabel>
               <OutlinedInput id="phoneNo" type="text" { ...register("phoneNo", { required: 'This field is required', validate: { minLength: (value) => value.length <= 10 || 'Phone number must not be more than 10 digits', maxLength: (value) => value.length === 10 || 'Phone number must be exactly 10 digits', pattern: (value) => /^[6-9]\d{9}$/.test(value) || 'Phone number must contain only digits. Any characters or special characters are not allowed', } }) } placeholder="Enter Phone No" fullWidth error={Boolean(errors.phoneNo)} />
             </Stack>
             <FormHelperText error id="standard-weight-helper-text-phoneNo">{errors.phoneNo?.message}</FormHelperText>
           </Grid>
           <Grid  xs={12} sm={6} md={6} lg={4} >
             <Stack spacing={1}>
-              <InputLabel htmlFor="address">Address</InputLabel>
+              <InputLabel htmlFor="address">Address <span style={{ color: 'red' }}> *</span></InputLabel>
               <OutlinedInput id="address" type="text" {...register("address" , { required: 'This Field is required', validate: { startsWithCapital: (value) =>  /^[A-Z]/.test(value) || 'Hotel Address must start with an uppercase letter', minLength: (value) => value.length >= 4 || 'Minimum Length is 4', pattern: (value) => /^[a-zA-Z0-9\s,.'-]+$/.test(value) ||  'Hotel Address must contain only letters, and spaces', } })} placeholder="Enter Address" fullWidth error={Boolean(errors.address)} />
             </Stack>
             <FormHelperText error id="standard-weight-helper-text-address">{errors.address?.message}</FormHelperText>
           </Grid>
           <Grid  xs={12} sm={6} md={6} lg={4} >
             <Stack spacing={1}>
-              <InputLabel htmlFor="hotelEmail">Hotel Email</InputLabel>
+              <InputLabel htmlFor="hotelEmail">Hotel Email <span style={{ color: 'red' }}> *</span></InputLabel>
               <OutlinedInput id="hotelEmail" type="text" {...register("hotelEmail" , { required: 'This Field is required',  validate: { pattern: (value) => /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/.test(value) || 'Not a valid email format' } })} placeholder="Enter Hotel Email" fullWidth error={Boolean(errors.hotelEmail)} />
             </Stack>
             <FormHelperText error id="standard-weight-helper-text-hotelEmail">{errors.hotelEmail?.message}</FormHelperText>
           </Grid>
           <Grid  xs={12} sm={6} md={6} lg={4} >
             <Stack spacing={1}>
-              <InputLabel htmlFor="description">Description</InputLabel>
+              <InputLabel htmlFor="description">Description <span style={{ color: 'red' }}> *</span></InputLabel>
               <OutlinedInput id="description" type="text" {...register("description" , { required: 'This Field is required', validate: { startsWithCapital: (value) =>  /^[A-Z]/.test(value) || 'Hotel Image must start with an uppercase letter', minLength: (value) => value.length >= 4 || 'Minimum Length is 4', pattern: (value) => /^[A-Z][a-zA-Z\s]+$/.test(value) ||  'Hotel name must contain only letters, and spaces', } })} placeholder="Enter Description" fullWidth error={Boolean(errors.description)} />
             </Stack>
             <FormHelperText error id="standard-weight-helper-text-description">{errors.description?.message}</FormHelperText>
           </Grid>
           <Grid  xs={12} sm={6} md={6} lg={4} >
             <Stack spacing={1}>
-              <InputLabel htmlFor="hotelId">Hotel Id (Prefix)</InputLabel>
+              <InputLabel htmlFor="hotelId">Hotel Id (Prefix) <span style={{ color: 'red' }}> *</span></InputLabel>
               <OutlinedInput id="hotelId" type="text" {...register("hotelId", { required: 'This Field is required', minLength: { value: 3, message: 'Minimum Length is 3' }, pattern: { value: /^[A-Z]{3,6}$/, message: 'Must be between 3 to 6 uppercase letters', } })} placeholder="Enter Hotel Id" fullWidth error={Boolean(errors.hotelId)} />
             </Stack>
             <FormHelperText error id="standard-weight-helper-text-hotelId">{errors.hotelId?.message}</FormHelperText>
           </Grid>
           <Grid  xs={12} sm={6} md={6} lg={4} >
             <Stack spacing={1}>
-              <InputLabel htmlFor="hotelImage">Hotel Image URL</InputLabel>
+              <InputLabel htmlFor="hotelImage">Hotel Image URL <span style={{ color: 'red' }}> *</span></InputLabel>
               <OutlinedInput id="hotelImage" type="file" {...register("hotelImage" , { required: 'This Field is required', validate: { fileType: (file) => { if (!file[0]) return 'No file selected'; if (file.size < 10240 || file.size > 204800) return '* File size must be between 10 KB to 200 KB'; const allowedTypes = ['image/jpeg', 'image/png']; return allowedTypes.includes(file[0].type) || 'Only .jpg and .png files are allowed'; }, },})} placeholder="Enter Hotel Image URL" fullWidth error={Boolean(errors.hotelImage)} />
             </Stack>
             <FormHelperText error id="standard-weight-helper-text-hotelImage">{errors.hotelImage?.message}</FormHelperText>
@@ -236,33 +236,33 @@ const CreateHotel = () => {
        {id ==='add' &&(
         <>
             <Grid sx={{ mt: 4, mb: 4 }} >
-              <Typography variant="h5">Admin Details</Typography>
+              <Typography variant="h5">Admin Details </Typography>
             </Grid>
             <Grid container spacing={3}>
               <Grid xs={12} sm={6} md={6} lg={4} >
                 <Stack spacing={1}>
-                  <InputLabel htmlFor="adminName">Admin Name</InputLabel>
+                  <InputLabel htmlFor="adminName">Admin Name <span style={{ color: 'red' }}> *</span></InputLabel>
                   <OutlinedInput id="adminName" type="text" {...register("adminName", { required: 'This Field is required', validate: { startsWithCapital: (value) => /^[A-Z]/.test(value) || 'Admin name must start with an uppercase letter', minLength: (value) => value.length >= 4 || 'Minimum Length is 4', pattern: (value) => /^[A-Z][a-zA-Z\s]+$/.test(value) || 'Admin name must contain only letters, and spaces', } })} placeholder="Enter Admin Name" fullWidth error={Boolean(errors.adminName)} />
                 </Stack>
                 <FormHelperText error id="standard-weight-helper-text-adminName">{errors.adminName?.message}</FormHelperText>
               </Grid>
               <Grid xs={12} sm={6} md={6} lg={4} >
                 <Stack spacing={1}>
-                  <InputLabel htmlFor="adminEmail">Admin Email</InputLabel>
+                  <InputLabel htmlFor="adminEmail">Admin Email <span style={{ color: 'red' }}> *</span></InputLabel>
                   <OutlinedInput id="adminEmail" type="text" {...register("adminEmail", { required: 'This Field is required', validate: { pattern: (value) => /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/.test(value) || 'Not a valid email format' } })} placeholder="Enter Admin Email" fullWidth error={Boolean(errors.adminEmail)} />
                 </Stack>
                 <FormHelperText error id="standard-weight-helper-text-adminEmail">{errors.adminEmail?.message}</FormHelperText>
               </Grid>
               <Grid xs={12} sm={6} md={6} lg={4} >
                 <Stack spacing={1}>
-                  <InputLabel htmlFor="adminAddress">Admin Address</InputLabel>
+                  <InputLabel htmlFor="adminAddress">Admin Address <span style={{ color: 'red' }}> *</span></InputLabel>
                   <OutlinedInput id="adminAddress" type="text" {...register("adminAddress", { required: 'This Field is required', validate: { startsWithCapital: (value) => /^[A-Z]/.test(value) || 'Admin Address must start with an uppercase letter', minLength: (value) => value.length >= 4 || 'Minimum Length is 4', pattern: (value) => /^[A-Z][a-zA-Z\s]+$/.test(value) || 'Admin Address must contain only letters, and spaces', } })} placeholder="Enter Admin Address" fullWidth error={Boolean(errors.adminAddress)} />
                 </Stack>
                 <FormHelperText error id="standard-weight-helper-text-adminAddress">{errors.adminAddress?.message}</FormHelperText>
               </Grid>
               <Grid xs={12} sm={6} md={6} lg={4} >
                 <Stack spacing={1}>
-                  <InputLabel htmlFor="adminPhone">Admin Phone</InputLabel>
+                  <InputLabel htmlFor="adminPhone">Admin Phone <span style={{ color: 'red' }}> *</span></InputLabel>
                   <OutlinedInput id="adminPhone" type="text" {...register("adminPhone", { required: 'This Field is required', validate: { minLength: (value) => value.length <= 10 || 'Phone number must not be more than 10 digits', maxLength: (value) => value.length === 10 || 'Phone number must be exactly 10 digits', pattern: (value) => /^[6-9]\d{9}$/.test(value) || 'Phone number must contain only digits. Any characters or special characters are not allowed', } })} placeholder="Enter Admin Phone" fullWidth error={Boolean(errors.adminPhone)} />
                 </Stack>
                 <FormHelperText error id="standard-weight-helper-text-adminPhone">{errors.adminPhone?.message}</FormHelperText>
