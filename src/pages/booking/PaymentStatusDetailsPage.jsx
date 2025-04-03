@@ -9,7 +9,7 @@ import { useForm } from "react-hook-form";
 import useSWR from "swr";
 // import { getPaymentDetailsByPaymentId, changePaymentStatus } from "api/api";
 // const LocalGirjesh = 'http://192.168.20.109:5001';
-const ServerIP = 'http://89.116.122.211:5001'
+const ServerIP = 'https://www.auth.edu2all.in/hms'
 const token = `Bearer ${localStorage.getItem('token')}`;
 
 // API Call when ever data updates 
@@ -66,7 +66,7 @@ const Details = () => {
 
             // API Call to update status and refundAmount
             const response = await axios.put(
-                `http://89.116.122.211:5001/payment/${status}/${paymentId}`,
+                `https://www.auth.edu2all.in/hms/payment/${status}/${paymentId}`,
                 {
                     refundAmount: refundAmount,
                     status: status,
@@ -118,7 +118,7 @@ const Details = () => {
 
             // API Call to update status and refundAmount
             const response = await axios.put(
-                `http://89.116.122.211:5001/payment/${status}/${paymentId}`,
+                `https://www.auth.edu2all.in/hms/payment/${status}/${paymentId}`,
                 {
                     refundAmount: refundAmount,
                     status: status,

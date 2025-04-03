@@ -151,7 +151,7 @@ const PaymentsPage = () => {
     const getAllPayments = async () => {
         try {
             const response = await axios.get(
-                `http://89.116.122.211:5001/payment/getAllPayments`,
+                `https://www.auth.edu2all.in/hms/payment/getAllPayments`,
                 {
                     headers: {
                         Authorization: `Bearer ${token}`,
