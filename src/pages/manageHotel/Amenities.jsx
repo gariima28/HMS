@@ -167,9 +167,13 @@ const Amenities = () => {
 
   const AddNewAmenity = async (formData) => {
     setShowModalLoader(true);
+    const statusValue = formData.amenitiesStatus === 'true' ? true :
+      formData.amenitiesStatus === 'false' ? false :
+        formData.amenitiesStatus;
 
-    console.log(formData.amenitiesName, formData.amenitiesStatus, formData.amenitiesIcon);
-    if (!formData.amenitiesName || !formData.amenitiesStatus || !formData.amenitiesIcon) {
+
+    console.log(formData.amenitiesName, statusValue, formData.amenitiesIcon);
+    if (!formData.amenitiesName || !statusValue || !formData.amenitiesIcon) {
       setTimeout(() => {
         handleSnackbarMessage('Please fill in all fields before submitting.', 'error');
         setShowModalLoader(false);
@@ -180,7 +184,7 @@ const Amenities = () => {
     try {
       const formDataPayload = new FormData();
       formDataPayload.append('amenitiesName', formData.amenitiesName);
-      formDataPayload.append('status', formData.amenitiesStatus);
+      formDataPayload.append('status', statusValue);
       formDataPayload.append('icon', formData.amenitiesIcon[0]);
 
       const response = await addAmenitiesApi(formDataPayload);
@@ -332,13 +336,17 @@ const Amenities = () => {
     />
   );
 
-  if (isValidating) return (
-    <ErrorPage
-      errorMessage={`The request is taking longer than expected. Please wait or try again.`}
-      onReload={() => { console.log(error, 'error while isValidating') }}
-      statusCode={`Pending`}
-    />
-  );
+  if (isValidating) {
+    setTimeout(() => {
+      return (
+        <ErrorPage
+          errorMessage={`The request is taking longer than expected. Please wait or try again.`}
+          onReload={() => { console.log(error, 'error while isValidating') }}
+          statusCode={`Pending`}
+        />
+      );
+    }, 2000)
+  }
 
   return (
 

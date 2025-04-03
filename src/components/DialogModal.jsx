@@ -22,10 +22,14 @@ const SaveButton = styled(Button)(() => ({
 }));
 
 const DialogModal = ({ handleClosingDialogState, modalOpen, title, buttonName, InputFields, onSubmit, updateFormDataa, showModalLoader }) => {
-    const { register, handleSubmit, formState: { errors }, setValue, trigger,reset} = useForm({
+    const { register, handleSubmit, formState: { errors }, setValue, trigger, reset, watch } = useForm({
         mode: "onChange",  // Enables real-time validation  
     });
     const [imageType, setImageType] = useState(false)
+
+    useEffect(() => {
+        console.log("Current status value:", watch('amenitiesStatus'));
+    }, [watch('amenitiesStatus')]);
 
     const handleFileChange = (e, id) => {
         const file = e.target.files[0];
@@ -228,15 +232,26 @@ const DialogModal = ({ handleClosingDialogState, modalOpen, title, buttonName, I
                                         </>
                                 ) : itemData?.field === 'select' ? (
                                     <>
-                                                <Select id={itemData.id}
-                                                    fullWidth
-                                                    displayEmpty
-                                                    defaultValue=""
-                                                    {...register(itemData.id, { required: itemData.validation?.required && `${itemData.fieldName} field is required` })}
-                                                    error={Boolean(errors[itemData.id])}>
+                                        <Select
+                                            id={itemData.id}
+                                            fullWidth
+                                            displayEmpty
+                                            value={watch(itemData.id) || ""} // Use watch to get current value
+                                            {...register(itemData.id, {
+                                                required: `${itemData.fieldName} field is required`,
+                                                onChange: (e) => {
+                                                    setValue(itemData.id, e.target.value, { shouldValidate: true }); // Update form value and trigger validation
+                                                    itemData.updateValFunc(e.target.value); // Update the parent component state
+                                                }
+                                            })}
+                                            error={Boolean(errors[itemData.id])}
+                                        >
                                             <MenuItem value="" disabled> -- Select -- </MenuItem>
                                             {(itemData?.fieldOptions || []).map((option) => (
-                                                <MenuItem key={option.optionId} value={option.optionValue}>
+                                                <MenuItem
+                                                    key={option.optionId}
+                                                    value={option.optionValue}
+                                                >
                                                     {option.optionName}
                                                 </MenuItem>
                                             ))}
