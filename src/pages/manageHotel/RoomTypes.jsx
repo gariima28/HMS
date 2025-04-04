@@ -12,6 +12,7 @@ import axios from 'axios';
 import HashLoader from 'components/Skeleton/HashLoader';
 import PlaceholderTable from 'components/Skeleton/PlaceholderTable';
 import ErrorPage from 'components/ErrorPage';
+import { updateRoomTypesApi } from 'api/api';
 
 // const LocalGirjesh = 'http://192.168.20.109:5001';
 const ServerIP = 'https://www.auth.edu2all.in/hms'
@@ -72,9 +73,11 @@ const RoomTypes = () => {
   const [toaster, setToaster] = useState(false);
   const [msgToaster, setMsgToaster] = useState('');
   const [toaterErrorSuccessState, setToaterErrorSuccessState] = useState('success');
+  const [snackbar, setSnackbar] = useState({ open: false, message: '', severity: '' });
 
   const [showLoader, setShowLoader] = useState(false);
   const [showDataTableLoader, setShowDataTableLoader] = useState(false);
+  const [showStatusLoader, setShowStatusLoader] = useState(false);
 
   // get API
   const { data, error } = useSWR(`${ServerIP}/roomTypes/getAll`, fetcher, {
@@ -115,7 +118,12 @@ const RoomTypes = () => {
           <Stack justifyContent='end' spacing={2} direction="row">
             <Button variant="outlined" size="small" startIcon={<Edit />} href={`addUpdateRoomType/${roomType.roomTypesId}`}>Edit</Button>
             {/* <Button variant="outlined" size="small" startIcon={<Edit />} onClick={() => handleDialogState('Update New RoomTypes', 'Update', roomType.roomTypesId)}>Edit</Button> */}
-            <Button variant="outlined" size="small" startIcon={roomType.roomTypeStatus ? <EyeInvisibleFilled /> : <EyeFilled />} color={`${roomType.roomTypeStatus ? 'error' : 'success'}`} onClick={() => UpdateRoomTypesStatus(roomType?.roomTypesId, roomType.roomTypeStatus)}>{`${roomType.roomTypeStatus ? 'Disable' : 'Enable'}`}</Button>
+            <Button variant="outlined" size="small" startIcon={roomType.roomTypeStatus ? <EyeInvisibleFilled /> : <EyeFilled />} color={`${roomType.roomTypeStatus ? 'error' : 'success'}`} onClick={() => UpdateRoomTypesStatus(roomType?.roomTypesId, roomType.roomTypeStatus)}>
+              {showStatusLoader
+                ? 'Processing...'
+                :
+                `${roomType.roomTypeStatus ? 'Disable' : 'Enable'}`}
+            </Button>
           </Stack>
         ),
       }));
@@ -130,6 +138,46 @@ const RoomTypes = () => {
     }
   }, [data]);
 
+  const handleSnackbarClose = () => {
+    setSnackbar((prev) => ({ ...prev, open: false }));
+  };
+
+  const UpdateRoomTypesStatus = async (id, roomTypeStatus) => {
+    setShowStatusLoader(true)
+    // setStatusLoaderId(id);
+    try {
+      const formData = new FormData();
+      formData.append('roomTypeStatus', roomTypeStatus ? false : true);
+      const response = await updateRoomTypesApi(id, formData);
+      if (response?.status === 200) {
+        setTimeout(() => {
+          handleSnackbarMessage(response?.data?.message, 'success');
+          refreshData();
+          setShowStatusLoader(false)
+
+        }, 1700);
+      } else {
+        setTimeout(() => {
+          setShowStatusLoader(false)
+          handleSnackbarMessage(response?.data?.message, 'error');
+        }, 1700);
+      }
+    } catch (error) {
+      setTimeout(() => {
+        setShowStatusLoader(false)
+        handleSnackbarMessage('Error during update', 'error');
+      }, 1700);
+    } finally {
+      setTimeout(() => {
+        setShowStatusLoader(false)
+        setStatusLoaderId(null);
+      }, 1700);
+    }
+  };
+
+  const handleSnackbarMessage = (message, severity) => {
+    setSnackbar({ open: true, message, severity });
+  };
 
   if (error) return (
     <ErrorPage
@@ -142,7 +190,8 @@ const RoomTypes = () => {
 
   return (
     <Box>
-      {showLoader && <HashLoader />}
+      {showStatusLoader && <HashLoader />}
+      {/* {showLoader && <HashLoader />} */}
       <Grid sx={{ display: 'flex', mb: 3 }}>
         <Grid alignContent='center' sx={{ flexGrow: 1 }}>
           <Typography variant="h5">All RoomTypes</Typography>
@@ -159,12 +208,12 @@ const RoomTypes = () => {
       {showDataTableLoader ? <PlaceholderTable /> : rows.length > 0 && <DynamicDataTable columns={columns} rows={rows} />}
 
       {/* Modals for all Add and Update */}
-      {/* <DialogModal handleClosingDialogState={handleClosingDialogState} modalOpen={modalOpen} title={modalTitle} buttonName={buttonName} InputFields={buttonName === 'Create' ? AddInputFields : UpdateInputFields} onSubmit={buttonName === 'Create' ? AddNewAmenity : UpdateRoomTypesData} /> */}
+      {/* <DialogModal handleClosingDialogState={handleClosingDialogState} modalOpen={modalOpen} title={modalTitle} buttonName={buttonName} InputFields={buttonName === 'Create' ? AddInputFields : UpdateInputFields} onSubmit={buttonName === 'Create' ? AddNewroomType : UpdateRoomTypesData} /> */}
 
       {/* SnackBar */}
-      <Snackbar open={toaster} autoHideDuration={5000} onClose={handleClosingToasterState}>
-        <Alert onClose={handleClosingToasterState} severity={toaterErrorSuccessState} variant="filled" sx={{ width: '100%', color: '#fff', fontSize: '14px' }}>
-          {msgToaster}
+      <Snackbar open={snackbar.open} autoHideDuration={3000} onClose={handleSnackbarClose} anchorOrigin={{ vertical: 'top', horizontal: 'right' }}>
+        <Alert onClose={handleSnackbarClose} variant="filled" severity={snackbar.severity} sx={{ width: '100%', color: '#fff' }}>
+          {snackbar.message}
         </Alert>
       </Snackbar>
 

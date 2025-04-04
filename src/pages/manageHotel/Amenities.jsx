@@ -253,23 +253,23 @@ const Amenities = () => {
           refreshData();
           setShowStatusLoader(false)
 
-        }, 100000000000);
+        }, 1700);
       } else {
         setTimeout(() => {
           setShowStatusLoader(false)
           handleSnackbarMessage(response?.data?.message, 'error');
-        }, 100000000000);
+        }, 1700);
       }
     } catch (error) {
       setTimeout(() => {
         setShowStatusLoader(false)
         handleSnackbarMessage('Error during update', 'error');
-      }, 100000000000);
+      }, 1700);
     } finally {
       setTimeout(() => {
         setShowStatusLoader(false)
         setStatusLoaderId(null);
-      }, 100000000000);
+      }, 1700);
     }
   };
 
