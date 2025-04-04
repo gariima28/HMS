@@ -149,6 +149,7 @@ const AllBookings = () => {
       setOpenBookingId(bookingId);
     }
   };
+
   // const handleClick = (event, bookingId) => {
   //   setAnchorEl(event.currentTarget);
 
@@ -223,7 +224,6 @@ const AllBookings = () => {
                 aria-haspopup="true"
                 aria-expanded={open ? 'true' : undefined}
                 onClick={(e) => handleClick(e, booking.bookingId)}
-              // onClick={(e) => handleClick(e.currentTarget)}
               >
                 More
               </MoreButton>
@@ -231,6 +231,7 @@ const AllBookings = () => {
                 id="basic-menu"
                 anchorEl={anchorEl}
                 open={openBookingId === booking.bookingId && Boolean(anchorEl)}
+                // open={Boolean(anchorEl) && openBookingId === booking.bookingId}
                 onClose={handleClose}
                 MenuListProps={{
                   'aria-labelledby': 'basic-button',
@@ -317,7 +318,8 @@ const AllBookings = () => {
         </Grid>
       </Grid>
 
-      {showDataTableLoader ? <PlaceholderTable /> : rows.length > 0 ? <DynamicDataTable columns={columns} rows={rows} /> : <NoDataFound />}
+      {/* {showDataTableLoader ? <PlaceholderTable /> : rows.length > 0 ?  : <NoDataFound />} */}
+      <DynamicDataTable columns={columns} rows={rows} />
 
       <Dialog open={openMergeDialog} onClose={handleClose} aria-labelledby="alert-dialog-title" aria-describedby="alert-dialog-description" maxWidth="xs" PaperProps={{ sx: { position: "absolute", top: 20, margin: 0, width: '100%' }, }} >
         <DialogTitle sx={{ m: 0, p: 2, fontWeight: "bold" }} id="customized-dialog-title" > Merging with:{" "}

@@ -192,6 +192,7 @@ const RoomType = () => {
             console.error(err.response || err);
         }
     };
+
     const fetchFacilities = async () => {
         try {
             if (!token) {
@@ -244,6 +245,18 @@ const RoomType = () => {
                 setValue("roomDescription", data.roomDescription || "");
                 setValue("cancelDescription", data.cancelDescription || "");
                 setValue("totalBed", data.totalBed || 0);
+
+
+                if (data.roomTypeImage && data.roomTypeImage.length > 0) {
+                    // Set first image as main image
+                    setImagePreview(data.roomTypeImage[0]);
+                    setImageSrc(data.roomTypeImage[0]);
+
+                    // Set remaining images as additional images
+                    const additionalImages = data.roomTypeImage.slice(1);
+                    setMultipleImagesPreviews(additionalImages);
+                    setMultipleImagesSrc(additionalImages);
+                }
 
                 // Map amenities names and set their values
                 setValue(
@@ -310,22 +323,22 @@ const RoomType = () => {
 
 
                 if (imageSrc) {
-                    formDataToSubmit.append("roomTypeImage[]", imageSrc);
+                    formDataToSubmit.append("roomTypeImage", imageSrc);
                 }
                 multipleImagesSrc.forEach((file) => {
-                    formDataToSubmit.append("roomTypeImage[]", file);
+                    formDataToSubmit.append("roomTypeImage", file);
                 });
 
                 data.amenitiesID.forEach((amenityId) => {
-                    formDataToSubmit.append("amenitiesID[]", parseInt(amenityId, 10));
+                    formDataToSubmit.append("amenitiesID", parseInt(amenityId, 10));
                 });
 
                 data.facilities.forEach((facilityName) => {
-                    formDataToSubmit.append("facilities[]", facilityName);
+                    formDataToSubmit.append("facilities", facilityName);
                 });
 
                 data.bedTypesID.forEach((bedTypeId) => {
-                    formDataToSubmit.append("bedTypesID[]", parseInt(bedTypeId, 10));
+                    formDataToSubmit.append("bedTypesID", parseInt(bedTypeId, 10));
                 });
 
                 Object.keys(data).forEach((key) => {
