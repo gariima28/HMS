@@ -9,6 +9,7 @@ import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
 import useSWR from 'swr';
 import axios from 'axios';
 import dayjs from 'dayjs';
+import { Link } from 'react-router-dom';
 
 const CustomButton = styled(Button)(() => ({
     borderRadius: '3.2px',
@@ -53,13 +54,14 @@ const fetcher = (url) => axios.get(url, { headers: { Authorization: token } }).t
 
 const BookingDetailsPage = () => {
     let { id } = useParams();
-
     const [rows, setRows] = useState([]);
 
     // get API
     const { data, error } = useSWR(`${ServerIP}/booking/getByBookingId/${id}`, fetcher);
     const { data: paymentsData } = useSWR(`${ServerIP}/payment/getAllPayments?bookingId=${id}`, fetcher);
+    const { data: preServiceData } = useSWR(`${ServerIP}/preServ/getById/${id}`, fetcher);
 
+    console.log(preServiceData);
     console.log(paymentsData);
 
     // get API
@@ -125,6 +127,12 @@ const BookingDetailsPage = () => {
                             <MenuItem sx={{ p: 0 }}> <Button href={`/bookedRoomInBookings/${id}`} sx={{ backgroundColor: 'transparent', color: '#000', '&:hover': { color: '#000', backgroundColor: 'transparent', }, }}> Booked Rooms </Button> </MenuItem>
                             <MenuItem sx={{ p: 0 }}> <Button href={`/premiumServicesInBookings/${id}`} sx={{ backgroundColor: 'transparent', color: '#000', '&:hover': { color: '#000', backgroundColor: 'transparent', }, }}> Premium Services </Button> </MenuItem>
                             <MenuItem sx={{ p: 0 }}> <Button href={`/paymentInBookings/${id}`} sx={{ backgroundColor: 'transparent', color: '#000', '&:hover': { color: '#000', backgroundColor: 'transparent', }, }}> Payment </Button> </MenuItem>
+                            <MenuItem sx={{ p: 0 }}>
+                                <Button href={`/cancelBookings/${id}`} sx={{ backgroundColor: 'transparent', color: '#000', '&:hover': { color: '#000', backgroundColor: 'transparent' } }}>Cancel Booking</Button>
+                            </MenuItem>
+                            <MenuItem sx={{ p: 0 }}>
+                                <Button href={`/checkOutBookings/${id}`} sx={{ backgroundColor: 'transparent', color: '#000', '&:hover': { color: '#000', backgroundColor: 'transparent' } }}>Check Out</Button>
+                            </MenuItem>
                             <MenuItem sx={{ p: 0 }}> <Button href='/' sx={{ backgroundColor: 'transparent', color: '#000', '&:hover': { color: '#000', backgroundColor: 'transparent', }, }}> Print Invoice </Button> </MenuItem>
                         </Menu>
                     </Stack>

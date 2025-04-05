@@ -1,17 +1,23 @@
 import * as React from 'react';
 import Box from '@mui/material/Box';
-import { Button, Stack, FormHelperText, InputLabel, OutlinedInput, Divider, Typography, Select, MenuItem} from '@mui/material';
+import { Button, Stack, FormHelperText, InputLabel, OutlinedInput, Divider, Typography, Select, MenuItem, InputAdornment, Dialog, DialogContent, DialogActions} from '@mui/material';
 import Grid from '@mui/material/Unstable_Grid2/Grid2';
 import { useNavigate, useParams } from 'react-router';
 import { createHotelApi, getHotelByIdApi, updateHotelApi } from 'api/api';
 import { useForm } from 'react-hook-form';
 import { Snackbar, Alert } from '@mui/material';
 import HashLoader from 'components/Skeleton/HashLoader';
-
+import { useState } from 'react';
 const CreateHotel = () => {
+  const [imageType, setImageType] = useState(true);
+  const [hotelImageUrl, setHotelImageUrl] = useState("");
+
+
+  const [openImageDialog, setOpenImageDialog] = useState(false);
+  const [selectedImage, setSelectedImage] = useState('');
 
   const {id}= useParams();
-  
+  console.log(id)
   const navigate = useNavigate();
   const [showLoader, setShowLoader] = React.useState(false);
   const [snackbar, setSnackbar] = React.useState({ open: false, message: '', severity: '' });
@@ -43,7 +49,6 @@ const CreateHotel = () => {
     trigger('status');
   };
 
-
   // Get Amenities data by id
   const getHotelById = async () => {
     try {
@@ -63,6 +68,7 @@ const CreateHotel = () => {
           setValue('description', response?.data?.description);
           setValue('hotelId', response?.data?.stHotelId?.split('-')[0] || '');
           setValue('hotelImage', response?.data?.hotelImageUrl);
+          setHotelImageUrl(response?.data?.hotelImageUrl);
           setShowLoader(false)
         }, 1000);
       }
@@ -152,7 +158,7 @@ const CreateHotel = () => {
             <Stack spacing={1}>
               <InputLabel htmlFor="hotelName">Hotel Name <span style={{ color: 'red' }}> *</span></InputLabel>
               {/* <OutlinedInput id="hotelName" type="text" {...register("hotelName" , {required : 'This Field is required' , validate: { pattern: (value) => /^[A-Z][a-zA-Z\s]+$/.test(value) || `Hotel name must start with an uppercase letter ${<br/>} contain only letters or spaces`}, })} placeholder="Enter Hotel Name" fullWidth error={Boolean(errors.hotelName)} /> */}
-              <OutlinedInput id="hotelName" type="text" { ...register("hotelName", { required: 'This Field is required', validate: { startsWithCapital: (value) =>  /^[A-Z]/.test(value) || 'Hotel name must start with an uppercase letter', minLength: (value) => value.length >= 4 || 'Minimum Length is 4', pattern: (value) => /^[A-Z][a-zA-Z\s]+$/.test(value) ||  'Hotel name must contain only letters, and spaces', } }) } placeholder="Enter Hotel Name" fullWidth error={Boolean(errors.hotelName)}  />
+              <OutlinedInput id="hotelName" type="text" { ...register("hotelName", { required: 'This Field is required', validate: { startsWithCapital: (value) =>  /^[A-Z]/.test(value) || 'Hotel name must start with an uppercase letter', minLength: (value) => value.length >= 4 || 'Minimum Length is 4', pattern: (value) => /^[A-Z][a-zA-Z\s]+$/.test(value) ||  'Hotel name must contain only letters, and spaces', } }) } placeholder="Enter Hotel Name" fullWidth error={Boolean(errors.hotelName)}/>
             </Stack>
             <FormHelperText error id="standard-weight-helper-text-hotelName">{errors.hotelName?.message}</FormHelperText>
           </Grid>
@@ -177,8 +183,8 @@ const CreateHotel = () => {
                 fullWidth displayEmpty error={Boolean(errors.status)}
                 value={hotelStatus !== undefined ? String(hotelStatus) : ''} >
                 <MenuItem value='' disabled>Select Status</MenuItem>
-                <MenuItem value="true">Active</MenuItem>
-                <MenuItem value="false">Inactive</MenuItem>
+                <MenuItem value={true}>Active</MenuItem>
+                <MenuItem value={false}>Inactive</MenuItem>
               </Select>
             </Stack>
             <FormHelperText error id="standard-weight-helper-text-status"> {errors.status?.message} </FormHelperText>
@@ -225,13 +231,138 @@ const CreateHotel = () => {
             </Stack>
             <FormHelperText error id="standard-weight-helper-text-hotelId">{errors.hotelId?.message}</FormHelperText>
           </Grid>
-          <Grid  xs={12} sm={6} md={6} lg={4} >
+
+          {/* <OutlinedInput id="hotelImage" type="file" {...register("hotelImage", { required: 'This Field is required', validate: { fileType: (file) => { if (!file[0]) return 'No file selected'; if (file.size < 10240 || file.size > 204800) return '* File size must be between 10 KB to 200 KB'; const allowedTypes = ['image/jpeg', 'image/png']; return allowedTypes.includes(file[0].type) || 'Only .jpg and .png files are allowed'; }, }, })} placeholder="Enter Hotel Image URL" fullWidth error={Boolean(errors.hotelImage)} /> */}
+
+        
+
+
+          <Grid item xs={12} sm={6} md={6} lg={4}>
             <Stack spacing={1}>
-              <InputLabel htmlFor="hotelImage">Hotel Image URL <span style={{ color: 'red' }}> *</span></InputLabel>
-              <OutlinedInput id="hotelImage" type="file" {...register("hotelImage" , { required: 'This Field is required', validate: { fileType: (file) => { if (!file[0]) return 'No file selected'; if (file.size < 10240 || file.size > 204800) return '* File size must be between 10 KB to 200 KB'; const allowedTypes = ['image/jpeg', 'image/png']; return allowedTypes.includes(file[0].type) || 'Only .jpg and .png files are allowed'; }, },})} placeholder="Enter Hotel Image URL" fullWidth error={Boolean(errors.hotelImage)} />
+              <InputLabel htmlFor="hotelImage">Hotel Image <span style={{ color: 'red' }}> *</span></InputLabel>
+              {id === 'add' ? (
+                <OutlinedInput
+                  id="hotelImage"
+                  type="file"
+                  {...register("hotelImage", {
+                    required: "This Field is required",
+                    validate: {
+                      fileType: (file) => {
+                        if (!file || !file[0]) return "No file selected";
+                        if (file[0].size < 10240 || file[0].size > 204800)
+                          return "* File size must be between 10 KB to 200 KB";
+                        const allowedTypes = ["image/jpeg", "image/png"];
+                        return allowedTypes.includes(file[0].type) || "Only .jpg and .png files are allowed";
+                      },
+                    },
+                  })}
+                  fullWidth
+                  error={Boolean(errors.hotelImage)}
+                  sx={{
+                    height: '44px',
+                    '& input': {
+                      padding: '8.5px 14px',
+                    }
+                  }}
+                />
+              ) : (
+                <Box sx={{ position: 'relative', height: '44px' }}>
+                  {imageType && hotelImageUrl ? (
+                    <Box sx={{
+                      height: '100%',
+                      display: 'flex',
+                      alignItems: 'center',
+                      border: '1px solid rgba(0, 0, 0, 0.23)',
+                      borderRadius: '4px',
+                      padding: '8.5px 14px',
+                      overflow: 'hidden'
+                    }}>
+                      <img
+                        src={hotelImageUrl}
+                        alt="Hotel Preview"
+                        style={{
+                          maxHeight: '100%',
+                          maxWidth: '100%',
+                          objectFit: 'contain'
+                        }}
+                          onClick={() => {
+                            setSelectedImage(hotelImageUrl);
+                            setOpenImageDialog(true);
+                          }}
+                      />
+                      <Button
+                        variant="outlined"
+                        onClick={(e) => {
+                          e.stopPropagation();
+                          setImageType(false);
+                        }}
+                        sx={{
+                          position: 'absolute',
+                          right: 8,
+                          top: '50%',
+                          transform: 'translateY(-50%)',
+                          height: '30px',
+                          minWidth: '80px'
+                        }}
+                      >
+                        Edit
+                      </Button>
+                    </Box>
+                  ) : (
+                    <OutlinedInput
+                      id="hotelImage"
+                      type="file"
+                      inputProps={{ accept: "image/jpeg, image/png" }}
+                      fullWidth
+                      {...register("hotelImage", {
+                        required: "This Field is required",
+                        validate: {
+                          fileType: (file) => {
+                            if (!file || !file[0]) return "No file selected";
+                            if (file[0].size < 10240 || file[0].size > 204800)
+                              return "* File size must be between 10 KB to 200 KB";
+                            const allowedTypes = ["image/jpeg", "image/png"];
+                            return allowedTypes.includes(file[0].type) || "Only .jpg and .png files are allowed";
+                          },
+                        },
+                      })}
+                      error={Boolean(errors.hotelImage)}
+                      sx={{
+                        height: '44px',
+                        '& .MuiOutlinedInput-input': {
+                          paddingRight: '90px', // Make space for the button
+                        },
+                        '& .MuiOutlinedInput-notchedOutline': {
+                          paddingRight: '80px', // Adjust border around button
+                        }
+                      }}
+                      endAdornment={
+                        <InputAdornment position="end">
+                          <Button
+                            variant="outlined"
+                            onClick={() => setImageType(true)}
+                            disabled={!hotelImageUrl}
+                            sx={{
+                              height: '30px',
+                              minWidth: '80px',
+                              marginRight: '-8px' // Adjust positioning
+                            }}
+                          >
+                            View
+                          </Button>
+                        </InputAdornment>
+                      }
+                    />
+                  )}
+                </Box>
+              )}
             </Stack>
-            <FormHelperText error id="standard-weight-helper-text-hotelImage">{errors.hotelImage?.message}</FormHelperText>
+            <FormHelperText error id="standard-weight-helper-text-hotelImage">
+              {errors.hotelImage?.message}
+            </FormHelperText>
           </Grid>
+
+
         </Grid>
        {id ==='add' &&(
         <>
@@ -289,6 +420,46 @@ const CreateHotel = () => {
           {snackbar.message}
         </Alert>
       </Snackbar>
+
+     
+
+      <Dialog
+        open={openImageDialog}
+        onClose={() => setOpenImageDialog(false)}
+        maxWidth="sm"
+        PaperProps={{
+          sx: {
+            width: '400px',
+            height: 'auto',
+            margin: 'auto',
+            borderRadius: 2,
+          },
+        }}
+      >
+        <DialogContent
+          sx={{
+            display: 'flex',
+            justifyContent: 'center',
+            alignItems: 'center',
+            padding: 2,
+          }}
+        >
+          <img
+            src={selectedImage}
+            alt="Hotel Preview"
+            onClick={() => setOpenImageDialog(false)} // ✅ Close on click
+            style={{
+              maxWidth: '100%',
+              maxHeight: '300px',
+              objectFit: 'contain',
+              borderRadius: '8px',
+              cursor: 'pointer', // 👈 Makes it clear the image is clickable
+            }}
+          />
+        </DialogContent>
+      </Dialog>
+
+
     </Box>
   );
 }
