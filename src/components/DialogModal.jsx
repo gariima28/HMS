@@ -116,7 +116,6 @@ const DialogModal = ({ handleClosingDialogState, modalOpen, title, buttonName, I
                                                     // if (!value || value.trim() === '') {
                                                     //     return `${itemData.fieldName} field is required`;
                                                     // }
-
                                                     // Field type specific validation
                                                     if (itemData.fieldType === 'text') {
                                                         const patternRegex = itemData.validation?.pattern || /^[A-Z][a-zA-Z\s]*$/;
