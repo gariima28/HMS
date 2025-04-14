@@ -61,7 +61,7 @@ const UpcomingCheckouts = () => {
         </Grid>
         <Grid sx={{ mb: 3 }}>
           <Typography variant="subtitle1" sx={{ color: 'red' }}>
-            <InfoCircleOutlined /> The checkout periods for these bookings have passed, but the guests have not checked out yet.
+            <InfoCircleOutlined /> These Guests are scheduled to check out soon.
           </Typography>
           <Divider sx={{ mt: 1 }} />
         </Grid>

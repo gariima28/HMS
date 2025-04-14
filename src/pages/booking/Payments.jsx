@@ -20,6 +20,7 @@ import DynamicDataTable from "components/DynamicDataTable";
 import styled from "styled-components";
 import useSWR, { mutate } from "swr";
 import axios from "axios";
+import NoDataFound from "pages/NoDataFound";
 // import { getPaymentByStatus, getPaymentBySearch } from "api/api";
 
 
@@ -148,6 +149,17 @@ const PaymentsPage = () => {
   useEffect(() => {
     if (data) {
       console.log(data, 'data');
+
+      if (!data.payments || data.payments.length === 0) {
+        setRows([]); // Set empty rows
+        setTotalPendingAmount(0);
+        setTotalSuccessfulAmount(0);
+        setTotalRejectedAmount(0);
+        return;
+      }
+
+
+
       const totalPending = data?.payments?.filter(payment => payment.paymentStatus === "PENDING").reduce((sum, payment) => sum + payment.totalAmount, 0);
       const totalSuccessful = data?.payments?.filter(payment => payment.paymentStatus === "SUCCESSFUL").reduce((sum, payment) => sum + payment.totalAmount, 0);
       const totalRejected = data?.payments?.filter(payment => payment.paymentStatus === "REJECTED").reduce((sum, payment) => sum + payment.totalAmount, 0);
@@ -301,7 +313,7 @@ const PaymentsPage = () => {
     <Box>
       <Box sx={{ display: "flex", flexDirection: { xs: "column", md: "row" }, alignItems: { xs: "flex-start", md: "center" }, justifyContent: "space-between", gap: { xs: 2, md: 0 }, }}>
         <Typography sx={{ fontSize: "1.2rem", fontWeight: 500, color: "#34495e" }}>
-          {id === "all" ? "Payment History" : id === "SUCCESSFUL" ? "Successful Payments" : id === "PENDING" ? "Pending Payments" : id === "REJECTED" ? "Rejected Payments" : "Payment History"}
+          {id === "all" ? "Payment History" : id === "SUCCESSFUL" ? "Successful Payments" : id === "PENDING" ? "Pending Payments" : id === "REJECTED" ? "Rejected Payments" : id === "FAILED" ? "Initiated Payments" : id === "APPROVED" ? "Approved Payments" : "Payment History"}
         </Typography>
         <Box
           sx={{
@@ -312,138 +324,142 @@ const PaymentsPage = () => {
           }}
         >
           {/**Search Bar */}
-          <Stack direction="row">
-            <OutlinedInput
-              sx={{
-                flex: 1,
-                borderRadius: "10px 0px 0px 10px",
-                bgcolor: "white",
-                width: { xs: "100%", sm: "auto" },
-              }}
-              variant="outlined"
-              placeholder="Username / Email"
-              value={searchKey}
-              onChange={(e) => setSearchKey(e.target.value)}
-            />
-            <Button sx={{ bgcolor: "blue", borderRadius: "0px 10px 10px 0px" }} onClick={''}>
-              <IconButton>
-                <SearchIcon sx={{ color: "white" }} />
-              </IconButton>
-            </Button>
-          </Stack>
-
-          {/* Date Range Picker */}
-          <LocalizationProvider dateAdapter={AdapterDayjs}>
-            <Box
-              sx={{
-                display: "flex",
-                flex: 1,
-                gap: { xs: 2, md: 1 },
-                padding: 0,
-                width: "100%",
-              }}
-            >
-              {/* Dropdown Button */}
-              <Stack direction="row" sx={{ width: { xs: "100%", sm: "auto", } }}>
+          {rows.length !== 0 &&
+            <>
+              <Stack direction="row">
                 <OutlinedInput
-                  value={
-                    selectedPreset === "Custom Range" &&
-                      dateRange[0] &&
-                      dateRange[1]
-                      ? formatDateRange()
-                      : formatDateRange() || "Start Date - End Date"
-                  }
-                  onClick={handleOpenMenu}
-                  placeholder="Start Date - End Date"
                   sx={{
+                    flex: 1,
                     borderRadius: "10px 0px 0px 10px",
                     bgcolor: "white",
-                    flex: 1,
-                    pr: 2,
+                    width: { xs: "100%", sm: "auto" },
                   }}
-                  endAdornment={
-                    (selectedPreset !== "" || (dateRange[0] && dateRange[1])) && (
-                      <InputAdornment position="end">
-                        <IconButton onClick={handleClearRange}>
-                          <ClearIcon sx={{ color: "black" }} />
-                        </IconButton>
-                      </InputAdornment>
-                    )
-                  }
+                  variant="outlined"
+                  placeholder="Username / Email"
+                  value={searchKey}
+                  onChange={(e) => setSearchKey(e.target.value)}
                 />
-
-                <Button sx={{ bgcolor: "blue", borderRadius: "0px 10px 10px 0px" }}>
+                <Button sx={{ bgcolor: "blue", borderRadius: "0px 10px 10px 0px" }} onClick={''}>
                   <IconButton>
                     <SearchIcon sx={{ color: "white" }} />
                   </IconButton>
                 </Button>
               </Stack>
 
-              <Menu
-                anchorEl={anchorEl}
-                open={Boolean(anchorEl)}
-                onClose={handleCloseMenu}
-              >
-                <Box sx={{ display: "flex" }}>
-                  <Box>
-                    <MenuItem onClick={() => handlePresetSelect("Today")}>
-                      Today
-                    </MenuItem>
-                    <MenuItem onClick={() => handlePresetSelect("Yesterday")}>
-                      Yesterday
-                    </MenuItem>
-                    <MenuItem onClick={() => handlePresetSelect("Last 7 Days")}>
-                      Last 7 Days
-                    </MenuItem>
-                    <MenuItem
-                      onClick={() => handlePresetSelect("Last 15 Days")}
-                    >
-                      Last 15 Days
-                    </MenuItem>
-                    <MenuItem
-                      onClick={() => handlePresetSelect("Last 30 Days")}
-                    >
-                      Last 30 Days
-                    </MenuItem>
-                    <MenuItem onClick={() => handlePresetSelect("This Month")}>
-                      This Month
-                    </MenuItem>
-                    <MenuItem onClick={() => handlePresetSelect("Last Month")}>
-                      Last Month
-                    </MenuItem>
-                    <MenuItem
-                      onClick={() => handlePresetSelect("Last 6 Months")}
-                    >
-                      Last 6 Months
-                    </MenuItem>
-                    <MenuItem onClick={() => handlePresetSelect("This Year")}>
-                      This Year
-                    </MenuItem>
-                    <MenuItem
-                      onClick={() => handlePresetSelect("Custom Range")}
-                    >
-                      Custom Range
-                    </MenuItem>
-                  </Box>
-                  {showCalendar && (
-                    <Box sx={{ mt: 2 }}>
-                      <DateRangeCalendar
-                        value={dateRange}
-                        onChange={(newValue) => {
-                          setDateRange(newValue);
-                          if (newValue[0] && newValue[1]) {
-                            setShowCalendar(false); // Hide calendar after selecting
-                            setSelectedPreset("Custom Range");
-                          }
-                        }}
-                      />
-                    </Box>
-                  )}
-                </Box>
-              </Menu>
 
-            </Box>
-          </LocalizationProvider>
+              <LocalizationProvider dateAdapter={AdapterDayjs}>
+                <Box
+                  sx={{
+                    display: "flex",
+                    flex: 1,
+                    gap: { xs: 2, md: 1 },
+                    padding: 0,
+                    width: "100%",
+                  }}
+                >
+                  {/* Dropdown Button */}
+                  <Stack direction="row" sx={{ width: { xs: "100%", sm: "auto", } }}>
+                    <OutlinedInput
+                      value={
+                        selectedPreset === "Custom Range" &&
+                          dateRange[0] &&
+                          dateRange[1]
+                          ? formatDateRange()
+                          : formatDateRange() || "Start Date - End Date"
+                      }
+                      onClick={handleOpenMenu}
+                      placeholder="Start Date - End Date"
+                      sx={{
+                        borderRadius: "10px 0px 0px 10px",
+                        bgcolor: "white",
+                        flex: 1,
+                        pr: 2,
+                      }}
+                      endAdornment={
+                        (selectedPreset !== "" || (dateRange[0] && dateRange[1])) && (
+                          <InputAdornment position="end">
+                            <IconButton onClick={handleClearRange}>
+                              <ClearIcon sx={{ color: "black" }} />
+                            </IconButton>
+                          </InputAdornment>
+                        )
+                      }
+                    />
+
+                    <Button sx={{ bgcolor: "blue", borderRadius: "0px 10px 10px 0px" }}>
+                      <IconButton>
+                        <SearchIcon sx={{ color: "white" }} />
+                      </IconButton>
+                    </Button>
+                  </Stack>
+
+                  <Menu
+                    anchorEl={anchorEl}
+                    open={Boolean(anchorEl)}
+                    onClose={handleCloseMenu}
+                  >
+                    <Box sx={{ display: "flex" }}>
+                      <Box>
+                        <MenuItem onClick={() => handlePresetSelect("Today")}>
+                          Today
+                        </MenuItem>
+                        <MenuItem onClick={() => handlePresetSelect("Yesterday")}>
+                          Yesterday
+                        </MenuItem>
+                        <MenuItem onClick={() => handlePresetSelect("Last 7 Days")}>
+                          Last 7 Days
+                        </MenuItem>
+                        <MenuItem
+                          onClick={() => handlePresetSelect("Last 15 Days")}
+                        >
+                          Last 15 Days
+                        </MenuItem>
+                        <MenuItem
+                          onClick={() => handlePresetSelect("Last 30 Days")}
+                        >
+                          Last 30 Days
+                        </MenuItem>
+                        <MenuItem onClick={() => handlePresetSelect("This Month")}>
+                          This Month
+                        </MenuItem>
+                        <MenuItem onClick={() => handlePresetSelect("Last Month")}>
+                          Last Month
+                        </MenuItem>
+                        <MenuItem
+                          onClick={() => handlePresetSelect("Last 6 Months")}
+                        >
+                          Last 6 Months
+                        </MenuItem>
+                        <MenuItem onClick={() => handlePresetSelect("This Year")}>
+                          This Year
+                        </MenuItem>
+                        <MenuItem
+                          onClick={() => handlePresetSelect("Custom Range")}
+                        >
+                          Custom Range
+                        </MenuItem>
+                      </Box>
+                      {showCalendar && (
+                        <Box sx={{ mt: 2 }}>
+                          <DateRangeCalendar
+                            value={dateRange}
+                            onChange={(newValue) => {
+                              setDateRange(newValue);
+                              if (newValue[0] && newValue[1]) {
+                                setShowCalendar(false); // Hide calendar after selecting
+                                setSelectedPreset("Custom Range");
+                              }
+                            }}
+                          />
+                        </Box>
+                      )}
+                    </Box>
+                  </Menu>
+
+                </Box>
+              </LocalizationProvider>
+            </>
+          }
 
         </Box>
       </Box>
@@ -506,14 +522,14 @@ const PaymentsPage = () => {
               </Link>
             </Grid>
             <Grid item size={{ xs: 12, sm: 6, md: 3 }}>
-              <Link to='/payments/INITIATED' style={{ textDecoration: "none", width: "100%" }}>
+              <Link to='/payments/FAILED' style={{ textDecoration: "none", width: "100%" }}>
                 <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: "space-between", borderRadius: 2, padding: 1 }}>
                   <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: "center", borderRadius: 2, padding: 1 }}>
                     <Box sx={{ backgroundColor: "#ECEFF1", borderRadius: '10%', padding: 1.5, display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
                       <ReceiptIcon sx={{ color: "#071251", }} />
                     </Box>
                     <CardContent sx={{ flexGrow: 1 }}>
-                      <Typography variant="h6" sx={{ textDecoration: "none", color: "black", fontWeight: "400" }}>₹1686</Typography>
+                      <Typography variant="h6" sx={{ textDecoration: "none", color: "black", fontWeight: "400" }}>-</Typography>
                       <Typography variant="body2" color="textSecondary" sx={{ textDecoration: "none" }}>Initiated Payment</Typography>
                     </CardContent>
                   </Box>
@@ -527,8 +543,16 @@ const PaymentsPage = () => {
         </Box>
       }
 
-      <Box sx={{ pt: 4 }}>
+      {/* <Box sx={{ pt: 4 }}>
         <DynamicDataTable columns={columns} rows={rows} />
+      </Box> */}
+
+      <Box sx={{ pt: 4 }}>
+        {rows && rows.length > 0 ? (
+          <DynamicDataTable columns={columns} rows={rows} />
+        ) : (
+          <NoDataFound />
+        )}
       </Box>
 
 

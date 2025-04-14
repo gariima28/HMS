@@ -75,6 +75,20 @@ const BookedRoomInBookings = () => {
         ...bookedRooms,
         roomNum: <RoomButton variant="outlined" status='roomNo'><Typography variant='h6'>{bookedRooms.roomNo}</Typography><Typography variant='h6'>{bookedRooms.roomType}</Typography></RoomButton>,
         action: <CustomEnableButton variant="outlined" disabled={true} status='cancel'>Cancel Booking </CustomEnableButton>,
+
+        bookedFor: (
+          <>
+            <Typography sx={{}} variant="subtitle2" color="textSecondary">
+              {data.data.guestName}
+            </Typography>
+            <Typography sx={{ fontSize: "14px" }} variant="h6">
+              {data.data.checkInDate.split('T')[0]}
+              <span style={{ margin: '0 4px' }}>to</span>
+              {data.data.checkOutDate.split('T')[0]}
+            </Typography>
+
+          </>
+        )
       }));
       setRows(transformedRows);
     }

@@ -100,9 +100,48 @@ const PremiumServices = () => {
     mutate(`${ServerIP}/preServ/getAll`);
   };
 
+  useEffect(() => {
+    if (!modalOpen) {
+      reset({
+        premiumServiceName: '',
+        status: '',
+        premiumServiceCost: ''
+      });
+      setFormDataa({
+        premiumServiceName: '',
+        status: '',
+        premiumServiceCost: ''
+      });
+      setUpdateFormDataa({
+        premiumServiceName: '',
+        premiumServiceCost: '',
+        premiumServiceNameOriginal: '',
+        premiumServiceCostOriginal: ''
+      });
+    }
+  }, [modalOpen, reset]);
+
+
   const handleDialogState = (title, button, premiumServiceId) => {
     setModalTitle(title);
     setButtonName(button);
+    reset({
+      premiumServiceName: '',
+      status: '',
+      premiumServiceCost: ''
+    });
+    setFormDataa({
+      premiumServiceName: '',
+      status: '',
+      premiumServiceCost: ''
+    });
+    setUpdateFormDataa({
+      premiumServiceName: '',
+      premiumServiceCost: '',
+      premiumServiceNameOriginal: '',
+      premiumServiceCostOriginal: ''
+    });
+
     if (button === 'Update') {
       getPremiumServicesDataById(premiumServiceId);
     }

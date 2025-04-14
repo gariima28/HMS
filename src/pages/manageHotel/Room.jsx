@@ -185,9 +185,43 @@ const Rooms = () => {
     mutate(`${ServerIP}/room/getAll`);
   };
 
+  useEffect(() => {
+    if (!modalOpen) {
+      // Reset form states when modal closes
+      setFormDataa({
+        roomType: '',
+        roomNumber: '',
+      });
+      setUpdateFormDataa({
+        roomType: '',
+        roomNumber: '',
+        roomTypeOriginal: '',
+        roomNumberOriginal: '',
+      });
+    }
+  }, [modalOpen]);
+
   const handleDialogState = (title, button, roomId) => {
     setModalTitle(title);
     setButtonName(button);
+
+    if (button === 'Create') {
+      reset({
+        roomType: '',
+        roomNumber: '',
+      });
+      setFormDataa({
+        roomType: '',
+        roomNumber: '',
+      });
+      setUpdateFormDataa({
+        roomType: '',
+        roomNumber: '',
+        roomTypeOriginal: '',
+        roomNumberOriginal: '',
+      });
+    }
+
     if (button === 'Update') {
       getRoomsDataById(roomId);
     }
@@ -224,6 +258,18 @@ const Rooms = () => {
     }
   }, [data]);
 
+  useEffect(() => {
+
+    console.log(formDataa.roomType, 'formDataa roomType')
+    console.log(formDataa.roomNumber, 'formDataa roomNumber')
+
+    console.log(updateFormDataa.roomType, 'roomType')
+    console.log(updateFormDataa.roomNumber, 'roomNumber')
+    console.log(updateFormDataa.roomTypeOriginal, 'roomTypeOriginal')
+    console.log(updateFormDataa.roomNumberOriginal, 'roomNumberOriginal')
+
+  }, [updateFormDataa, formDataa])
+
   const handleSnackbarMessage = (message, severity) => {
     setSnackbar({ open: true, message, severity });
   };
@@ -258,6 +304,11 @@ const Rooms = () => {
             roomNo: '',
             roomType: '',
           });
+          setFormDataa({
+            roomType: '',
+            roomNumber: '',
+          });
+
         }, 1000);
       } else {
         setTimeout(() => {
@@ -311,6 +362,20 @@ const Rooms = () => {
         setTimeout(() => {
           handleSnackbarMessage(response?.data?.message, 'success');
           refreshData();
+          reset({
+            roomType: '',
+            roomNumber: '',
+          });
+          setUpdateFormDataa({
+            roomType: '',
+            roomNumber: '',
+            roomTypeOriginal: '',
+            roomNumberOriginal: '',
+          });
+          setFormDataa({
+            roomType: '',
+            roomNumber: '',
+          });
           setShowLoader(false)
         }, 1000);
       } else {
@@ -357,6 +422,20 @@ const Rooms = () => {
           setTimeout(() => {
             setShowModalLoader(false);
             refreshData();
+            reset({
+              roomType: '',
+              roomNumber: '',
+            });
+            setUpdateFormDataa({
+              roomType: '',
+              roomNumber: '',
+              roomTypeOriginal: '',
+              roomNumberOriginal: '',
+            });
+            setFormDataa({
+              roomType: '',
+              roomNumber: '',
+            });
             handleSnackbarMessage(response?.data?.message, 'success');
             setModalOpen(false);
           }, 1000);
@@ -403,6 +482,7 @@ const Rooms = () => {
           </Stack>
         </Grid>
       </Grid>
+
       {/* Data Table */}
       {showDataTableLoader ? <PlaceholderTable /> : rows.length > 0 && <DynamicDataTable columns={columns} rows={rows} />}
 

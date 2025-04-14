@@ -110,11 +110,53 @@ const BedTypes = () => {
   const refreshData = () => {
     mutate(`${ServerIP}/bedTypes/getAll`);
   };
+  useEffect(() => {
+    if (!modalOpen) {
+      // Reset all form states when modal closes
+      reset({
+        bedTypeName: '',
+        status: '',
+        bedTypeImage: null
+      });
+      setFormDataa({
+        bedTypeName: '',
+        status: '',
+        bedTypeImage: ''
+      });
+      setUpdateFormDataa({
+        bedTypeName: '',
+        bedTypeImage: '',
+        bedTypeNameOriginal: '',
+        bedTypeImageOriginal: ''
+      });
+    }
+  }, [modalOpen, reset]);
 
   const handleDialogState = (title, button, bedTypeId) => {
     console.log(bedTypeId)
     setModalTitle(title);
     setButtonName(button);
+
+    if (button === 'Create') {
+      reset({
+        bedTypeName: '',
+        status: '',
+        bedTypeImage: null
+      });
+      setFormDataa({
+        bedTypeName: '',
+        status: '',
+        bedTypeImage: ''
+      });
+      setUpdateFormDataa({
+        bedTypeName: '',
+        bedTypeImage: '',
+        bedTypeNameOriginal: '',
+        bedTypeImageOriginal: ''
+      });
+    }
+
+
     if (button === 'Update') {
       getBedTypeDataById(bedTypeId);
     }
@@ -192,6 +234,12 @@ const BedTypes = () => {
             bedTypeImage: null,
           });
         }, 1000);
+        setFormDataa({
+          bedTypeName: '',
+          status: '',
+          bedTypeImage: ''
+        });
+
       } else {
         setTimeout(() => {
           setShowModalLoader(false);
@@ -245,6 +293,8 @@ const BedTypes = () => {
         setTimeout(() => {
           handleSnackbarMessage(response?.data?.message, 'success');
           refreshData();
+
+
           setShowLoader(false)
         }, 1000);
       } else {
@@ -291,6 +341,22 @@ const BedTypes = () => {
           setTimeout(() => {
             setShowModalLoader(false);
             refreshData();
+            reset({
+              bedTypeName: '',
+              status: '',
+              bedTypeImage: null,
+            });
+            setFormDataa({  // Add this reset
+              bedTypeName: '',
+              status: '',
+              bedTypeImage: ''
+            });
+            setUpdateFormDataa({
+              bedTypeName: '',
+              bedTypeImage: '',
+              bedTypeNameOriginal: '',
+              bedTypeImageOriginal: ''
+            });
             handleSnackbarMessage(response?.data?.message, 'success');
             setModalOpen(false);
           }, 1000);

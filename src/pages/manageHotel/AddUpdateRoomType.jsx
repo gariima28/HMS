@@ -310,6 +310,7 @@ const RoomType = () => {
 
     const onSubmit = async (data) => {
         if (id === "add") {
+            // data.roomDescription = 
             const sanitizedRoomDescription = String((data.roomDescription || "").replace(/<[^>]*>/g, "").trim());
             const sanitizedCancelDescription = String((data.cancelDescription || "").replace(/<[^>]*>/g, "").trim());
 
