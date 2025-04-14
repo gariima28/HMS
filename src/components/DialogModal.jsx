@@ -47,17 +47,23 @@ const DialogModal = ({ handleClosingDialogState, modalOpen, title, buttonName, I
             Object.keys(updateFormDataa).forEach((key) => {
                 setValue(key, updateFormDataa[key]);
             });
-          
+           
         }
     }, [modalOpen, updateFormDataa,setValue]);
 
     const handleDialogClose = () => {
         handleClosingDialogState();
-        reset()
+        reset();
     };
+
+    useEffect(() => {
+        if (!modalOpen) {
+            reset();
+        }
+    }, [modalOpen, reset]);
     
-    return (
-        <Dialog onClose={null} disablebackdropclick disableEscapeKeyDown aria-labelledby="dialogModal" open={modalOpen} maxWidth="xs" fullWidth>
+    return ( 
+        <Dialog onClose={null} disablebackdropclick disableEscapeKeyDown aria-labelledby="dialogModal" open={modalOpen} maxWidth="xs" fullWidth> 
             <DialogTitle sx={{ m: 0, p: 2, typography: 'h6' }} id="dialogModal">
                 {title}
                 <IconButton aria-label="close" onClick={handleDialogClose} sx={(theme) => ({ position: 'absolute', right: 8, top: 8, color: theme.palette.grey[500] })} >
@@ -121,7 +127,7 @@ const DialogModal = ({ handleClosingDialogState, modalOpen, title, buttonName, I
                                                         const patternRegex = itemData.validation?.pattern || /^[A-Z][a-zA-Z\s]*$/;
                                                         if (!patternRegex.test(value)) {
                                                             return itemData.validation?.patternMsg ||
-                                                                `${itemData.fieldName} should start with a capital letter and contain only letters`;
+                                                                `${itemData.fieldName} should start with a capital letter and  contain only letters`;
                                                         }
                                                         if (value.length < (itemData.validation?.minLength || 3)) {
                                                             return `${itemData.fieldName} must be at least 3 characters long`;

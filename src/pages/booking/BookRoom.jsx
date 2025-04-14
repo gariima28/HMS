@@ -1,5 +1,5 @@
 import { styled } from '@mui/material/styles';
-import { Box, Button, Divider, InputLabel, MenuItem, OutlinedInput, Select, Stack, Typography, Table, TableBody, TableContainer, TableHead, TableRow, Paper, } from '@mui/material';
+import { Box, Button, Divider, InputLabel, MenuItem, OutlinedInput, Select, Stack, Typography, Table, TableBody, TableContainer, TableHead, TableRow, Paper, Snackbar, Alert, } from '@mui/material';
 import Grid from '@mui/material/Unstable_Grid2/Grid2';
 import ListIcon from '@mui/icons-material/List';
 import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
@@ -131,6 +131,7 @@ const BookRoom = () => {
     const [saveDataLoader, setSaveDataLoader] = useState(false);
     const [isButtonDisabled, setIsButtonDisabled] = useState(true);
     const [noData, setNoData] = useState(false);
+    const [snackbar, setSnackbar] = useState({ open: false, message: '', severity: '' });
 
     // Fetch data from API
     const { data, error } = useSWR(`${ServerIP}/roomTypes/getAll`, fetcher);
@@ -243,23 +244,44 @@ const BookRoom = () => {
             formData.append('totalPaid', data?.payingAmount)
 
             const response = await addBookingAPI(formData);
+            console.log(response)
             if (response.status === 200) {
                 if (response?.data?.status === 'success') {
+                    setSnackbar({
+                        open: true,
+                        message: 'Room booked successfully!',
+                        severity: 'success',
+                        autoHideDuration: 3000
+                    })
                     setTimeout(() => {
                         setSaveDataLoader(false)
                         navigate('/allBookings');
                     }, 800);
                 }
                 else {
+                    setSnackbar({
+                        open: true,
+                        message: response?.data?.message || 'Failed to book room',
+                        severity: 'error',
+                        autoHideDuration: 3000
+                    });
                     setTimeout(() => {
                         setSaveDataLoader(false)
                     }, 800);
+
                     console.error('Failed to book room:', response?.data?.message);
                 }
             } else {
+                setSnackbar({
+                    open: true,
+                    message: response?.data?.message || 'Failed to book room',
+                    severity: 'error',
+                    autoHideDuration: 3000
+                });
                 setTimeout(() => {
                     setSaveDataLoader(false)
                 }, 800);
+
                 console.error('Failed to book room:', response?.data?.message);
             }
         } catch (error) {
@@ -594,7 +616,22 @@ const BookRoom = () => {
                         noData ? <NoDataFound /> : ''
                     }
                 </Box>
+
             }
+            <Snackbar
+                open={snackbar.open}
+                autoHideDuration={snackbar.autoHideDuration}
+                onClose={() => setSnackbar(prev => ({ ...prev, open: false }))}
+                anchorOrigin={{ vertical: 'top', horizontal: 'right' }}
+                sx={{ width: '100%', color: '#fff' }}
+            >
+                <Alert
+                    severity={snackbar.severity}
+                    onClose={() => setSnackbar(prev => ({ ...prev, open: false }))}
+                >
+                    {snackbar.message}
+                </Alert>
+            </Snackbar>
         </>
     );
 };

@@ -82,7 +82,7 @@ const Amenities = () => {
   const handleUpdateFormDataaAmenitiesIcon = (val) => setUpdateFormDataa({ ...updateFormDataa, amenitiesIcon: val });
 
   const AddInputFields = [
-    { id: 'amenitiesName', field: 'textInput', fieldType: 'text', validation: { required: true, minLength: 3, pattern: /^[A-Z][a-zA-Z\s]*$/, patternMsg: 'This field should start with capital and only contain letters' }, fieldName: 'Amenities Title', placeholder: 'Enter Amenities Name', updateValFunc: handleFormDataaAmenitiesName },
+    { id: 'amenitiesName', field: 'textInput', fieldType: 'text', validation: { required: true, minLength: 3, pattern: /^[A-Z][a-zA-Z\s]*$/, patternMsg: 'This field should start with capital and only contain letters' }, fieldName: 'Amenities Title', value: formDataa.amenitiesName, placeholder: 'Enter Amenities Name', updateValFunc: handleFormDataaAmenitiesName },
     { id: 'amenitiesStatus', field: 'select', fieldName: 'Status', validation: { required: true }, fieldOptions: [{ optionId: 'active', optionName: 'Active', optionValue: 'true' }, { optionId: 'inActive', optionName: 'Inactive', optionValue: 'false' },], value: formDataa.amenitiesStatus, updateValFunc: handleFormDataaAmenitiesStatus, },
     { id: 'amenitiesIcon', field: 'fileType', fieldType: 'file', validation: { required: true }, fieldName: 'Icon', allowedTypes: ['image/jpeg', 'image/png'], updateValFunc: handleFormDataaAmenitiesIcon }
   ];
@@ -112,11 +112,51 @@ const Amenities = () => {
   const handleDialogState = (title, button, amenityId) => {
     setModalTitle(title);
     setButtonName(button);
+
+    reset({
+      amenitiesName: '',
+      amenitiesStatus: '',
+      amenitiesIcon: null
+    });
+    setFormDataa({
+      amenitiesName: '',
+      amenitiesStatus: '',
+      amenitiesIcon: ''
+    });
+    setUpdateFormDataa({
+      amenitiesName: '',
+      amenitiesIcon: '',
+      amenitiesNameOriginal: '',
+      amenitiesIconOriginal: ''
+    });
+
+
     if (button === 'Update') {
       getAmenitiesDataById(amenityId);
     }
     setModalOpen(!modalOpen);
   };
+
+  useEffect(() => {
+    if (!modalOpen) {
+      reset({
+        amenitiesName: '',
+        amenitiesStatus: '',
+        amenitiesIcon: null
+      });
+      setFormDataa({
+        amenitiesName: '',
+        amenitiesStatus: '',
+        amenitiesIcon: ''
+      });
+      setUpdateFormDataa({
+        amenitiesName: '',
+        amenitiesIcon: '',
+        amenitiesNameOriginal: '',
+        amenitiesIconOriginal: ''
+      });
+    }
+  }, [modalOpen, reset]);
 
   const handleClosingDialogState = () => {
     setModalOpen(!modalOpen);
@@ -195,6 +235,20 @@ const Amenities = () => {
           setModalOpen(false);
           refreshData();
 
+          setFormDataa({
+            amenitiesName: '',
+            amenitiesStatus: '',
+            amenitiesIcon: ''
+          });
+
+
+          setUpdateFormDataa({
+            amenitiesName: '',
+            amenitiesIcon: '',
+            amenitiesNameOriginal: '',
+            amenitiesIconOriginal: ''
+          });
+
           reset({
             amenitiesName: '',
             amenitiesStatus: '',
@@ -252,6 +306,20 @@ const Amenities = () => {
           handleSnackbarMessage(response?.data?.message, 'success');
           refreshData();
           setShowStatusLoader(false)
+
+          setFormDataa({
+            amenitiesName: '',
+            amenitiesStatus: '',
+            amenitiesIcon: ''
+          });
+
+
+          setUpdateFormDataa({
+            amenitiesName: '',
+            amenitiesIcon: '',
+            amenitiesNameOriginal: '',
+            amenitiesIconOriginal: ''
+          });
 
         }, 1700);
       } else {

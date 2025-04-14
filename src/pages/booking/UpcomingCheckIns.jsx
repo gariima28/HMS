@@ -61,7 +61,8 @@ const UpcomingCheckIns = () => {
         </Grid>
         <Grid sx={{ mb: 3 }}>
           <Typography variant="subtitle1" sx={{ color: 'red' }}>
-            <InfoCircleOutlined /> The check-in periods for these bookings have passed, but the guests have not arrived yet.
+            <InfoCircleOutlined /> These Guests are scheduled to arrive for their check-in.
+            {/* The check-in periods for these bookings have passed, but the guests have not arrived yet. */}
           </Typography>
           <Divider sx={{ mt: 1 }} />
         </Grid>

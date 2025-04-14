@@ -102,9 +102,48 @@ const Facilities = () => {
     mutate(`${ServerIP}/facilities/getAll`);
   };
 
+  useEffect(() => {
+    if (!modalOpen) {
+      reset({
+        facilitiesName: '',
+        facilitiesStatus: '',
+        facilitiesIcon: null
+      });
+      setFormDataa({
+        facilitiesName: '',
+        facilitiesStatus: '',
+        facilitiesIcon: ''
+      });
+      setUpdateFormDataa({
+        facilitiesName: '',
+        facilitiesIcon: '',
+        facilitiesNameOriginal: '',
+        facilitiesIconOriginal: ''
+      });
+    }
+  }, [modalOpen, reset]);
+
   const handleDialogState = (title, button, facilityId) => {
     setModalTitle(title);
     setButtonName(button);
+
+    reset({
+      facilitiesName: '',
+      facilitiesStatus: '',
+      facilitiesIcon: null
+    });
+    setFormDataa({
+      facilitiesName: '',
+      facilitiesStatus: '',
+      facilitiesIcon: ''
+    });
+    setUpdateFormDataa({
+      facilitiesName: '',
+      facilitiesIcon: '',
+      facilitiesNameOriginal: '',
+      facilitiesIconOriginal: ''
+    });
+
     if (button === 'Update') {
       getFacilitiesDataById(facilityId);
     }
