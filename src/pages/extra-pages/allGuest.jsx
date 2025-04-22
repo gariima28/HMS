@@ -114,31 +114,38 @@ const allGuest = () => {
   const handleOpen3 = () => setOpen3(true);
   const handleClose3 = () => setOpen3(false);
 
-  const [page, setPage] = React.useState(0);
+  const [page, setPage] = React.useState(1);
   const [rowsPerPage, setRowsPerPage] = React.useState(10);
-
+  const [currentPage, setCurrentPage] = useState(1);
+  const [totalPages, setTotalPages] = useState(1);
+  const [pageSize, setPageSize] = useState(10);
+  
   const handleChangePage = (event, newPage) => {
-    setPage(newPage);
+    setPage(newPage + 1);
   };
 
   const handleChangeRowsPerPage = (event) => {
-    setRowsPerPage(+event.target.value);
-    setPage(0);
-  };
+    const newSize = +event.target.value;
+    setRowsPerPage(newSize);
+    setPageSize(newSize);
+    setPage(1);
+};
 
   useEffect(() => {
     MyActiveGuestGetAllApi()
-  }, [])
+  }, [page, rowsPerPage])
 
   const MyActiveGuestGetAllApi = async () => {
     setLoader(true)
     try {
-      const response = await AllguestGetAllApi(search);
+      const response = await AllguestGetAllApi(search,page, rowsPerPage);
       console.log('All Guest DATAAAAAA', response)
       if (response?.status === 200) {
-        setRowsData(response?.data?.guest)
-        // toast.success(response?.data?.msg)
-        setLoader(false)
+        const { currentPage, totalPages, pageSize, reports, notifications } = response.data;
+
+        setCurrentPage(currentPage);
+        setTotalPages(totalPages);
+        setPageSize(pageSize);
 
         const transformedRows = response?.data?.guest.map((guest, index) => ({
           ...guest,
@@ -166,6 +173,8 @@ const allGuest = () => {
       }
     } catch (error) {
       console.log(error)
+    } finally {
+      setLoader(false)
     }
   }
 
@@ -280,12 +289,10 @@ const allGuest = () => {
               <TableBody>
                 {
                   row && row.length > 0 ? (
-                    row
-                    ?.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
-                    .map((row, index) => {
+                    row?.map((row, index) => {
                       return (
                         <TableRow hover role="checkbox" tabIndex={-1} key={index}>
-                          {columns.map((column) => {
+                          {columns?.map((column) => {
                             const value = row[column.id];
                             return (
                               <TableCell key={column.id} align={column.align}>
@@ -313,13 +320,13 @@ const allGuest = () => {
             </Table>
           </TableContainer>
           <TablePagination
-            rowsPerPageOptions={[10, 25, 100]}
-            component="div"
-            count={rows.length}
-            rowsPerPage={rowsPerPage}
-            page={page}
-            onPageChange={handleChangePage}
-            onRowsPerPageChange={handleChangeRowsPerPage}
+             // rowsPerPageOptions={[10, 25, 100]}
+             component="div"
+             count={totalPages * rowsPerPage}
+             rowsPerPage={rowsPerPage}
+             page={page - 1}
+             onPageChange={handleChangePage}
+             onRowsPerPageChange={handleChangeRowsPerPage}
           />
         </Paper>
       </Box>

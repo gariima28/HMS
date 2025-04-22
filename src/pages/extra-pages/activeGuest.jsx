@@ -90,17 +90,27 @@ const activeGuest = () => {
 
   const [search, setSearch] = useState('')
 
-  const [page, setPage] = React.useState(0);
-  const [rowsPerPage, setRowsPerPage] = React.useState(10);
+  // const [page, setPage] = React.useState(0);
+  // const [rowsPerPage, setRowsPerPage] = React.useState(10);
 
+
+  const [page, setPage] = React.useState(1);
+  const [rowsPerPage, setRowsPerPage] = React.useState(10);
+  const [currentPage, setCurrentPage] = useState(1);
+  const [totalPages, setTotalPages] = useState(1);
+  const [pageSize, setPageSize] = useState(10);
+  
   const handleChangePage = (event, newPage) => {
-    setPage(newPage);
+    setPage(newPage + 1);
   };
 
   const handleChangeRowsPerPage = (event) => {
-    setRowsPerPage(+event.target.value);
-    setPage(0);
-  };
+    const newSize = +event.target.value;
+    setRowsPerPage(newSize);
+    setPageSize(newSize);
+    setPage(1);
+};
+  
   const columns = [
     { id: 'firstName', label: 'User', minWidth: 170 },
     { id: 'email', label: 'Email-Mobile', minWidth: 100 },
@@ -122,17 +132,20 @@ const activeGuest = () => {
 
   useEffect(() => {
     MyActiveGuestGetAllApi()
-  }, [])
+  }, [ page, rowsPerPage])
 
   const MyActiveGuestGetAllApi = async () => {
     setLoader(true)
     try {
-      const response = await AllActiveguestGetAllApi(search);
+      const response = await AllActiveguestGetAllApi(search, page, rowsPerPage);
       console.log('Active Guest DATAAAAAA', response) 
       if (response?.status === 200) {
-        setRowsData(response?.data?.guest)
-        // toast.success(response?.data?.msg)
-        setLoader(false)
+        const { currentPage, totalPages, pageSize, reports, notifications } = response.data;
+
+        setCurrentPage(currentPage);
+        setTotalPages(totalPages);
+        setPageSize(pageSize);
+
         const transformedRows = response?.data?.guest.map((guest, index) => ({
           ...guest,
           dateTime: (<><Grid><Typography>{guest?.createdAt?.dateTime}</Typography> <br />
@@ -152,6 +165,8 @@ const activeGuest = () => {
       }
     } catch (error) {
       console.log(error)
+    } finally {
+      setLoader(false)
     }
   }
 
@@ -215,7 +230,7 @@ const activeGuest = () => {
               <TableBody>
                 {
                   rows && rows.length > 0 ? (
-                    rows?.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage).map((row,index) => {
+                    rows?.map((row,index) => {
                       return (
                         <TableRow hover role="checkbox" tabIndex={-1} key={index}>
                           {columns?.map((column) => {
@@ -246,11 +261,11 @@ const activeGuest = () => {
             </Table>
           </TableContainer>
           <TablePagination
-            rowsPerPageOptions={[10, 25, 100]}
+            // rowsPerPageOptions={[10, 25, 100]}
             component="div"
-            count={rows?.length}
+            count={totalPages * rowsPerPage}
             rowsPerPage={rowsPerPage}
-            page={page}
+            page={page - 1}
             onPageChange={handleChangePage}
             onRowsPerPageChange={handleChangeRowsPerPage}
           />

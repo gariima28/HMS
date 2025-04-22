@@ -1,5 +1,6 @@
 import { Box, Button, Grid, InputLabel, MenuItem, TextareaAutosize, TextField, Typography, } from '@mui/material'
 import React, { useEffect, useState, useRef } from 'react'
+import { useNavigate } from 'react-router';
 import toast, { Toaster } from 'react-hot-toast';
 import Paper from '@mui/material/Paper';
 import Table from '@mui/material/Table';
@@ -93,25 +94,20 @@ const reportRequest = () => {
     const handleOpen3 = () => setOpen3(true);
     const handleClose3 = () => setOpen3(false);
 
-    const [page, setPage] = React.useState(0);
-    const [rowsPerPage, setRowsPerPage] = React.useState(5);
+
 
     const [row, setRow] = useState([]);
     const [rowsData, setRowsData] = React.useState([]);
-
     const [InValidMessageError, setInValidMessageError] = useState(false);
 
-
-    const handleChangePage = (event, newPage) => {
-        setPage(newPage);
-    };
-
-    const handleChangeRowsPerPage = (event) => {
-        setRowsPerPage(+event.target.value);
-        setPage(0);
-    };
+    const [page, setPage] = React.useState(1);
+    const [rowsPerPage, setRowsPerPage] = React.useState(10);
+    const [currentPage, setCurrentPage] = useState(1);
+    const [totalPages, setTotalPages] = useState(1);
+    const [pageSize, setPageSize] = useState(10);
 
 
+    const navigate = useNavigate()
     const columns = [
 
         { id: 'type', label: 'Type', minWidth: 140 },
@@ -160,8 +156,8 @@ const reportRequest = () => {
     // Validation 
 
     useEffect(() => {
-        MyReportRequestGetAllApi()
-    }, [])
+        MyReportRequestGetAllApi();
+    }, [page, rowsPerPage]);
 
     const offcanvasRef = useRef(null);
 
@@ -197,16 +193,30 @@ const reportRequest = () => {
 
     }
 
+    const handleChangePage = (event, newPage) => {
+        setPage(newPage + 1);
+    };
+
+    const handleChangeRowsPerPage = (event) => {
+        const newSize = +event.target.value;
+        setRowsPerPage(newSize);
+        setPageSize(newSize);
+        setPage(1);
+    };
+
     // Get all 
     const MyReportRequestGetAllApi = async () => {
         setLoader(true)
         try {
-            const response = await ReportAndRequestGetAllApi();
+            const response = await ReportAndRequestGetAllApi(page, rowsPerPage);
             console.log('Report and request DATAAAAAA', response)
             if (response?.status === 200) {
-                setRowsData(response?.data?.notifications)
-                // toast.success(response?.data?.msg)
-                setLoader(false)
+                const { currentPage, totalPages, pageSize, reports, notifications } = response.data;
+
+                setCurrentPage(currentPage);
+                setTotalPages(totalPages);
+                setPageSize(pageSize);
+
                 const transformedRows = response?.data?.reports.map((reports, index) => ({
                     ...reports,
                     //   dateTime: (<><Grid><Typography>{reports?.dateTime?.split("T")[0]}</Typography> <br />
@@ -219,6 +229,7 @@ const reportRequest = () => {
                     //       }}>Details</Button>
                     //     </Stack>
                     //   )
+
                 }))
                 setRow(transformedRows)
             } else {
@@ -226,6 +237,9 @@ const reportRequest = () => {
             }
         } catch (error) {
             console.log(error)
+        }
+        finally {
+            setLoader(false);
         }
     }
 
@@ -246,7 +260,7 @@ const reportRequest = () => {
                 </Grid>
                 <Grid>
                     <Button sx={{ ...forHover, borderColor: '#ff9f43', backgroundColor: "#fff", color: '#ff9f43', marginRight: 1 }} variant="outlined" onClick={handleOpen3}> {/* <AddIcon /> */}Report a bug</Button>
-                    <Button sx={{ ...forHover2, borderColor: '#28c76f', backgroundColor: "#fff", color: '#28c76f' }} variant="outlined" onClick={''}> {/* <AddIcon /> */}Request for Support</Button>
+                    <Button sx={{ ...forHover2, borderColor: '#28c76f', backgroundColor: "#fff", color: '#28c76f' }} variant="outlined" onClick={() => window.open('https://www.scriza.in','_blank')}> {/* <AddIcon /> */}Request for Support</Button>
                 </Grid>
             </Box>
             <Box sx={{ marginTop: 5 }}>
@@ -255,7 +269,7 @@ const reportRequest = () => {
                         <Table stickyHeader aria-label="sticky table">
                             <TableHead>
                                 <TableRow>
-                                    {columns.map((column) => (
+                                    {columns?.map((column) => (
                                         <TableCell
                                             key={column.id}
                                             align={column.align}
@@ -269,19 +283,18 @@ const reportRequest = () => {
                             <TableBody>
                                 {
                                     row && row.length > 0 ? (
-                                        row.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
-                                        .map((row, index) => {
+                                        row?.map((item, index) => {
                                             return (
-    
+
                                                 <TableRow hover role="checkbox" tabIndex={-1} key={index}>
-                                                    {columns.map((column) => {
-                                                        const value = row[column.id];
+                                                    {columns?.map((column) => {
+                                                        const value = item[column.id];
                                                         return (
                                                             <TableCell key={column.id} align={column.align}>
                                                                 {column.format && typeof value === 'number'
                                                                     ? column.format(value)
                                                                     : value}
-    
+
                                                             </TableCell>
                                                         );
                                                     })}
@@ -289,28 +302,38 @@ const reportRequest = () => {
                                             );
                                         })
                                     )
-                                    :
-                                    (
-                                        <TableRow>
-                                        <TableCell colSpan={columns.length} align="center">
-                                          <NoDataFound />
-                                        </TableCell>
-                                      </TableRow>
-                                    )
+                                        :
+                                        (
+                                            <TableRow>
+                                                <TableCell colSpan={columns.length} align="center">
+                                                    <NoDataFound />
+                                                </TableCell>
+                                            </TableRow>
+                                        )
                                 }
-                           
+
                             </TableBody>
                         </Table>
                     </TableContainer>
                     <TablePagination
+                        component="div"
+                        count={totalPages * rowsPerPage} 
+                        rowsPerPage={rowsPerPage}
+                        page={page - 1} 
+                        onPageChange={handleChangePage}
+                        onRowsPerPageChange={handleChangeRowsPerPage}
+                    />
+                    
+                    {/* <TablePagination
                         rowsPerPageOptions={[5, 10, 25, 100]}
                         component="div"
                         count={rows.length}
+                        // count={totalPages}
                         rowsPerPage={rowsPerPage}
                         page={page}
                         onPageChange={handleChangePage}
                         onRowsPerPageChange={handleChangeRowsPerPage}
-                    />
+                    /> */}
                 </Paper>
             </Box>
 

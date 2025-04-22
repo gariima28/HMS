@@ -23,41 +23,48 @@ const columns = [
     { id: 'action', label: 'Action', minWidth: 170, align: 'right' }
 ];
 
-
 const subscriberPage = () => {
 
-
     const token = localStorage.getItem('token')
-
-    const [page, setPage] = React.useState(0);
-    const [rowsPerPage, setRowsPerPage] = React.useState(10);
     const [loader, setLoader] = useState(false)
 
     const [rows, setRows] = React.useState([]);
     const [rowsData, setRowsData] = React.useState([]);
 
+    const [page, setPage] = React.useState(1);
+    const [rowsPerPage, setRowsPerPage] = React.useState(10);
+    const [currentPage, setCurrentPage] = useState(1);
+    const [totalPages, setTotalPages] = useState(1);
+    const [pageSize, setPageSize] = useState(10);
+
     const handleChangePage = (event, newPage) => {
-        setPage(newPage);
+        setPage(newPage + 1);
     };
 
     const handleChangeRowsPerPage = (event) => {
-        setRowsPerPage(+event.target.value);
-        setPage(0);
+        const newSize = +event.target.value;
+        setRowsPerPage(newSize);
+        setPageSize(newSize);
+        setPage(1);
     };
 
     useEffect(() => {
         MySubscriberGetAllApi()
-    }, [])
+    }, [page, rowsPerPage])
+
 
     const MySubscriberGetAllApi = async () => {
         setLoader(true)
         try {
-            const response = await SubscriberGetAllApi();
+            const response = await SubscriberGetAllApi(page, rowsPerPage);
             console.log('My Subscriber get all DATAAAAAA', response)
             if (response?.status === 200) {
-                setRowsData(response?.data?.roles)
-                // toast.success(response?.data?.msg)
-                setLoader(false)
+                const { currentPage, totalPages, pageSize, reports, notifications } = response.data;
+
+                setCurrentPage(currentPage);
+                setTotalPages(totalPages);
+                setPageSize(pageSize);
+
                 const transformedRows = response?.data?.roles.map((allRoles) => ({
                     ...allRoles,
                     createdAt: allRoles?.createdAt?.dateTime,
@@ -82,6 +89,8 @@ const subscriberPage = () => {
             }
         } catch (error) {
             console.log(error)
+        } finally {
+            setLoader(false)
         }
     }
 
@@ -131,18 +140,20 @@ const subscriberPage = () => {
                             <TableBody>
                                 {
                                     rows && rows.length > 0 ? (
-                                        rows.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
-                                            .map((row, index) => {
+                                        rows?.map((row, index) => {
                                                 return (
                                                     <TableRow hover role="checkbox" tabIndex={-1} key={index}>
-                                                        {columns.map((column) => {
+                                                        {
+                                                        columns?.map((column) => {
                                                             const value = row[column.id];
 
                                                             return (
-                                                                <TableCell key={column.id} align={column.align}>
-                                                                    {column.format && typeof value === 'number'
+                                                               <TableCell key={column.id} align={column.align}>
+                                                                    {
+                                                                        column?.format && typeof value === 'number'
                                                                         ? column.format(value)
-                                                                        : value}
+                                                                        : value
+                                                                    }
                                                                 </TableCell>
                                                             );
                                                         })}
@@ -164,11 +175,11 @@ const subscriberPage = () => {
                         </Table>
                     </TableContainer>
                     <TablePagination
-                        rowsPerPageOptions={[10, 25, 100]}
+                        // rowsPerPageOptions={[10, 25, 100]}
                         component="div"
-                        count={rows.length}
+                        count={totalPages * rowsPerPage}
                         rowsPerPage={rowsPerPage}
-                        page={page}
+                        page={page - 1}
                         onPageChange={handleChangePage}
                         onRowsPerPageChange={handleChangeRowsPerPage}
                     />

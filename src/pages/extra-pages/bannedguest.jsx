@@ -23,6 +23,7 @@ import { color } from 'framer-motion';
 import NoDataFound from 'pages/NoDataFound';
 
 const useStyles = makeStyles({
+
   searchBar: {
     display: 'flex'
   },
@@ -96,33 +97,40 @@ const bannedguest = () => {
   const [myId, setMyId] = useState('')
   console.log('my banned id ', myId)
 
-
-
-  const [page, setPage] = React.useState(0);
-  const [rowsPerPage, setRowsPerPage] = React.useState(10);
-
-  const handleChangePage = (event, newPage) => {
-    setPage(newPage);
-  };
-
-  const handleChangeRowsPerPage = (event) => {
-    setRowsPerPage(+event.target.value);
-    setPage(0);
-  };
+  const [page, setPage] = React.useState(1);
+   const [rowsPerPage, setRowsPerPage] = React.useState(10);
+   const [currentPage, setCurrentPage] = useState(1);
+   const [totalPages, setTotalPages] = useState(1);
+   const [pageSize, setPageSize] = useState(10);
+   
+   const handleChangePage = (event, newPage) => {
+     setPage(newPage + 1);
+   };
+ 
+   const handleChangeRowsPerPage = (event) => {
+     const newSize = +event.target.value;
+     setRowsPerPage(newSize);
+     setPageSize(newSize);
+     setPage(1);
+ };
+ 
 
   useEffect(() => {
     MyRoleGetAllApi()
-  }, [])
+  }, [page,rowsPerPage])
 
   const MyRoleGetAllApi = async () => {
     setLoader(true)
     try {
-      const response = await AllStaffBannedApi(search);
+      const response = await AllStaffBannedApi(search,page,rowsPerPage);
       console.log('Banned data ', response)
       if (response?.status === 200) {
-        // setRowsData(response?.data?.bannedStaff)
-        // toast.success(response?.data?.message)
-        setLoader(false)
+        const { currentPage, totalPages, pageSize, reports, notifications } = response.data;
+
+        setCurrentPage(currentPage);
+        setTotalPages(totalPages);
+        setPageSize(pageSize);
+
         const transformedRows = response?.data?.guest?.map((guest, index) => ({
           ...guest,
           createdAt
@@ -148,10 +156,12 @@ const bannedguest = () => {
       }
     } catch (error) {
       console.log(error)
+    } finally {
+      setLoader(false)
     }
   }
 
-  // Ban Ap 
+  // Ban Api 
   const MyBanApi = async () => {
     // setLoader(true)
     try {
@@ -198,18 +208,6 @@ const bannedguest = () => {
 
   ];
 
-  const rows = [
-    // {
-    //   name: 'India', code: 'IN', population: 'India',valid:'grow',
-    //   size:
-    //     <>
-    //       <Button sx={{ marginLeft: 2, height: 30, borderColor: '#4634ff', color: '#4634ff' }} variant="outlined"  href='./guestdetails'>
-    //         {/* <AddIcon /> */} Details</Button>
-    //     </>
-    // }
-  ];
-
-
   const handleChange = (e) => {
     const trimmedValue = e.target.value.trimStart();
     setSearch(trimmedValue);
@@ -224,6 +222,7 @@ const bannedguest = () => {
           )
         }
       </Box>
+
       <Box sx={{ margin: 0, fontSize: 20, display: "flex", justifyContent: "space-between" }}>
         <Grid>
           <b>Banned Guests</b>
@@ -269,7 +268,7 @@ const bannedguest = () => {
               <TableBody>
                 {
                  row && row.length > 0 ? (
-                  row?.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage).map((row, index) => {
+                  row?.map((row, index) => {
                     return (
                       <TableRow hover role="checkbox" tabIndex={-1} key={index}>
                         {columns.map((column) => {
@@ -300,13 +299,13 @@ const bannedguest = () => {
             </Table>
           </TableContainer>
           <TablePagination
-            rowsPerPageOptions={[10, 25, 100]}
-            component="div"
-            count={rows.length}
-            rowsPerPage={rowsPerPage}
-            page={page}
-            onPageChange={handleChangePage}
-            onRowsPerPageChange={handleChangeRowsPerPage}
+             // rowsPerPageOptions={[10, 25, 100]}
+             component="div"
+             count={totalPages * rowsPerPage}
+             rowsPerPage={rowsPerPage}
+             page={page - 1}
+             onPageChange={handleChangePage}
+             onRowsPerPageChange={handleChangeRowsPerPage}
           />
         </Paper>
       </Box>

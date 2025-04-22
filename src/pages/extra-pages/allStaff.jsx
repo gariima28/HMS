@@ -143,13 +143,9 @@ const allStaff = () => {
   const handleOpen3 = () => setOpen3(true);
   const handleClose3 = () => setOpen3(false);
 
-  const [page, setPage] = React.useState(0);
-  const [rowsPerPage, setRowsPerPage] = React.useState(5);
-
   const [roleId, setRoleId] = useState();
   const [roleName, setRoleName] = useState();
   const [password, setPassword] = useState();
-
   const [name, setName] = useState('');
   const [userName, setUserName] = useState();
   const [email, setEmail] = useState();
@@ -170,26 +166,38 @@ const allStaff = () => {
   const [isEmailValidRequired, setIsEmailValidRequired] = useState(false);
   const [isPasswordValidRequired, setIsPasswordValidRequired] = useState(false);
 
+  const [page, setPage] = React.useState(1);
+  const [rowsPerPage, setRowsPerPage] = React.useState(10);
+  const [currentPage, setCurrentPage] = useState(1);
+  const [totalPages, setTotalPages] = useState(1);
+  const [pageSize, setPageSize] = useState(10);
+
   const handleChangePage = (event, newPage) => {
-    setPage(newPage);
+    setPage(newPage + 1);
   };
 
   const handleChangeRowsPerPage = (event) => {
-    setRowsPerPage(+ event.target.value);
-    setPage(0);
-  };
+    const newSize = +event.target.value;
+    setRowsPerPage(newSize);
+    setPageSize(newSize);
+    setPage(1);
+};
+
+  useEffect(() => {
+    MyRoleGetAllApi()
+  }, [])
 
   useEffect(() => {
     MyRoleGetAllApi()
     MyAllStaffGetAllDataApi()
-  }, [])
+  }, [page, rowsPerPage])
 
   // Get ll api for id or role in All Staff 
   const MyRoleGetAllApi = async () => {
     // setLoader(true)
     try {
       const response = await GetAllApi();
-      console.log('My role get all DATAAAAAA', response)
+      // console.log('My role get all DATAAAAAA', response)
       if (response?.status === 200) {
         setAllData(response?.data?.roles)
         // toast.success(response?.data?.msg)
@@ -295,7 +303,7 @@ const allStaff = () => {
       setLoader(true)
       try {
         const response = await AllStaffPostApi(formData);
-        console.log('response of add role api', response)
+        // console.log('response of add role api', response)
         if (response?.data?.status === "success") {
           toast.success(response?.data?.message);
           MyAllStaffGetAllDataApi()
@@ -315,16 +323,19 @@ const allStaff = () => {
   const MyAllStaffGetAllDataApi = async () => {
     setLoader(true)
     try {
-      const response = await AllStaffGetAllApi(search);
-      console.log('My All Stafff get all---------------', response)
+      const response = await AllStaffGetAllApi(search, page, rowsPerPage);
+      // console.log('My All Stafff get all---------------', response)
       if (response?.status === 200) {
-        setRow(response?.data?.staffs)
-        // toast.success(response?.data?.msg)
-        setLoader(false)
+        const { currentPage, totalPages, pageSize, reports, notifications } = response.data;
 
+        setCurrentPage(currentPage);
+        setTotalPages(totalPages);
+        setPageSize(pageSize);
+        
         const transformedRows = response?.data?.staffs?.map((allRoles, index) => ({
           ...allRoles,
-          index: index + 1,
+          // index: index + 1,
+          index: index + 1 + (currentPage - 1) * pageSize,
           email: allRoles?.email,
           role: allRoles?.role?.roleName,
           status: <Button sx={{ marginLeft: 1, padding: 0, height: 30, borderColor: '#eb2222', color: '#eb2222' }} className={`${allRoles?.status === 'ENABLED' ? `${classes.enable}` : `${classes.green}`}`} variant="outlined" onClick={() => { setIdForBan(allRoles.id); handleOpen2(); }} >
@@ -341,7 +352,8 @@ const allStaff = () => {
                       <path d="M6.835 15.803v-2.165c.002-.357.144-.7.395-.953l9.532-9.532a1.36 1.36 0 0 1 1.934 0l2.151 2.151a1.36 1.36 0 0 1 0 1.934l-9.532 9.532a1.36 1.36 0 0 1-.953.395H8.197a1.36 1.36 0 0 1-1.362-1.362M19.09 8.995l-4.085-4.086" />
                     </g>
                   </svg>
-                </Typography> <Typography >{'Edit'}</Typography>
+                </Typography>
+                <Typography >{'Edit'}</Typography>
               </Button>
 
             </>
@@ -352,6 +364,8 @@ const allStaff = () => {
       }
     } catch (error) {
       console.log(error)
+    } finally {
+      setLoader(false)
     }
   }
 
@@ -543,13 +557,12 @@ const allStaff = () => {
               <TableBody>
                 {
                   row && row.length > 0 ? (
-                    row?.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
-                      .map((row, index) => {
+                    row?.map((item, index) => {
                         return (
 
                           <TableRow hover role="checkbox" tabIndex={-1} key={index}>
                             {columns.map((column) => {
-                              const value = row[column.id];
+                              const value = item[column.id];
                               return (
                                 <TableCell key={column.id} align={column.align}>
                                   {column.format && typeof value === 'number'
@@ -566,10 +579,10 @@ const allStaff = () => {
                     :
                     (
                       <TableRow>
-                      <TableCell colSpan={columns.length} align="center">
-                        <NoDataFound />
-                      </TableCell>
-                    </TableRow>
+                        <TableCell colSpan={columns.length} align="center">
+                          <NoDataFound />
+                        </TableCell>
+                      </TableRow>
                     )
                 }
 
@@ -577,11 +590,11 @@ const allStaff = () => {
             </Table>
           </TableContainer>
           <TablePagination
-            rowsPerPageOptions={[5, 10, 25, 100]}
+            // rowsPerPageOptions={[5, 10, 25, 100]}
             component="div"
-            count={rows.length}
+            count={totalPages * rowsPerPage}
             rowsPerPage={rowsPerPage}
-            page={page}
+            page={page - 1}
             onPageChange={handleChangePage}
             onRowsPerPageChange={handleChangeRowsPerPage}
 

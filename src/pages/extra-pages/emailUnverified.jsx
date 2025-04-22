@@ -94,31 +94,40 @@ const emailUnverified = () => {
   const [search, setSearch] = useState('')
 
 
-  const [page, setPage] = React.useState(0);
-  const [rowsPerPage, setRowsPerPage] = React.useState(10);
 
+
+  const [page, setPage] = React.useState(1);
+  const [rowsPerPage, setRowsPerPage] = React.useState(10);
+  const [currentPage, setCurrentPage] = useState(1);
+  const [totalPages, setTotalPages] = useState(1);
+  const [pageSize, setPageSize] = useState(10);
+  
   const handleChangePage = (event, newPage) => {
-    setPage(newPage);
+    setPage(newPage + 1);
   };
 
   const handleChangeRowsPerPage = (event) => {
-    setRowsPerPage(+event.target.value);
-    setPage(0);
-  };
+    const newSize = +event.target.value;
+    setRowsPerPage(newSize);
+    setPageSize(newSize);
+    setPage(1);
+};
 
   useEffect(() => {
     MyEmailUnverifiedGetAllApi()
-  }, [])
+  }, [page, rowsPerPage])
 
   const MyEmailUnverifiedGetAllApi = async () => {
     setLoader(true)
     try {
-      const response = await AllActiveEamilUnverifiedapi(search);
-      console.log('Unverified data data ', response)
+      const response = await AllActiveEamilUnverifiedapi(search, page, rowsPerPage);
+      console.log('Unverified data data', response)
       if (response?.status === 200) {
-        // setRowsData(response?.data?.roles)
-        // toast.success(response?.data?.message)
-        setLoader(false)
+        const { currentPage, totalPages, pageSize, reports, notifications } = response.data;
+
+        setCurrentPage(currentPage);
+        setTotalPages(totalPages);
+        setPageSize(pageSize);
 
         const transformedRows = response?.data?.guest?.map((EmailUnverified, index) => ({
           ...EmailUnverified,
@@ -145,6 +154,8 @@ const emailUnverified = () => {
       }
     } catch (error) {
       console.log(error)
+    } finally {
+      setLoader(false)
     }
   }
   const columns = [
@@ -249,7 +260,7 @@ const emailUnverified = () => {
               <TableBody>
                 {
                   row && row.length > 0 ? (
-                    row?.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage).map((row) => {
+                    row?.map((row) => {
                       return (
                         <TableRow hover role="checkbox" tabIndex={-1} key={row.code}>
                           {columns.map((column) => {
@@ -280,13 +291,13 @@ const emailUnverified = () => {
             </Table>
           </TableContainer>
           <TablePagination
-            rowsPerPageOptions={[10, 25, 100]}
-            component="div"
-            count={rows.length}
-            rowsPerPage={rowsPerPage}
-            page={page}
-            onPageChange={handleChangePage}
-            onRowsPerPageChange={handleChangeRowsPerPage}
+             // rowsPerPageOptions={[10, 25, 100]}
+             component="div"
+             count={totalPages * rowsPerPage}
+             rowsPerPage={rowsPerPage}
+             page={page - 1}
+             onPageChange={handleChangePage}
+             onRowsPerPageChange={handleChangeRowsPerPage}
           />
         </Paper>
       </Box>
