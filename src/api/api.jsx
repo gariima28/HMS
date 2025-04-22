@@ -613,9 +613,9 @@ export const RolePostApi = async (formData) => {
 }
 
 // Get All api in role 
-export const GetAllApi = async () => {
+export const GetAllApi = async (page, rowsPerPage) => {
     axios.defaults.headers.common["Authorization"] = token;
-    const res = await axios.get(`${ServerIP}/role/getAll`)
+    const res = await axios.get(`${ServerIP}/role/getAll?page=${page}&size=${rowsPerPage}`)
 
     if (res) {
         return res;
@@ -652,9 +652,9 @@ export const AllStaffPostApi = async (formData) => {
     }
 }
 // } get all 
-export const AllStaffGetAllApi = async (search) => {
+export const AllStaffGetAllApi = async (search,page, rowsPerPage) => {
     axios.defaults.headers.common["Authorization"] = token;
-    const res = await axios.get(`${ServerIP}/staff/getAll?search=${search}`)
+    const res = await axios.get(`${ServerIP}/staff/getAll?search=${search}&page=${page}&size=${rowsPerPage}`)
 
     if (res) {
         return res;
@@ -701,9 +701,9 @@ export const AllStaffBanApi = async (id) => {
 
 // Banned guest 
 
-export const AllStaffBannedApi = async (search) => {
+export const AllStaffBannedApi = async (search,page,rowsPerPage) => {
     axios.defaults.headers.common["Authorization"] = token;
-    const res = await axios.get(`${ServerIP}/guest/getAllBannedGuest?search=${search}`)
+    const res = await axios.get(`${ServerIP}/guest/getAllBannedGuest?search=${search}&page=${page}&size=${rowsPerPage}`)
 
     if (res) {
         return res;
@@ -715,9 +715,9 @@ export const AllStaffBannedApi = async (search) => {
 
 // active guest 
 
-export const AllActiveguestGetAllApi = async (search) => {
+export const AllActiveguestGetAllApi = async (search,page, rowsPerPage) => {
     axios.defaults.headers.common["Authorization"] = token;
-    const res = await axios.get(`${ServerIP}/guest/active?search=${search}`)
+    const res = await axios.get(`${ServerIP}/guest/active?search=${search}&page=${page}&size=${rowsPerPage}`)
     if (res) {
         return res;
     }
@@ -727,9 +727,9 @@ export const AllActiveguestGetAllApi = async (search) => {
 }
 // All Guest GetAll Api 
 
-export const AllguestGetAllApi = async (search) => {
+export const AllguestGetAllApi = async (search,page, rowsPerPage) => {
     axios.defaults.headers.common["Authorization"] = token;
-    const res = await axios.get(`${ServerIP}/guest/getAll?search=${search}`)
+    const res = await axios.get(`${ServerIP}/guest/getAll?search=${search}&page=${page}&size=${rowsPerPage}`)
     if (res) {
         return res;
     }
@@ -776,9 +776,9 @@ export const BanApi = async (id, status) => {
     }
 }
 // get all of eamil 
-export const AllActiveEamilUnverifiedapi = async (search) => {
+export const AllActiveEamilUnverifiedapi = async (search,page, rowsPerPage) => {
     axios.defaults.headers.common["Authorization"] = token;
-    const res = await axios.get(`${ServerIP}/guest/emailUnverified?search=${search}`)
+    const res = await axios.get(`${ServerIP}/guest/emailUnverified?search=${search}&page=${page}&size=${rowsPerPage}`)
 
     if (res) {
         return res;
@@ -789,9 +789,9 @@ export const AllActiveEamilUnverifiedapi = async (search) => {
 }
 
 // get all of phone 
-export const AllActivePhoneUnverifiedapi = async (search) => {
+export const AllActivePhoneUnverifiedapi = async (search,page, rowsPerPage) => {
     axios.defaults.headers.common["Authorization"] = token;
-    const res = await axios.get(`${ServerIP}/guest/phoneUnverified?search=${search}`)
+    const res = await axios.get(`${ServerIP}/guest/phoneUnverified?search=${search}&page=${page}&size=${rowsPerPage}`)
 
     if (res) {
         return res;
@@ -914,9 +914,9 @@ export const SendAllStaffMail = async (formData) => {
 // Send notification -----------
 
 // Get all tickets  
-export const SubscriberGetAllApi = async () => {
+export const SubscriberGetAllApi = async (page, rowsPerPage) => {
     axios.defaults.headers.common["Authorization"] = token;
-    const res = await axios.get(`${ServerIP}/subscribe/getSubscriberList`)
+    const res = await axios.get(`${ServerIP}/subscribe/getSubscriberList?page=${page}&size=${rowsPerPage}`)
 
     if (res) {
         return res;
@@ -1097,9 +1097,9 @@ export const ReportAndRequestPostApi = async (data) => {
     }
 }
 //  Report and request get all api
-export const ReportAndRequestGetAllApi = async () => {
+export const ReportAndRequestGetAllApi = async (page,rowsPerPage) => {
     axios.defaults.headers.common["Authorization"] = token;
-    const res = await axios.get(`${ServerIP}/request-report/getAll`)
+    const res = await axios.get(`${ServerIP}/request-report/getAll?page=${page}&size=${rowsPerPage}`)
     if (res) {
         return res;
     }
