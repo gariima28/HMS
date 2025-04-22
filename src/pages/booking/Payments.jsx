@@ -118,33 +118,23 @@ const PaymentsPage = () => {
   const toDate = dateRange[1]?.format("YYYY-MM-DD") || "";
 
   // get API
-  // const { data, error } = useSWR(`${ServerIP}/payment/getAllPayments?search=${searchKey}${id !== 'all' ? `?status=${id}` : ''}`, fetcher);
 
   // const { data, error } = useSWR(
-  //   `${ServerIP}/payment/getAllPayments?${searchKey ? `search=${searchKey}&` : ''}${id !== 'all' ? `status=${id}` : ''}`,
+  //   `${ServerIP}/payment/getAllPayments?${searchKey ? `search=${searchKey}&` : ''}${id !== 'all' ? `status=${id}&` : ''}${fromDate ? `fromDate=${fromDate}&` : ''}${toDate ? `toDate=${toDate}` : ''}`,
   //   fetcher
   // );
 
+  const queryParams = [
+    searchKey ? `search=${searchKey}` : '',
+    id !== 'all' ? `status=${id}` : '',
+    fromDate ? `fromDate=${fromDate}` : '',
+    toDate ? `toDate=${toDate}` : ''
+  ].filter(Boolean).join('&');
+
   const { data, error } = useSWR(
-    `${ServerIP}/payment/getAllPayments?${searchKey ? `search=${searchKey}&` : ''}${id !== 'all' ? `status=${id}&` : ''}${fromDate ? `fromDate=${fromDate}&` : ''}${toDate ? `toDate=${toDate}` : ''}`,
+    `${ServerIP}/payment/getAllPayments${queryParams ? `?${queryParams}` : ''}`,
     fetcher
   );
-
-  // useEffect(() => {
-  //   if (allDataForTotals) {
-  //     const totalPending = allDataForTotals?.payments?.filter(p => p.paymentStatus === "PENDING")
-  //       .reduce((sum, p) => sum + p.totalAmount, 0);
-  //     const totalSuccessful = allDataForTotals?.payments?.filter(p => p.paymentStatus === "SUCCESSFUL")
-  //       .reduce((sum, p) => sum + p.totalAmount, 0);
-  //     const totalRejected = allDataForTotals?.payments?.filter(p => p.paymentStatus === "REJECTED")
-  //       .reduce((sum, p) => sum + p.totalAmount, 0);
-
-  //     setTotalPendingAmount(totalPending);
-  //     setTotalSuccessfulAmount(totalSuccessful);
-  //     setTotalRejectedAmount(totalRejected);
-  //   }
-  // }, [allDataForTotals]);
-
 
   useEffect(() => {
     if (data) {

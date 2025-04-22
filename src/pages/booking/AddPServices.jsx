@@ -25,8 +25,9 @@ const AddPServices = () => {
   const [showModalLoader, setShowModalLoader] = useState(false);
 
   useEffect(() => {
+    console.log(data)
     if (data) {
-      setRows(data);
+      setRows(data.premiumServices);
     }
   }, [data]);
 
