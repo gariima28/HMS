@@ -183,7 +183,7 @@ const booking = {
           id: 'approvedPayments',
           title: 'Approved Payments',
           type: 'item',
-          url: '/payments/APPROVED',
+          url: '/payments/ACCEPTED',
           breadcrumbs: false,
           icon: icons.ChromeOutlined
         },
@@ -204,7 +204,7 @@ const booking = {
           icon: icons.ChromeOutlined
         },
         // abc
-      
+
         {
           id: 'failedPayments',
           title: 'Failed Payments',

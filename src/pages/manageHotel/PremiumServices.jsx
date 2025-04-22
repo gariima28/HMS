@@ -174,7 +174,7 @@ const PremiumServices = () => {
         return `₹ ${price}`;
       };
 
-      const transformedRows = data.map((premiumService) => ({
+      const transformedRows = data.premiumServices.map((premiumService) => ({
         ...premiumService,
         price: formatPrice(premiumService.price),
         status: <CustomButton variant="outlined" status={premiumService.status ? 'enable' : 'disable'}>{premiumService.status ? 'Enabled' : 'Disabled'}</CustomButton>,
