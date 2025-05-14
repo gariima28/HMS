@@ -109,7 +109,7 @@ const CanceledBookings = () => {
   const [showDataTableLoader, setShowDataTableLoader] = useState(false);
 
   const isButtonEnabled = checkIn && checkOut;
-  
+
   const [toaster, setToaster] = useState(false)
   const [msgToaster, setMsgToaster] = useState('')
   const [anchorEl, setAnchorEl] = useState(null);
@@ -127,7 +127,7 @@ const CanceledBookings = () => {
   const { data, error } = useSWR(`${ServerIP}/booking/getCancelBooking`, fetcher);
 
   useEffect(() => {
-    if (data) {
+    if (data?.todayBooking && Array.isArray(data.todayBooking)) {
       setShowDataTableLoader(true)
       console.log(data?.cancelBookings, 'data');
       const transformedRows = data.cancelBookings.map((booking) => {

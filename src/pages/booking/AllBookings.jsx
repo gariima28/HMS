@@ -215,7 +215,7 @@ const AllBookings = () => {
             <Stack justifyContent='end' spacing={2} direction="row">
               <DetailsButton variant="outlined" size="small" startIcon={<ComputerSharp />} component={Link} to={`/bookingDetailsPage/${booking.bookingId}`}>Details</DetailsButton>
               {/* <MoreButton variant="outlined" size="small" startIcon={<MoreVertOutlined />} color={`${booking.status ? 'error' : 'success'}`} >More</MoreButton> */}
-              <MoreButton
+              {/* <MoreButton
                 variant="outlined"
                 size="small"
                 startIcon={<MoreVertOutlined />}
@@ -226,7 +226,7 @@ const AllBookings = () => {
                 onClick={(e) => handleClick(e, booking.bookingId)}
               >
                 More
-              </MoreButton>
+              </MoreButton> */}
               <Menu
                 id="basic-menu"
                 anchorEl={anchorEl}

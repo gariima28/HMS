@@ -130,13 +130,13 @@ const ActiveBookings = () => {
   const { data, error } = useSWR(`${ServerIP}/booking/activeBookings?startDate=${checkIn === null ? '' : checkIn}&endDate=${checkOut === null ? '' : checkOut}`, fetcher);
 
   useEffect(() => {
-    if (data) {
+    if (data?.todayBooking && Array.isArray(data.todayBooking)) {
       setShowDataTableLoader(true)
       console.log(data?.active, 'data');
       const transformedRows = data.active.map((active) => {
         const checkInDate = new Date(active.checkInDate).toISOString().split('T')[0];
         const checkOutDate = new Date(active.checkOutDate).toISOString().split('T')[0];
-        
+
         return {
           ...active,
           checkInCheckOut: `${checkInDate} | ${checkOutDate}`,
@@ -146,55 +146,55 @@ const ActiveBookings = () => {
             <Stack justifyContent='end' spacing={2} direction="row">
               <DetailsButton variant="outlined" size="small" startIcon={<ComputerSharp />} href={`bookingDetailsPage/${active.bookingId}`}>Details</DetailsButton>
               <MoreButton
-                  variant="outlined"
-                  type='button'
-                  size="small"
-                  startIcon={<MoreVertOutlined />}
-                  endIcon={<CaretDownFilled />}
-                  id="basic-button"
-                  aria-controls={open ? 'basic-menu' : undefined}
-                  aria-haspopup="true"
-                  aria-expanded={open ? 'true' : undefined}
-                  onClick={(e) => handleClick(e, active.bookingId)} // Pass bookingId to handleClick
-                >
-                  More
-                </MoreButton>
-                <Menu
-                  id="basic-menu"
-                  anchorEl={anchorEl}
-                  open={openBookingId === active.bookingId} // Dynamically check if the menu for this booking should be open
-                  onClose={handleClose}
-                  MenuListProps={{
-                    'aria-labelledby': 'basic-button',
-                  }}
-                >
-                  <MenuItem sx={{ p: 0 }}>
-                    <Button component={Link} to={`/bookedRoomInBookings/${active.bookingId}`} sx={{ backgroundColor: 'transparent', color: '#000', '&:hover': { color: '#000', backgroundColor: 'transparent' } }}>Booked Rooms</Button>
-                  </MenuItem>
-                  <MenuItem sx={{ p: 0 }}>
-                    <Button component={Link} to={`/premiumServicesInBookings/${active.bookingId}`} sx={{ backgroundColor: 'transparent', color: '#000', '&:hover': { color: '#000', backgroundColor: 'transparent' } }}>Premium Services</Button>
-                  </MenuItem>
-                  <MenuItem sx={{ p: 0 }}>
-                    <Button component={Link} to={`/paymentInBookings/${active.bookingId}`} sx={{ backgroundColor: 'transparent', color: '#000', '&:hover': { color: '#000', backgroundColor: 'transparent' } }}>Payment</Button>
-                  </MenuItem>
-                  {/* <MenuItem sx={{ p: 0 }}>
+                variant="outlined"
+                type='button'
+                size="small"
+                startIcon={<MoreVertOutlined />}
+                endIcon={<CaretDownFilled />}
+                id="basic-button"
+                aria-controls={open ? 'basic-menu' : undefined}
+                aria-haspopup="true"
+                aria-expanded={open ? 'true' : undefined}
+                onClick={(e) => handleClick(e, active.bookingId)} // Pass bookingId to handleClick
+              >
+                More
+              </MoreButton>
+              <Menu
+                id="basic-menu"
+                anchorEl={anchorEl}
+                open={openBookingId === active.bookingId} // Dynamically check if the menu for this booking should be open
+                onClose={handleClose}
+                MenuListProps={{
+                  'aria-labelledby': 'basic-button',
+                }}
+              >
+                <MenuItem sx={{ p: 0 }}>
+                  <Button component={Link} to={`/bookedRoomInBookings/${active.bookingId}`} sx={{ backgroundColor: 'transparent', color: '#000', '&:hover': { color: '#000', backgroundColor: 'transparent' } }}>Booked Rooms</Button>
+                </MenuItem>
+                <MenuItem sx={{ p: 0 }}>
+                  <Button component={Link} to={`/premiumServicesInBookings/${active.bookingId}`} sx={{ backgroundColor: 'transparent', color: '#000', '&:hover': { color: '#000', backgroundColor: 'transparent' } }}>Premium Services</Button>
+                </MenuItem>
+                <MenuItem sx={{ p: 0 }}>
+                  <Button component={Link} to={`/paymentInBookings/${active.bookingId}`} sx={{ backgroundColor: 'transparent', color: '#000', '&:hover': { color: '#000', backgroundColor: 'transparent' } }}>Payment</Button>
+                </MenuItem>
+                {/* <MenuItem sx={{ p: 0 }}>
                     <Button sx={{ backgroundColor: 'transparent', color: '#000', '&:hover': { color: '#000', backgroundColor: 'transparent' } }} onClick={() => { setOpenMergeDialog(true), setBookingNumber(booking.bookingNo) }}>Merge Booking</Button>
                   </MenuItem> */}
-                  <MenuItem sx={{ p: 0 }}>
-                    <Button component={Link} to={`/cancelBookings/${active.bookingId}`} sx={{ backgroundColor: 'transparent', color: '#000', '&:hover': { color: '#000', backgroundColor: 'transparent' } }}>Cancel Booking</Button>
-                  </MenuItem>
-                  <MenuItem sx={{ p: 0 }}>
-                    <Button component={Link} to={`/checkOutBookings/${active.bookingId}`} sx={{ backgroundColor: 'transparent', color: '#000', '&:hover': { color: '#000', backgroundColor: 'transparent' } }}>Check Out</Button>
-                  </MenuItem>
-                  <MenuItem sx={{ p: 0 }}>
-                    <Button component={Link} to="/" sx={{ backgroundColor: 'transparent', color: '#000', '&:hover': { color: '#000', backgroundColor: 'transparent' } }}>Print Invoice</Button>
-                  </MenuItem>
-                </Menu>
+                <MenuItem sx={{ p: 0 }}>
+                  <Button component={Link} to={`/cancelBookings/${active.bookingId}`} sx={{ backgroundColor: 'transparent', color: '#000', '&:hover': { color: '#000', backgroundColor: 'transparent' } }}>Cancel Booking</Button>
+                </MenuItem>
+                <MenuItem sx={{ p: 0 }}>
+                  <Button component={Link} to={`/checkOutBookings/${active.bookingId}`} sx={{ backgroundColor: 'transparent', color: '#000', '&:hover': { color: '#000', backgroundColor: 'transparent' } }}>Check Out</Button>
+                </MenuItem>
+                <MenuItem sx={{ p: 0 }}>
+                  <Button component={Link} to="/" sx={{ backgroundColor: 'transparent', color: '#000', '&:hover': { color: '#000', backgroundColor: 'transparent' } }}>Print Invoice</Button>
+                </MenuItem>
+              </Menu>
             </Stack>
           ),
         }
-      
-    });
+
+      });
       setRows(transformedRows);
       setTimeout(() => {
         setShowDataTableLoader(false)
