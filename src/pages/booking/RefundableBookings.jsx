@@ -116,7 +116,7 @@ const RefundableBookings = () => {
   const { data, error } = useSWR(`${ServerIP}/booking/getAllRefundable`, fetcher);
 
   useEffect(() => {
-    if (data) {
+    if (data?.todayBooking && Array.isArray(data.todayBooking)) {
       setShowDataTableLoader(true)
       console.log(data?.allRefundable, 'data');
       const transformedRows = data.allRefundable.map((booking) => {
@@ -127,11 +127,11 @@ const RefundableBookings = () => {
           ...booking,
           due: booking.pendingAmount,
           checkInCheckOut: `${checkInDate} | ${checkOutDate}`,
-        status: <CustomEnableButton variant="outlined" status={`${booking.status ? 'running' : 'upcoming'}`}> {booking.status ? 'Running' : 'Upcoming'} </CustomEnableButton>,
-        action: (
-          <Stack justifyContent='end' spacing={2} direction="row">
-            <DetailsButton variant="outlined" size="small" startIcon={<ComputerSharp />} href={`bookingDetailsPage/${booking.bookingId}`}>Details</DetailsButton>
-            <MoreButton variant="outlined" size="small" startIcon={<MoreVertOutlined />} color={`${booking.status ? 'error' : 'success'}`} >More</MoreButton>
+          status: <CustomEnableButton variant="outlined" status={`${booking.status ? 'running' : 'upcoming'}`}> {booking.status ? 'Running' : 'Upcoming'} </CustomEnableButton>,
+          action: (
+            <Stack justifyContent='end' spacing={2} direction="row">
+              <DetailsButton variant="outlined" size="small" startIcon={<ComputerSharp />} href={`bookingDetailsPage/${booking.bookingId}`}>Details</DetailsButton>
+              <MoreButton variant="outlined" size="small" startIcon={<MoreVertOutlined />} color={`${booking.status ? 'error' : 'success'}`} >More</MoreButton>
             </Stack>
           ),
         }

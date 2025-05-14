@@ -114,7 +114,7 @@ const DelayedCheckoutBooking = () => {
   const [msgToaster, setMsgToaster] = useState('')
   const [anchorEl, setAnchorEl] = useState(null);
   const open = Boolean(anchorEl);
-  
+
   const handleClick = (event) => {
     setAnchorEl(event);
     console.log(event)
@@ -127,7 +127,7 @@ const DelayedCheckoutBooking = () => {
   const { data, error } = useSWR(`${ServerIP}/booking/getDelayedCheckOut`, fetcher);
 
   useEffect(() => {
-    if (data) {
+    if (data?.todayBooking && Array.isArray(data.todayBooking)) {
       setShowDataTableLoader(true)
       console.log(data?.delayedCheckOut, 'data');
       const transformedRows = data.delayedCheckOut.map((booking) => {
@@ -138,12 +138,12 @@ const DelayedCheckoutBooking = () => {
           ...booking,
           due: booking.pendingAmount,
           checkInCheckOut: `${checkInDate} | ${checkOutDate}`,
-        status: <CustomEnableButton variant="outlined" status={`${booking.status ? 'running' : 'upcoming'}`}> {booking.status ? 'Running' : 'Upcoming'} </CustomEnableButton>,
-        action: (
-          <Stack justifyContent='end' spacing={2} direction="row">
-            <DetailsButton variant="outlined" size="small" startIcon={<ComputerSharp />} href={`bookingDetailsPage/${booking.bookingId}`}>Details</DetailsButton>
-            <MoreButton variant="outlined" size="small" startIcon={<MoreVertOutlined />} color={`${booking.status ? 'error' : 'success'}`} >More</MoreButton>
-            {/* <div>
+          status: <CustomEnableButton variant="outlined" status={`${booking.status ? 'running' : 'upcoming'}`}> {booking.status ? 'Running' : 'Upcoming'} </CustomEnableButton>,
+          action: (
+            <Stack justifyContent='end' spacing={2} direction="row">
+              <DetailsButton variant="outlined" size="small" startIcon={<ComputerSharp />} href={`bookingDetailsPage/${booking.bookingId}`}>Details</DetailsButton>
+              <MoreButton variant="outlined" size="small" startIcon={<MoreVertOutlined />} color={`${booking.status ? 'error' : 'success'}`} >More</MoreButton>
+              {/* <div>
               <Button
                 id="basic-button"
                 aria-controls={open ? 'basic-menu' : undefined}

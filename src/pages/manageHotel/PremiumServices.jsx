@@ -217,7 +217,6 @@ const PremiumServices = () => {
         'status': data.status
       }
 
-
       const response = await addPremiumServicesApi(jsonData);
       if (response.status === 200 && response?.data?.status === 'success') {
         setTimeout(() => {

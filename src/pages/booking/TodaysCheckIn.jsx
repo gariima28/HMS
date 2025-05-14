@@ -117,16 +117,17 @@ const TodaysCheckIn = () => {
 
   // get API
   const { data, error } = useSWR(`${ServerIP}/booking/todayCheckIns`, fetcher);
+  console.log(data)
 
   useEffect(() => {
-    if (data) {
+    if (data?.todayBooking && Array.isArray(data.todayBooking)) {
       setShowDataTableLoader(true)
       console.log(data?.todayBooking, 'data');
       const transformedRows = data.todayBooking.map((booking) => {
         const checkInDate = new Date(booking.checkInDate).toISOString().split('T')[0];
         const checkOutDate = new Date(booking.checkOutDate).toISOString().split('T')[0];
 
-        return{
+        return {
           ...booking,
           checkInCheckOut: `${checkInDate} | ${checkOutDate}`,
           due: booking.pendingAmount,
