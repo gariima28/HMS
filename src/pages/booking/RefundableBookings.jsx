@@ -116,10 +116,10 @@ const RefundableBookings = () => {
   const { data, error } = useSWR(`${ServerIP}/booking/getAllRefundable`, fetcher);
 
   useEffect(() => {
-    if (data?.todayBooking && Array.isArray(data.todayBooking)) {
+    if (data) {
       setShowDataTableLoader(true)
       console.log(data?.allRefundable, 'data');
-      const transformedRows = data.allRefundable.map((booking) => {
+      const transformedRows = data.bookings.map((booking) => {
         const checkInDate = new Date(booking.checkInDate).toISOString().split('T')[0];
         const checkOutDate = new Date(booking.checkOutDate).toISOString().split('T')[0];
 
