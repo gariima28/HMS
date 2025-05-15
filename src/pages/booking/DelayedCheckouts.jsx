@@ -21,7 +21,7 @@ const DelayedCheckouts = () => {
 
   // Fetch data with SWR
   const { data, error, isLoading } = useSWR(`${ServerIP}/booking/getDelayedCheckOut`, fetcher);
-  console.log(data)
+
   useEffect(() => {
     if (isLoading) {
       setShowLoader(true);
