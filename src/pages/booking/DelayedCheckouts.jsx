@@ -41,7 +41,7 @@ const DelayedCheckouts = () => {
     );
   }
 
-  const cardsData = data?.delayedCheckOut || [];
+  const cardsData = data?.bookings || [];
 
   const handlePageChange = (event, value) => {
     setCurrentPage(value);

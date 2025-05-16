@@ -145,7 +145,7 @@ const ActiveBookings = () => {
           action: (
             <Stack justifyContent='end' spacing={2} direction="row">
               <DetailsButton variant="outlined" size="small" startIcon={<ComputerSharp />} href={`bookingDetailsPage/${active.bookingId}`}>Details</DetailsButton>
-              <MoreButton
+              {/* <MoreButton
                 variant="outlined"
                 type='button'
                 size="small"
@@ -177,9 +177,9 @@ const ActiveBookings = () => {
                 <MenuItem sx={{ p: 0 }}>
                   <Button component={Link} to={`/paymentInBookings/${active.bookingId}`} sx={{ backgroundColor: 'transparent', color: '#000', '&:hover': { color: '#000', backgroundColor: 'transparent' } }}>Payment</Button>
                 </MenuItem>
-                {/* <MenuItem sx={{ p: 0 }}>
+                <MenuItem sx={{ p: 0 }}>
                     <Button sx={{ backgroundColor: 'transparent', color: '#000', '&:hover': { color: '#000', backgroundColor: 'transparent' } }} onClick={() => { setOpenMergeDialog(true), setBookingNumber(booking.bookingNo) }}>Merge Booking</Button>
-                  </MenuItem> */}
+                  </MenuItem>
                 <MenuItem sx={{ p: 0 }}>
                   <Button component={Link} to={`/cancelBookings/${active.bookingId}`} sx={{ backgroundColor: 'transparent', color: '#000', '&:hover': { color: '#000', backgroundColor: 'transparent' } }}>Cancel Booking</Button>
                 </MenuItem>
@@ -189,11 +189,10 @@ const ActiveBookings = () => {
                 <MenuItem sx={{ p: 0 }}>
                   <Button component={Link} to="/" sx={{ backgroundColor: 'transparent', color: '#000', '&:hover': { color: '#000', backgroundColor: 'transparent' } }}>Print Invoice</Button>
                 </MenuItem>
-              </Menu>
+              </Menu> */}
             </Stack>
           ),
         }
-
       });
       setRows(transformedRows);
       setTimeout(() => {
@@ -202,10 +201,8 @@ const ActiveBookings = () => {
     }
   }, [token, data]);
 
-
   if (error) { <Typography variant="subtitle1">- Error loading data</Typography> };
   if (!data) return <Typography variant="subtitle1">Speed is slow from Backend &nbsp; : - &nbsp; Loading Data...</Typography>;
-
 
   return (
     <Box>

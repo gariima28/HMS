@@ -126,7 +126,7 @@ const CreateHotel = () => {
           }, 5500);
         }
         else {
-          setSnackbar({ open: true, message: response?.data?.msg || 'Error occurred', severity: 'error' });
+          setSnackbar({ open: true, message: response?.data?.message || 'Error occurred', severity: 'error' });
         }
       }
     } catch (error) {

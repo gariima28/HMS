@@ -107,8 +107,8 @@ const TodaysBooked = () => {
           {bookedRoomData?.roomDetails?.length > 0 ? (
           <Grid container spacing={2}>
               {bookedRoomData.roomDetails.map((item, index) => (
-              <Grid item xs={12} sm={6} md={4} lg={3} xl={2} key={item.roomNo || index} sx={{ display: 'flex', justifyContent: 'center' }} >
-                <BookedCards roomNo={item.roomNo} roomCategory={item.roomCategory} />
+              <Grid item xs={12} sm={6} md={4} lg={3} xl={2} key={item.room || index} sx={{ display: 'flex', justifyContent: 'center' }} >
+                <BookedCards roomNo={item.room} roomCategory={item.roomType} />
               </Grid>
             ))}
           </Grid>
