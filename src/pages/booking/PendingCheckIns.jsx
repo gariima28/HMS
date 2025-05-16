@@ -22,7 +22,7 @@ const PendingCheckIns = () => {
 
   // Fetch data with SWR
   const { data, error, isLoading } = useSWR(`${ServerIP}/booking/getPendingCheckIn`, fetcher);
-
+  console.log(data)
   useEffect(() => {
     if (isLoading) {
       setShowLoader(true);
