@@ -181,7 +181,7 @@ const allStaff = () => {
     setRowsPerPage(newSize);
     setPageSize(newSize);
     setPage(1);
-};
+  };
 
   useEffect(() => {
     MyRoleGetAllApi()
@@ -197,7 +197,7 @@ const allStaff = () => {
     // setLoader(true)
     try {
       const response = await GetAllApi();
-      // console.log('My role get all DATAAAAAA', response)
+      console.log('My role get all DATAAAAAA', response)
       if (response?.status === 200) {
         setAllData(response?.data?.roles)
         // toast.success(response?.data?.msg)
@@ -252,6 +252,7 @@ const allStaff = () => {
       setIsNameValidRequired(false)
     }
   }
+
   const HandleUserName = (e) => {
     setUserName(e)
     const nameRegex = /^[A-Za-z\s]+$/;
@@ -262,6 +263,7 @@ const allStaff = () => {
       setIsUserNameValidRequired(false)
     }
   }
+
   const HandleEmail = (e) => {
     setEmail(e)
     const regexEmail = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
@@ -272,6 +274,7 @@ const allStaff = () => {
       setIsEmailValidRequired(false)
     }
   }
+
   const HandlePassword = (e) => {
     setPassword(e)
     const passwordRegex = /^\d{4}(-\d{4})?(\d+)?$/;
@@ -283,7 +286,6 @@ const allStaff = () => {
     }
   }
 
-  // Validation 
 
   // let bootstrap;
   const offcanvasRef = useRef(null);
@@ -331,7 +333,7 @@ const allStaff = () => {
         setCurrentPage(currentPage);
         setTotalPages(totalPages);
         setPageSize(pageSize);
-        
+
         const transformedRows = response?.data?.staffs?.map((allRoles, index) => ({
           ...allRoles,
           // index: index + 1,
@@ -558,23 +560,22 @@ const allStaff = () => {
                 {
                   row && row.length > 0 ? (
                     row?.map((item, index) => {
-                        return (
+                      return (
 
-                          <TableRow hover role="checkbox" tabIndex={-1} key={index}>
-                            {columns.map((column) => {
-                              const value = item[column.id];
-                              return (
-                                <TableCell key={column.id} align={column.align}>
-                                  {column.format && typeof value === 'number'
-                                    ? column.format(value)
-                                    : value}
-
-                                </TableCell>
-                              );
-                            })}
-                          </TableRow>
-                        );
-                      })
+                        <TableRow hover role="checkbox" tabIndex={-1} key={index}>
+                          {columns.map((column) => {
+                            const value = item[column.id];
+                            return (
+                              <TableCell key={column.id} align={column.align}>
+                                {column.format && typeof value === 'number'
+                                  ? column.format(value)
+                                  : value}
+                              </TableCell>
+                            );
+                          })}
+                        </TableRow>
+                      );
+                    })
                   )
                     :
                     (

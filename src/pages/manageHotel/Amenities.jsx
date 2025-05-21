@@ -104,7 +104,6 @@ const Amenities = () => {
 
   console.log(isValidating, 'isValidating')
 
-
   const refreshData = useCallback(() => {
     mutate();
   }, [mutate]);
@@ -129,7 +128,6 @@ const Amenities = () => {
       amenitiesNameOriginal: '',
       amenitiesIconOriginal: ''
     });
-
 
     if (button === 'Update') {
       getAmenitiesDataById(amenityId);
@@ -341,7 +339,6 @@ const Amenities = () => {
     }
   };
 
-
   const UpdateAmenitiesData = async (data) => {
     setShowLoader(true);
 
@@ -445,6 +442,7 @@ const Amenities = () => {
       ) : (
         <DynamicDataTable columns={columns} rows={rows} />
       )}
+
 
 
       {/* Modals for all Add and Update */}
