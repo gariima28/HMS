@@ -2,7 +2,7 @@ import axios from 'axios'
 const token = `Bearer ${localStorage.getItem('token')}`;
 const forgetToken = `Bearer ${localStorage.getItem('forgetToken')}`;
 
-// const ServerIP = 'http://192.168.20.109:5001'
+//const ServerIP = 'http://192.168.21.26:5001'
 const ServerIP = 'https://www.auth.edu2all.in/hms'
 
 // ******************************************************************************************************
@@ -652,7 +652,7 @@ export const AllStaffPostApi = async (formData) => {
     }
 }
 // } get all 
-export const AllStaffGetAllApi = async (search,page, rowsPerPage) => {
+export const AllStaffGetAllApi = async (search, page, rowsPerPage) => {
     axios.defaults.headers.common["Authorization"] = token;
     const res = await axios.get(`${ServerIP}/staff/getAll?search=${search}&page=${page}&size=${rowsPerPage}`)
 
@@ -701,7 +701,7 @@ export const AllStaffBanApi = async (id) => {
 
 // Banned guest 
 
-export const AllStaffBannedApi = async (search,page,rowsPerPage) => {
+export const AllStaffBannedApi = async (search, page, rowsPerPage) => {
     axios.defaults.headers.common["Authorization"] = token;
     const res = await axios.get(`${ServerIP}/guest/getAllBannedGuest?search=${search}&page=${page}&size=${rowsPerPage}`)
 
@@ -715,7 +715,7 @@ export const AllStaffBannedApi = async (search,page,rowsPerPage) => {
 
 // active guest 
 
-export const AllActiveguestGetAllApi = async (search,page, rowsPerPage) => {
+export const AllActiveguestGetAllApi = async (search, page, rowsPerPage) => {
     axios.defaults.headers.common["Authorization"] = token;
     const res = await axios.get(`${ServerIP}/guest/active?search=${search}&page=${page}&size=${rowsPerPage}`)
     if (res) {
@@ -727,7 +727,7 @@ export const AllActiveguestGetAllApi = async (search,page, rowsPerPage) => {
 }
 // All Guest GetAll Api 
 
-export const AllguestGetAllApi = async (search,page, rowsPerPage) => {
+export const AllguestGetAllApi = async (search, page, rowsPerPage) => {
     axios.defaults.headers.common["Authorization"] = token;
     const res = await axios.get(`${ServerIP}/guest/getAll?search=${search}&page=${page}&size=${rowsPerPage}`)
     if (res) {
@@ -776,7 +776,7 @@ export const BanApi = async (id, status) => {
     }
 }
 // get all of eamil 
-export const AllActiveEamilUnverifiedapi = async (search,page, rowsPerPage) => {
+export const AllActiveEamilUnverifiedapi = async (search, page, rowsPerPage) => {
     axios.defaults.headers.common["Authorization"] = token;
     const res = await axios.get(`${ServerIP}/guest/emailUnverified?search=${search}&page=${page}&size=${rowsPerPage}`)
 
@@ -789,7 +789,7 @@ export const AllActiveEamilUnverifiedapi = async (search,page, rowsPerPage) => {
 }
 
 // get all of phone 
-export const AllActivePhoneUnverifiedapi = async (search,page, rowsPerPage) => {
+export const AllActivePhoneUnverifiedapi = async (search, page, rowsPerPage) => {
     axios.defaults.headers.common["Authorization"] = token;
     const res = await axios.get(`${ServerIP}/guest/phoneUnverified?search=${search}&page=${page}&size=${rowsPerPage}`)
 
@@ -1097,7 +1097,7 @@ export const ReportAndRequestPostApi = async (data) => {
     }
 }
 //  Report and request get all api
-export const ReportAndRequestGetAllApi = async (page,rowsPerPage) => {
+export const ReportAndRequestGetAllApi = async (page, rowsPerPage) => {
     axios.defaults.headers.common["Authorization"] = token;
     const res = await axios.get(`${ServerIP}/request-report/getAll?page=${page}&size=${rowsPerPage}`)
     if (res) {
