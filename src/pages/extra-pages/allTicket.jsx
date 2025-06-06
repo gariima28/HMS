@@ -88,7 +88,6 @@ const style2 = {
   borderRadius: 1,
   p: 4,
 };
-
 const content = {
 
 }
@@ -99,8 +98,8 @@ const input = {
 // Style 
 
 const allTicket = () => {
-  const classes = useStyles();
 
+  const classes = useStyles();
   const [open, setOpen] = React.useState(false);
   const handleOpen = () => setOpen(true);
   const handleClose = () => setOpen(false);
@@ -116,16 +115,21 @@ const allTicket = () => {
   const handleClose3 = () => setOpen3(false);
   const [rowsData, setRowsData] = React.useState([]);
 
-  const [page, setPage] = React.useState(0);
+  const [page, setPage] = React.useState(1);
   const [rowsPerPage, setRowsPerPage] = React.useState(10);
+  const [currentPage, setCurrentPage] = useState(1);
+  const [totalPages, setTotalPages] = useState(1);
+  const [pageSize, setPageSize] = useState(10);
 
   const handleChangePage = (event, newPage) => {
-    setPage(newPage);
+    setPage(newPage + 1);
   };
 
   const handleChangeRowsPerPage = (event) => {
-    setRowsPerPage(+event.target.value);
-    setPage(0);
+    const newSize = +event.target.value;
+    setRowsPerPage(newSize);
+    setPageSize(newSize);
+    setPage(1);
   };
 
   const columns = [
@@ -163,17 +167,20 @@ const allTicket = () => {
 
   useEffect(() => {
     MyPendingTicketGetAllApi()
-  }, [])
+  }, [page, rowsPerPage])
 
   const MyPendingTicketGetAllApi = async () => {
     setLoader(true)
     try {
-      const response = await GetAlTicketApi(search);
+      const response = await GetAlTicketApi(search, page, rowsPerPage);
       console.log('All Ticket DATAAAAAA------', response)
       if (response?.status === 200) {
-        setRowsData(response?.data?.tickets)
-        // toast.success(response?.data?.msg)
-        setLoader(false)
+        const { currentPage, totalPages, pageSize, reports, notifications } = response.data;
+
+        setCurrentPage(currentPage);
+        setTotalPages(totalPages);
+        setPageSize(pageSize);
+
         const transformedRows = response?.data?.tickets.map((tickets, index) => ({
           ...tickets,
           priority: (<>
@@ -189,8 +196,6 @@ const allTicket = () => {
           action: (
             <Stack justifyContent='end' spacing={2} direction="row">
               <Button variant="outlined" size="small" startIcon={<FundProjectionScreenOutlined />} href={`./replyticket/${tickets.ticketNumber}`}>Details</Button>
-
-
             </Stack>
           )
         }))
@@ -200,6 +205,8 @@ const allTicket = () => {
       }
     } catch (error) {
       console.log(error)
+    } finally {
+      setLoader(false)
     }
   }
 
@@ -262,7 +269,7 @@ const allTicket = () => {
               <TableBody>
                 {
                   rows && rows.length > 0 ? (
-                    rows.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage).map((row, index) => {
+                    rows?.map((row, index) => {
                       return (
                         <TableRow hover role="checkbox" tabIndex={-1} key={index}>
                           {columns.map((column) => {
@@ -279,25 +286,25 @@ const allTicket = () => {
                       );
                     })
                   )
-                  :
-                  (
-                    <TableRow>
+                    :
+                    (
+                      <TableRow>
                         <TableCell colSpan={columns.length} align="center">
                           <NoDataFound />
                         </TableCell>
                       </TableRow>
-                  )
+                    )
                 }
-                
+
               </TableBody>
             </Table>
           </TableContainer>
           <TablePagination
-            rowsPerPageOptions={[10, 25, 100]}
+            // rowsPerPageOptions={[10, 25, 100]}
             component="div"
-            count={rows.length}
+            count={totalPages * rowsPerPage}
             rowsPerPage={rowsPerPage}
-            page={page}
+            page={page - 1}
             onPageChange={handleChangePage}
             onRowsPerPageChange={handleChangeRowsPerPage}
           />

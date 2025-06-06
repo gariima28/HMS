@@ -159,6 +159,7 @@ const allStaff = () => {
   const [idForBan, setIdForBan] = useState();
   // console.log('my idddd', idForBan)
   const [allData, setAllData] = useState([]);
+  console.log('all data', allData)
   const [row, setRow] = useState([]);
 
   const [isNameValidRequired, setIsNameValidRequired] = useState(false);
@@ -192,11 +193,11 @@ const allStaff = () => {
     MyAllStaffGetAllDataApi()
   }, [page, rowsPerPage])
 
-  // Get ll api for id or role in All Staff 
+  // Get all api for id or role in All Staff 
   const MyRoleGetAllApi = async () => {
     // setLoader(true)
     try {
-      const response = await GetAllApi();
+      const response = await GetAllApi(page, rowsPerPage);
       console.log('My role get all DATAAAAAA', response)
       if (response?.status === 200) {
         setAllData(response?.data?.roles)
@@ -379,7 +380,7 @@ const allStaff = () => {
       const response = await AllStaffGetAllByIdApi(id);
       console.log('Data by id in staff', response)
       if (response?.status === 200) {
-        setRoleId(response?.data?.staff?.id)
+        setRoleId(response?.data?.staff?.role?.id)
         setRoleName(response?.data?.staff?.role?.roleName)
 
         setName(response?.data?.staff?.name)
@@ -389,7 +390,6 @@ const allStaff = () => {
         setNameCheck(response?.data?.staff?.name)
         setUserNameCheck(response?.data?.staff?.userName)
         setEmailCheck(response?.data?.staff?.email)
-
 
         setPassword(response?.data?.staff?.password)
 
@@ -436,8 +436,8 @@ const allStaff = () => {
         console.log(error)
       }
     }
-
   }
+
   // Ban api 
   const MyStaffBanApi = async () => {
     setLoader(true)
@@ -456,6 +456,7 @@ const allStaff = () => {
       console.log(error)
     }
   }
+
   const columns = [
     { id: 'index', label: 'S.N.', minWidth: 140 },
     { id: 'userName', label: 'Username', minWidth: 100 },
@@ -748,15 +749,12 @@ const allStaff = () => {
                           value={roleId}
                           onChange={(e) => setRoleId(e.target.value)}
                           label="Age"
-
                         >
                           {
                             allData?.map((item, index) => (
-                              <MenuItem Item key={index} value={item.id}> {item.roleName}</MenuItem>
+                              <MenuItem Item key={index} value={item.id}>{item.roleName}</MenuItem>
                             ))
                           }
-
-
                         </Select>
                       </FormControl>
                     </Box>

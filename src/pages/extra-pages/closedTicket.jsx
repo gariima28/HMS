@@ -107,16 +107,21 @@ const closedTicket = () => {
 
   const [search, setSearch] = useState('')
 
-  const [page, setPage] = React.useState(0);
+  const [page, setPage] = React.useState(1);
   const [rowsPerPage, setRowsPerPage] = React.useState(10);
+  const [currentPage, setCurrentPage] = useState(1);
+  const [totalPages, setTotalPages] = useState(1);
+  const [pageSize, setPageSize] = useState(10);
 
   const handleChangePage = (event, newPage) => {
-    setPage(newPage);
+    setPage(newPage + 1);
   };
 
   const handleChangeRowsPerPage = (event) => {
-    setRowsPerPage(+event.target.value);
-    setPage(0);
+    const newSize = +event.target.value;
+    setRowsPerPage(newSize);
+    setPageSize(newSize);
+    setPage(1);
   };
 
   const columns = [
@@ -154,17 +159,21 @@ const closedTicket = () => {
 
   useEffect(() => {
     MyPendingTicketGetAllApi()
-  }, [])
+  }, [page, rowsPerPage])
 
   const MyPendingTicketGetAllApi = async () => {
     setLoader(true)
     try {
-      const response = await ClosedTicketGetAllApi(search);
+      const response = await ClosedTicketGetAllApi(search, page, rowsPerPage);
       console.log('Closed Ticket DATAAAAAA', response)
       if (response?.status === 200) {
-        setRowsData(response?.data?.tickets)
-        // toast.success(response?.data?.msg)
-        setLoader(false)
+
+        const { currentPage, totalPages, pageSize, reports, notifications } = response.data;
+
+        setCurrentPage(currentPage);
+        setTotalPages(totalPages);
+        setPageSize(pageSize);
+
         const transformedRows = response?.data?.tickets.map((tickets, index) => ({
           ...tickets,
           priority: (<>
@@ -190,9 +199,10 @@ const closedTicket = () => {
       }
     } catch (error) {
       console.log(error)
+    } finally {
+      setLoader(false)
     }
   }
-
 
   const handleChange = (e) => {
     const trimmedValue = e.target.value.trimStart();
@@ -208,6 +218,7 @@ const closedTicket = () => {
           )
         }
       </Box>
+      
       <Box sx={{ margin: 0, fontSize: 20, display: "flex", justifyContent: "space-between" }}>
         <Grid>
           <b>Closed Tickets</b>
@@ -253,10 +264,10 @@ const closedTicket = () => {
               <TableBody>
                 {
                   rows && rows.length > 0 ? (
-                    rows.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage).map((row, index) => {
+                    rows?.map((row, index) => {
                       return (
                         <TableRow hover role="checkbox" tabIndex={-1} key={index}>
-                          {columns.map((column) => {
+                          {columns?.map((column) => {
                             const value = row[column.id];
                             return (
                               <TableCell key={column.id} align={column.align}>
@@ -270,25 +281,25 @@ const closedTicket = () => {
                       );
                     })
                   )
-                  :
-                  (
-                    <TableRow>
+                    :
+                    (
+                      <TableRow>
                         <TableCell colSpan={columns.length} align="center">
                           <NoDataFound />
                         </TableCell>
                       </TableRow>
-                  )
+                    )
                 }
-              
+
               </TableBody>
             </Table>
           </TableContainer>
           <TablePagination
-            rowsPerPageOptions={[10, 25, 100]}
+            // rowsPerPageOptions={[10, 25, 100]}
             component="div"
-            count={rows.length}
+            count={totalPages * rowsPerPage}
             rowsPerPage={rowsPerPage}
-            page={page}
+            page={page - 1}
             onPageChange={handleChangePage}
             onRowsPerPageChange={handleChangeRowsPerPage}
           />
@@ -296,89 +307,6 @@ const closedTicket = () => {
       </Box>
 
       <Box>
-        {/* first  Modals area  */}
-        {/* Update modal  */}
-        {/* <Modal
-          open={open}
-          onClose={handleClose}
-          aria-labelledby="modal-modal-title"
-          aria-describedby="modal-modal-description"
-        >
-          <Box sx={style}>
-            <Box sx={content}>
-              <Typography sx={{ fontSize: 24 }}>
-                Update Staff
-              </Typography>
-              <Box>
-                <TextField sx={input} required id="outlined-required" label="Name" defaultValue="" placeholder='Enter Name' InputLabelProps={{ sx: { fontSize: '15px' } }} />
-                <TextField sx={{ ...input, marginTop: 3 }} required id="outlined-required" label="Username" defaultValue="" placeholder='Enter UserName' InputLabelProps={{ sx: { fontSize: '15px' } }} />
-                <TextField sx={{ ...input, marginTop: 3 }} required id="outlined-required" label="Email" defaultValue="" placeholder='Enter Email' InputLabelProps={{ sx: { fontSize: '15px' } }} />
-                <TextField sx={{ ...input, marginTop: 3 }} required id="outlined-required" label="Role" defaultValue="" placeholder='Enter Role' InputLabelProps={{ sx: { fontSize: '15px' } }} />
-                <TextField sx={{ ...input, marginTop: 3 }} required id="outlined-required" label="Password" defaultValue="" placeholder='Enter Password' InputLabelProps={{ sx: { fontSize: '15px' } }} />
-
-                <Box sx={{ textAlign: "center", marginTop: 4, width: '100%' }}>
-                  <Button sx={{ width: '100%' }} variant="contained" disableElevation>
-                    Submit
-                  </Button>
-                </Box>
-
-              </Box>
-            </Box>
-          </Box>
-        </Modal> */}
-        {/* second  Modals area */}
-        {/* confirm modal */}
-        {/* <Modal
-          open={open2}
-          onClose={handleClose2}
-          aria-labelledby="modal-modal-title"
-          aria-describedby="modal-modal-description"
-        >
-          <Box sx={style2}>
-            <Typography sx={{ fontSize: 25 }} id="modal-modal-title" variant="h6" component="h2">
-              Confirmation Alert!
-            </Typography>
-            <hr />
-            <Typography sx={{ ml: 2, mt: 2 }} id="modal-modal-description" >
-              Are you sure to ban this staff?
-            </Typography>
-            <Box sx={{ textAlign: "right" }}>
-              <Button sx={{backgroundColor:"#eb2222",color:'#fff'}} variant="contained" href="#contained-buttons">
-                Submit
-              </Button>
-            </Box>
-          </Box>
-        </Modal> */}
-        {/* third  Modals area  */}
-        {/* Add modal  */}
-        {/* <Modal
-          open={open3}
-          onClose={handleClose3}
-          aria-labelledby="modal-modal-title"
-          aria-describedby="modal-modal-description"
-        >
-          <Box sx={style}>
-            <Box sx={content}>
-              <Typography sx={{ fontSize: 24 }}>
-                Add Staff
-              </Typography>
-              <Box>
-                <TextField sx={input} required id="outlined-required" label="Name" defaultValue="" placeholder='Enter Name' InputLabelProps={{ sx: { fontSize: '15px' } }} />
-                <TextField sx={{ ...input, marginTop: 3 }} required id="outlined-required" label="Username" defaultValue="" placeholder='Enter UserName' InputLabelProps={{ sx: { fontSize: '15px' } }} />
-                <TextField sx={{ ...input, marginTop: 3 }} required id="outlined-required" label="Email" defaultValue="" placeholder='Enter Email' InputLabelProps={{ sx: { fontSize: '15px' } }} />
-                <TextField sx={{ ...input, marginTop: 3 }} required id="outlined-required" label="Role" defaultValue="" placeholder='Enter Role' InputLabelProps={{ sx: { fontSize: '15px' } }} />
-                <TextField sx={{ ...input, marginTop: 3 }} required id="outlined-required" label="Password" defaultValue="" placeholder='Enter Password' InputLabelProps={{ sx: { fontSize: '15px' } }} />
-
-                <Box sx={{ textAlign: "center", marginTop: 4, width: '100%' }}>
-                  <Button sx={{ width: '100%' }} variant="contained" disableElevation>
-                    Submit
-                  </Button>
-                </Box>
-
-              </Box>
-            </Box>
-          </Box>
-        </Modal> */}
       </Box>
 
     </>

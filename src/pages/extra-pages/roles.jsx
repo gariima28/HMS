@@ -26,20 +26,15 @@ const columns = [
 const roles = () => {
 
   const token = localStorage.getItem('token')
-
-  // const [page, setPage] = React.useState(0);
-  // const [rowsPerPage, setRowsPerPage] = React.useState(10);
   const [loader, setLoader] = useState(false)
-
   const [rows, setRows] = React.useState([]);
   const [rowsData, setRowsData] = React.useState([]);
-
   const [page, setPage] = React.useState(1);
   const [rowsPerPage, setRowsPerPage] = React.useState(10);
   const [currentPage, setCurrentPage] = useState(1);
   const [totalPages, setTotalPages] = useState(1);
   const [pageSize, setPageSize] = useState(10);
-  
+
   const handleChangePage = (event, newPage) => {
     setPage(newPage + 1);
   };
@@ -49,13 +44,12 @@ const roles = () => {
     setRowsPerPage(newSize);
     setPageSize(newSize);
     setPage(1);
-};
-
-
+  };
+  
   useEffect(() => {
     if (token) { MyRoleGetAllApi() }
 
-  }, [token,page,rowsPerPage])
+  }, [token, page, rowsPerPage])
 
   const MyRoleGetAllApi = async () => {
     setLoader(true)
@@ -68,7 +62,7 @@ const roles = () => {
         setCurrentPage(currentPage);
         setTotalPages(totalPages);
         setPageSize(pageSize);
-  
+
         const transformedRows = response?.data?.roles?.map((allRoles) => ({
           ...allRoles,
           createdAt: allRoles?.createdAt?.dateTime,
@@ -114,14 +108,14 @@ const roles = () => {
         </Grid>
         <Grid>
           <Link to={'/addrolespage'}>
-          <Button sx={{ height: 39, backgroundColor: '#4634ff', color: '#fff' }} variant="outlined" >
-            <Typography sx={{ paddingTop: .8, }}>
-              <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24">
-                <path fill="none" stroke="#fff" stroke-linecap="round" stroke-linejoin="round" stroke-miterlimit="10" stroke-width="1.5" d="M6 12h12m-6 6V6" />
-              </svg>
-            </Typography>
-            <Typography sx={{ paddingLeft: .7 }}>Add New</Typography>
-          </Button>
+            <Button sx={{ height: 39, backgroundColor: '#4634ff', color: '#fff' }} variant="outlined" >
+              <Typography sx={{ paddingTop: .8, }}>
+                <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24">
+                  <path fill="none" stroke="#fff" stroke-linecap="round" stroke-linejoin="round" stroke-miterlimit="10" stroke-width="1.5" d="M6 12h12m-6 6V6" />
+                </svg>
+              </Typography>
+              <Typography sx={{ paddingLeft: .7 }}>Add New</Typography>
+            </Button>
           </Link>
 
         </Grid>
@@ -147,22 +141,22 @@ const roles = () => {
                 {
                   rows && rows.length > 0 ? (
                     rows?.map((row, index) => {
-                        return (
-                          <TableRow hover role="checkbox" tabIndex={-1} key={index}>
-                            {columns.map((column) => {
-                              const value = row[column.id];
+                      return (
+                        <TableRow hover role="checkbox" tabIndex={-1} key={index}>
+                          {columns.map((column) => {
+                            const value = row[column.id];
 
-                              return (
-                                <TableCell key={column.id} align={column.align}>
-                                  {column.format && typeof value === 'number'
-                                    ? column.format(value)
-                                    : value}
-                                </TableCell>
-                              );
-                            })}
-                          </TableRow>
-                        );
-                      })
+                            return (
+                              <TableCell key={column.id} align={column.align}>
+                                {column.format && typeof value === 'number'
+                                  ? column.format(value)
+                                  : value}
+                              </TableCell>
+                            );
+                          })}
+                        </TableRow>
+                      );
+                    })
                   )
                     :
                     (

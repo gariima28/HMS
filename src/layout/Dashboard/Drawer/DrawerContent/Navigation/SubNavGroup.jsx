@@ -75,7 +75,7 @@ export default function SubNavGroup({ item, level }) {
         <ListItemIcon sx={{ color: open ? iconSelectedColor : isSelected ? iconSelectedColor : textColor, }}>
           {item.icon && <item.icon />}
         </ListItemIcon>
-        <ListItemText primary={item.title} sx={{px:1}}/>
+        <ListItemText primary={item.title} sx={{px:1}} />
         {open ? <ExpandLess /> : <ExpandMore />}
       </ListItemButton>
       <Collapse in={open} timeout="auto" unmountOnExit>

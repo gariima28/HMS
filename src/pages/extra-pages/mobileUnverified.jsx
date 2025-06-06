@@ -113,7 +113,7 @@ const mobileUnverified = () => {
     setLoader(true)
     try {
       const response = await AllActivePhoneUnverifiedapi(search, page, rowsPerPage);
-      console.log('Phone Unverified data ', response)
+      // console.log('Phone Unverified data ', response)
       if (response?.status === 200) {
         const { currentPage, totalPages, pageSize, reports, notifications } = response.data;
 
