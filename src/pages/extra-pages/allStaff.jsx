@@ -253,6 +253,7 @@ const allStaff = () => {
       setIsNameValidRequired(false)
     }
   }
+
   const HandleUserName = (e) => {
     setUserName(e)
     const nameRegex = /^[A-Za-z\s]+$/;
@@ -263,6 +264,7 @@ const allStaff = () => {
       setIsUserNameValidRequired(false)
     }
   }
+
   const HandleEmail = (e) => {
     setEmail(e)
     const regexEmail = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
@@ -273,6 +275,7 @@ const allStaff = () => {
       setIsEmailValidRequired(false)
     }
   }
+
   const HandlePassword = (e) => {
     setPassword(e)
     const passwordRegex = /^\d{4}(-\d{4})?(\d+)?$/;
@@ -284,7 +287,6 @@ const allStaff = () => {
     }
   }
 
-  // Validation 
 
   // let bootstrap;
   const offcanvasRef = useRef(null);
@@ -569,7 +571,6 @@ const allStaff = () => {
                                 {column.format && typeof value === 'number'
                                   ? column.format(value)
                                   : value}
-
                               </TableCell>
                             );
                           })}

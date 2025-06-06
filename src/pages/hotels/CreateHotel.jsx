@@ -123,10 +123,10 @@ const CreateHotel = () => {
           setSnackbar({ open: true, message: response?.data?.message, severity: 'success' });
           setTimeout(() => {
             navigate('/hotels');
-          }, 5500);
+          }, 2500);
         }
         else {
-          setSnackbar({ open: true, message: response?.data?.msg || 'Error occurred', severity: 'error' });
+          setSnackbar({ open: true, message: response?.data?.message || 'Error occurred', severity: 'error' });
         }
       }
     } catch (error) {
@@ -179,13 +179,25 @@ const CreateHotel = () => {
           <Grid xs={12} sm={6} md={6} lg={4}>
             <Stack spacing={1}>
               <InputLabel htmlFor="status">Status <span style={{ color: 'red' }}> *</span></InputLabel>
-              <Select {...register("status", { required: 'This Field is required' })}
+              <Select {...register("status", { required: 'This Field is required',})}
                 fullWidth displayEmpty error={Boolean(errors.status)}
                 value={hotelStatus !== undefined ? String(hotelStatus) : ''} >
                 <MenuItem value='' disabled>Select Status</MenuItem>
                 <MenuItem value={true}>Active</MenuItem>
                 <MenuItem value={false}>Inactive</MenuItem>
               </Select>
+              {/* <Select
+                {...register("status", {
+                  required: 'This Field is required',
+                  valueAsNumber: false // Ensure we get boolean values
+                })}
+                value={watch("status") ?? ""}
+                onChange={(e) => setValue("status", e.target.value === 'true')}
+              >
+                <MenuItem value='' disabled>Select Status</MenuItem>
+                <MenuItem value={true}>Active</MenuItem>
+                <MenuItem value={false}>Inactive</MenuItem>
+              </Select> */}
             </Stack>
             <FormHelperText error id="standard-weight-helper-text-status"> {errors.status?.message} </FormHelperText>
           </Grid>
@@ -199,7 +211,15 @@ const CreateHotel = () => {
           <Grid  xs={12} sm={6} md={6} lg={4} >
             <Stack spacing={1}>
               <InputLabel htmlFor="phoneNo">Phone No <span style={{ color: 'red' }}> *</span></InputLabel>
-              <OutlinedInput id="phoneNo" type="text" { ...register("phoneNo", { required: 'This field is required', validate: { minLength: (value) => value.length <= 10 || 'Phone number must not be more than 10 digits', maxLength: (value) => value.length === 10 || 'Phone number must be exactly 10 digits', pattern: (value) => /^[6-9]\d{9}$/.test(value) || 'Phone number must contain only digits. Any characters or special characters are not allowed', } }) } placeholder="Enter Phone No" fullWidth error={Boolean(errors.phoneNo)} />
+              <OutlinedInput id="phoneNo" type="text" {...register("phoneNo", {
+                required: 'This field is required',
+                validate: {
+                  onlyDigits: (value) => /^\d+$/.test(value) || 'Only numbers are allowed',
+                  validLength: (value) => value.length === 10 || 'Must be exactly 10 digits',
+                  validStart: (value) => /^[6-9]/.test(value) || 'Must start with 6-9'
+                },
+               // validate: { minLength: (value) => value.length <= 10 || 'Phone number must not be more than 10 digits', maxLength: (value) => value.length === 10 || 'Phone number must be exactly 10 digits', pattern: (value) => /^[6-9]\d{9}$/.test(value) || 'Phone number must be 10 digits starting with 6 - 9', }
+              })} placeholder="Enter Phone No" fullWidth error={Boolean(errors.phoneNo)} />
             </Stack>
             <FormHelperText error id="standard-weight-helper-text-phoneNo">{errors.phoneNo?.message}</FormHelperText>
           </Grid>
