@@ -59,15 +59,15 @@ export default function NavItem({ item, level }) {
         py: !drawerOpen && level === 1 ? 1.25 : 1,
         ...(drawerOpen && {
           '&:hover': {
-            bgcolor: 'primary.lighter'
+            bgcolor: '#1AC3BE8C'
           },
           '&.Mui-selected': {
-            bgcolor: 'primary.lighter',
+            bgcolor: '#1AC3BE8C',
             borderRight: `2px solid ${theme.palette.primary.main}`,
             color: iconSelectedColor,
             '&:hover': {
               color: iconSelectedColor,
-              bgcolor: 'primary.lighter'
+              bgcolor: '#1AC3BE8C'
             }
           }
         }),
@@ -88,7 +88,7 @@ export default function NavItem({ item, level }) {
         <ListItemIcon
           sx={{
             minWidth: 28,
-            color: isSelected ? iconSelectedColor : textColor,
+            color: isSelected ? '#fff' : "#E4AB55",
             ...(!drawerOpen && {
               borderRadius: 1.5,
               width: 36,
@@ -114,7 +114,7 @@ export default function NavItem({ item, level }) {
       {(drawerOpen || (!drawerOpen && level !== 1)) && (
         <ListItemText
           primary={
-            <Typography variant="h6" sx={{ color: isSelected ? iconSelectedColor : textColor }}>
+            <Typography variant="h6" sx={{ color: isSelected ? '#fff' : '#fff' }}>
               {item.title}
             </Typography>
           }

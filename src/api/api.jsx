@@ -612,7 +612,7 @@ export const RolePostApi = async (formData) => {
     }
 }
 
-// Get All api in role 
+// Get All api in role
 export const GetAllApi = async (page, rowsPerPage) => {
     axios.defaults.headers.common["Authorization"] = token;
     const res = await axios.get(`${ServerIP}/role/getAll?page=${page}&size=${rowsPerPage}`)
@@ -677,7 +677,8 @@ export const AllStaffGetAllByIdApi = async (id) => {
 }
 export const AllStaffUpdateByIdApi = async (id, data) => {
     axios.defaults.headers.common["Authorization"] = token;
-    const res = await axios.patch(`${ServerIP}/staff/update/${id}`, data)
+    const res = await axios.patch(`http://89.116.122.211:5001/staff/update/${id}`, data)
+    // const res = await axios.patch(`${ServerIP}/staff/update/${id}`, data)
 
     if (res) {
         return res;
@@ -802,9 +803,9 @@ export const AllActivePhoneUnverifiedapi = async (search,page, rowsPerPage) => {
 }
 
 // pending ticket 
-export const PendingTicketGetAllApi = async (search) => {
+export const PendingTicketGetAllApi = async (search,page,rowsPerPage) => {
     axios.defaults.headers.common["Authorization"] = token;
-    const res = await axios.get(`${ServerIP}/support/getPendingTickets?search=${search}`)
+    const res = await axios.get(`${ServerIP}/support/getPendingTickets?search=${search}&page=${page}&size=${rowsPerPage}`)
 
     if (res) {
         return res;
@@ -813,7 +814,6 @@ export const PendingTicketGetAllApi = async (search) => {
         return []
     }
 }
-
 
 // update api 
 export const PendingTicketUpdateApi = async (id, formData) => {
@@ -840,9 +840,9 @@ export const PendingCloseTicketApi = async (id) => {
     }
 }
 // close ticket 
-export const ClosedTicketGetAllApi = async (search) => {
+export const ClosedTicketGetAllApi = async (search, page, rowsPerPage) => {
     axios.defaults.headers.common["Authorization"] = token;
-    const res = await axios.get(`${ServerIP}/support/getClosedTickets?search=${search}`)
+    const res = await axios.get(`${ServerIP}/support/getClosedTickets?search=${search}&page=${page}&size=${rowsPerPage}`)
 
     if (res) {
         return res;
@@ -852,9 +852,9 @@ export const ClosedTicketGetAllApi = async (search) => {
     }
 }
 // Answered ticket 
-export const AnsweredTicketGetAllApi = async (search) => {
+export const AnsweredTicketGetAllApi = async (search,page,rowsPerPage) => {
     axios.defaults.headers.common["Authorization"] = token;
-    const res = await axios.get(`${ServerIP}/support/getAnsTickets?search=${search}`)
+    const res = await axios.get(`${ServerIP}/support/getAnsTickets?search=${search}&page=${page}&size=${rowsPerPage}`)
 
     if (res) {
         return res;
@@ -888,9 +888,9 @@ export const GetTicketByIdApi = async (id) => {
     }
 }
 // Get all tickets  
-export const GetAlTicketApi = async (search) => {
+export const GetAlTicketApi = async (search,page, rowsPerPage) => {
     axios.defaults.headers.common["Authorization"] = token;
-    const res = await axios.get(`${ServerIP}/support/getAllTickets?search=${search}`)
+    const res = await axios.get(`${ServerIP}/support/getAllTickets?search=${search}&page=${page}&size=${rowsPerPage}`)
 
     if (res) {
         return res;
@@ -962,9 +962,9 @@ export const GeneralPostApi = async (formData) => {
     }
 }
 // Booking action report 
-export const BookingActionReport = async (search) => {
+export const BookingActionReport = async (search,page,rowsPerPage) => {
     axios.defaults.headers.common["Authorization"] = token;
-    const res = await axios.get(`${ServerIP}/report/booking/getAll?search=${search}`)
+    const res = await axios.get(`${ServerIP}/report/booking/getAll?search=${search}&page=${page}&size=${rowsPerPage}`)
     if (res) {
         return res;
     }

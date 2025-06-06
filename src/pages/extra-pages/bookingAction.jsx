@@ -91,18 +91,22 @@ const bookingAction = () => {
   const [rowsData, setRowsData] = React.useState([]);
   const [search, setSearch] = React.useState('');
 
-
-  const [page, setPage] = React.useState(0);
+  const [page, setPage] = React.useState(1);
   const [rowsPerPage, setRowsPerPage] = React.useState(10);
+  const [currentPage, setCurrentPage] = useState(1);
+  const [totalPages, setTotalPages] = useState(1);
+  const [pageSize, setPageSize] = useState(10);
 
   const handleChangePage = (event, newPage) => {
-    setPage(newPage);
+    setPage(newPage + 1);
   };
 
   const handleChangeRowsPerPage = (event) => {
-    setRowsPerPage(+event.target.value);
-    setPage(0);
-  };
+    const newSize = +event.target.value;
+    setRowsPerPage(newSize);
+    setPageSize(newSize);
+    setPage(1);
+  };;
 
   const columns = [
     { id: 'bookingNo', label: 'Booking No', minWidth: 170 },
@@ -124,36 +128,44 @@ const bookingAction = () => {
 
   useEffect(() => {
     MyPendingTicketGetAllApi()
-  }, [])
+  }, [page, rowsPerPage])
+
 
   const MyPendingTicketGetAllApi = async () => {
     setLoader(true)
     try {
-      const response = await BookingActionReport(search);
+      const response = await BookingActionReport(search, page, rowsPerPage);
       console.log('Booking Action data', response)
       if (response?.status === 200) {
-        setRowsData(response?.data?.bookingReport)
-        // toast.success(response?.data?.message)
-        setLoader(false)
+        const { currentPage, totalPages, pageSize, reports, notifications } = response.data;
+
+        setCurrentPage(currentPage);
+        setTotalPages(totalPages);
+        setPageSize(pageSize);
+
         const transformedRows = response?.data?.bookingReport?.map((booking, index) => ({
           ...booking,
           date: booking?.date?.split("T")[0],
-          bookingNo: ( <>
-          <Grid>
-            <Typography sx={{color:'#4634ff',fontWeight:700}}>
-              <b>{booking.bookingNo}</b>
-            </Typography>
-          </Grid>
+          bookingNo: (<>
+            <Grid>
+              <Typography sx={{ color: '#4634ff', fontWeight: 700 }}>
+                <b>{booking.bookingNo}</b>
+              </Typography>
+            </Grid>
           </>),
         }))
+
         setRows(transformedRows)
       } else {
         toast.error(response?.data?.message);
       }
     } catch (error) {
       console.log(error)
+    } finally {
+      setLoader(false)
     }
   }
+
   const handleChange = (e) => {
     const trimmedValue = e.target.value.trimStart();
     setSearch(trimmedValue);
@@ -179,15 +191,15 @@ const bookingAction = () => {
                 "& .MuiOutlinedInput-root": {
                   borderRadius: 0,
                   height: 39,
-                  boxShadow:'none'
+                  boxShadow: 'none'
                 },
               }}
               value={search}
               onChange={handleChange}
-            label="Search by booking no" />
+              label="Search by booking no" />
           </Grid>
           <Grid className={classes.searchIcon} onClick={MyPendingTicketGetAllApi}>
-            <svg  xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 32 32">
+            <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 32 32">
               <path fill="none" stroke="#fff" stroke-linecap="round" stroke-linejoin="round" stroke-width="0.9" d="m5 27l7.5-7.5M28 13a9 9 0 1 1-18 0a9 9 0 0 1 18 0" />
             </svg>
           </Grid>
@@ -213,7 +225,7 @@ const bookingAction = () => {
               <TableBody>
                 {
                   rows && rows.length > 0 ? (
-                    rows?.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage).map((row,index) => {
+                    rows?.map((row, index) => {
                       return (
                         <TableRow hover role="checkbox" tabIndex={-1} key={index}>
                           {columns?.map((column) => {
@@ -230,25 +242,25 @@ const bookingAction = () => {
                       );
                     })
                   )
-                  :
-                  (
-                    <TableRow>
+                    :
+                    (
+                      <TableRow>
                         <TableCell colSpan={columns.length} align="center">
                           <NoDataFound />
                         </TableCell>
                       </TableRow>
-                  )
+                    )
                 }
-             
+
               </TableBody>
             </Table>
           </TableContainer>
           <TablePagination
-            rowsPerPageOptions={[10, 25, 100]}
+            // rowsPerPageOptions={[10, 25, 100]}
             component="div"
-            count={rows.length}
+            count={totalPages * rowsPerPage}
             rowsPerPage={rowsPerPage}
-            page={page}
+            page={page - 1}
             onPageChange={handleChangePage}
             onRowsPerPageChange={handleChangeRowsPerPage}
           />

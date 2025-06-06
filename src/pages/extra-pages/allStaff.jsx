@@ -159,6 +159,7 @@ const allStaff = () => {
   const [idForBan, setIdForBan] = useState();
   // console.log('my idddd', idForBan)
   const [allData, setAllData] = useState([]);
+  console.log('all data', allData)
   const [row, setRow] = useState([]);
 
   const [isNameValidRequired, setIsNameValidRequired] = useState(false);
@@ -181,7 +182,7 @@ const allStaff = () => {
     setRowsPerPage(newSize);
     setPageSize(newSize);
     setPage(1);
-};
+  };
 
   useEffect(() => {
     MyRoleGetAllApi()
@@ -192,12 +193,12 @@ const allStaff = () => {
     MyAllStaffGetAllDataApi()
   }, [page, rowsPerPage])
 
-  // Get ll api for id or role in All Staff 
+  // Get all api for id or role in All Staff 
   const MyRoleGetAllApi = async () => {
     // setLoader(true)
     try {
-      const response = await GetAllApi();
-      // console.log('My role get all DATAAAAAA', response)
+      const response = await GetAllApi(page, rowsPerPage);
+      console.log('My role get all DATAAAAAA', response)
       if (response?.status === 200) {
         setAllData(response?.data?.roles)
         // toast.success(response?.data?.msg)
@@ -331,7 +332,7 @@ const allStaff = () => {
         setCurrentPage(currentPage);
         setTotalPages(totalPages);
         setPageSize(pageSize);
-        
+
         const transformedRows = response?.data?.staffs?.map((allRoles, index) => ({
           ...allRoles,
           // index: index + 1,
@@ -377,7 +378,7 @@ const allStaff = () => {
       const response = await AllStaffGetAllByIdApi(id);
       console.log('Data by id in staff', response)
       if (response?.status === 200) {
-        setRoleId(response?.data?.staff?.id)
+        setRoleId(response?.data?.staff?.role?.id)
         setRoleName(response?.data?.staff?.role?.roleName)
 
         setName(response?.data?.staff?.name)
@@ -387,7 +388,6 @@ const allStaff = () => {
         setNameCheck(response?.data?.staff?.name)
         setUserNameCheck(response?.data?.staff?.userName)
         setEmailCheck(response?.data?.staff?.email)
-
 
         setPassword(response?.data?.staff?.password)
 
@@ -434,8 +434,8 @@ const allStaff = () => {
         console.log(error)
       }
     }
-
   }
+
   // Ban api 
   const MyStaffBanApi = async () => {
     setLoader(true)
@@ -454,6 +454,7 @@ const allStaff = () => {
       console.log(error)
     }
   }
+
   const columns = [
     { id: 'index', label: 'S.N.', minWidth: 140 },
     { id: 'userName', label: 'Username', minWidth: 100 },
@@ -558,23 +559,23 @@ const allStaff = () => {
                 {
                   row && row.length > 0 ? (
                     row?.map((item, index) => {
-                        return (
+                      return (
 
-                          <TableRow hover role="checkbox" tabIndex={-1} key={index}>
-                            {columns.map((column) => {
-                              const value = item[column.id];
-                              return (
-                                <TableCell key={column.id} align={column.align}>
-                                  {column.format && typeof value === 'number'
-                                    ? column.format(value)
-                                    : value}
+                        <TableRow hover role="checkbox" tabIndex={-1} key={index}>
+                          {columns.map((column) => {
+                            const value = item[column.id];
+                            return (
+                              <TableCell key={column.id} align={column.align}>
+                                {column.format && typeof value === 'number'
+                                  ? column.format(value)
+                                  : value}
 
-                                </TableCell>
-                              );
-                            })}
-                          </TableRow>
-                        );
-                      })
+                              </TableCell>
+                            );
+                          })}
+                        </TableRow>
+                      );
+                    })
                   )
                     :
                     (
@@ -747,15 +748,12 @@ const allStaff = () => {
                           value={roleId}
                           onChange={(e) => setRoleId(e.target.value)}
                           label="Age"
-
                         >
                           {
                             allData?.map((item, index) => (
-                              <MenuItem Item key={index} value={item.id}> {item.roleName}</MenuItem>
+                              <MenuItem Item key={index} value={item.id}>{item.roleName}</MenuItem>
                             ))
                           }
-
-
                         </Select>
                       </FormControl>
                     </Box>

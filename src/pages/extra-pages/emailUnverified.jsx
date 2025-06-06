@@ -93,9 +93,6 @@ const emailUnverified = () => {
 
   const [search, setSearch] = useState('')
 
-
-
-
   const [page, setPage] = React.useState(1);
   const [rowsPerPage, setRowsPerPage] = React.useState(10);
   const [currentPage, setCurrentPage] = useState(1);
@@ -121,7 +118,7 @@ const emailUnverified = () => {
     setLoader(true)
     try {
       const response = await AllActiveEamilUnverifiedapi(search, page, rowsPerPage);
-      console.log('Unverified data data', response)
+      // console.log('Unverified data data', response)
       if (response?.status === 200) {
         const { currentPage, totalPages, pageSize, reports, notifications } = response.data;
 

@@ -28,7 +28,18 @@ export default function MainDrawer({ window }) {
   const drawerHeader = useMemo(() => <DrawerHeader open={!!drawerOpen} />, [drawerOpen]);
 
   return (
-    <Box component="nav" sx={{ flexShrink: { md: 0 }, zIndex: 1200 }} aria-label="mailbox folders">
+    <Box
+      component="nav"
+      sx={{
+        flexShrink: { md: 0 },
+        zIndex: 1200,
+        color: '#FFFFFF',
+      }}
+      aria-label="mailbox folders"
+    >
+      <Box sx={{color:'#fff'}}>
+        hello
+      </Box>
       {!matchDownMD ? (
         <MiniDrawerStyled variant="permanent" open={drawerOpen}>
           {drawerHeader}
@@ -49,7 +60,9 @@ export default function MainDrawer({ window }) {
               borderRight: '1px solid',
               borderRightColor: 'divider',
               backgroundImage: 'none',
-              boxShadow: 'inherit'
+              boxShadow: 'inherit',
+                // color: '#FFFFFF',
+              
             }
           }}
         >
@@ -58,6 +71,7 @@ export default function MainDrawer({ window }) {
         </Drawer>
       )}
     </Box>
+
   );
 }
 
