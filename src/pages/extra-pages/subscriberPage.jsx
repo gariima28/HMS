@@ -109,7 +109,7 @@ const subscriberPage = () => {
                 </Grid>
                 <Grid>
                     <Link to='/subscriber'>
-                        <Button sx={{ marginLeft: 2, height: 39, backgroundColor: '#4634ff', color: '#fff' }} variant="outlined" onClick={''}>
+                        <Button sx={{ marginLeft: 2, height: 39, backgroundColor: '#0D6A84', color: '#fff' }} variant="outlined" onClick={''}>
                             <Typography sx={{ paddingTop: .8, paddingRight: .3 }}>
                                 <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24">
                                     <path fill="#fff" d="M5.694 12L2.299 3.272a.75.75 0 0 1 .942-.982l.093.039l18 9a.75.75 0 0 1 .097 1.284l-.097.058l-18 9c-.583.291-1.217-.245-1.065-.848l.03-.095zL2.299 3.272zM4.402 4.54l2.61 6.71h6.627a.75.75 0 0 1 .743.648l.007.102a.75.75 0 0 1-.649.743l-.101.007H7.01l-2.609 6.71L19.322 12z" />
@@ -141,25 +141,25 @@ const subscriberPage = () => {
                                 {
                                     rows && rows.length > 0 ? (
                                         rows?.map((row, index) => {
-                                                return (
-                                                    <TableRow hover role="checkbox" tabIndex={-1} key={index}>
-                                                        {
+                                            return (
+                                                <TableRow hover role="checkbox" tabIndex={-1} key={index}>
+                                                    {
                                                         columns?.map((column) => {
                                                             const value = row[column.id];
 
                                                             return (
-                                                               <TableCell key={column.id} align={column.align}>
+                                                                <TableCell key={column.id} align={column.align}>
                                                                     {
                                                                         column?.format && typeof value === 'number'
-                                                                        ? column.format(value)
-                                                                        : value
+                                                                            ? column.format(value)
+                                                                            : value
                                                                     }
                                                                 </TableCell>
                                                             );
                                                         })}
-                                                    </TableRow>
-                                                );
-                                            })
+                                                </TableRow>
+                                            );
+                                        })
                                     )
                                         :
                                         (

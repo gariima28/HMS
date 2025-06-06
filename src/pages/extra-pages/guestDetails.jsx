@@ -327,9 +327,9 @@ const guestDetails = () => {
             if (response?.status === 200) {
                 toast.success(response?.data?.message)
                 setOpen2(false)
-                setTimeout(()=>{
+                setTimeout(() => {
                     navigate('/bannedguest')
-                },1000)
+                }, 1000)
             } else {
                 // toast.error(response?.data?.msg);
             }
@@ -464,11 +464,12 @@ const guestDetails = () => {
                         </Grid>
                     </Grid>
                     <Grid container spacing={2}>
-                        <Grid item xs={4} >
+
+                        {/* <Grid item xs={4} >
                             <Item >
                                 <Box sx={{ alignItems: 'center' }}>
                                     <Button sx={{width: '100%', backgroundColor: "#4634ff", color: '#fff' }}  variant="contained" >Notification</Button>
-                                    {/* <Button sx={{ ...forHover, width: '100%', backgroundColor: "#f2f6fbe4", color: '#000' }} variant="contained" >Notification</Button> */}
+                                   
                                 </Box>
                             </Item>
                         </Grid>
@@ -476,14 +477,15 @@ const guestDetails = () => {
                             <Item >
                                 <Box sx={{ alignItems: 'center' }}>
                                     <Button sx={{width: '100%', backgroundColor: "#4634ff", color: '#fff' }}  variant="contained" >Logins</Button>
-                                    {/* <Button sx={{ ...forHover, width: '100%', backgroundColor: "#f2f6fbe4", color: '#000' }} variant="contained" >Logins</Button> */}
+                                    
                                 </Box>
                             </Item>
-                        </Grid>
-                        <Grid item xs={4} >
+                        </Grid> */}
+
+                        <Grid item xs={12} >
                             <Item >
                                 <Box sx={{ alignItems: 'center' }}>
-                                    <Button sx={{width: '100%', backgroundColor: "#4634ff", color: '#fff' }} variant="contained" onClick={handleOpen2}>Ban User</Button>
+                                    <Button sx={{ width: '100%', backgroundColor: "#0D6A84", color: '#fff' }} variant="contained" onClick={handleOpen2}>Ban User</Button>
                                     {/* <Button sx={{ ...forHover, width: '100%', backgroundColor: "#f2f6fbe4", color: '#000' }} variant="contained" onClick={(e) => setIsUserBanned(!isUserBanned)}>Ban User</Button> */}
                                 </Box>
                             </Item>
@@ -635,7 +637,7 @@ const guestDetails = () => {
                 ref={offcanvasRef33}
             >
                 <Box sx={style2}>
-                    <Typography sx={{ fontSize: 25, color:'red' }} id="modal-modal-title" variant="h6" component="h2">
+                    <Typography sx={{ fontSize: 25, color: 'red' }} id="modal-modal-title" variant="h6" component="h2">
                         Confirmation Alert!
                     </Typography>
                     <hr />

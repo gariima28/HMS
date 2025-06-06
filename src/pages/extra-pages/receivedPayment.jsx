@@ -29,8 +29,8 @@ const useStyles = makeStyles({
     height: 39,
     paddingTop: 6,
     padding: '2px 8px',
-    border: '1px solid #4634ff',
-    backgroundColor: '#4634ff',
+    border: '1px solid #0D6A84',
+    backgroundColor: '#0D6A84',
     borderLeft: '0px',
     borderRadius: "0px 3px 3px 0px"
   },
@@ -124,7 +124,7 @@ const receivedPayment = () => {
       align: 'center',
       format: (value) => value.toLocaleString('en-US'),
     }
- 
+
   ];
 
   useEffect(() => {
@@ -145,15 +145,15 @@ const receivedPayment = () => {
           userName: <>
             <Typography>
               {payments.userName} <br />
-              <Typography sx={{color: '#4634ff'}}>
-             <b>{`@${payments.userEmail}`}</b>
+              <Typography sx={{ color: '#4634ff' }}>
+                <b>{`@${payments.userEmail}`}</b>
               </Typography>
             </Typography>
           </>,
           totalPaid: <>
-             <Typography sx={{color: '#5b6e88', fontWeight: 800,fontSize:16}}>
-             <b>{`$${payments.totalPaid}`}</b>
-              </Typography>
+            <Typography sx={{ color: '#5b6e88', fontWeight: 800, fontSize: 16 }}>
+              <b>{`$${payments.totalPaid}`}</b>
+            </Typography>
           </>,
           date: payments?.date?.split("T")[0],
         }))
@@ -241,16 +241,16 @@ const receivedPayment = () => {
                       );
                     })
                   )
-                  :
-                  (
-                    <TableRow>
+                    :
+                    (
+                      <TableRow>
                         <TableCell colSpan={columns.length} align="center">
                           <NoDataFound />
                         </TableCell>
                       </TableRow>
-                  )
+                    )
                 }
-               
+
               </TableBody>
             </Table>
           </TableContainer>

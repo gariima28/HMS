@@ -1,10 +1,11 @@
-import { Box, Typography, Skeleton, Grid } from '@mui/material';
+
 import Grid2 from '@mui/material/Unstable_Grid2/Grid2';
 import BookedCards from 'components/BookedCards';
 import React, { useEffect, useState } from 'react';
 import axios from 'axios';
 import useSWR from 'swr';
 import ErrorPage from 'components/ErrorPage';
+import { Box, Grid, Skeleton, Typography } from '@mui/material';
 
 const ServerIP = 'https://www.auth.edu2all.in/hms';
 const token = `Bearer ${localStorage.getItem('token')}`;

@@ -37,6 +37,22 @@ const CustomButton = styled(Button)(({ status }) => ({
   },
 }));
 
+const AddButton = styled(Button)(({ status }) => ({
+  borderRadius: '10px',
+  backgroundColor: '#0D6A84',
+  borderColor: status === 'enable' ? '#FFD8D8' : '#0D6A84',
+  color: '#FFFFFF',
+  padding: '8px 20px',
+  fontSize: '12px',
+  fontWeight: 700,
+  textTransform: 'none',
+  '&:hover': {
+    // backgroundColor: '',
+    // borderColor: '',
+    //color: '',
+  },
+}));
+
 // Table Columns
 const columns = [
   { id: 'sno', label: 'S.No', minWidth: 100 },
@@ -71,8 +87,8 @@ const AddedPServices = () => {
     if (data) {
       setShowDataTableLoader(true)
       // setMsgToaster(data?.message)
-      console.log(data?.allPremBookings, 'data');
-      const transformedRows = data?.allPremBookings?.map((allPremBookings, index) => ({
+      console.log(data?.bookings, 'data');
+      const transformedRows = data?.bookings?.map((allPremBookings, index) => ({
         ...allPremBookings,
         sno: index + 1,
         cost: allPremBookings.cost ?? '-',
@@ -110,9 +126,9 @@ const AddedPServices = () => {
         <Grid>
           <Stack justifyContent='start' spacing={2} direction="row">
 
-            <Button component={Link} variant="outlined" to='/addService'>
+            <AddButton component={Link} variant="outlined" to='/addService'>
               + Add New
-            </Button>
+            </AddButton>
           </Stack>
         </Grid>
       </Grid>

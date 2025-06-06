@@ -25,7 +25,7 @@ const DynamicDataTable = ({ columns, rows, dataViewId }) => {
     <Paper sx={{ width: '100%' }}>
       <TableContainer sx={{ maxHeight: '500px', overflow: 'scroll' }}>
         <Table stickyHeader aria-label="sticky table">
-          <TableHead>
+          <TableHead >
             <TableRow>
               {columns.map((column) => (
                 <TableCell
@@ -38,6 +38,7 @@ const DynamicDataTable = ({ columns, rows, dataViewId }) => {
                     zIndex: 1,
                     textWrap: 'nowrap'
                   }}
+                  sx={{ backgroundColor: "#0D6A8426" }}
                 >
                   {column.label}
                 </TableCell>
@@ -47,7 +48,10 @@ const DynamicDataTable = ({ columns, rows, dataViewId }) => {
           <TableBody>
             {rows?.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
               .map((row, index) => (
-                <TableRow hover role="checkbox" tabIndex={-1} key={row.id || index}>
+                <TableRow hover role="checkbox" tabIndex={-1} key={row.id || index} sx={{
+                  backgroundColor: index % 2 === 0 ? '#ffffff' : '#F2F3F6BF',
+                }}
+                >
                   {columns.map((column) => {
                     const value = row[column.id];
                     return (

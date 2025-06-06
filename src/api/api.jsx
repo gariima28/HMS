@@ -117,6 +117,57 @@ export const getAvailableRoomApi = async (roomType, noOfRooms, checkInDate, chec
     }
 }
 
+export const getAllRoomApiByRoomType = async (checkIn, checkOut) => { //
+    axios.defaults.headers.common["Authorization"] = token;
+    // var res = await axios.get(`${ServerIP}/booking/availRoom`, data);
+    // var res = await axios.get(`${ServerIP}/booking/availRoomByRoomType?checkInDate=${checkIn}&checkOutDate=${checkOut}`);
+    var res = await axios.get(
+        `${ServerIP}/booking/availRoomByRoomType?checkInDate=${checkIn}&checkOutDate=${checkOut}`
+    );
+
+    if (res) {
+        return res;
+    } else {
+        return [];
+    }
+}
+
+
+export const getAllRoomApiByRoomTypeDash = async (checkIn, checkOut) => { //
+    axios.defaults.headers.common["Authorization"] = token;
+    // var res = await axios.get(`${ServerIP}/booking/availRoom`, data);
+    // var res = await axios.get(`${ServerIP}/booking/availRoomByRoomType?checkInDate=${checkIn}&checkOutDate=${checkOut}`);
+    var res = await axios.get(
+        `${ServerIP}/dashboard/allRoomByRoomTypes?checkInDate=${checkIn}&checkOutDate=${checkOut}`
+    );
+
+    if (res) {
+        return res;
+    } else {
+        return [];
+    }
+}
+
+
+
+export const getBookingDetailsByRoomId = async (requestData) => { //
+    axios.defaults.headers.common["Authorization"] = token;
+
+    var res = await axios.post(
+        `${ServerIP}/dashboard/bookingDetailsByRoomId`, requestData, {
+        headers: {
+            "Content-Type": "application/json" // Explicitly set content type
+        }
+    }
+    );
+    if (res) {
+        return res;
+    } else {
+        return [];
+    }
+}
+
+
 // ******************************************************************************************************
 //  Delayed Checkout Data  //
 // ******************************************************************************************************

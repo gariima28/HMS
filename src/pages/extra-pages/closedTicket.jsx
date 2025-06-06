@@ -14,7 +14,7 @@ import TableRow from '@mui/material/TableRow';
 import Modal from '@mui/material/Modal';
 import { ClosedTicketGetAllApi } from 'api/api'
 import { EditOutlined, FundProjectionScreenOutlined } from '@ant-design/icons';
-import { makeStyles } from '@mui/styles';
+import { makeStyles, styled } from '@mui/styles';
 import NoDataFound from 'pages/NoDataFound';
 
 const useStyles = makeStyles({
@@ -30,8 +30,8 @@ const useStyles = makeStyles({
     height: 39,
     paddingTop: 6,
     padding: '2px 8px',
-    border: '1px solid #4634ff',
-    backgroundColor: '#4634ff',
+    border: '1px solid #0D6A84',
+    backgroundColor: '#0D6A84',
     borderLeft: '0px',
     borderRadius: "0px 3px 3px 0px"
   },
@@ -84,6 +84,22 @@ const input = {
   width: '100%',
   marginTop: 2,
 }
+
+const DetailsButton = styled(Button)(() => ({
+  borderRadius: '20px',
+  backgroundColor: 'transparent',
+  borderColor: '#0D6A84',
+  color: '#0D6A84',
+  fontSize: '0.825rem',
+  textTransform: 'none',
+
+  '&:hover': {
+    backgroundColor: '#4634ff',
+    borderColor: '#4634ff',
+    color: '#fff',
+  },
+}));
+
 // Style 
 
 
@@ -188,7 +204,7 @@ const closedTicket = () => {
           action: (
             <Stack justifyContent='end' spacing={2} direction="row">
               <Link to={`/replyticket/${tickets.ticketNumber}`}>
-                <Button variant="outlined" size="small" startIcon={<FundProjectionScreenOutlined />} >Details</Button>
+                <DetailsButton variant="outlined" size="small" startIcon={<FundProjectionScreenOutlined />} >Details</DetailsButton>
               </Link>
             </Stack>
           )

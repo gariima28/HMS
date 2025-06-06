@@ -70,15 +70,15 @@ const MoreButton = styled(Button)(() => ({
 
 const CustomButton = styled(Button)(() => ({
   borderRadius: '3.2px',
-  backgroundColor: '#4634ff',
-  borderColor: '#4634ff',
+  backgroundColor: '#0D6A84',
+  borderColor: '#0D6A84',
   color: '#fff',
   fontSize: '0.825rem',
   textTransform: 'none',
 
   '&:hover': {
-    backgroundColor: '#4634ff',
-    borderColor: '#4634ff',
+    backgroundColor: '#0D6A84',
+    borderColor: '#0D6A84',
     color: '#fff',
   },
 }));

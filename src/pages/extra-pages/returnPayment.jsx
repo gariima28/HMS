@@ -29,8 +29,8 @@ const useStyles = makeStyles({
     height: 39,
     paddingTop: 6,
     padding: '2px 8px',
-    border: '1px solid #4634ff',
-    backgroundColor: '#4634ff',
+    border: '1px solid #0D6A84',
+    backgroundColor: '#0D6A84',
     borderLeft: '0px',
     borderRadius: "0px 3px 3px 0px"
   },
@@ -195,7 +195,7 @@ const returnPayment = () => {
               onChange={handleChange}
               label="Search by email" />
           </Grid>
-          <Grid className={classes.searchIcon}  onClick={MyReturnPaymentGetAllApi}>
+          <Grid className={classes.searchIcon} onClick={MyReturnPaymentGetAllApi}>
             <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 32 32">
               <path fill="none" stroke="#fff" stroke-linecap="round" stroke-linejoin="round" stroke-width="0.9" d="m5 27l7.5-7.5M28 13a9 9 0 1 1-18 0a9 9 0 0 1 18 0" />
             </svg>
@@ -239,16 +239,16 @@ const returnPayment = () => {
                       );
                     })
                   )
-                  :
-                  (
-                    <TableRow>
+                    :
+                    (
+                      <TableRow>
                         <TableCell colSpan={columns.length} align="center">
                           <NoDataFound />
                         </TableCell>
                       </TableRow>
-                  )
+                    )
                 }
-         
+
               </TableBody>
             </Table>
           </TableContainer>

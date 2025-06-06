@@ -4,7 +4,7 @@ import { Button, Stack, FormHelperText, InputLabel, OutlinedInput, Divider, Typo
 import Grid from '@mui/material/Unstable_Grid2/Grid2';
 import { useNavigate, useParams } from 'react-router';
 import { createHotelApi, getHotelByIdApi, updateHotelApi } from 'api/api';
-import { useForm } from 'react-hook-form';
+import { Controller, useForm } from 'react-hook-form';
 import { Snackbar, Alert } from '@mui/material';
 import HashLoader from 'components/Skeleton/HashLoader';
 import { useState } from 'react';
@@ -22,7 +22,7 @@ const CreateHotel = () => {
   const [showLoader, setShowLoader] = React.useState(false);
   const [snackbar, setSnackbar] = React.useState({ open: false, message: '', severity: '' });
   
-  const { register, handleSubmit, formState: { errors }, setValue, trigger, watch, reset } = useForm({
+  const { register, handleSubmit, formState: { errors }, setValue, trigger, watch, reset, control } = useForm({
     mode: 'onChange',
     reValidateMode: 'onChange', 
   });
@@ -178,14 +178,39 @@ const CreateHotel = () => {
           </Grid>
           <Grid xs={12} sm={6} md={6} lg={4}>
             <Stack spacing={1}>
-              <InputLabel htmlFor="status">Status <span style={{ color: 'red' }}> *</span></InputLabel>
-              <Select {...register("status", { required: 'This Field is required',})}
+              {/* <InputLabel htmlFor="status">Status <span style={{ color: 'red' }}> *</span></InputLabel> */}
+              <Controller
+                name="status"
+                control={control}
+                defaultValue=""
+                rules={{ required: 'This field is required' }}
+                render={({ field }) => (
+                  <>
+                    <InputLabel htmlFor="status">
+                      Status <span style={{ color: 'red' }}> *</span>
+                    </InputLabel>
+                    <Select
+                      {...field}
+                      fullWidth
+                      displayEmpty
+                      error={Boolean(errors.status)}
+                    >
+                      <MenuItem value="" disabled>Select Status</MenuItem>
+                      <MenuItem value="true">Active</MenuItem>
+                      <MenuItem value="false">Inactive</MenuItem>
+                    </Select>
+                  </>
+                )}
+              />
+
+              {/* <Select {...register("status", { required: 'This Field is required',})}
                 fullWidth displayEmpty error={Boolean(errors.status)}
                 value={hotelStatus !== undefined ? String(hotelStatus) : ''} >
                 <MenuItem value='' disabled>Select Status</MenuItem>
                 <MenuItem value={true}>Active</MenuItem>
                 <MenuItem value={false}>Inactive</MenuItem>
-              </Select>
+              </Select> */}
+
               {/* <Select
                 {...register("status", {
                   required: 'This Field is required',

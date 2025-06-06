@@ -13,7 +13,7 @@ import TableRow from '@mui/material/TableRow';
 import toast, { Toaster } from 'react-hot-toast';
 import HashLoader from './HashLoaderCom';
 import Modal from '@mui/material/Modal';
-import { makeStyles } from '@mui/styles';
+import { makeStyles, styled } from '@mui/styles';
 import { PlusCircleOutlined } from '@ant-design/icons';
 import { BanApi } from 'api/api'
 // import { AllStaffBannedApi } from '@ant-design/icons';
@@ -36,8 +36,8 @@ const useStyles = makeStyles({
     height: 39,
     paddingTop: 6,
     padding: '2px 8px',
-    border: '1px solid #4634ff',
-    backgroundColor: '#4634ff',
+    border: '1px solid #0D6A84',
+    backgroundColor: '#0D6A84',
     borderLeft: '0px',
     borderRadius: "0px 3px 3px 0px"
   },
@@ -74,11 +74,27 @@ const input = {
   width: '100%',
   marginTop: 2,
 }
+
+
+const DetailsButton = styled(Button)(() => ({
+  borderRadius: '20px',
+  backgroundColor: 'transparent',
+  borderColor: '#0D6A84',
+  color: '#0D6A84',
+  fontSize: '0.825rem',
+  textTransform: 'none',
+
+  '&:hover': {
+    backgroundColor: '#4634ff',
+    borderColor: '#4634ff',
+    color: '#fff',
+  },
+}));
 // Style 
 
 const bannedguest = () => {
   const classes = useStyles();
-    const navigate = useNavigate()
+  const navigate = useNavigate()
 
   const [open, setOpen] = React.useState(false);
   const handleOpen = () => setOpen(true);
@@ -98,31 +114,31 @@ const bannedguest = () => {
   console.log('my banned id ', myId)
 
   const [page, setPage] = React.useState(1);
-   const [rowsPerPage, setRowsPerPage] = React.useState(10);
-   const [currentPage, setCurrentPage] = useState(1);
-   const [totalPages, setTotalPages] = useState(1);
-   const [pageSize, setPageSize] = useState(10);
-   
-   const handleChangePage = (event, newPage) => {
-     setPage(newPage + 1);
-   };
- 
-   const handleChangeRowsPerPage = (event) => {
-     const newSize = +event.target.value;
-     setRowsPerPage(newSize);
-     setPageSize(newSize);
-     setPage(1);
- };
- 
+  const [rowsPerPage, setRowsPerPage] = React.useState(10);
+  const [currentPage, setCurrentPage] = useState(1);
+  const [totalPages, setTotalPages] = useState(1);
+  const [pageSize, setPageSize] = useState(10);
+
+  const handleChangePage = (event, newPage) => {
+    setPage(newPage + 1);
+  };
+
+  const handleChangeRowsPerPage = (event) => {
+    const newSize = +event.target.value;
+    setRowsPerPage(newSize);
+    setPageSize(newSize);
+    setPage(1);
+  };
+
 
   useEffect(() => {
     MyRoleGetAllApi()
-  }, [page,rowsPerPage])
+  }, [page, rowsPerPage])
 
   const MyRoleGetAllApi = async () => {
     setLoader(true)
     try {
-      const response = await AllStaffBannedApi(search,page,rowsPerPage);
+      const response = await AllStaffBannedApi(search, page, rowsPerPage);
       console.log('Banned data ', response)
       if (response?.status === 200) {
         const { currentPage, totalPages, pageSize, reports, notifications } = response.data;
@@ -141,10 +157,10 @@ const bannedguest = () => {
             <Stack justifyContent='center' spacing={2} direction="row">
               {/* <Link to={`/guestdetails/${guest.id}`}> */}
               <Link to={''}>
-                <Button variant="outlined" size="small" startIcon={<PlusCircleOutlined />} onClick={(e) => {
+                <DetailsButton variant="outlined" size="small" startIcon={<PlusCircleOutlined />} onClick={(e) => {
                   handleOpen2();
                   setMyId(guest.id);
-                }}>Unban</Button>
+                }}>Unban</DetailsButton>
                 {/* <Button variant="outlined" size="small" startIcon={<FundProjectionScreenOutlined />} >Details</Button> */}
               </Link>
             </Stack>
@@ -267,45 +283,45 @@ const bannedguest = () => {
               </TableHead>
               <TableBody>
                 {
-                 row && row.length > 0 ? (
-                  row?.map((row, index) => {
-                    return (
-                      <TableRow hover role="checkbox" tabIndex={-1} key={index}>
-                        {columns.map((column) => {
-                          const value = row[column.id];
-                          return (
-                            <TableCell key={column.id} align={column.align}>
-                              {column.format && typeof value === 'number'
-                                ? column.format(value)
-                                : value}
-                            </TableCell>
-                          );
-                        })}
-                      </TableRow>
-                    );
-                  })
-                 ) 
-                 :
-                 (
-                  <TableRow>
+                  row && row.length > 0 ? (
+                    row?.map((row, index) => {
+                      return (
+                        <TableRow hover role="checkbox" tabIndex={-1} key={index}>
+                          {columns.map((column) => {
+                            const value = row[column.id];
+                            return (
+                              <TableCell key={column.id} align={column.align}>
+                                {column.format && typeof value === 'number'
+                                  ? column.format(value)
+                                  : value}
+                              </TableCell>
+                            );
+                          })}
+                        </TableRow>
+                      );
+                    })
+                  )
+                    :
+                    (
+                      <TableRow>
                         <TableCell colSpan={columns.length} align="center">
                           <NoDataFound />
                         </TableCell>
-                  </TableRow>
-                 )
+                      </TableRow>
+                    )
                 }
-             
+
               </TableBody>
             </Table>
           </TableContainer>
           <TablePagination
-             // rowsPerPageOptions={[10, 25, 100]}
-             component="div"
-             count={totalPages * rowsPerPage}
-             rowsPerPage={rowsPerPage}
-             page={page - 1}
-             onPageChange={handleChangePage}
-             onRowsPerPageChange={handleChangeRowsPerPage}
+            // rowsPerPageOptions={[10, 25, 100]}
+            component="div"
+            count={totalPages * rowsPerPage}
+            rowsPerPage={rowsPerPage}
+            page={page - 1}
+            onPageChange={handleChangePage}
+            onRowsPerPageChange={handleChangeRowsPerPage}
           />
         </Paper>
       </Box>

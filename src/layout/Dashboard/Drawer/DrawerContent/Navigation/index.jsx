@@ -23,4 +23,5 @@ export default function Navigation() {
   });
 
   return <Box sx={{ pt: 2 }}>{navGroups}</Box>;
+
 }

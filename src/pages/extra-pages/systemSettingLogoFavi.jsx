@@ -242,10 +242,10 @@ const systemSettingLogoFavi = () => {
                             <Typography>Supported Files: <b>.png, .jpg, .jpeg.</b></Typography>
                         </Grid>
                         <Grid item xs={12} sm={12} md={12} sx={{ marginTop: 4, marginBottom: 2 }}>
-                            <Button className={classes.forHover} sx={{ width: '100%', backgroundColor: "#4634ff", color: '#fff' }} variant="contained" onClick={MyLogoPostApi} >Submit</Button>
+                            <Button className={classes.forHover} sx={{ width: '100%', backgroundColor: "#0D6A84", color: '#fff' }} variant="contained" onClick={MyLogoPostApi} >Submit</Button>
                         </Grid>
                     </Grid>
-                    
+
                 </Box>
 
 

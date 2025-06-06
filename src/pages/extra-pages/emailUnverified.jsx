@@ -5,7 +5,7 @@ import Table from '@mui/material/Table';
 import TableBody from '@mui/material/TableBody';
 import TableCell from '@mui/material/TableCell';
 import TableContainer from '@mui/material/TableContainer';
-import { makeStyles } from '@mui/styles';
+import { makeStyles, styled } from '@mui/styles';
 import TableHead from '@mui/material/TableHead';
 import toast, { Toaster } from 'react-hot-toast';
 import TablePagination from '@mui/material/TablePagination';
@@ -33,8 +33,8 @@ const useStyles = makeStyles({
   searchIcon: {
     paddingTop: 6,
     padding: '2px 8px',
-    border: '1px solid #4634ff',
-    backgroundColor: '#4634ff',
+    border: '1px solid #0D6A84',
+    backgroundColor: '#0D6A84',
     borderLeft: '0px',
     borderRadius: "0px 3px 3px 0px"
   },
@@ -72,6 +72,22 @@ const input = {
   width: '100%',
   marginTop: 2,
 }
+
+
+const DetailsButton = styled(Button)(() => ({
+  borderRadius: '20px',
+  backgroundColor: 'transparent',
+  borderColor: '#0D6A84',
+  color: '#0D6A84',
+  fontSize: '0.825rem',
+  textTransform: 'none',
+
+  '&:hover': {
+    backgroundColor: '#4634ff',
+    borderColor: '#4634ff',
+    color: '#fff',
+  },
+}));
 // Style 
 
 const emailUnverified = () => {
@@ -98,7 +114,7 @@ const emailUnverified = () => {
   const [currentPage, setCurrentPage] = useState(1);
   const [totalPages, setTotalPages] = useState(1);
   const [pageSize, setPageSize] = useState(10);
-  
+
   const handleChangePage = (event, newPage) => {
     setPage(newPage + 1);
   };
@@ -108,7 +124,7 @@ const emailUnverified = () => {
     setRowsPerPage(newSize);
     setPageSize(newSize);
     setPage(1);
-};
+  };
 
   useEffect(() => {
     MyEmailUnverifiedGetAllApi()
@@ -132,13 +148,13 @@ const emailUnverified = () => {
           action: (
             <Stack justifyContent='end' spacing={2} direction="row">
               <Link to={`/guestdetails/${EmailUnverified.id}`}>
-                <Button variant="outlined" size="small" >
+                <DetailsButton variant="outlined" size="small" >
                   <Typography sx={{ paddingTop: .8, paddingRight: .4 }}>
                     <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24">
-                      <path fill="#1677ff" d="m20 22.09l2.45 1.49l-.65-2.81l2.2-1.88l-2.89-.25L20 16l-1.13 2.64l-2.87.25l2.18 1.88l-.68 2.81zM14.08 21H2a2.074 2.074 0 0 1-2-2V5c.04-1.09.91-1.96 2-2h20c1.09.04 1.96.91 2 2v10.53c-.58-.53-1.25-.92-2-1.19V5H2v14h12.08c-.05.33-.08.66-.08 1s.03.68.08 1M14 17H4v-1.25c0-1.66 3.34-2.5 5-2.5s5 .84 5 2.5zm0-6h4v1h-4zM9 7C7.63 7 6.5 8.13 6.5 9.5S7.63 12 9 12s2.5-1.13 2.5-2.5S10.37 7 9 7m5 2h6v1h-6zm0-2h6v1h-6z" />
+                      <path fill="#0D6A84" d="m20 22.09l2.45 1.49l-.65-2.81l2.2-1.88l-2.89-.25L20 16l-1.13 2.64l-2.87.25l2.18 1.88l-.68 2.81zM14.08 21H2a2.074 2.074 0 0 1-2-2V5c.04-1.09.91-1.96 2-2h20c1.09.04 1.96.91 2 2v10.53c-.58-.53-1.25-.92-2-1.19V5H2v14h12.08c-.05.33-.08.66-.08 1s.03.68.08 1M14 17H4v-1.25c0-1.66 3.34-2.5 5-2.5s5 .84 5 2.5zm0-6h4v1h-4zM9 7C7.63 7 6.5 8.13 6.5 9.5S7.63 12 9 12s2.5-1.13 2.5-2.5S10.37 7 9 7m5 2h6v1h-6zm0-2h6v1h-6z" />
                     </svg>
                   </Typography>
-                  Details</Button>
+                  Details</DetailsButton>
               </Link>
 
             </Stack>
@@ -274,27 +290,27 @@ const emailUnverified = () => {
                       );
                     })
                   )
-                  :
-                  (
-                    <TableRow>
+                    :
+                    (
+                      <TableRow>
                         <TableCell colSpan={columns.length} align="center">
                           <NoDataFound />
                         </TableCell>
                       </TableRow>
-                  )
+                    )
                 }
-                
+
               </TableBody>
             </Table>
           </TableContainer>
           <TablePagination
-             // rowsPerPageOptions={[10, 25, 100]}
-             component="div"
-             count={totalPages * rowsPerPage}
-             rowsPerPage={rowsPerPage}
-             page={page - 1}
-             onPageChange={handleChangePage}
-             onRowsPerPageChange={handleChangeRowsPerPage}
+            // rowsPerPageOptions={[10, 25, 100]}
+            component="div"
+            count={totalPages * rowsPerPage}
+            rowsPerPage={rowsPerPage}
+            page={page - 1}
+            onPageChange={handleChangePage}
+            onRowsPerPageChange={handleChangeRowsPerPage}
           />
         </Paper>
       </Box>

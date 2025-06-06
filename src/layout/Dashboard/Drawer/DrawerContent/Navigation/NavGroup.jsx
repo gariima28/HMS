@@ -17,7 +17,7 @@ export default function NavGroup({ item }) {
     switch (menuItem.type) {
       case 'collapse':
         return <SubNavGroup key={menuItem.id} item={menuItem} level={1} />;
-          
+
       case 'item':
         return <NavItem key={menuItem.id} item={menuItem} level={1} />;
       default:

@@ -28,8 +28,8 @@ const useStyles = makeStyles({
     height: 39,
     paddingTop: 6,
     padding: '2px 8px',
-    border: '1px solid #4634ff',
-    backgroundColor: '#4634ff',
+    border: '1px solid #0D6A84',
+    backgroundColor: '#0D6A84',
     borderLeft: '0px',
     borderRadius: "0px 3px 3px 0px"
   },
@@ -107,7 +107,7 @@ const mobileUnverified = () => {
 
   useEffect(() => {
     MyPhoneUnverifiedGetAllApi()
-  }, [page,rowsPerPage])
+  }, [page, rowsPerPage])
 
   const MyPhoneUnverifiedGetAllApi = async () => {
     setLoader(true)

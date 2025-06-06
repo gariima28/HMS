@@ -25,10 +25,10 @@ import NoDataFound from "pages/NoDataFound";
 
 
 const DetailsButton = styled(Button)(() => ({
-  borderRadius: '3.2px',
-  backgroundColor: '#fff',
-  borderColor: '#4634ff',
-  color: '#4634ff',
+  borderRadius: '20px',
+  backgroundColor: 'transparent',
+  borderColor: '#0D6A84',
+  color: '#0D6A84',
   fontSize: '0.825rem',
   textTransform: 'none',
 
