@@ -28,6 +28,7 @@ export default function MainDrawer({ window }) {
   const drawerHeader = useMemo(() => <DrawerHeader open={!!drawerOpen} />, [drawerOpen]);
 
   return (
+
     <Box
       component="nav"
       sx={{
@@ -37,41 +38,46 @@ export default function MainDrawer({ window }) {
       }}
       aria-label="mailbox folders"
     >
-      <Box sx={{color:'#fff'}}>
-        hello
-      </Box>
-      {!matchDownMD ? (
-        <MiniDrawerStyled variant="permanent" open={drawerOpen}>
-          {drawerHeader}
-          {drawerContent}
-        </MiniDrawerStyled>
-      ) : (
-        <Drawer
-          container={container}
-          variant="temporary"
-          open={drawerOpen}
-          onClose={() => handlerDrawerOpen(!drawerOpen)}
-          ModalProps={{ keepMounted: true }}
-          sx={{
-            display: { xs: 'block', lg: 'none' },
-            '& .MuiDrawer-paper': {
-              boxSizing: 'border-box',
-              width: drawerWidth,
-              borderRight: '1px solid',
-              borderRightColor: 'divider',
-              backgroundImage: 'none',
-              boxShadow: 'inherit',
-                // color: '#FFFFFF',
-              
-            }
-          }}
-        >
-          {drawerHeader}
-          {drawerContent}
-        </Drawer>
-      )}
-    </Box>
 
+
+      <Box component="nav" sx={{ flexShrink: { md: 0 }, zIndex: 1200, }} aria-label="mailbox folders">
+
+        {!matchDownMD ? (
+          <MiniDrawerStyled variant="permanent" open={drawerOpen}>
+            {drawerHeader}
+            {drawerContent}
+          </MiniDrawerStyled>
+        ) : (
+          <Drawer
+            container={container}
+            variant="temporary"
+            open={drawerOpen}
+            onClose={() => handlerDrawerOpen(!drawerOpen)}
+            ModalProps={{ keepMounted: true }}
+            sx={{
+              display: { xs: 'block', lg: 'none' },
+              '& .MuiDrawer-paper': {
+                boxSizing: 'border-box',
+                width: drawerWidth,
+                borderRight: '1px solid',
+                borderRightColor: 'divider',
+                backgroundImage: 'none',
+                boxShadow: 'inherit',
+
+                // color: '#FFFFFF',
+
+
+                backgroundColor: "#0D5F76"
+
+              }
+            }}
+          >
+            {drawerHeader}
+            {drawerContent}
+          </Drawer>
+        )}
+      </Box>
+    </Box>
   );
 }
 

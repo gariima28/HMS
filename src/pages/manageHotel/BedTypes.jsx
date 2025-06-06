@@ -21,18 +21,85 @@ const ServerIP = 'https://www.auth.edu2all.in/hms';
 const token = `Bearer ${localStorage.getItem('token')}`;
 
 // Custom Button CSS using Material UI Styles
+// const CustomButton = styled(Button)(({ status }) => ({
+//   borderRadius: '50px',
+//    backgroundColor: status === 'enable' ? '#E6F4EA' : '#fee5e5',
+
+//   borderColor: status === 'enable' ? '#57C168' : 'red',
+//   color: status === 'enable' ? '#57C168' : 'red',
+//   padding: '2px 26px',
+//   fontSize: '12px',
+//   textTransform: 'none',
+//   '&:hover': {
+//     backgroundColor: status === 'enable' ? '#D4ECD9' : '#fccfcf',
+//     borderColor: status === 'enable' ? '#57C168' : 'red',
+//     color: status === 'enable' ? '#57C168' : 'red',
+//   },
+// }));
+
+
 const CustomButton = styled(Button)(({ status }) => ({
   borderRadius: '50px',
-  backgroundColor: status === 'enable' ? '#E6F4EA' : '#fee5e5',
-  borderColor: status === 'enable' ? '#57C168' : 'red',
-  color: status === 'enable' ? '#57C168' : 'red',
+  backgroundColor: status === 'enable' ? '#DBE9ED' : '#FFD8D8',
+  borderColor: status === 'enable' ? '#DBE9ED' : '#FFD8D8',
+  color: status === 'enable' ? '#0D6A84' : '#C90303',
   padding: '2px 26px',
   fontSize: '12px',
+  fontWeight: 700,
   textTransform: 'none',
   '&:hover': {
-    backgroundColor: status === 'enable' ? '#D4ECD9' : '#fccfcf',
-    borderColor: status === 'enable' ? '#57C168' : 'red',
-    color: status === 'enable' ? '#57C168' : 'red',
+    backgroundColor: status === 'enable' ? '#0D6A84' : '#C90303',
+    borderColor: status === 'enable' ? '#0D6A84' : '#C90303',
+    color: status === 'enable' ? '#ffffff' : '#ffffff',
+  },
+}));
+
+
+const EditButton = styled(Button)(({ status }) => ({
+  borderRadius: '50px',
+  backgroundColor: 'transparent',
+  borderColor: '#0D6A84',
+  color: '#0D6A84',
+  padding: '2px 14px',
+  fontSize: '12px',
+  fontWeight: 700,
+  textTransform: 'none',
+  '&:hover': {
+    backgroundColor: '#0D6A84',
+    borderColor: '#0D6A84',
+    color: '#ffffff',
+  },
+}));
+
+const EnableButton = styled(Button)(({ status }) => ({
+  borderRadius: '50px',
+  backgroundColor: 'transparent',
+  borderColor: status === 'enable' ? '#C90303' : '#0D6A84',
+  color: status === 'enable' ? '#C90303' : '#0D6A84',
+  padding: '2px 16px',
+  fontSize: '12px',
+  fontWeight: 700,
+  textTransform: 'none',
+  '&:hover': {
+    backgroundColor: status === 'enable' ? '#C90303' : '#0D6A84',
+    borderColor: status === 'enable' ? '#C90303' : '#0D6A84',
+    color: status === 'enable' ? '#ffffff' : '#ffffff',
+  },
+}));
+
+const AddButton = styled(Button)(({ status }) => ({
+  borderRadius: '10px',
+  backgroundColor: '#0D6A84',
+  borderColor: status === 'enable' ? '#FFD8D8' : '#0D6A84',
+  color: '#FFFFFF',
+  padding: '8px 20px',
+  fontSize: '12px',
+  fontWeight: 700,
+  textTransform: 'none',
+  '&:hover': {
+    // backgroundColor: '',
+    // borderColor: '',
+    //color: '',
   },
 }));
 
@@ -185,8 +252,8 @@ const BedTypes = () => {
         // <CustomButton variant="outlined" size="small" status={bedType.status ? 'enable' : 'disable'} startIcon={bedType.status ? <EyeFilled /> : <EyeInvisibleFilled />} onClick={() => UpdateBedTypesStatus(bedType.bedTypeId, bedType.status)}>{bedType.status ? 'Enable' : 'Disable'}</CustomButton>,
         action: (
           <Stack justifyContent='end' spacing={2} direction="row">
-            <Button variant="outlined" size="small" startIcon={<Edit />} onClick={() => handleDialogState('Update New BedTypes', 'Update', bedType.bedTypeId)}>Edit</Button>
-            <Button variant="outlined" size="small" startIcon={<DeleteOutline />} color="error" onClick={() => handleDeleteId(bedType?.bedTypeId)}>Delete</Button>
+            <EditButton variant="outlined" size="small" startIcon={<Edit />} onClick={() => handleDialogState('Update New BedTypes', 'Update', bedType.bedTypeId)}>Edit</EditButton>
+            <EnableButton variant="outlined" size="small" startIcon={<DeleteOutline />} color="error" onClick={() => handleDeleteId(bedType?.bedTypeId)}>Delete</EnableButton>
           </Stack>
         ),
       }));
@@ -447,9 +514,9 @@ const BedTypes = () => {
         </Grid>
         <Grid>
           <Stack justifyContent='start' spacing={2} direction="row">
-            <Button variant="outlined" onClick={() => handleDialogState('Add New BedTypes', 'Create')}>
+            <AddButton variant="outlined" onClick={() => handleDialogState('Add New BedTypes', 'Create')}>
               + Add New
-            </Button>
+            </AddButton>
           </Stack>
         </Grid>
       </Grid>

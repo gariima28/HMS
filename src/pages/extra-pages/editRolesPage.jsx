@@ -649,7 +649,7 @@ const editRolesPage = () => {
                     </Grid>
                 </Grid>
                 <Box sx={{ textAlign: "center", marginTop: 4, width: '100%' }}>
-                    <Button sx={{ width: '100%' }} variant="contained" disableElevation>
+                    <Button sx={{ width: '100%', backgroundColor: '#0D6A84', color: "#ffffff" }} variant="contained" disableElevation>
                         Submit
                     </Button>
                 </Box>

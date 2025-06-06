@@ -22,18 +22,70 @@ const token = `Bearer ${localStorage.getItem('token')}`;
 // Custom Button CSS using Material UI Styles
 const CustomButton = styled(Button)(({ status }) => ({
   borderRadius: '50px',
-  backgroundColor: status === 'enable' ? '#E6F4EA' : '#fee5e5',
-  borderColor: status === 'enable' ? '#57C168' : 'red',
-  color: status === 'enable' ? '#57C168' : 'red',
+  backgroundColor: status === 'enable' ? '#DBE9ED' : '#FFD8D8',
+  borderColor: status === 'enable' ? '#DBE9ED' : '#FFD8D8',
+  color: status === 'enable' ? '#0D6A84' : '#C90303',
   padding: '2px 26px',
   fontSize: '12px',
+  fontWeight: 700,
   textTransform: 'none',
   '&:hover': {
-    backgroundColor: status === 'enable' ? '#D4ECD9' : '#fccfcf',
-    borderColor: status === 'enable' ? '#57C168' : 'red',
-    color: status === 'enable' ? '#57C168' : 'red',
+    backgroundColor: status === 'enable' ? '#0D6A84' : '#C90303',
+    borderColor: status === 'enable' ? '#0D6A84' : '#C90303',
+    color: status === 'enable' ? '#ffffff' : '#ffffff',
   },
 }));
+
+
+const EditButton = styled(Button)(({ status }) => ({
+  borderRadius: '50px',
+  backgroundColor: 'transparent',
+  borderColor: '#0D6A84',
+  color: '#0D6A84',
+  padding: '2px 14px',
+  fontSize: '12px',
+  fontWeight: 700,
+  textTransform: 'none',
+  '&:hover': {
+    backgroundColor: '#0D6A84',
+    borderColor: '#0D6A84',
+    color: '#ffffff',
+  },
+}));
+
+const EnableButton = styled(Button)(({ status }) => ({
+  borderRadius: '50px',
+  backgroundColor: 'transparent',
+  borderColor: status === 'enable' ? '#C90303' : '#0D6A84',
+  color: status === 'enable' ? '#C90303' : '#0D6A84',
+  padding: '2px 16px',
+  fontSize: '12px',
+  fontWeight: 700,
+  textTransform: 'none',
+  '&:hover': {
+    backgroundColor: status === 'enable' ? '#C90303' : '#0D6A84',
+    borderColor: status === 'enable' ? '#C90303' : '#0D6A84',
+    color: status === 'enable' ? '#ffffff' : '#ffffff',
+  },
+}));
+
+const AddButton = styled(Button)(({ status }) => ({
+  borderRadius: '10px',
+  backgroundColor: '#0D6A84',
+  borderColor: status === 'enable' ? '#FFD8D8' : '#0D6A84',
+  color: '#FFFFFF',
+  padding: '8px 20px',
+  fontSize: '12px',
+  fontWeight: 700,
+  textTransform: 'none',
+  '&:hover': {
+    // backgroundColor: '',
+    // borderColor: '',
+    //color: '',
+  },
+}));
+
+
 
 // Table Columns
 
@@ -167,8 +219,11 @@ const Facilities = () => {
         status: <CustomButton variant="outlined" status={facility.status ? 'enable' : 'disable'}>{facility.status ? 'Enabled' : 'Disabled'}</CustomButton>,
         action: (
           <Stack justifyContent="end" spacing={2} direction="row">
-            <Button variant="outlined" size="small" startIcon={<Edit />} onClick={() => handleDialogState('Update New Facilities', 'Update', facility.facilityId)}>Edit</Button>
-            <Button variant="outlined" size="small" startIcon={facility.status ? <EyeInvisibleFilled /> : <EyeFilled />} color={facility.status ? 'error' : 'success'} onClick={() => UpdateFacilitiesStatus(facility.facilityId, facility.status)}>{facility.status ? 'Disable' : 'Enable'}</Button>
+            <EditButton variant="outlined" size="small" startIcon={<Edit />} onClick={() => handleDialogState('Update New Facilities', 'Update', facility.facilityId)}>Edit</EditButton>
+            <EnableButton variant="outlined" size="small" startIcon={facility.status ? <EyeInvisibleFilled /> : <EyeFilled />}
+              //color={facility.status ? 'error' : 'success'}    
+              status={facility.status ? 'enable' : 'disable'}
+              onClick={() => UpdateFacilitiesStatus(facility.facilityId, facility.status)}>{facility.status ? 'Disable' : 'Enable'}</EnableButton>
           </Stack>
         ),
       }));
@@ -348,6 +403,7 @@ const Facilities = () => {
     />
   );
 
+
   // if (error) return <Typography variant="subtitle1"><NoDataFound/></Typography>;
   if (!data) return <Typography variant="subtitle1"><HashLoader /></Typography>;
 
@@ -360,9 +416,9 @@ const Facilities = () => {
         </Grid>
         <Grid>
           <Stack justifyContent='start' spacing={2} direction="row">
-            <Button variant="outlined" onClick={() => handleDialogState('Add New Facilities', 'Create')}>
-              + Add New
-            </Button>
+            <AddButton variant="outlined" onClick={() => handleDialogState('Add New Facilities', 'Create')}>
+              + Add Facilities
+            </AddButton>
           </Stack>
         </Grid>
       </Grid>

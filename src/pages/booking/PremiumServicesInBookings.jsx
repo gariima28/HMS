@@ -12,6 +12,7 @@ import axios from 'axios';
 import { addAmenitiesApi, getAmenitiesDataByIdApi, updateAmenitiesApi, updateAmenitiesStatus } from 'api/api'
 import { useParams } from 'react-router';
 import NoDataFound from 'pages/NoDataFound';
+import { Link } from 'react-router-dom';
 // import { useForm } from 'react-hook-form';
 
 // const LocalGirjesh = 'http://192.168.20.109:5001';
@@ -103,7 +104,7 @@ const PremiumServicesInBookings = () => {
         </Grid>
         <Grid>
           <Stack justifyContent='start' spacing={2} direction="row">
-            <Button variant="outlined" onClick={() => handleDialogState('Add New Amenities', 'Create')}>
+            <Button variant="outlined" component={Link} to={`/addService/${id}`}>
               + Add New
             </Button>
           </Stack>
@@ -118,8 +119,6 @@ const PremiumServicesInBookings = () => {
           <NoDataFound />
         </Typography>
       )}
-
-
     </Box>
   );
 };

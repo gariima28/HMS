@@ -258,10 +258,13 @@ const BookingDetailsPage = () => {
             </Grid>
             <Grid item xs={12}>
                 <Accordion defaultExpanded sx={{ boxShadow: 'none', border: '1px solid #e8e8e8', '&.MuiAccordion-root': { '&:first-of-type': { borderTopLeftRadius: '0px !important', borderTopRightRadius: '0px !important', }, '&:last-of-type': { borderBottomLeftRadius: '0px !important', borderBottomRightRadius: '0px !important', }, }, }} >
-                    <AccordionSummary expandIcon={<ExpandMoreIcon />} aria-controls="panel1-content" id="panel1-header" sx={{ minHeight: '48px !important', '&.Mui-expanded': { minHeight: '48px !important', backgroundColor: '#071251', color: '#fff', }, '&:not(.Mui-expanded)': { backgroundColor: '#f5f5f5', color: '#000', }, '& .MuiAccordionSummary-expandIconWrapper': { color: '#fff', '&:not(.Mui-expanded)': { color: '#000', }, }, '& .MuiAccordionSummary-content': { margin: '0px !important', '&.Mui-expanded': { margin: '0px !important', }, }, }} >
+                    <AccordionSummary expandIcon={<ExpandMoreIcon />} aria-controls="panel1-content" id="panel1-header" sx={{ display: "flex", justifyContent: "space-between   ", minHeight: '48px !important', '&.Mui-expanded': { minHeight: '48px !important', backgroundColor: '#071251', color: '#fff', }, '&:not(.Mui-expanded)': { backgroundColor: '#f5f5f5', color: '#000', }, '& .MuiAccordionSummary-expandIconWrapper': { color: '#fff', '&:not(.Mui-expanded)': { color: '#000', }, }, '& .MuiAccordionSummary-content': { margin: '0px !important', '&.Mui-expanded': { margin: '0px !important', }, }, }} >
                         <Typography variant="h5" fontWeight="bolder">
                             Premium Services
                         </Typography>
+                        <Button sx={{ color: 'white !important', border: "none" }} variant="outlined" component={Link} to={`/addService/${id}`}>
+                            + Add New
+                        </Button>
                     </AccordionSummary>
                     <AccordionDetails sx={{ p: 2.5, textAlign: 'center' }}>
                         <Typography variant="h5" fontWeight="bolder" sx={{ color: '#5b6e88 !important' }}>

@@ -21,34 +21,83 @@ const token = `Bearer ${localStorage.getItem('token')}`;
 // Custom Button CSS using Material UI Styles
 const CustomButton = styled(Button)(({ status }) => ({
   borderRadius: '50px',
-  backgroundColor: status === 'enable' ? '#E6F4EA' : '#fee5e5',
-  borderColor: status === 'enable' ? '#57C168' : 'red',
-  color: status === 'enable' ? '#57C168' : 'red',
+  backgroundColor: status === 'enable' ? '#DBE9ED' : '#FFD8D8',
+  borderColor: status === 'enable' ? '#DBE9ED' : '#FFD8D8',
+  color: status === 'enable' ? '#0D6A84' : '#C90303',
   padding: '2px 26px',
   fontSize: '12px',
+  fontWeight: 700,
   textTransform: 'none',
-
   '&:hover': {
-    backgroundColor: status === 'enable' ? '#D4ECD9' : '#fccfcf',
-    borderColor: status === 'enable' ? '#57C168' : 'red',
-    color: status === 'enable' ? '#57C168' : 'red'
+    backgroundColor: status === 'enable' ? '#0D6A84' : '#C90303',
+    borderColor: status === 'enable' ? '#0D6A84' : '#C90303',
+    color: status === 'enable' ? '#ffffff' : '#ffffff',
+  },
+}));
+
+
+const EditButton = styled(Button)(({ status }) => ({
+  borderRadius: '50px',
+  backgroundColor: 'transparent',
+  borderColor: '#0D6A84',
+  color: '#0D6A84',
+  padding: '2px 14px',
+  fontSize: '12px',
+  fontWeight: 700,
+  textTransform: 'none',
+  '&:hover': {
+    backgroundColor: '#0D6A84',
+    borderColor: '#0D6A84',
+    color: '#ffffff',
+  },
+}));
+
+const EnableButton = styled(Button)(({ status }) => ({
+  borderRadius: '50px',
+  backgroundColor: 'transparent',
+  borderColor: status === 'enable' ? '#C90303' : '#0D6A84',
+  color: status === 'enable' ? '#C90303' : '#0D6A84',
+  padding: '2px 16px',
+  fontSize: '12px',
+  fontWeight: 700,
+  textTransform: 'none',
+  '&:hover': {
+    backgroundColor: status === 'enable' ? '#C90303' : '#0D6A84',
+    borderColor: status === 'enable' ? '#C90303' : '#0D6A84',
+    color: status === 'enable' ? '#ffffff' : '#ffffff',
+  },
+}));
+
+const AddButton = styled(Button)(({ status }) => ({
+  borderRadius: '10px',
+  backgroundColor: '#0D6A84',
+  borderColor: status === 'enable' ? '#FFD8D8' : '#0D6A84',
+  color: '#FFFFFF',
+  padding: '8px 20px',
+  fontSize: '12px',
+  fontWeight: 700,
+  textTransform: 'none',
+  '&:hover': {
+    // backgroundColor: '',
+    // borderColor: '',
+    //color: '',
   },
 }));
 
 // Custom Button CSS using Material UI Styles
 const FeatureButton = styled(Button)(({ status }) => ({
   borderRadius: '50px',
-  backgroundColor: status === 'featured' ? '#7367f01a' : '#0000001a',
-  borderColor: status === 'featured' ? '#4634ff' : '#000',
-  color: status === 'featured' ? '#4634ff' : '#000',
+  backgroundColor: status === 'featured' ? '#EDEAC3' : '#FFD8D8',
+  borderColor: status === 'featured' ? '#EDEAC3' : '#FFD8D8',
+  color: status === 'featured' ? '#B69A4C' : '#C90303',
   padding: '2px 26px',
   fontSize: '12px',
   textTransform: 'none',
 
   '&:hover': {
-    backgroundColor: status === 'featured' ? '#7267f03a' : '#0000003c',
-    borderColor: status === 'featured' ? '#4634ff' : '#000',
-    color: status === 'featured' ? '#4634ff' : '#000',
+    backgroundColor: status === 'featured' ? '#B69A4C' : '#C90303',
+    borderColor: status === 'featured' ? '#B69A4C' : '#C90303',
+    color: status === 'featured' ? '#ffffff' : '#ffffff',
   },
 }));
 
@@ -116,14 +165,18 @@ const RoomTypes = () => {
         roomTypeStatus: <CustomButton variant="outlined" status={`${roomType.roomTypeStatus ? 'enable' : 'disable'}`}> {roomType.roomTypeStatus ? 'Enabled' : 'Disabled'} </CustomButton>,
         action: (
           <Stack justifyContent='end' spacing={2} direction="row">
-            <Button variant="outlined" size="small" startIcon={<Edit />} href={`addUpdateRoomType/${roomType.roomTypesId}`}>Edit</Button>
+            <EditButton variant="outlined" size="small" startIcon={<Edit />} href={`addUpdateRoomType/${roomType.roomTypesId}`}>Edit</EditButton>
             {/* <Button variant="outlined" size="small" startIcon={<Edit />} onClick={() => handleDialogState('Update New RoomTypes', 'Update', roomType.roomTypesId)}>Edit</Button> */}
-            <Button variant="outlined" size="small" startIcon={roomType.roomTypeStatus ? <EyeInvisibleFilled /> : <EyeFilled />} color={`${roomType.roomTypeStatus ? 'error' : 'success'}`} onClick={() => UpdateRoomTypesStatus(roomType?.roomTypesId, roomType.roomTypeStatus)}>
+            <EnableButton variant="outlined" size="small" startIcon={roomType.roomTypeStatus ? <EyeInvisibleFilled /> : <EyeFilled />}
+              color={`${roomType.roomTypeStatus ? 'error' : 'success'}`}
+              onClick={() => UpdateRoomTypesStatus(roomType?.roomTypesId, roomType.roomTypeStatus)}
+              status={`${roomType.roomTypeStatus ? 'enable' : 'disable'}`}
+            >
               {showStatusLoader
                 ? 'Processing...'
                 :
                 `${roomType.roomTypeStatus ? 'Disable' : 'Enable'}`}
-            </Button>
+            </EnableButton>
           </Stack>
         ),
       }));
@@ -198,9 +251,9 @@ const RoomTypes = () => {
         </Grid>
         <Grid>
           <Stack justifyContent='start' spacing={2} direction="row">
-            <Button variant="outlined" href={`addUpdateRoomType/add`}>
-              + Add New
-            </Button>
+            <AddButton variant="outlined" href={`addUpdateRoomType/add`}>
+              + Add Room Type
+            </AddButton>
           </Stack>
         </Grid>
       </Grid>

@@ -4,6 +4,7 @@ import { AllStaffGetAllApi } from 'api/api'
 import { SendAllStaffMail } from 'api/api'
 import HashLoader from './HashLoaderCom';
 import toast, { Toaster } from 'react-hot-toast';
+import { styled } from '@mui/styles';
 
 
 const mainstyle = {
@@ -15,7 +16,7 @@ const forHover = {
     '&:hover': {
         color: "#fff",
         backgroundColor: '#4634ff',
-        
+
     },
 }
 const conditionClass = {
@@ -26,6 +27,22 @@ const btn12 = {
     backgroundColor: "#f2f6fbe4",
     border: "0.5px solid #aaa"
 }
+
+const AddButton = styled(Button)(({ status }) => ({
+    borderRadius: '5px',
+    backgroundColor: '#0D6A84',
+    borderColor: '#0D6A84',
+    color: '#FFFFFF',
+    padding: '8px 20px',
+    fontSize: '12px',
+    fontWeight: 700,
+    textTransform: 'none',
+    '&:hover': {
+        backgroundColor: '#0D6A84',
+        borderColor: '#0D6A84',
+        color: '#ffffff',
+    },
+}));
 
 const currencies = [
     {
@@ -47,13 +64,14 @@ const currencies = [
 ];
 
 
+
 const sendNotification = () => {
 
     const [allData, setAllData] = useState([]);
     const [selectedValue, setSelectedValue] = useState("");
     const [hideEmail, setHideEmail] = useState(true)
     const [loader, setLoader] = useState(false)
-    const [allStaffMail, setAllStafffMail] = useState();    
+    const [allStaffMail, setAllStafffMail] = useState();
     const [subject, setSubject] = useState();
     const [textarea, setRextarea] = useState();
     const [startForm, setStartForm] = useState();
@@ -89,7 +107,7 @@ const sendNotification = () => {
                 // toast.success(response?.data?.msg)
                 setAllData(response?.data?.staffs)
                 setLoader(false)
-               
+
             } else {
                 toast.error(response?.data?.msg);
             }
@@ -258,12 +276,12 @@ const sendNotification = () => {
 
     return (
         <>
-        <Box>
-            { loader && (
-                <HashLoader />
-            )
-            }
-        </Box>
+            <Box>
+                {loader && (
+                    <HashLoader />
+                )
+                }
+            </Box>
             <Box>
                 <Grid sx={{ margin: 0, fontSize: 20 }}>
                     <b>Notification to Verified Guests</b>
@@ -272,10 +290,10 @@ const sendNotification = () => {
             <Box sx={mainstyle} >
                 <Grid sx={{ display: 'flex' }}>
                     <Grid sx={{ ...btn12, ...(hideEmail === true ? conditionClass : btn12) }} >
-                        <Button variant="" disableElevation onClick={() => setHideEmail(true)}> Send Via Email </Button>
+                        <AddButton variant="" disableElevation onClick={() => setHideEmail(true)}> Send Via Email </AddButton>
                     </Grid>
                     <Grid sx={{ ...btn12, marginLeft: 1, ...(hideEmail === false ? conditionClass : btn12) }}>
-                        <Button variant="" onClick={() => setHideEmail(false)}> Send Via FireBase </Button>
+                        <AddButton variant="" onClick={() => setHideEmail(false)}> Send Via FireBase </AddButton>
                     </Grid>
                 </Grid>
                 <Box
@@ -312,7 +330,7 @@ const sendNotification = () => {
                     </Grid>
                     <Grid>
                         <Typography sx={{ marginBottom: -3, fontSize: 14, marginTop: 1 }}> <label>Subject *</label></Typography>
-                        <TextField id="outlined-basic" variant="outlined" placeholder='Subject/title'  onChange={(e) => handleSubject(e.target.value)} />
+                        <TextField id="outlined-basic" variant="outlined" placeholder='Subject/title' onChange={(e) => handleSubject(e.target.value)} />
                     </Grid>
                     <Grid sx={{ paddingTop: 2 }}>
                         {isValidSubjectRequired && (
@@ -399,7 +417,7 @@ const sendNotification = () => {
                         </Grid>
                         <Grid container spacing={1} sx={{ marginTop: 2 }} >
                             <Grid xs={12} sx={forHover}>
-                                <Button sx={{ ...forHover, width: '100%', backgroundColor: "#4634ff", color: '#fff' }} variant="contained" onClick={MyEventPostApi}>Submit</Button>
+                                <Button sx={{ ...forHover, width: '100%', backgroundColor: "#0D6A84", color: '#fff' }} variant="contained" onClick={MyEventPostApi}>Submit</Button>
                             </Grid>
                         </Grid>
                     </Grid>

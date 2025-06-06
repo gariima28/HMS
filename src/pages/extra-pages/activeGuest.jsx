@@ -10,7 +10,7 @@ import TableHead from '@mui/material/TableHead';
 import HashLoader from './HashLoaderCom';
 import TablePagination from '@mui/material/TablePagination';
 import TableRow from '@mui/material/TableRow';
-import { makeStyles } from '@mui/styles';
+import { makeStyles, styled } from '@mui/styles';
 import Modal from '@mui/material/Modal';
 import { AllActiveguestGetAllApi } from 'api/api'
 import { EditOutlined, FundProjectionScreenOutlined } from '@ant-design/icons';
@@ -31,7 +31,7 @@ const useStyles = makeStyles({
     paddingTop: 6,
     padding: '2px 8px',
     border: '1px solid #4634ff',
-    backgroundColor: '#4634ff',
+    backgroundColor: '#0D6A84',
     borderLeft: '0px',
     borderRadius: "0px 3px 3px 0px"
   },
@@ -68,6 +68,22 @@ const input = {
   width: '100%',
   marginTop: 2,
 }
+
+
+const DetailsButton = styled(Button)(() => ({
+  borderRadius: '20px',
+  backgroundColor: 'transparent',
+  borderColor: '#0D6A84',
+  color: '#0D6A84',
+  fontSize: '0.825rem',
+  textTransform: 'none',
+
+  '&:hover': {
+    backgroundColor: '#4634ff',
+    borderColor: '#4634ff',
+    color: '#fff',
+  },
+}));
 // Style 
 
 const activeGuest = () => {
@@ -99,7 +115,7 @@ const activeGuest = () => {
   const [currentPage, setCurrentPage] = useState(1);
   const [totalPages, setTotalPages] = useState(1);
   const [pageSize, setPageSize] = useState(10);
-  
+
   const handleChangePage = (event, newPage) => {
     setPage(newPage + 1);
   };
@@ -109,8 +125,8 @@ const activeGuest = () => {
     setRowsPerPage(newSize);
     setPageSize(newSize);
     setPage(1);
-};
-  
+  };
+
   const columns = [
     { id: 'firstName', label: 'User', minWidth: 170 },
     { id: 'email', label: 'Email-Mobile', minWidth: 100 },
@@ -132,13 +148,13 @@ const activeGuest = () => {
 
   useEffect(() => {
     MyActiveGuestGetAllApi()
-  }, [ page, rowsPerPage])
+  }, [page, rowsPerPage])
 
   const MyActiveGuestGetAllApi = async () => {
     setLoader(true)
     try {
       const response = await AllActiveguestGetAllApi(search, page, rowsPerPage);
-      console.log('Active Guest DATAAAAAA', response) 
+      console.log('Active Guest DATAAAAAA', response)
       if (response?.status === 200) {
         const { currentPage, totalPages, pageSize, reports, notifications } = response.data;
 
@@ -154,7 +170,7 @@ const activeGuest = () => {
           action: (
             <Stack justifyContent='center' spacing={2} direction="row">
               <Link to={`/guestdetails/${guest.id}`}>
-                <Button variant="outlined" size="small" startIcon={<FundProjectionScreenOutlined />} >Details</Button>
+                <DetailsButton variant="outlined" size="small" startIcon={<FundProjectionScreenOutlined />} >Details</DetailsButton>
               </Link>
             </Stack>
           )
@@ -208,8 +224,8 @@ const activeGuest = () => {
             </svg>
           </Grid>
         </Grid>
-
       </Box>
+
       <Box sx={{ marginTop: 5 }}>
         <Paper sx={{ width: '100%', overflow: 'hidden' }}>
           <TableContainer sx={{ maxHeight: 440 }}>
@@ -230,7 +246,7 @@ const activeGuest = () => {
               <TableBody>
                 {
                   rows && rows.length > 0 ? (
-                    rows?.map((row,index) => {
+                    rows?.map((row, index) => {
                       return (
                         <TableRow hover role="checkbox" tabIndex={-1} key={index}>
                           {columns?.map((column) => {
@@ -247,16 +263,16 @@ const activeGuest = () => {
                       );
                     })
                   )
-                  :
-                  (
-                    <TableRow>
+                    :
+                    (
+                      <TableRow>
                         <TableCell colSpan={columns.length} align="center">
                           <NoDataFound />
                         </TableCell>
                       </TableRow>
-                  )
+                    )
                 }
-              
+
               </TableBody>
             </Table>
           </TableContainer>

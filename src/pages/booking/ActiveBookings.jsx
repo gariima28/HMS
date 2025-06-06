@@ -22,9 +22,9 @@ const token = `Bearer ${localStorage.getItem('token')}`;
 
 const CustomEnableButton = styled(Button)(({ status }) => ({
   borderRadius: '50px',
-  backgroundColor: status === 'running' ? '#E6F4EA' : '#ffa34c25',
-  borderColor: status === 'running' ? '#57C168' : '#ff9f43',
-  color: status === 'running' ? '#57C168' : '#ff9f43',
+  backgroundColor: status === 'running' ? '#D4F8DB' : '#ffa34c25',
+  borderColor: status === 'running' ? '#D4F8DB' : '#ff9f43',
+  color: status === 'running' ? '#0AAD24' : '#ff9f43',
   padding: '2px 26px',
   fontSize: '12px',
   textTransform: 'none',
@@ -38,9 +38,9 @@ const CustomEnableButton = styled(Button)(({ status }) => ({
 
 const DetailsButton = styled(Button)(() => ({
   borderRadius: '3.2px',
-  backgroundColor: '#fff',
-  borderColor: '#4634ff',
-  color: '#4634ff',
+  backgroundColor: '#0D6A84',
+  borderColor: '#0D6A84',
+  color: '#ffffff',
   fontSize: '0.825rem',
   textTransform: 'none',
 
@@ -68,21 +68,21 @@ const MoreButton = styled(Button)(() => ({
 
 const CustomButton = styled(Button)(() => ({
   borderRadius: '3.2px',
-  backgroundColor: '#4634ff',
-  borderColor: '#4634ff',
+  backgroundColor: '#0D6A84',
+  borderColor: '#0D6A84',
   color: '#fff',
   fontSize: '0.825rem',
   textTransform: 'none',
 
   '&:hover': {
-    backgroundColor: '#4634ff',
-    borderColor: '#4634ff',
+    backgroundColor: '#0D6A84',
+    borderColor: '#0D6A84',
     color: '#fff',
   },
 
   '&:disabled': {
-    backgroundColor: '#7d72fa',
-    borderColor: '#7d72fa',
+    backgroundColor: '#0D6A84',
+    borderColor: '#0D6A84',
     color: '#fff',
   },
 

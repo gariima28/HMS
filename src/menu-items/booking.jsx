@@ -150,7 +150,7 @@ const booking = {
           id: 'addService',
           title: 'Add Service',
           type: 'item',
-          url: '/addService',
+          url: '/addService/add',
           breadcrumbs: false,
           icon: icons.ChromeOutlined
         },

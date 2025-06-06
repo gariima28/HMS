@@ -2,9 +2,9 @@ import { styled } from '@mui/material/styles';
 import { Box, Button, Divider, InputLabel, MenuItem, OutlinedInput, Select, Stack, Typography, Table, TableBody, TableContainer, TableHead, TableRow, Paper, Snackbar, Alert, } from '@mui/material';
 import Grid from '@mui/material/Unstable_Grid2/Grid2';
 import ListIcon from '@mui/icons-material/List';
-import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
+//import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
+import { LocalizationProvider } from '@mui/x-date-pickers-pro';
 import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
-import { DateRangePicker } from '@mui/x-date-pickers-pro/DateRangePicker';
 import { SingleInputDateRangeField } from '@mui/x-date-pickers-pro/SingleInputDateRangeField';
 import { SearchRounded } from '@mui/icons-material';
 import { useEffect, useState } from 'react';
@@ -19,9 +19,12 @@ import { useNavigate } from 'react-router';
 import AvailableRoomLoader from 'components/Skeleton/AvailableRoomLoader';
 import NoDataFound from '../NoDataFound';
 import CircularLoader from 'components/Skeleton/CircularLoader';
+import { DateRangePicker } from '@mui/x-date-pickers-pro';
+
 
 const ServerIP = 'https://www.auth.edu2all.in/hms';
 const token = `Bearer ${localStorage.getItem('token')}`;
+
 
 const StyledTableCell = styled(TableCell)(({ theme }) => ({
     [`&.${tableCellClasses.head}`]: {
@@ -42,22 +45,21 @@ const StyledTableRow = styled(TableRow)(({ theme }) => ({
     },
 }));
 
-
 const CustomButton = styled(Button)(() => ({
     borderRadius: '3.2px',
-    backgroundColor: '#4634ff',
-    borderColor: '#4634ff',
-    color: '#fff',
+    backgroundColor: '#0D6A84',
+    borderColor: '#0D6A84',
+    color: '#ffffff',
     fontSize: '0.825rem',
     textTransform: 'none',
     '&:hover': {
-        backgroundColor: '#4634ff',
-        borderColor: '#4634ff',
+        backgroundColor: '#0D6A84',
+        borderColor: '##0D6A84',
         color: '#fff',
     },
     '&:disabled': {
-        backgroundColor: '#7d72fa',
-        borderColor: '#7d72fa',
+        backgroundColor: '#0D6A84',
+        borderColor: '#0D6A84',
         color: '#fff',
         cursor: 'not-allowed', // Ensure cursor is not-allowed for disabled state
         pointerEvents: 'auto',
@@ -135,7 +137,6 @@ const BookRoom = () => {
 
     // Fetch data from API
     const { data, error } = useSWR(`${ServerIP}/roomTypes/getAll`, fetcher);
-
 
     useEffect(() => {
         if (data) {
@@ -243,6 +244,7 @@ const BookRoom = () => {
             formData.append('email', data?.email)
             formData.append('totalPaid', data?.payingAmount)
 
+
             const response = await addBookingAPI(formData);
             console.log(response)
             if (response.status === 200) {
@@ -268,7 +270,6 @@ const BookRoom = () => {
                     setTimeout(() => {
                         setSaveDataLoader(false)
                     }, 800);
-
                     console.error('Failed to book room:', response?.data?.message);
                 }
             } else {
@@ -355,13 +356,13 @@ const BookRoom = () => {
                             </LocalizationProvider>
                         </Stack>
                     </Grid>
-                    <Grid xs={12} sm={6} md={6} lg={3} >
+                    <Grid xs={12} sm={6} md={6} lg={3}>
                         <Stack spacing={1}>
                             <InputLabel htmlFor="room">Room <span style={{ color: 'red' }}> *</span></InputLabel>
                             <OutlinedInput id="room" type="number" name="room" placeholder="How many room?" value={noOfRooms} fullWidth onChange={(e) => setNoOfRooms(e.target.value)} />
                         </Stack>
                     </Grid>
-                    <Grid alignContent='end' xs={12} sm={6} md={6} lg={3} >
+                    <Grid alignContent='end' xs={12} sm={6} md={6} lg={3}>
                         <CustomButton variant="outlined" fullWidth sx={{ p: 1 }} onClick={getAvailableRooms} disabled={isButtonDisabled} >
                             <SearchRounded sx={{ rotate: '90deg', me: 5 }} /> Search
                         </CustomButton>
@@ -382,7 +383,6 @@ const BookRoom = () => {
                                         <Grid sx={{ display: 'flex' }}>
                                             <Grid alignContent='center' sx={{ flexGrow: 1 }}>
                                                 <Typography variant="h5" gutterBottom>Booking Information</Typography>
-
                                             </Grid>
                                         </Grid>
                                         <Divider />
@@ -434,7 +434,6 @@ const BookRoom = () => {
                                                                             {item.roomNo}
                                                                         </RoomKey>
                                                                     ))}
-
                                                                     {/* Render available rooms */}
                                                                     {availableRooms?.map((item) => (
                                                                         <RoomKey
@@ -616,7 +615,6 @@ const BookRoom = () => {
                         noData ? <NoDataFound /> : ''
                     }
                 </Box>
-
             }
             <Snackbar
                 open={snackbar.open}

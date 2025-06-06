@@ -14,10 +14,21 @@ import MainCard from 'components/MainCard';
 // assets
 import RiseOutlined from '@ant-design/icons/RiseOutlined';
 import FallOutlined from '@ant-design/icons/FallOutlined';
+import { Container, display } from '@mui/system';
+import styled from 'styled-components';
 
-const iconSX = { fontSize: '0.75rem', color: 'inherit', marginLeft: 0, marginRight: 0 };
+const ImageContainer = styled(Box)(({ theme }) => ({
+  width: '60px',
+  height: '60px',
+  borderRadius: '8px',
+  // backgroundColor: theme.palette.primary.light,
+  display: 'flex',
+  alignItems: 'center',
+  justifyContent: 'center',
+  padding: '12px'
+}));
 
-export default function AnalyticEcommerce({ color = 'primary', title, count, percentage, isLoss, extra, backgroundColor }) {
+export default function AnalyticEcommerce({ color = 'primary', title, count, percentage, isLoss, extra, backgroundColor, image }) {
   const cardsData = [
     { title: 'Card 1', count: 123, color: '#B1B1B14D' },
     { title: 'Card 2', count: 456, color: '#E5E0FA' },
@@ -29,12 +40,17 @@ export default function AnalyticEcommerce({ color = 'primary', title, count, per
 
   return (
     <>
-      {/* {
-        cardsData.map((card, index) => (
-       
-        ))} */}
-           <MainCard contentSX={{ p: 2.25, backgroundColor: backgroundColor }} key={''} >
-            <Stack spacing={0.5}>
+      <MainCard contentSX={{ p: 2.25, backgroundColor: backgroundColor }} key={''} >
+        <Stack spacing={0.5}>
+          <Grid container columnSpacing={2.75} sx={{ display: 'flex' }}>
+            <ImageContainer>
+              {typeof image === 'string' ? (
+                <img src={image} alt="" style={{ width: '100%', height: '100%', objectFit: 'contain' }} />
+              ) : (
+                image
+              )}
+            </ImageContainer>
+            <Grid>
               <Typography variant="h6" color="text.secondary">
                 {title}
               </Typography>
@@ -44,30 +60,20 @@ export default function AnalyticEcommerce({ color = 'primary', title, count, per
                     {count}
                   </Typography>
                 </Grid>
-                {percentage && (
-                  <Grid item>
-                    <Chip
-                      variant="combined"
-                      color={color}
-                      icon={isLoss ? <FallOutlined style={iconSX} /> : <RiseOutlined style={iconSX} />}
-                      label={`${percentage}%`}
-                      sx={{ ml: 1.25, pl: 1 }}
-                      size="small"
-                    />
-                  </Grid>
-                )}
               </Grid>
-            </Stack>
-            <Box sx={{ pt: 2.25 }}>
-              <Typography variant="caption" color="text.secondary">
-                You made an extra{' '}
-                <Typography variant="caption" sx={{ color: `${color || 'primary'}.main` }}>
-                  {extra}
-                </Typography>{' '}
-                this year
-              </Typography>
-            </Box>
-          </MainCard>
+            </Grid>
+          </Grid>
+          <Box sx={{ pt: 2.25 }}>
+            <Typography variant="caption" color="text.secondary">
+              You made an extra{' '}
+              <Typography variant="caption" sx={{ color: `${color || 'primary'}.main` }}>
+                {extra}
+              </Typography>{' '}
+              this year
+            </Typography>
+          </Box>
+        </Stack>
+      </MainCard>
     </>
   );
 }

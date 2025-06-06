@@ -204,7 +204,7 @@ const MainRoutes = {
       element: <BookingDetailsPage />
     },
     {
-      path: 'addService',
+      path: 'addService/:id',
       element: <AddPServices />
     },
     {

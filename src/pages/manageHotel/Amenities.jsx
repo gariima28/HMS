@@ -20,20 +20,86 @@ const ServerIP = 'https://www.auth.edu2all.in/hms';
 const token = `Bearer ${localStorage.getItem('token')}`;
 
 // Custom Button CSS using Material UI Styles
+// const CustomButton = styled(Button)(({ status }) => ({
+//   borderRadius: '50px',
+//   backgroundColor: status === 'enable' ? '#E6F4EA' : '#fee5e5',
+//   borderColor: status === 'enable' ? '#57C168' : 'red',
+//   color: status === 'enable' ? '#57C168' : 'red',
+//   padding: '2px 26px',
+//   fontSize: '12px',
+//   textTransform: 'none',
+//   '&:hover': {
+//     backgroundColor: status === 'enable' ? '#D4ECD9' : '#fccfcf',
+//     borderColor: status === 'enable' ? '#57C168' : 'red',
+//     color: status === 'enable' ? '#57C168' : 'red',
+//   },
+// }));
+
 const CustomButton = styled(Button)(({ status }) => ({
   borderRadius: '50px',
-  backgroundColor: status === 'enable' ? '#E6F4EA' : '#fee5e5',
-  borderColor: status === 'enable' ? '#57C168' : 'red',
-  color: status === 'enable' ? '#57C168' : 'red',
+  backgroundColor: status === 'enable' ? '#DBE9ED' : '#FFD8D8',
+  borderColor: status === 'enable' ? '#DBE9ED' : '#FFD8D8',
+  color: status === 'enable' ? '#0D6A84' : '#C90303',
   padding: '2px 26px',
   fontSize: '12px',
+  fontWeight: 700,
   textTransform: 'none',
   '&:hover': {
-    backgroundColor: status === 'enable' ? '#D4ECD9' : '#fccfcf',
-    borderColor: status === 'enable' ? '#57C168' : 'red',
-    color: status === 'enable' ? '#57C168' : 'red',
+    backgroundColor: status === 'enable' ? '#0D6A84' : '#C90303',
+    borderColor: status === 'enable' ? '#0D6A84' : '#C90303',
+    color: status === 'enable' ? '#ffffff' : '#ffffff',
   },
 }));
+
+
+const EditButton = styled(Button)(({ status }) => ({
+  borderRadius: '50px',
+  backgroundColor: 'transparent',
+  borderColor: '#0D6A84',
+  color: '#0D6A84',
+  padding: '2px 14px',
+  fontSize: '12px',
+  fontWeight: 700,
+  textTransform: 'none',
+  '&:hover': {
+    backgroundColor: '#0D6A84',
+    borderColor: '#0D6A84',
+    color: '#ffffff',
+  },
+}));
+
+const EnableButton = styled(Button)(({ status }) => ({
+  borderRadius: '50px',
+  backgroundColor: 'transparent',
+  borderColor: status === 'enable' ? '#C90303' : '#0D6A84',
+  color: status === 'enable' ? '#C90303' : '#0D6A84',
+  padding: '2px 16px',
+  fontSize: '12px',
+  fontWeight: 700,
+  textTransform: 'none',
+  '&:hover': {
+    backgroundColor: status === 'enable' ? '#C90303' : '#0D6A84',
+    borderColor: status === 'enable' ? '#C90303' : '#0D6A84',
+    color: status === 'enable' ? '#ffffff' : '#ffffff',
+  },
+}));
+
+const AddButton = styled(Button)(({ status }) => ({
+  borderRadius: '10px',
+  backgroundColor: '#0D6A84',
+  borderColor: status === 'enable' ? '#FFD8D8' : '#0D6A84',
+  color: '#FFFFFF',
+  padding: '8px 20px',
+  fontSize: '12px',
+  fontWeight: 700,
+  textTransform: 'none',
+  '&:hover': {
+    // backgroundColor: '',
+    // borderColor: '',
+    //color: '',
+  },
+}));
+
 
 // Table Columns
 const columns = [
@@ -81,16 +147,19 @@ const Amenities = () => {
   const handleUpdateFormDataaAmenitiesName = (val) => setUpdateFormDataa({ ...updateFormDataa, amenitiesName: val });
   const handleUpdateFormDataaAmenitiesIcon = (val) => setUpdateFormDataa({ ...updateFormDataa, amenitiesIcon: val });
 
+
   const AddInputFields = [
     { id: 'amenitiesName', field: 'textInput', fieldType: 'text', validation: { required: true, minLength: 3, pattern: /^[A-Z][a-zA-Z\s]*$/, patternMsg: 'This field should start with capital and only contain letters' }, fieldName: 'Amenities Title', value: formDataa.amenitiesName, placeholder: 'Enter Amenities Name', updateValFunc: handleFormDataaAmenitiesName },
     { id: 'amenitiesStatus', field: 'select', fieldName: 'Status', validation: { required: true }, fieldOptions: [{ optionId: 'active', optionName: 'Active', optionValue: 'true' }, { optionId: 'inActive', optionName: 'Inactive', optionValue: 'false' },], value: formDataa.amenitiesStatus, updateValFunc: handleFormDataaAmenitiesStatus, },
     { id: 'amenitiesIcon', field: 'fileType', fieldType: 'file', validation: { required: true }, fieldName: 'Icon', allowedTypes: ['image/jpeg', 'image/png'], updateValFunc: handleFormDataaAmenitiesIcon }
   ];
 
+
   const UpdateInputFields = [
     { id: 'amenitiesName', field: 'textInput', fieldType: 'text', fieldName: 'Amenities Title', placeholder: 'Enter Amenities Name', value: updateFormDataa.amenitiesName, updateValFunc: handleUpdateFormDataaAmenitiesName },
     { id: 'amenitiesIcon', field: 'fileType', fieldType: 'file', fieldName: 'Icon ', allowedTypes: ['image/jpeg', 'image/png'], value: updateFormDataa.amenitiesIcon, updateValFunc: handleUpdateFormDataaAmenitiesIcon }
   ];
+
 
   // Get API
   const { data, error, mutate, isValidating } = useSWR(`${ServerIP}/amenites/getAll`, fetcher, {
@@ -174,10 +243,11 @@ const Amenities = () => {
         status: <CustomButton variant="outlined" status={`${amenity.status ? 'enable' : 'disable'}`}> {amenity.status ? 'Enabled' : 'Disabled'} </CustomButton>,
         action: (
           <Stack justifyContent='end' spacing={2} direction="row">
-            <Button variant="outlined" size="small" startIcon={<Edit />} onClick={() => handleDialogState('Update New Amenities', 'Update', amenity.amenitiesId)}>Edit</Button>
-            <Button
+            <EditButton variant="outlined" size="small" startIcon={<Edit />} onClick={() => handleDialogState('Update New Amenities', 'Update', amenity.amenitiesId)}>Edit</EditButton>
+            <EnableButton
               size="small"
-              color={amenity.status ? 'error' : 'success'}
+              // color={amenity.status ? 'error' : 'success'}
+              status={`${amenity.status ? 'enable' : 'disable'}`}
               onClick={() => UpdateAmenitiesStatus(amenity?.amenitiesId, amenity.status)}
               loading
               loadingposition="start"
@@ -187,7 +257,7 @@ const Amenities = () => {
               {showStatusLoader
                 ? 'Processing...'
                 : `${amenity.status ? 'Disable' : 'Enable'}`}
-            </Button>
+            </EnableButton>
           </Stack>
         ),
       }));
@@ -238,7 +308,6 @@ const Amenities = () => {
             amenitiesStatus: '',
             amenitiesIcon: ''
           });
-
 
           setUpdateFormDataa({
             amenitiesName: '',
@@ -414,7 +483,6 @@ const Amenities = () => {
   }
 
   return (
-
     <Box>
       {showStatusLoader && <HashLoader />}
       <Grid sx={{ display: 'flex', mb: 3 }}>
@@ -423,9 +491,9 @@ const Amenities = () => {
         </Grid>
         <Grid>
           <Stack justifyContent='start' spacing={2} direction="row">
-            <Button variant="outlined" onClick={() => handleDialogState('Add New Amenities', 'Create')}>
-              + Add New
-            </Button>
+            <AddButton variant="outlined" onClick={() => handleDialogState('Add New Amenities', 'Create')}>
+              + Add Amenities
+            </AddButton>
           </Stack>
         </Grid>
       </Grid>
@@ -442,8 +510,6 @@ const Amenities = () => {
       ) : (
         <DynamicDataTable columns={columns} rows={rows} />
       )}
-
-
 
       {/* Modals for all Add and Update */}
       <DialogModal handleClosingDialogState={handleClosingDialogState} modalOpen={modalOpen} title={modalTitle} buttonName={buttonName} InputFields={buttonName === 'Create' ? AddInputFields : UpdateInputFields} onSubmit={buttonName === 'Create' ? AddNewAmenity : UpdateAmenitiesData} reset={reset} updateFormDataa={updateFormDataa} showModalLoader={showModalLoader} />

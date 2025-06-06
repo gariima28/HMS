@@ -7,6 +7,7 @@ import useSWR from 'swr';
 import { addPServiceApi } from 'api/api';
 import CircularProgressLoader from 'components/Skeleton/CircularProgressLoader';
 import CircularProgressLoaderMain from 'components/Skeleton/CircularProgressLoaderMain';
+import { useParams } from 'react-router';
 
 
 const ServerIP = 'https://www.auth.edu2all.in/hms';
@@ -14,18 +15,38 @@ const token = `Bearer ${localStorage.getItem('token')}`;
 const fetcher = (url) => axios.get(url, { headers: { Authorization: token } }).then(res => res.data);
 
 const AddPServices = () => {
+  const { id } = useParams();
+  console.log(id)
   const [rows, setRows] = useState([]);
   const [snackbar, setSnackbar] = useState({ open: false, message: '', severity: '' });
   const { data, error } = useSWR(`${ServerIP}/preServ/getAll`, fetcher);
+  const { data: roomData } = useSWR(`${ServerIP}/booking/getBookedRoomByBookingId/${id}`, fetcher);
   const [formInputs, setFormInputs] = useState([{ premiumServiceName: '', quantity: '' }]);
   const [serviceDate, setServiceDate] = useState('');
+  
   const [roomNumber, setRoomNumber] = useState('');
+
+  useEffect(() => {
+    if (id !== "add") {
+      const today = new Date().toISOString().split('T')[0];
+      setServiceDate(today);
+      console.log('Set default service date:', today);
+    }
+
+
+    if (id !== "add" && roomData?.data?.rooms?.length > 0) {
+      setRoomNumber(roomData.data.rooms[0].roomNo.toString());
+    }
+  }, [id, roomData]);
+  console.log(roomNumber)
+  
   const [errors, setErrors] = useState({});
 
   const [showModalLoader, setShowModalLoader] = useState(false);
   console.log(data)
-  useEffect(() => {
-    
+  console.log(roomData)
+
+  useEffect(() => { 
     if (data) {
       setRows(data.premiumServices);
     }
@@ -43,6 +64,10 @@ const AddPServices = () => {
     return Object.keys(newErrors).length === 0;
   };
 
+
+ 
+
+
   const handleChange = (i, e) => {
     const { name, value } = e.target;
     const newFormValues = [...formInputs];
@@ -51,9 +76,11 @@ const AddPServices = () => {
     setErrors({ ...errors, [`${name}-${i}`]: '' });
   };
 
+
   const addFormFields = () => {
     setFormInputs([...formInputs, { premiumServiceName: '', quantity: '' }]);
   };
+
 
   const removeFormFields = (i) => {
     if (formInputs.length > 1) {
@@ -69,6 +96,9 @@ const AddPServices = () => {
 
   const handleSnackbarMessage = (message, severity) => {
     setSnackbar({ open: true, message, severity });
+    setTimeout(() => {
+      setSnackbar(prev => ({ ...prev, open: false }));
+    }, 3000);
   };
 
   const addPServices = async () => {
@@ -80,7 +110,7 @@ const AddPServices = () => {
       if (response?.status === 200) {
         setShowModalLoader(false);
         console.log('Success', response);
-        handleSnackbarMessage('Service Added Successfully', 'success');
+        handleSnackbarMessage('Service Added Successfully', 'success');     
       } else {
         setShowModalLoader(false);
         handleSnackbarMessage(`${response?.data?.message}`, 'error');
@@ -93,8 +123,11 @@ const AddPServices = () => {
     }
   };
 
-  const isSubmitDisabled = !serviceDate || !roomNumber || formInputs.some(input => !input.premiumServiceName || !input.quantity);
+  
 
+  
+  const isSubmitDisabled = !serviceDate || !roomNumber || formInputs.some(input => !input.premiumServiceName || !input.quantity);
+ 
   return (
     <Box>
       <Grid sx={{ display: 'flex', mb: 3 }}>
@@ -102,6 +135,7 @@ const AddPServices = () => {
           <Typography variant="h5">Add Premium Service</Typography>
         </Grid>
       </Grid>
+      
 
       <Grid container justifyContent="center" sx={{ mb: 3 }}>
         <Grid item xs={12} md={8} lg={6} sx={{ backgroundColor: '#fff', p: 4, borderRadius: 2, boxShadow: 1, position: 'relative' }}>
@@ -130,7 +164,13 @@ const AddPServices = () => {
                 type="number"
                 fullWidth
                 value={roomNumber}
-                onChange={(e) => { setRoomNumber(e.target.value); setErrors({ ...errors, roomNumber: '' }); }}
+                onChange={(e) => {
+                  if (id === "add") { // Only allow changes in "add" mode
+                    setRoomNumber(e.target.value);
+                    setErrors({ ...errors, roomNumber: '' });
+                  }
+                }}
+                disabled={id !== "add"}
               />
               {errors.roomNumber && <FormHelperText error>{errors.roomNumber}</FormHelperText>}
             </Grid>
@@ -142,7 +182,7 @@ const AddPServices = () => {
             </Typography>
             <Button
               variant="contained"
-              sx={{ backgroundColor: '#28c76f', color: '#fff', '&:hover': { backgroundColor: '#1f9d57' } }}
+              sx={{ backgroundColor: '#0D6A84', color: '#fff', '&:hover': { backgroundColor: '#0D6A84' } }}
               onClick={addFormFields}
             >
               + Add More
@@ -166,9 +206,9 @@ const AddPServices = () => {
                     </MenuItem>
                   ))}
                 </Select>
-                {errors[`premiumServiceName-${index}`] && <FormHelperText error>{errors[`premiumServiceName-${index}`]}</FormHelperText>}
+                {errors[`premiumServiceName-${index}`] && <FormHelperText error>{errors[`premiumServiceName-${index}`]}</FormHelperText>} 
               </Grid>
-
+ 
               <Grid item xs={6} sx={{ position: 'relative', width: '100%' }}>
                 <OutlinedInput
                   type="number"
@@ -185,7 +225,8 @@ const AddPServices = () => {
                     onClick={() => removeFormFields(index)}
                   />
                 )}
-              </Grid>
+              </Grid> 
+              
             </Grid>
           ))}
 
@@ -194,7 +235,7 @@ const AddPServices = () => {
             fullWidth
             type='submit'
             disabled={isSubmitDisabled}
-            sx={{ backgroundColor: isSubmitDisabled ? '#ccc' : '#5a32ea', color: '#fff', '&:hover': { backgroundColor: isSubmitDisabled ? '#ccc' : '#5a32ea' } }}
+            sx={{ backgroundColor: isSubmitDisabled ? '#ccc' : '#0D6A84', color: '#fff', '&:hover': { backgroundColor: isSubmitDisabled ? '#ccc' : '#0D6A84' } }}
             onClick={addPServices}
           >
             Submit
@@ -202,7 +243,9 @@ const AddPServices = () => {
         </Grid>
       </Grid>
 
-      <Snackbar open={snackbar.open} autoHideDuration={3000} onClose={handleSnackbarClose} anchorOrigin={{ vertical: 'top', horizontal: 'right' }}>
+     
+
+      <Snackbar open={snackbar.open} autoHideDuration={3000} onClose={handleSnackbarClose} anchorOrigin={{ vertical: 'top', horizontal: 'right' }}> 
         <Alert onClose={handleSnackbarClose} variant="filled" severity={snackbar.severity} sx={{ width: '100%', color: '#fff' }}>
           {snackbar.message}
         </Alert>

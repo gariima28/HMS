@@ -5,22 +5,22 @@ import Grid from '@mui/material/Unstable_Grid2/Grid2';
 import { styled } from '@mui/material/styles';
 import { useForm } from 'react-hook-form';
 import CircularProgressLoader from './Skeleton/CircularProgressLoader';
-
+ 
 const SaveButton = styled(Button)(() => ({
     borderRadius: '5px',
-    backgroundColor: '#4634FF',
-    borderColor: '#4634FF',
-    color: '#fff',
+    backgroundColor: '#0D6A84',
+    borderColor: '#0D6A84',
+    color: '#ffffff',
     padding: '8px',
     fontSize: '0.875rem',
     textTransform: 'none',
     '&:hover': {
-        backgroundColor: '#1801FF',
-        borderColor: '#1801FF',
-        color: '#fff',
+        backgroundColor: '#0D6A84',
+        borderColor: '#0D6A84',
+        color: '#ffffff',
     },
 }));
-
+ 
 const DialogModal = ({ handleClosingDialogState, modalOpen, title, buttonName, InputFields, onSubmit, updateFormDataa, showModalLoader }) => {
     const { register, handleSubmit, formState: { errors }, setValue, trigger, reset, watch } = useForm({
         mode: "onChange",  // Enables real-time validation  
@@ -30,7 +30,7 @@ const DialogModal = ({ handleClosingDialogState, modalOpen, title, buttonName, I
     useEffect(() => {
         console.log("Current status value:", watch('amenitiesStatus'));
     }, [watch('amenitiesStatus')]);
-
+ 
     const handleFileChange = (e, id) => {
         const file = e.target.files[0];
         console.log(file, 'dsuhdwjbguhdjk')
@@ -40,7 +40,7 @@ const DialogModal = ({ handleClosingDialogState, modalOpen, title, buttonName, I
             trigger(id);
         }
     };
-
+ 
     // Update form fields when updateFormDataa changes
     useEffect(() => {
         if (modalOpen && updateFormDataa) {
@@ -55,7 +55,7 @@ const DialogModal = ({ handleClosingDialogState, modalOpen, title, buttonName, I
         handleClosingDialogState();
         reset();
     };
-
+ 
     useEffect(() => {
         if (!modalOpen) {
             reset();
@@ -87,7 +87,7 @@ const DialogModal = ({ handleClosingDialogState, modalOpen, title, buttonName, I
                                     {( buttonName === 'Update' || buttonName === 'Create') && <span style={{ color: 'red' }}> *</span>}
                                 </InputLabel>
                                 {itemData?.field === 'textInput' ? (
-                                    <>                                       
+                                    <>                                     
                                         {/* <OutlinedInput
                                             id={itemData.id}
                                             type={itemData?.fieldType}
@@ -155,7 +155,6 @@ const DialogModal = ({ handleClosingDialogState, modalOpen, title, buttonName, I
                                                 step: itemData.fieldType === 'number' && itemData.validation?.isPrice ? '0.01' : undefined
                                             }}
                                         />
-
                                         <FormHelperText error>
                                             {errors[itemData.id]?.message}
                                         </FormHelperText>
@@ -182,7 +181,7 @@ const DialogModal = ({ handleClosingDialogState, modalOpen, title, buttonName, I
                                                                             "Bed Type Image"
                                                                 }
                                                                 width='10%'
-                                                            />
+                                                            /> 
                                                         </Grid>
                                                     ) : (
                                                         <OutlinedInput
@@ -215,7 +214,6 @@ const DialogModal = ({ handleClosingDialogState, modalOpen, title, buttonName, I
                                                         {imageType ? 'Edit' : 'View'}
                                                     </Button>
                                                 </Grid>
-                                                
                                             ) : (
                                                 // Show file input if no image is set
                                                 <OutlinedInput
@@ -233,10 +231,10 @@ const DialogModal = ({ handleClosingDialogState, modalOpen, title, buttonName, I
                                                         })} 
                                                 />
                                             )}
-                                            <FormHelperText error>{errors[itemData.id]?.message}</FormHelperText>
+                                            <FormHelperText error>{errors[itemData.id]?.message}</FormHelperText> 
                                         </>
                                 ) : itemData?.field === 'select' ? (
-                                    <>
+                                    <> 
                                         <Select
                                             id={itemData.id}
                                             fullWidth
@@ -258,7 +256,7 @@ const DialogModal = ({ handleClosingDialogState, modalOpen, title, buttonName, I
                                                     value={option.optionValue}
                                                 >
                                                     {option.optionName}
-                                                </MenuItem>
+                                                </MenuItem> 
                                             ))}
                                         </Select>
                                         <FormHelperText error>

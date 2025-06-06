@@ -15,7 +15,7 @@ import { border, borderColor, borderRadius, margin, padding, width } from '@mui/
 import HashLoader from './HashLoaderCom';
 import { color } from 'framer-motion';
 import { GetAllApi } from 'api/api'
-import { makeStyles } from '@mui/styles';
+import { makeStyles, styled } from '@mui/styles';
 import NoDataFound from '../NoDataFound';
 
 import { AllStaffPostApi } from 'api/api'
@@ -41,16 +41,16 @@ const useStyles = makeStyles({
     paddingTop: 6,
     padding: '2px 8px',
     border: '1px solid #4634ff',
-    backgroundColor: '#4634ff',
+    backgroundColor: '#0D6A84',
     borderLeft: '0px',
     borderRadius: "0px 3px 3px 0px"
   },
   enable: {
-    border: '1px solid #ff9f43',
+    border: '1px solid #FFEAC2',
     borderRadius: 10,
     fontSize: 12,
     backgroundColor: 'rgba(255, 159, 67, 0.1)',
-    color: '#ff9f43',
+    color: '#FD9808',
   },
   closed: {
     border: '1px solid #000',
@@ -197,7 +197,11 @@ const allStaff = () => {
   const MyRoleGetAllApi = async () => {
     // setLoader(true)
     try {
+
       const response = await GetAllApi(page, rowsPerPage);
+
+      //const response = await GetAllApi(1, 10);
+
       console.log('My role get all DATAAAAAA', response)
       if (response?.status === 200) {
         setAllData(response?.data?.roles)
@@ -209,6 +213,7 @@ const allStaff = () => {
       console.log(error)
     }
   }
+
 
   const validateFunction = () => {
     let IsValid = true
@@ -312,7 +317,6 @@ const allStaff = () => {
           MyAllStaffGetAllDataApi()
           setLoader(false)
           setOpen3(false)
-
         } else {
           toast.error(response?.data?.message);
         }
@@ -341,16 +345,16 @@ const allStaff = () => {
           index: index + 1 + (currentPage - 1) * pageSize,
           email: allRoles?.email,
           role: allRoles?.role?.roleName,
-          status: <Button sx={{ marginLeft: 1, padding: 0, height: 30, borderColor: '#eb2222', color: '#eb2222' }} className={`${allRoles?.status === 'ENABLED' ? `${classes.enable}` : `${classes.green}`}`} variant="outlined" onClick={() => { setIdForBan(allRoles.id); handleOpen2(); }} >
+          status: <Button sx={{ marginLeft: 1, padding: 0, height: 30, borderColor: '#eb2222', color: '#eb2222', borderRadius: "10px" }} className={`${allRoles?.status === 'ENABLED' ? `${classes.green}` : `${classes.enable}`}`} variant="outlined" onClick={() => { setIdForBan(allRoles.id); handleOpen2(); }} >
             <Typography sx={{ paddingTop: .8, paddingRight: .3 }}>
             </Typography> {allRoles?.status === "ENABLED" ? `${'Enable'}` : `${'Disbale'}`}
           </Button>,
           action:
             <>
-              <Button sx={{ marginLeft: 0, padding: 0, height: 30, borderColor: '#4634ff', color: '#4634ff' }} variant="outlined" onClick={() => { MyRoleGetByIdApi(allRoles.id); handleOpen(); }}>
+              <Button sx={{ marginLeft: 0, padding: 0, height: 30, borderColor: '#0D6A84', color: '#0D6A84', backgroundColor: "transparent", borderRadius: "20px" }} variant="outlined" onClick={() => { MyRoleGetByIdApi(allRoles.id); handleOpen(); }}>
                 <Typography sx={{ paddingTop: .8, paddingRight: .3 }}>
                   <svg xmlns="http://www.w3.org/2000/svg" width="15" height="15" viewBox="0 0 24 24">
-                    <g fill="none" stroke="#4634ff" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5">
+                    <g fill="none" stroke="#0D6A84" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5">
                       <path d="M19.09 14.441v4.44a2.37 2.37 0 0 1-2.369 2.369H5.12a2.37 2.37 0 0 1-2.369-2.383V7.279a2.356 2.356 0 0 1 2.37-2.37H9.56" />
                       <path d="M6.835 15.803v-2.165c.002-.357.144-.7.395-.953l9.532-9.532a1.36 1.36 0 0 1 1.934 0l2.151 2.151a1.36 1.36 0 0 1 0 1.934l-9.532 9.532a1.36 1.36 0 0 1-.953.395H8.197a1.36 1.36 0 0 1-1.362-1.362M19.09 8.995l-4.085-4.086" />
                     </g>
@@ -527,7 +531,7 @@ const allStaff = () => {
                 </svg>
               </Grid>
             </Grid>
-            <Button sx={{ marginLeft: 2, height: 39, backgroundColor: '#4634ff', color: '#fff' }} variant="outlined" onClick={handleOpen3}>
+            <Button sx={{ marginLeft: 2, height: 39, backgroundColor: '#0D6A84', color: '#fff' }} variant="outlined" onClick={handleOpen3}>
               <Typography sx={{ paddingTop: .8, paddingRight: .3 }}>
                 <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24">
                   <path fill="none" stroke="#fff" stroke-linecap="round" stroke-linejoin="round" stroke-miterlimit="10" stroke-width="1.5" d="M6 12h12m-6 6V6" />
@@ -665,7 +669,7 @@ const allStaff = () => {
                       }
                     </Box> */}
                     <Box sx={{ textAlign: "center", marginTop: 4, width: '100%' }}>
-                      <Button sx={{ width: '100%' }} variant="contained" disableElevation onClick={MyAllStaffPostApi}>
+                      <Button sx={{ width: '100%', backgroundColor: "#0D6A84" }} variant="contained" disableElevation onClick={MyAllStaffPostApi}>
                         Submit
                       </Button>
                     </Box>
@@ -761,7 +765,7 @@ const allStaff = () => {
 
 
                     <Box sx={{ textAlign: "center", marginTop: 4, width: '100%' }}>
-                      <Button sx={{ width: '100%' }} variant="contained" disableElevation onClick={MyRoleUpdateByIdApi}>
+                      <Button sx={{ width: '100%', backgroundColor: "#0D6A84" }} variant="contained" disableElevation onClick={MyRoleUpdateByIdApi}>
                         Update
                       </Button>
                       <Toaster />
@@ -803,3 +807,20 @@ const allStaff = () => {
 }
 
 export default allStaff
+
+
+const EditButton = styled(Button)(({ status }) => ({
+  borderRadius: '50px',
+  backgroundColor: 'transparent',
+  borderColor: '#0D6A84',
+  color: '#0D6A84',
+  padding: '2px 14px',
+  fontSize: '12px',
+  fontWeight: 700,
+  textTransform: 'none',
+  '&:hover': {
+    backgroundColor: '#0D6A84',
+    borderColor: '#0D6A84',
+    color: '#ffffff',
+  },
+}));

@@ -16,6 +16,7 @@ import { EditOutlined, UserAddOutlined } from '@ant-design/icons';
 import { Link, useParams } from 'react-router-dom';
 import { padding } from '@mui/system';
 import NoDataFound from 'pages/NoDataFound';
+import { styled } from '@mui/styles';
 
 const columns = [
   { id: 'roleName', label: 'Name', minWidth: 170 },
@@ -45,7 +46,7 @@ const roles = () => {
     setPageSize(newSize);
     setPage(1);
   };
-  
+
   useEffect(() => {
     if (token) { MyRoleGetAllApi() }
 
@@ -68,16 +69,16 @@ const roles = () => {
           createdAt: allRoles?.createdAt?.dateTime,
           action: (
             <Stack justifyContent='end' spacing={2} direction="row">
-              <Button variant="outlined" size="small" href={`/editrolespage/${allRoles.id}`}>
+              <EditButton variant="outlined" size="small" href={`/editrolespage/${allRoles.id}`}>
                 <Typography sx={{ paddingTop: .4, paddingRight: .3 }}>
                   <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24">
-                    <g fill="none" stroke="#1677ff" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5">
+                    <g fill="none" stroke="#0D6A84" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5">
                       <path d="M19.09 14.441v4.44a2.37 2.37 0 0 1-2.369 2.369H5.12a2.37 2.37 0 0 1-2.369-2.383V7.279a2.356 2.356 0 0 1 2.37-2.37H9.56" />
                       <path d="M6.835 15.803v-2.165c.002-.357.144-.7.395-.953l9.532-9.532a1.36 1.36 0 0 1 1.934 0l2.151 2.151a1.36 1.36 0 0 1 0 1.934l-9.532 9.532a1.36 1.36 0 0 1-.953.395H8.197a1.36 1.36 0 0 1-1.362-1.362M19.09 8.995l-4.085-4.086" />
                     </g>
                   </svg>
                 </Typography>
-                Edit</Button>
+                Edit</EditButton>
             </Stack>
           )
         }))
@@ -108,7 +109,10 @@ const roles = () => {
         </Grid>
         <Grid>
           <Link to={'/addrolespage'}>
-            <Button sx={{ height: 39, backgroundColor: '#4634ff', color: '#fff' }} variant="outlined" >
+
+
+            <Button sx={{ height: 39, backgroundColor: '#0D6A84', color: '#fff' }} variant="outlined" >
+
               <Typography sx={{ paddingTop: .8, }}>
                 <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24">
                   <path fill="none" stroke="#fff" stroke-linecap="round" stroke-linejoin="round" stroke-miterlimit="10" stroke-width="1.5" d="M6 12h12m-6 6V6" />
@@ -188,3 +192,20 @@ const roles = () => {
 }
 
 export default roles
+
+
+const EditButton = styled(Button)(({ status }) => ({
+  borderRadius: '50px',
+  backgroundColor: 'transparent',
+  borderColor: '#0D6A84',
+  color: '#0D6A84',
+  padding: '2px 14px',
+  fontSize: '12px',
+  fontWeight: 700,
+  textTransform: 'none',
+  '&:hover': {
+    backgroundColor: '#0D6A84',
+    borderColor: '#0D6A84',
+    color: '#ffffff',
+  },
+}));

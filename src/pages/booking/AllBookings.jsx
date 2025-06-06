@@ -30,6 +30,7 @@ import NoDataFound from 'pages/NoDataFound';
 const ServerIP = 'https://www.auth.edu2all.in/hms'
 const token = `Bearer ${localStorage.getItem('token')}`;
 
+
 const CustomEnableButton = styled(Button)(({ status }) => ({
   borderRadius: '50px',
   backgroundColor: status === 'running' ? '#E6F4EA' : '#ffa34c25',
@@ -46,11 +47,26 @@ const CustomEnableButton = styled(Button)(({ status }) => ({
   },
 }));
 
+const DetailsButton = styled(Button)(() => ({
+  borderRadius: '20px',
+  backgroundColor: 'transparent',
+  borderColor: '#0D6A84',
+  color: '#0D6A84',
+  fontSize: '0.825rem',
+  textTransform: 'none',
+
+  '&:hover': {
+    backgroundColor: '#4634ff',
+    borderColor: '#4634ff',
+    color: '#fff',
+  },
+}));
+
 const MoreButton = styled(Button)(() => ({
-  borderRadius: '3.2px',
-  backgroundColor: '#fff',
-  borderColor: '#1e9ff2',
-  color: '#1e9ff2',
+  borderRadius: '20px',
+  backgroundColor: 'transparent',
+  borderColor: '#0D6A84',
+  color: '#0D6A84',
   fontSize: '0.825rem',
   textTransform: 'none',
 
@@ -61,26 +77,11 @@ const MoreButton = styled(Button)(() => ({
   },
 }));
 
-const DetailsButton = styled(Button)(() => ({
-  borderRadius: '3.2px',
-  backgroundColor: '#fff',
-  borderColor: '#4634ff',
-  color: '#4634ff',
-  fontSize: '0.825rem',
-  textTransform: 'none',
-
-  '&:hover': {
-    backgroundColor: '#4634ff',
-    borderColor: '#4634ff',
-    color: '#fff',
-  },
-}));
-
 const CustomButton = styled(Button)(() => ({
   borderRadius: '3.2px',
-  backgroundColor: '#4634ff',
-  borderColor: '#4634ff',
-  color: '#fff',
+  backgroundColor: '#0D6A84',
+  borderColor: '#0D6A84',
+  color: '#ffffff',
   fontSize: '0.825rem',
   textTransform: 'none',
 
@@ -91,12 +92,13 @@ const CustomButton = styled(Button)(() => ({
   },
 
   '&:disabled': {
-    backgroundColor: '#7d72fa',
-    borderColor: '#7d72fa',
-    color: '#fff',
+    backgroundColor: '#0D6A84',
+    borderColor: '#0D6A84',
+    color: '#ffffff',
   },
 
 }));
+
 
 const columns = [
   { id: 'bookingNo', label: 'Booking Number', minWidth: 170 },

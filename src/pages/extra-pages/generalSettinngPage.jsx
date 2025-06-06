@@ -213,7 +213,7 @@ const generalSettinngPage = () => {
     //   Check in list 
     const handleCheckInList = (e2) => {
         setUpcomingCheckInList(e2);
-        const nameRegex =/^[0-9]+$/;
+        const nameRegex = /^[0-9]+$/;
         setIsValidCheckInListRequired(nameRegex.test(e2));
         if (e2 === "" || !nameRegex.test(e2)) {
             setIsValidCheckInListRequired(true)
@@ -224,7 +224,7 @@ const generalSettinngPage = () => {
     //   Check out list 
     const handleCheckOutList = (e2) => {
         setUpcomingCheckOutList(e2);
-        const nameRegex =/^[0-9]+$/;
+        const nameRegex = /^[0-9]+$/;
         setIsValidCheckOutListRequired(nameRegex.test(e2));
         if (e2 === "" || !nameRegex.test(e2)) {
             setIsValidCheckOutListRequired(true)
@@ -420,7 +420,7 @@ const generalSettinngPage = () => {
                                     <Typography sx={{ marginBottom: 1 }}>
                                         <label htmlFor="" >Tax Percent Charge* </label>
                                     </Typography>
-                                    <TextField className={classes.input} required id="outlined-required" label="" defaultValue="" placeholder='Enter percent' onChange={(e) =>  handleTaxPercent(e.target.value)} InputLabelProps={{ sx: { fontSize: '15px' } }} />
+                                    <TextField className={classes.input} required id="outlined-required" label="" defaultValue="" placeholder='Enter percent' onChange={(e) => handleTaxPercent(e.target.value)} InputLabelProps={{ sx: { fontSize: '15px' } }} />
                                 </Box>
                                 <Box sx={{ paddingTop: 2 }}>
                                     {isValidTaxPercentRequired && (
@@ -451,7 +451,7 @@ const generalSettinngPage = () => {
                                     <Typography sx={{ marginBottom: 1 }}>
                                         <label htmlFor="" >Upcoming Check-In List* </label>
                                     </Typography>
-                                    <TextField className={classes.input} required id="outlined-required" label="" defaultValue="" placeholder='Enter check-In list' onChange={(e) =>  handleCheckInList(e.target.value)} InputLabelProps={{ sx: { fontSize: '15px' } }} />
+                                    <TextField className={classes.input} required id="outlined-required" label="" defaultValue="" placeholder='Enter check-In list' onChange={(e) => handleCheckInList(e.target.value)} InputLabelProps={{ sx: { fontSize: '15px' } }} />
                                 </Box>
                                 <Box sx={{ paddingTop: 2 }}>
                                     {isValidCheckInListRequired && (
@@ -478,7 +478,7 @@ const generalSettinngPage = () => {
                             </Grid>
                         </Grid>
                         <Grid xs={12} sx={{ marginTop: 4, marginBottom: 2 }}>
-                            <Button className={classes.forHover} sx={{ width: '100%', backgroundColor: "#4634ff", color: '#fff' }} variant="contained" onClick={MyLogoPostApi} >Submit</Button>
+                            <Button className={classes.forHover} sx={{ width: '100%', backgroundColor: "#0D6A84", color: '#fff' }} variant="contained" onClick={MyLogoPostApi} >Submit</Button>
                         </Grid>
 
                     </Box>

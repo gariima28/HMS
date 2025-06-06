@@ -31,8 +31,8 @@ const useStyles = makeStyles({
     height: 39,
     paddingTop: 6,
     padding: '2px 8px',
-    border: '1px solid #4634ff',
-    backgroundColor: '#4634ff',
+    border: '1px solid #0D6A84',
+    backgroundColor: '#0D6A84',
     borderLeft: '0px',
     borderRadius: "0px 3px 3px 0px"
   },
@@ -223,25 +223,55 @@ const bookingAction = () => {
                 </TableRow>
               </TableHead>
               <TableBody>
+                {rows && rows.length > 0 ? (
+                  rows.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage).map((row, index) => {
+                    return (
+                      <TableRow hover role="checkbox" tabIndex={-1} key={index}>
+                        {columns?.map((column) => {
+                          const value = row[column.id];
+                          return (
+                            <TableCell key={column.id} align={column.align}>
+                              {column?.format && typeof value === 'number'
+                                ? column.format(value)
+                                : value}
+                            </TableCell>
+                          );
+                        })}
+                      </TableRow>
+                    );
+                  })
+                ) : (
+                  <TableRow>
+                    <TableCell colSpan={columns.length} align="center">
+                      <NoDataFound />
+                    </TableCell>
+                  </TableRow>
+                )}
+              </TableBody>
+              {/* <TableBody>
                 {
                   rows && rows.length > 0 ? (
+
                     rows?.map((row, index) => {
-                      return (
-                        <TableRow hover role="checkbox" tabIndex={-1} key={index}>
-                          {columns?.map((column) => {
-                            const value = row[column.id];
-                            return (
-                              <TableCell key={column.id} align={column.align}>
-                                {column?.format && typeof value === 'number'
-                                  ? column.format(value)
-                                  : value}
-                              </TableCell>
-                            );
-                          })}
-                        </TableRow>
-                      );
-                    })
-                  )
+
+                      rows?.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage).map((row, index) => {
+
+                        return (
+                          <TableRow hover role="checkbox" tabIndex={-1} key={index}>
+                            {columns?.map((column) => {
+                              const value = row[column.id];
+                              return (
+                                <TableCell key={column.id} align={column.align}>
+                                  {column?.format && typeof value === 'number'
+                                    ? column.format(value)
+                                    : value}
+                                </TableCell>
+                              );
+                            })}
+                          </TableRow>
+                        );
+                      })
+                    )
                     :
                     (
                       <TableRow>
@@ -252,7 +282,7 @@ const bookingAction = () => {
                     )
                 }
 
-              </TableBody>
+              </TableBody> */}
             </Table>
           </TableContainer>
           <TablePagination

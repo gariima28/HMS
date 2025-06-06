@@ -516,14 +516,15 @@ const RoomType = () => {
                             startIcon={<ArrowBackIcon />}
                             variant="outlined"
                             sx={{
-                                color: "#10163a",
-                                border: "1px solid #10163a",
+                                color: "#ffffff",
+                                border: "1px solid #0D6A84",
                                 p: "8px 16px",
                                 ":hover": {
-                                    backgroundColor: "#10163a",
+                                    backgroundColor: "#0D6A84",
                                     color: "white",
                                 },
                                 transition: "all 0.3s ease",
+                                backgroundColor: '#0D6A84'
                             }}
                         >
                             Back
@@ -1575,9 +1576,9 @@ const RoomType = () => {
                         fullWidth
                         variant="contained"
                         sx={{
-                            backgroundColor: "#4a00e0",
-                            color: "#fff",
-                            ":hover": { backgroundColor: "#3700b3" },
+                            backgroundColor: "#0D6A84",
+                            color: "#ffffff",
+                            ":hover": { backgroundColor: "#0D6A84" },
                             padding: "10px 0",
                         }}
                         onClick={handleSubmit}

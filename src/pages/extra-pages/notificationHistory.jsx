@@ -24,7 +24,7 @@ import { NotificationHistoryGetById } from 'api/api'
 import HashLoader from './HashLoaderCom';
 import { border, borderBottom, display, fontSize, textAlign } from '@mui/system';
 import { color } from 'framer-motion';
-import { makeStyles } from '@mui/styles';
+import { makeStyles, styled } from '@mui/styles';
 import NoDataFound from 'pages/NoDataFound';
 
 const useStyles = makeStyles({
@@ -40,8 +40,8 @@ const useStyles = makeStyles({
     height: 39,
     paddingTop: 6,
     padding: '2px 8px',
-    border: '1px solid #4634ff',
-    backgroundColor: '#4634ff',
+    border: '1px solid #0D6A84',
+    backgroundColor: '#0D6A84',
     borderLeft: '0px',
     borderRadius: "0px 3px 3px 0px"
   },
@@ -87,6 +87,22 @@ const input = {
   marginTop: 2,
 }
 
+
+const DetailsButton = styled(Button)(() => ({
+  borderRadius: '20px',
+  backgroundColor: 'transparent',
+  borderColor: '#0D6A84',
+  color: '#0D6A84',
+  fontSize: '0.825rem',
+  textTransform: 'none',
+
+  '&:hover': {
+    backgroundColor: '#4634ff',
+    borderColor: '#4634ff',
+    color: '#fff',
+  },
+}));
+
 // Style 
 
 const notificationHistory = () => {
@@ -94,7 +110,7 @@ const notificationHistory = () => {
 
   const [open, setOpen] = React.useState(false);
   const [date, setDate] = React.useState([]);
- 
+
   // console.log('first date', dayjs(date[0]).format('YYYY-MM-DD'))
   // console.log('second date', dayjs(date[1]).format('YYYY-MM-DD'))
   const handleOpen = () => setOpen(true);
@@ -118,7 +134,7 @@ const notificationHistory = () => {
   const [toDate, setToDate] = useState('');
   console.log('from date', fromDate)
   console.log('to date', toDate)
-  
+
   const handleOpen3 = () => {
     setOpen3(true);
   }
@@ -161,15 +177,15 @@ const notificationHistory = () => {
 
   useEffect(() => {
     MyNotificationGetAllApi()
-  }, [fromDate,toDate])
+  }, [fromDate, toDate])
 
   // Get all 
   const MyNotificationGetAllApi = async () => {
     setLoader(true)
     try {
-      const response = await NotificationHistory(search,fromDate, toDate);
+      const response = await NotificationHistory(search, fromDate, toDate);
       console.log('Notification history DATAAAAAA', response)
-      if (response?.status === 200) { 
+      if (response?.status === 200) {
         setRowsData(response?.data?.notifications)
         // toast.success(response?.data?.msg)
         setLoader(false)
@@ -178,14 +194,14 @@ const notificationHistory = () => {
           dateTime: (<><Grid><Typography>{notifications?.dateTime?.split("T")[0]}</Typography> <br />
           </Grid></>),
           userName: (<><Grid><Typography>{notifications?.userName} <br /></Typography>
-            <Typography sx={{color:'#4634ff', fontSize:16}}>{notifications?.userEmail}</Typography>
+            <Typography sx={{ color: '#4634ff', fontSize: 16 }}>{notifications?.userEmail}</Typography>
           </Grid></>),
           action: (
             <Stack justifyContent='end' spacing={2} direction="row">
-              <Button variant="outlined" size="small" startIcon={<FundProjectionScreenOutlined />} onClick={() => {
+              <DetailsButton variant="outlined" size="small" startIcon={<FundProjectionScreenOutlined />} onClick={() => {
                 handleOpen3();
                 MyNotificationGetByIdApi(notifications.id);
-              }}>Details</Button>
+              }}>Details</DetailsButton>
             </Stack>
           )
         }))
@@ -215,13 +231,14 @@ const notificationHistory = () => {
       console.log(error)
     }
   }
-    // Date filter
-    const handleDateChange = (dates) => {
-      if (dates && dates[0] && dates[1]) {
-        setFromDate(dates[0].format('YYYY-MM-DD'));
-        setToDate(dates[1].format('YYYY-MM-DD'));
-      }
-    };
+
+  // Date filter
+  const handleDateChange = (dates) => {
+    if (dates && dates[0] && dates[1]) {
+      setFromDate(dates[0].format('YYYY-MM-DD'));
+      setToDate(dates[1].format('YYYY-MM-DD'));
+    }
+  };
 
   const handleChange = (e) => {
     const trimmedValue = e.target.value.trimStart();
@@ -311,16 +328,16 @@ const notificationHistory = () => {
                       );
                     })
                   )
-                  :
-                  (
-                    <TableRow>
+                    :
+                    (
+                      <TableRow>
                         <TableCell colSpan={columns.length} align="center">
                           <NoDataFound />
                         </TableCell>
                       </TableRow>
-                  )
+                    )
                 }
-                
+
               </TableBody>
             </Table>
           </TableContainer>
