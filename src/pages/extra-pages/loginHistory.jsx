@@ -244,7 +244,14 @@ const loginHistory = () => {
                 <DateRangePicker
                   slots={{ field: SingleInputDateRangeField }}
                   name="allowedRange"
-                  onChange={handleDateChange} />
+                  onChange={handleDateChange}
+                  sx={{
+                    '& .css-rsqidq-MuiPickersSectionList-root-MuiPickersInputBase-sectionsContainer-MuiPickersOutlinedInput-sectionsContainer': {
+                      padding: '10.5px 0px',
+                    },
+
+                  }}
+                />
               </DemoContainer>
             </LocalizationProvider>
           </Grid>
@@ -262,6 +269,7 @@ const loginHistory = () => {
                       key={column.id}
                       align={column.align}
                       style={{ minWidth: column.minWidth }}
+                      sx={{ backgroundColor: "#0D6A8426" }}
                     >
                       {column.label}
                     </TableCell>
@@ -273,7 +281,13 @@ const loginHistory = () => {
                   rows && rows.length > 0 ? (
                     rows?.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage).map((row) => {
                       return (
-                        <TableRow hover role="checkbox" tabIndex={-1} key={row.code}>
+                        <TableRow hover role="checkbox" tabIndex={-1} key={row.code}
+                          sx={{
+                            backgroundColor: row.code % 2 === 0 ? 'transparent' : '#F2F3F6BF',
+                            '&:hover': {
+                              backgroundColor: '#ffffff' // Keep the same color on hover or adjust as needed
+                            }
+                          }}>
                           {columns.map((column) => {
                             const value = row[column.id];
                             return (

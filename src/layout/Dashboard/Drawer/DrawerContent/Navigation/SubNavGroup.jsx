@@ -30,7 +30,11 @@ export default function SubNavGroup({ item, level }) {
   const isSelected = item.url ? !!matchPath({ path: item.url, end: false }, pathname) : false;
 
   const textColor = 'text.primary';
-  const iconSelectedColor = 'primary.main';
+ 
+  //const iconSelectedColor = 'primary.main';
+ const iconSelectedColor = '#fff';
+ 
+  const bgSelectedColor = "#1AC3BE8C";
   // console.log(item, 'item')
   const navCollapse = item.children?.map((menuItemm, index) => {
     switch (menuItemm.type) {
@@ -56,22 +60,25 @@ export default function SubNavGroup({ item, level }) {
           pl: drawerOpen ? `${level * 28}px` : 3,
           py: !drawerOpen && level === 2 ? 2 : 1,
           color: open ? iconSelectedColor : isSelected ? iconSelectedColor : textColor,
+          bgColor: open ? bgSelectedColor : isSelected ? bgSelectedColor : 'primary.lighter',
           '&:hover': {
-            bgcolor: 'primary.lighter',
+            //bgcolor: 'primary.lighter',       
+            bgcolor: '#1AC3BE8C',       
           },
           '&:focus, &.Mui-focusVisible, &:focusVisible, &:visited': {
-            bgcolor: `${theme.palette.primary.lighter} !important`,
+        //  bgcolor: `${theme.palette.primary.lighter} !important`,          
+            bgColor: open ? bgSelectedColor : isSelected ? bgSelectedColor : 'primary.lighter',        
           },
           ...(isSelected && {
-            bgcolor: 'primary.lighter',
+            //bgcolor: 'primary.lighter',
+            bgColor: open ? bgSelectedColor : isSelected ? bgSelectedColor : 'primary.lighter',
             borderRight: `2px solid ${theme.palette.primary.main}`,
             '&:hover': {
-              bgcolor: 'primary.lighter',
+              bgcolor: 'primary.lighter',     
             },
           }),
         }}
       >
-
         <ListItemIcon sx={{ color: open ? iconSelectedColor : isSelected ? iconSelectedColor : textColor, }}>
           {item.icon && <item.icon />}
         </ListItemIcon>

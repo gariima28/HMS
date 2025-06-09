@@ -13,30 +13,30 @@ import { Link } from 'react-router-dom';
 
 const CustomButton = styled(Button)(() => ({
     borderRadius: '3.2px',
-    backgroundColor: '#4634ff',
-    borderColor: '#4634ff',
+    backgroundColor: '#0D6A84',
+    borderColor: '#0D6A84',
     color: '#fff',
     fontSize: '0.825rem',
     textTransform: 'none',
 
     '&:hover': {
-        backgroundColor: '#4634ff',
-        borderColor: '#4634ff',
+        backgroundColor: '#0D6A84',
+        borderColor: '#0D6A84',
         color: '#fff',
     },
 }));
 
 const MoreButton = styled(Button)(() => ({
     borderRadius: '3.2px',
-    backgroundColor: '#1e9ff2',
-    borderColor: '#1e9ff2',
+    backgroundColor: '#0D6A84',
+    borderColor: '#0D6A84',
     color: '#fff',
     fontSize: '0.825rem',
     textTransform: 'none',
 
     '&:hover': {
-        backgroundColor: '#1e9ff2',
-        borderColor: '#1e9ff2',
+        backgroundColor: '#0D6A84',
+        borderColor: '#0D6A84',
         color: '#fff',
     },
 }));
@@ -215,8 +215,11 @@ const BookingDetailsPage = () => {
                 </Grid>
             </Grid>
             <Grid item xs={12}>
-                <Accordion defaultExpanded sx={{ boxShadow: 'none', border: '1px solid #e8e8e8', '&.MuiAccordion-root': { '&:first-of-type': { borderTopLeftRadius: '0px !important', borderTopRightRadius: '0px !important', }, '&:last-of-type': { borderBottomLeftRadius: '0px !important', borderBottomRightRadius: '0px !important', }, }, }} >
-                    <AccordionSummary expandIcon={<ExpandMoreIcon />} aria-controls="panel1-content" id="panel1-header" sx={{ minHeight: '48px !important', '&.Mui-expanded': { minHeight: '48px !important', backgroundColor: '#071251', color: '#fff', }, '&:not(.Mui-expanded)': { backgroundColor: '#fff', color: '#000', }, '& .MuiAccordionSummary-expandIconWrapper': { color: '#fff', '&:not(.Mui-expanded)': { color: '#000', }, }, '& .MuiAccordionSummary-content': { margin: '0px !important', '&.Mui-expanded': { margin: '0px !important', }, }, }} >
+                <Accordion defaultExpanded sx={{
+
+                    boxShadow: 'none', border: '1px solid #e8e8e8', '&.MuiAccordion-root': { '&:first-of-type': { borderTopLeftRadius: '0px !important', borderTopRightRadius: '0px !important', }, '&:last-of-type': { borderBottomLeftRadius: '0px !important', borderBottomRightRadius: '0px !important', }, },
+                }} >
+                    <AccordionSummary expandIcon={<ExpandMoreIcon />} aria-controls="panel1-content" id="panel1-header" sx={{ minHeight: '48px !important', '&.Mui-expanded': { minHeight: '48px !important', backgroundColor: '#0D6A84', color: '#fff', }, '&:not(.Mui-expanded)': { backgroundColor: '#fff', color: '#000', }, '& .MuiAccordionSummary-expandIconWrapper': { color: '#fff', '&:not(.Mui-expanded)': { color: '#000', }, }, '& .MuiAccordionSummary-content': { margin: '0px !important', '&.Mui-expanded': { margin: '0px !important', }, }, }} >
                         <Typography variant='h5' fontWeight='bolder'>Booked Rooms</Typography>
                     </AccordionSummary>
                     <AccordionDetails sx={{ p: 0 }}>
@@ -258,7 +261,7 @@ const BookingDetailsPage = () => {
             </Grid>
             <Grid item xs={12}>
                 <Accordion defaultExpanded sx={{ boxShadow: 'none', border: '1px solid #e8e8e8', '&.MuiAccordion-root': { '&:first-of-type': { borderTopLeftRadius: '0px !important', borderTopRightRadius: '0px !important', }, '&:last-of-type': { borderBottomLeftRadius: '0px !important', borderBottomRightRadius: '0px !important', }, }, }} >
-                    <AccordionSummary expandIcon={<ExpandMoreIcon />} aria-controls="panel1-content" id="panel1-header" sx={{ display: "flex", justifyContent: "space-between   ", minHeight: '48px !important', '&.Mui-expanded': { minHeight: '48px !important', backgroundColor: '#071251', color: '#fff', }, '&:not(.Mui-expanded)': { backgroundColor: '#f5f5f5', color: '#000', }, '& .MuiAccordionSummary-expandIconWrapper': { color: '#fff', '&:not(.Mui-expanded)': { color: '#000', }, }, '& .MuiAccordionSummary-content': { margin: '0px !important', '&.Mui-expanded': { margin: '0px !important', }, }, }} >
+                    <AccordionSummary expandIcon={<ExpandMoreIcon />} aria-controls="panel1-content" id="panel1-header" sx={{ display: "flex", justifyContent: "space-between   ", minHeight: '48px !important', '&.Mui-expanded': { minHeight: '48px !important', backgroundColor: '#0D6A84', color: '#fff', }, '&:not(.Mui-expanded)': { backgroundColor: '#f5f5f5', color: '#000', }, '& .MuiAccordionSummary-expandIconWrapper': { color: '#fff', '&:not(.Mui-expanded)': { color: '#000', }, }, '& .MuiAccordionSummary-content': { margin: '0px !important', '&.Mui-expanded': { margin: '0px !important', }, }, }} >
                         <Typography variant="h5" fontWeight="bolder">
                             Premium Services
                         </Typography>
@@ -275,7 +278,7 @@ const BookingDetailsPage = () => {
             </Grid>
             <Grid item xs={12}>
                 <Accordion defaultExpanded sx={{ boxShadow: 'none', border: '1px solid #e8e8e8', '&.MuiAccordion-root': { '&:first-of-type': { borderTopLeftRadius: '0px !important', borderTopRightRadius: '0px !important', }, '&:last-of-type': { borderBottomLeftRadius: '0px !important', borderBottomRightRadius: '0px !important', }, }, }} >
-                    <AccordionSummary expandIcon={<ExpandMoreIcon />} aria-controls="panel1-content" id="panel1-header" sx={{ minHeight: '48px !important', '&.Mui-expanded': { minHeight: '48px !important', backgroundColor: '#071251', color: '#fff', }, '&:not(.Mui-expanded)': { backgroundColor: '#fff', color: '#000', }, '& .MuiAccordionSummary-expandIconWrapper': { color: '#fff', '&:not(.Mui-expanded)': { color: '#000', }, }, '& .MuiAccordionSummary-content': { margin: '0px !important', '&.Mui-expanded': { margin: '0px !important', }, }, }} >
+                    <AccordionSummary expandIcon={<ExpandMoreIcon />} aria-controls="panel1-content" id="panel1-header" sx={{ minHeight: '48px !important', '&.Mui-expanded': { minHeight: '48px !important', backgroundColor: '#0D6A84', color: '#fff', }, '&:not(.Mui-expanded)': { backgroundColor: '#fff', color: '#000', }, '& .MuiAccordionSummary-expandIconWrapper': { color: '#fff', '&:not(.Mui-expanded)': { color: '#000', }, }, '& .MuiAccordionSummary-content': { margin: '0px !important', '&.Mui-expanded': { margin: '0px !important', }, }, }} >
                         <Typography variant='h5' fontWeight='bolder'>Payments Recieved</Typography>
                     </AccordionSummary>
                     <AccordionDetails sx={{ p: 0 }}>
@@ -317,7 +320,7 @@ const BookingDetailsPage = () => {
             </Grid>
             <Grid item xs={12}>
                 <Accordion defaultExpanded sx={{ boxShadow: 'none', border: '1px solid #e8e8e8', '&.MuiAccordion-root': { '&:first-of-type': { borderTopLeftRadius: '0px !important', borderTopRightRadius: '0px !important', }, '&:last-of-type': { borderBottomLeftRadius: '0px !important', borderBottomRightRadius: '0px !important', }, }, }} >
-                    <AccordionSummary expandIcon={<ExpandMoreIcon />} aria-controls="panel1-content" id="panel1-header" sx={{ minHeight: '48px !important', '&.Mui-expanded': { minHeight: '48px !important', backgroundColor: '#071251', color: '#fff', }, '&:not(.Mui-expanded)': { backgroundColor: '#fff', color: '#000', }, '& .MuiAccordionSummary-expandIconWrapper': { color: '#fff', '&:not(.Mui-expanded)': { color: '#000', }, }, '& .MuiAccordionSummary-content': { margin: '0px !important', '&.Mui-expanded': { margin: '0px !important', }, }, }}>
+                    <AccordionSummary expandIcon={<ExpandMoreIcon />} aria-controls="panel1-content" id="panel1-header" sx={{ minHeight: '48px !important', '&.Mui-expanded': { minHeight: '48px !important', backgroundColor: '#0D6A84', color: '#fff', }, '&:not(.Mui-expanded)': { backgroundColor: '#fff', color: '#000', }, '& .MuiAccordionSummary-expandIconWrapper': { color: '#fff', '&:not(.Mui-expanded)': { color: '#000', }, }, '& .MuiAccordionSummary-content': { margin: '0px !important', '&.Mui-expanded': { margin: '0px !important', }, }, }}>
                         <Typography variant='h5' fontWeight='bolder'>Payments Returned</Typography>
                     </AccordionSummary>
                     <AccordionDetails sx={{ p: 0 }}>
@@ -356,7 +359,7 @@ const BookingDetailsPage = () => {
             </Grid>
             <Grid item xs={12}>
                 <Accordion defaultExpanded sx={{ boxShadow: 'none', border: '1px solid #e8e8e8', '&.MuiAccordion-root': { '&:first-of-type': { borderTopLeftRadius: '0px !important', borderTopRightRadius: '0px !important', }, '&:last-of-type': { borderBottomLeftRadius: '0px !important', borderBottomRightRadius: '0px !important', }, }, }} >
-                    <AccordionSummary expandIcon={<ExpandMoreIcon />} aria-controls="panel1-content" id="panel1-header" sx={{ minHeight: '48px !important', '&.Mui-expanded': { minHeight: '48px !important', backgroundColor: '#071251', color: '#fff', }, '&:not(.Mui-expanded)': { backgroundColor: '#fff', color: '#000', }, '& .MuiAccordionSummary-expandIconWrapper': { color: '#fff', '&:not(.Mui-expanded)': { color: '#000', }, }, '& .MuiAccordionSummary-content': { margin: '0px !important', '&.Mui-expanded': { margin: '0px !important', }, }, }} >
+                    <AccordionSummary expandIcon={<ExpandMoreIcon />} aria-controls="panel1-content" id="panel1-header" sx={{ minHeight: '48px !important', '&.Mui-expanded': { minHeight: '48px !important', backgroundColor: '#0D6A84', color: '#fff', }, '&:not(.Mui-expanded)': { backgroundColor: '#fff', color: '#000', }, '& .MuiAccordionSummary-expandIconWrapper': { color: '#fff', '&:not(.Mui-expanded)': { color: '#000', }, }, '& .MuiAccordionSummary-content': { margin: '0px !important', '&.Mui-expanded': { margin: '0px !important', }, }, }} >
                         <Typography variant='h5' fontWeight='bolder'>Payment Info</Typography>
                     </AccordionSummary>
                     <AccordionDetails sx={{ p: 0 }}>
@@ -457,7 +460,7 @@ const BookingDetailsPage = () => {
                     </AccordionDetails>
                 </Accordion>
             </Grid>
-        </Grid>
+        </Grid >
     );
 }
 

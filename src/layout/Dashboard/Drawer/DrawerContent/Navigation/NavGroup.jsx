@@ -17,7 +17,6 @@ export default function NavGroup({ item }) {
     switch (menuItem.type) {
       case 'collapse':
         return <SubNavGroup key={menuItem.id} item={menuItem} level={1} />;
-
       case 'item':
         return <NavItem key={menuItem.id} item={menuItem} level={1} />;
       default:
@@ -35,7 +34,8 @@ export default function NavGroup({ item }) {
         item.title &&
         drawerOpen && (
           <Box sx={{ pl: 3, mb: 1.5 }}>
-            <Typography variant="subtitle2" color="textSecondary">
+            <Typography variant="subtitle2"
+              color="textSecondary">
               {item.title}
             </Typography>
           </Box>

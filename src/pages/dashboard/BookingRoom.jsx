@@ -205,6 +205,8 @@ const BookingRoom = ({ onOpenDrawer, selectedRooms, setSelectedRooms, checkIn, s
                             value={checkIn}
                             onChange={(newValue) => setCheckIn(newValue)}
                             slotProps={{ textField: { fullWidth: true, variant: 'outlined' } }}
+
+
                         />
                     </Grid>
                     <Grid item xs={12} sm={5}>
@@ -303,35 +305,7 @@ const BookingRoom = ({ onOpenDrawer, selectedRooms, setSelectedRooms, checkIn, s
                                                 {/* Room Buttons */}
                                                 <Grid item xs={12} md={6}>
                                                     <Box display="flex" gap={1} flexWrap="wrap">
-                                                        {/* {room.AvaRooms.map((availRoom) => {
-                                                            const isSelected = selectedRooms.includes(availRoom.roomId);
-                                                            return (
-                                                                <Button
-                                                                    key={availRoom.roomId}
-                                                                    variant={isSelected ? 'contained' : 'outlined'}
-                                                                    color={
-                                                                        availRoom.availableStatus === false
-                                                                            ? 'inherit'
-                                                                            : isSelected
-                                                                                ? 'success'
-                                                                                : 'primary'
-                                                                    }
-                                                                    disabled={availRoom.availableStatus === false}
-                                                                    onClick={() => handleRoomClick(
-                                                                        availRoom.roomId,
-                                                                        room.roomTypeId,
-                                                                        availRoom.roomNo
-                                                                    )}
-                                                                    sx={{
-                                                                        minWidth: '40px',
-                                                                        bgcolor: room.status === 'booked' ? '#ccc' : undefined,
-                                                                        color: room.status === 'booked' ? 'black' : undefined,
-                                                                    }}
-                                                                >
-                                                                    {availRoom.roomNo}
-                                                                </Button>
-                                                            );
-                                                        })} */}
+
                                                         {room.AvaRooms.map((availRoom) => {
                                                             const isSelected = selectedRooms.some(r => r.id === availRoom.roomId);
 
@@ -357,6 +331,7 @@ const BookingRoom = ({ onOpenDrawer, selectedRooms, setSelectedRooms, checkIn, s
                                                                         bgcolor: availRoom.status === 'booked' ? '#ccc' : undefined,
                                                                         color: availRoom.status === 'booked' ? '#333' : undefined,
                                                                     }}
+
                                                                 >
                                                                     {availRoom.roomNo}
                                                                 </Button>

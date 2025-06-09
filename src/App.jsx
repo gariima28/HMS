@@ -39,6 +39,9 @@ export default function App() {
                 transform: "translateY(-5px)",
               },
             },
+            '& .css-rsqidq-MuiPickersSectionList-root-MuiPickersInputBase-sectionsContainer-MuiPickersOutlinedInput-sectionsContainer': {
+              padding: '10.5px 0px',
+            },
           }}
         />
         <RouterProvider router={router} />
