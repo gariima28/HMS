@@ -42,6 +42,9 @@ export default function App() {
             '& .css-rsqidq-MuiPickersSectionList-root-MuiPickersInputBase-sectionsContainer-MuiPickersOutlinedInput-sectionsContainer': {
               padding: '10.5px 0px',
             },
+            ".css - 1tgopf7- MuiPickersInputBase - root - MuiPickersOutlinedInput - root": {
+              padding: '8.5px 0px',
+            }
           }}
         />
         <RouterProvider router={router} />

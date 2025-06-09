@@ -34,19 +34,20 @@ const Loader = ({ delay = 0 }) => {
 
 
   return (
-    showLoader && <LoaderWrapper>
-    <Box sx={{ mb: 3 }}>
-      <img
-        src="/logo.png"
-        alt="Logo"
-        style={{ width: '150px', height: 'auto' }}
-      />
-    </Box>
-    <CircularProgress color="primary" size={80} />
-    <Typography variant="h6" sx={{ mt: 2 }}>
-      Loading, please wait...
-    </Typography>
-  </LoaderWrapper>
+    showLoader &&
+    <LoaderWrapper>
+      <Box display="flex" alignItems="center" justifyContent="center" sx={{ width: '100%' }}>
+        <img
+          src="/logo.png"
+          alt="Logo"
+        // style={{ width: '150px', height: 'auto' }}
+        />
+      </Box>
+      <CircularProgress color="primary" size={80} />
+      <Typography variant="h6" sx={{ mt: 2 }}>
+        Loading, please wait...
+      </Typography>
+    </LoaderWrapper>
   )
 }
 

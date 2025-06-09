@@ -34,7 +34,7 @@ export default function Header() {
 
   // common header
   const mainHeader = (
-    <Toolbar>
+    <Toolbar sx={{ py: 1.8 }}>
       <IconButton
         disableRipple
         aria-label="open drawer"

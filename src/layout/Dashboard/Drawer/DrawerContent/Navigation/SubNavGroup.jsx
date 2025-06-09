@@ -72,7 +72,7 @@ export default function SubNavGroup({ item, level }) {
           ...(isSelected && {
             //bgcolor: 'primary.lighter',
             bgColor: open ? bgSelectedColor : isSelected ? bgSelectedColor : 'primary.lighter',
-            borderRight: `2px solid ${theme.palette.primary.main}`,
+            borderRight: `2px solid #0D6A84`,
             '&:hover': {
               bgcolor: 'primary.lighter',     
             },

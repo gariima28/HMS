@@ -448,10 +448,10 @@ const CreateHotel = () => {
        ) }
 
         <Grid xs={12} gap={2}>
-          <Button size="sm" type="submit" variant="contained" color="primary">
+          <Button size="sm" type="submit" sx={{ backgroundColor:"#0D6A84", color:"#fff"}}>
             {id === 'add' ? 'Create' : 'Update'}
           </Button>
-          <Button size="sm" variant="outlined" sx={{ m: 2 }} onClick={()=> handleCancelButton()}>Cancel</Button>
+          <Button size="sm"  sx={{ backgroundColor: "#0D6A84", color: "#fff", m:2 }} onClick={()=> handleCancelButton()}>Cancel</Button>
         </Grid>
       </form>
 

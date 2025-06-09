@@ -15,19 +15,68 @@ import HashLoader from 'components/Skeleton/HashLoader';
 const ServerIP = 'https://www.auth.edu2all.in/hms'
 const token = `Bearer ${localStorage.getItem('token')}`;
 
+// const CustomButton = styled(Button)(({ status }) => ({
+//   borderRadius: '50px',
+//   backgroundColor: status === 'enable' ? '#E6F4EA' : '#fee5e5',
+//   borderColor: status === 'enable' ? '#57C168' : 'red',
+//   color: status === 'enable' ? '#57C168' : 'red',
+//   padding: '2px 26px',
+//   fontSize: '12px',
+//   textTransform: 'none',
+
+//   '&:hover': {
+//     backgroundColor: status === 'enable' ? '#D4ECD9' : '#fccfcf',
+//     borderColor: status === 'enable' ? '#57C168' : 'red',
+//     color: status === 'enable' ? '#57C168' : 'red'
+//   },
+// }));
+
 const CustomButton = styled(Button)(({ status }) => ({
   borderRadius: '50px',
-  backgroundColor: status === 'enable' ? '#E6F4EA' : '#fee5e5',
-  borderColor: status === 'enable' ? '#57C168' : 'red',
-  color: status === 'enable' ? '#57C168' : 'red',
+  backgroundColor: status === 'enable' ? '#DBE9ED' : '#FFD8D8',
+  borderColor: status === 'enable' ? '#DBE9ED' : '#FFD8D8',
+  color: status === 'enable' ? '#0D6A84' : '#C90303',
   padding: '2px 26px',
   fontSize: '12px',
+  fontWeight: 700,
   textTransform: 'none',
-
   '&:hover': {
-    backgroundColor: status === 'enable' ? '#D4ECD9' : '#fccfcf',
-    borderColor: status === 'enable' ? '#57C168' : 'red',
-    color: status === 'enable' ? '#57C168' : 'red'
+    backgroundColor: status === 'enable' ? '#0D6A84' : '#C90303',
+    borderColor: status === 'enable' ? '#0D6A84' : '#C90303',
+    color: status === 'enable' ? '#ffffff' : '#ffffff',
+  },
+}));
+
+const EnableButton = styled(Button)(({ status }) => ({
+  borderRadius: '50px',
+  backgroundColor: 'transparent',
+  borderColor: status === 'enable' ? '#C90303' : '#0D6A84',
+  color: status === 'enable' ? '#C90303' : '#0D6A84',
+  padding: '2px 16px',
+  fontSize: '12px',
+  fontWeight: 700,
+  textTransform: 'none',
+  '&:hover': {
+    backgroundColor: status === 'enable' ? '#C90303' : '#0D6A84',
+    borderColor: status === 'enable' ? '#C90303' : '#0D6A84',
+    color: status === 'enable' ? '#ffffff' : '#ffffff',
+  },
+}));
+
+
+const EditButton = styled(Button)(({ status }) => ({
+  borderRadius: '50px',
+  backgroundColor: 'transparent',
+  borderColor: '#0D6A84',
+  color: '#0D6A84',
+  padding: '2px 14px',
+  fontSize: '12px',
+  fontWeight: 700,
+  textTransform: 'none',
+  '&:hover': {
+    backgroundColor: '#0D6A84',
+    borderColor: '#0D6A84',
+    color: '#ffffff',
   },
 }));
 
@@ -66,8 +115,8 @@ const HotelDetails = () => {
         status: <CustomButton variant="outlined" status={`${hotels.status ? 'enable' : 'disable'}`}> {hotels.status ? 'Active' : 'InActive'} </CustomButton>,
         action: (
           <Stack justifyContent='end' spacing={2} direction="row">
-            <Button component={Link} to={`/hotelForm/${hotels.hotelId}`} variant="outlined" size="small" startIcon={<Edit />}>Edit</Button>
-            <Button variant="outlined" size="small" startIcon={hotels.status ? <EyeInvisibleFilled /> : <EyeFilled />} color={`${hotels.status ? 'error' : 'success'}`} onClick={() => handleDisableHotel(hotels?.hotelId, hotels.status)}>{`${hotels.status ? 'Disable' : 'Enable'}`}</Button>
+            <EditButton component={Link} to={`/hotelForm/${hotels.hotelId}`} variant="outlined" size="small" startIcon={<Edit />}>Edit</EditButton>
+            <EnableButton variant="outlined" size="small" startIcon={hotels.status ? <EyeInvisibleFilled /> : <EyeFilled />} color={`${hotels.status ? 'error' : 'success'}`} onClick={() => handleDisableHotel(hotels?.hotelId, hotels.status)}>{`${hotels.status ? 'Disable' : 'Enable'}`}</EnableButton>
           </Stack>
         ),
       }));
