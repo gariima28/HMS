@@ -24,11 +24,11 @@ const token = `Bearer ${localStorage.getItem('token')}`;
 
 
 const AddButton = styled(Button)(({ status }) => ({
-    borderRadius: '10px',
+    borderRadius: '5px',
     backgroundColor: '#0D6A84',
     borderColor: status === 'enable' ? '#FFD8D8' : '#0D6A84',
     color: '#FFFFFF',
-    padding: '8px 20px',
+    padding: '14px 20px',
     fontSize: '12px',
     fontWeight: 700,
     textTransform: 'none',
