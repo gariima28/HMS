@@ -275,6 +275,7 @@ const bannedguest = () => {
                       key={column.id}
                       align={column.align}
                       style={{ minWidth: column.minWidth }}
+                      sx={{ backgroundColor: "#0D6A8426" }}
                     >
                       {column.label}
                     </TableCell>
@@ -286,7 +287,14 @@ const bannedguest = () => {
                   row && row.length > 0 ? (
                     row?.map((row, index) => {
                       return (
-                        <TableRow hover role="checkbox" tabIndex={-1} key={index}>
+                        <TableRow hover role="checkbox" tabIndex={-1} key={index}
+                          sx={{
+                            backgroundColor: index % 2 === 0 ? 'transparent' : '#F2F3F6BF',
+                            '&:hover': {
+                              backgroundColor: '#F2F3F6BF' // Keep the same color on hover or adjust as needed
+                            }
+                          }}
+                        >
                           {columns.map((column) => {
                             const value = row[column.id];
                             return (

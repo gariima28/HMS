@@ -264,6 +264,7 @@ const emailUnverified = () => {
                       key={column.id}
                       align={column.align}
                       style={{ minWidth: column.minWidth }}
+                      sx={{ backgroundColor: "#0D6A8426" }}
                     >
                       {column.label}
                     </TableCell>
@@ -275,7 +276,14 @@ const emailUnverified = () => {
                   row && row.length > 0 ? (
                     row?.map((row) => {
                       return (
-                        <TableRow hover role="checkbox" tabIndex={-1} key={row.code}>
+                        <TableRow hover role="checkbox" tabIndex={-1} key={row.code}
+                          sx={{
+                            backgroundColor: row.code % 2 === 0 ? 'transparent' : '#F2F3F6BF',
+                            '&:hover': {
+                              backgroundColor: '#F2F3F6BF' // Keep the same color on hover or adjust as needed
+                            }
+                          }}
+                        >
                           {columns.map((column) => {
                             const value = row[column.id];
                             return (

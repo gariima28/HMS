@@ -352,7 +352,8 @@ const BookRoom = () => {
                         <Stack spacing={1}>
                             <InputLabel htmlFor="subTitle">Check In - Check Out Date <span style={{ color: 'red' }}> *</span></InputLabel>
                             <LocalizationProvider dateAdapter={AdapterDayjs}>
-                                <DateRangePicker slots={{ field: SingleInputDateRangeField }} fullWidth id="subTitle" name="subTitle" onChange={(newValue) => handleCheckInCheckOutDate(newValue)} />
+                                <DateRangePicker slots={{ field: SingleInputDateRangeField }} fullWidth id="subTitle" name="subTitle" onChange={(newValue) => handleCheckInCheckOutDate(newValue)}
+                                />
                             </LocalizationProvider>
                         </Stack>
                     </Grid>

@@ -38,10 +38,7 @@ export default function MainDrawer({ window }) {
       }}
       aria-label="mailbox folders"
     >
-
-
       <Box component="nav" sx={{ flexShrink: { md: 0 }, zIndex: 1200, }} aria-label="mailbox folders">
-
         {!matchDownMD ? (
           <MiniDrawerStyled variant="permanent" open={drawerOpen}>
             {drawerHeader}
@@ -63,12 +60,8 @@ export default function MainDrawer({ window }) {
                 borderRightColor: 'divider',
                 backgroundImage: 'none',
                 boxShadow: 'inherit',
-
                 // color: '#FFFFFF',
-
-
-                backgroundColor: "#0D5F76"
-
+                backgroundColor: "#0D5F76",
               }
             }}
           >

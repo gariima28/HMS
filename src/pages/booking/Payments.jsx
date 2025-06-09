@@ -329,7 +329,7 @@ const PaymentsPage = () => {
                   value={searchKey}
                   onChange={(e) => setSearchKey(e.target.value)}
                 />
-                <Button sx={{ bgcolor: "blue", borderRadius: "0px 10px 10px 0px" }} onClick={''}>
+                <Button sx={{ bgcolor: "#0D6A84", borderRadius: "0px 10px 10px 0px" }} onClick={''}>
                   <IconButton>
                     <SearchIcon sx={{ color: "white" }} />
                   </IconButton>
@@ -376,7 +376,7 @@ const PaymentsPage = () => {
                       }
                     />
 
-                    <Button sx={{ bgcolor: "blue", borderRadius: "0px 10px 10px 0px" }}>
+                    <Button sx={{ bgcolor: "#0D6A84", borderRadius: "0px 10px 10px 0px" }}>
                       <IconButton>
                         <SearchIcon sx={{ color: "white" }} />
                       </IconButton>

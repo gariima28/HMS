@@ -131,6 +131,7 @@ const subscriberPage = () => {
                                             key={column.id}
                                             align={column.align}
                                             style={{ minWidth: column.minWidth }}
+                                            sx={{ backgroundColor: "#0D6A8426" }}
                                         >
                                             {column.label}
                                         </TableCell>
@@ -142,7 +143,14 @@ const subscriberPage = () => {
                                     rows && rows.length > 0 ? (
                                         rows?.map((row, index) => {
                                             return (
-                                                <TableRow hover role="checkbox" tabIndex={-1} key={index}>
+                                                <TableRow hover role="checkbox" tabIndex={-1} key={index}
+                                                    sx={{
+                                                        backgroundColor: index % 2 === 0 ? 'transparent' : '#F2F3F6BF',
+                                                        '&:hover': {
+                                                            backgroundColor: '#ffffff' // Keep the same color on hover or adjust as needed
+                                                        }
+                                                    }}
+                                                >
                                                     {
                                                         columns?.map((column) => {
                                                             const value = row[column.id];

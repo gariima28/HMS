@@ -46,6 +46,7 @@ import { addBookingAPI } from 'api/api';
 import { useNavigate } from 'react-router';
 
 
+
 import AnalyticEcommerce from 'components/cards/statistics/AnalyticEcommerce';
 
 import React, { useEffect, useState } from 'react';
@@ -55,6 +56,20 @@ import ErrorPage from 'components/ErrorPage';
 import AvailableRooms from './AvailableRooms';
 import BookingDrawer from './BookingDrawer';
 import BookingRoom from './BookingRoom';
+
+
+import LoginOutlinedIcon from '@mui/icons-material/LoginOutlined';
+import LogoutOutlinedIcon from '@mui/icons-material/LogoutOutlined';
+import EventAvailableOutlinedIcon from '@mui/icons-material/EventAvailableOutlined';
+import EventNoteOutlinedIcon from '@mui/icons-material/EventNoteOutlined';
+import PersonOutlinedIcon from '@mui/icons-material/PersonOutlined';
+import AssignmentTurnedInOutlinedIcon from '@mui/icons-material/AssignmentTurnedInOutlined';
+import HikingIcon from '@mui/icons-material/Hiking';
+import PersonPinCircleIcon from '@mui/icons-material/PersonPinCircle';
+import MarkEmailUnreadIcon from '@mui/icons-material/MarkEmailUnread';
+import SmartphoneIcon from '@mui/icons-material/Smartphone';
+import { fontSize } from '@mui/system';
+
 
 
 const ServerIP = 'https://www.auth.edu2all.in/hms';
@@ -208,35 +223,40 @@ export default function DashboardDefault() {
         </Grid>
 
         <Grid item xs={12} sm={6} md={4} lg={3}>
-          <AnalyticEcommerce title="Delayed Checkout" count="45" percentage={59.3} extra="35,000" image={''} />
+          <AnalyticEcommerce title="Delayed Checkout" count="45" percentage={59.3} extra="35,000" image={<LogoutOutlinedIcon fontSize="large" />} backgroundColor="#B1B1B14D" to="/delayedCheckouts" />
         </Grid>
 
         <Grid item xs={12} sm={6} md={4} lg={3}>
-          <AnalyticEcommerce title="Pending Check-In" count="78" percentage={70.5} extra="8,900" image={''} />
+          <AnalyticEcommerce title="Pending Check-In" count="78" percentage={70.5} extra="8,900"
+            image={<LoginOutlinedIcon fontSize="large" to="/pendingCheckins" />}
+            backgroundColor="#E5E0FA" />
         </Grid>
 
         <Grid item xs={12} sm={6} md={4} lg={3}>
-          <AnalyticEcommerce title="Upcoming Check-In" count="18" percentage={27.4} isLoss color="warning" extra="1,943" image={''} />
+          <AnalyticEcommerce title="Upcoming Check-In" count="18" percentage={27.4} isLoss color="warning" extra="1,943" backgroundColor="#E2D2A94D"
+            image={<LoginOutlinedIcon fontSize="large" to="/upcomingCheckins" />}
+          />
+        </Grid>
+        <Grid item xs={12} sm={6} md={4} lg={3}>
+          <AnalyticEcommerce title="Upcoming Checkout" count="35" percentage={27.4} isLoss color="warning" extra="$20,395"
+            image={<LogoutOutlinedIcon fontSize="large" to="/upcomingCheckouts" />}
+            backgroundColor="#E6A7EB36" />
         </Grid>
 
         <Grid item xs={12} sm={6} md={4} lg={3}>
-          <AnalyticEcommerce title="Upcoming Checkout" count="35" percentage={27.4} isLoss color="warning" extra="$20,395" image={''} />
+          <AnalyticEcommerce title="Today's Booked Rooms" count="44" percentage={59.3} extra="35,000" image={<AssignmentTurnedInOutlinedIcon fontSize="large" />} backgroundColor="#E6A7EB36" to="/todaysBooked" />
         </Grid>
 
         <Grid item xs={12} sm={6} md={4} lg={3}>
-          <AnalyticEcommerce title="Today's Booked Rooms" count="44" percentage={59.3} extra="35,000" image={''} />
+          <AnalyticEcommerce title="Today's Available Rooms" count="78" percentage={70.5} extra="8,900" image={<EventAvailableOutlinedIcon fontSize="large" />} backgroundColor="#F0E2F4" />
         </Grid>
 
         <Grid item xs={12} sm={6} md={4} lg={3}>
-          <AnalyticEcommerce title="Today's Available Rooms" count="78" percentage={70.5} extra="8,900" image={''} />
+          <AnalyticEcommerce title="Active Booking" count="18" percentage={27.4} isLoss color="warning" extra="1,943" image={<EventNoteOutlinedIcon fontSize="large" />} backgroundColor="#E4EDEF" to="/activeBookings" />
         </Grid>
 
         <Grid item xs={12} sm={6} md={4} lg={3}>
-          <AnalyticEcommerce title="Active Booking" count="18" percentage={27.4} isLoss color="warning" extra="1,943" image={''} />
-        </Grid>
-
-        <Grid item xs={12} sm={6} md={4} lg={3}>
-          <AnalyticEcommerce title="Total Bookings" count="35" percentage={27.4} isLoss color="warning" extra="$20,395" image={''} />
+          <AnalyticEcommerce title="Total Bookings" count="35" percentage={27.4} isLoss color="warning" extra="$20,395" image={<PersonOutlinedIcon fontSize="large" />} backgroundColor="#E0DFE2" to="/allBookings" />
         </Grid>
 
       </Grid>
@@ -247,19 +267,23 @@ export default function DashboardDefault() {
 
       <Grid container rowSpacing={4.5} columnSpacing={2.75} mt={1}>
         <Grid item xs={12} sm={6} md={4} lg={3}>
-          <AnalyticEcommerce title="Total Registered guests" count="42" percentage={59.3} extra="35,000" image={''} />
+          <AnalyticEcommerce title="Total Registered guests" count="42" percentage={59.3} extra="35,000"
+            image={<HikingIcon fontSize="large" />}
+            backgroundColor="#D6DBE0" />
         </Grid>
 
         <Grid item xs={12} sm={6} md={4} lg={3}>
-          <AnalyticEcommerce title="Active Registered guests" count="78" percentage={70.5} extra="8,900" image={''} />
+          <AnalyticEcommerce title="Active Registered guests" count="78" percentage={70.5} extra="8,900"
+            image={<PersonPinCircleIcon fontSize="large" />}
+            backgroundColor="#D6DBE0" />
         </Grid>
 
         <Grid item xs={12} sm={6} md={4} lg={3}>
-          <AnalyticEcommerce title="Email unverified guests" count="18" percentage={27.4} isLoss color="warning" extra="1,943" image={''} />
+          <AnalyticEcommerce title="Email unverified guests" count="18" percentage={27.4} isLoss color="warning" extra="1,943" image={<MarkEmailUnreadIcon fontSize="large" />} backgroundColor="#D6DBE0" />
         </Grid>
 
         <Grid item xs={12} sm={6} md={4} lg={3}>
-          <AnalyticEcommerce title="Mobile Unverified guests" count="$35" percentage={27.4} isLoss color="warning" extra="$20,395" image={''} />
+          <AnalyticEcommerce title="Mobile Unverified guests" count="$35" percentage={27.4} isLoss color="warning" extra="$20,395" image={<SmartphoneIcon fontSize="large" />} backgroundColor="#D6DBE0" />
         </Grid>
 
 
@@ -467,7 +491,6 @@ export default function DashboardDefault() {
   );
 }
 
-
 const inputStyles = (error) => ({
   '& .MuiOutlinedInput-root': {
     '& fieldset': {
@@ -495,7 +518,6 @@ const CustomButton = styled(Button)(() => ({
     color: '#fff',
     cursor: 'not-allowed', // Ensure cursor is not-allowed for disabled state
     pointerEvents: 'auto',
-
   },
 }));
 
