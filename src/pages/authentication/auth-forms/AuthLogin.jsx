@@ -49,13 +49,13 @@ export default function AuthLogin({ isDemo = false }) {
   });
   // for location
   const { coords } =
-  useGeolocated({
-    positionOptions: {
-      enableHighAccuracy: false,
-    },
-    userDecisionTimeout: 5000,
-  });
-  
+    useGeolocated({
+      positionOptions: {
+        enableHighAccuracy: false,
+      },
+      userDecisionTimeout: 5000,
+    });
+
   // for location
   useEffect(() => {
     if (coords) {
@@ -63,7 +63,7 @@ export default function AuthLogin({ isDemo = false }) {
       setLongiTude(coords.longitude);
     }
   }, [coords]);
-  
+
 
   const handleSnackbarClose = () => {
     setSnackbar((prev) => ({ ...prev, open: false }));
@@ -80,7 +80,7 @@ export default function AuthLogin({ isDemo = false }) {
   const handleLogin = async (values, { setErrors, setStatus, setSubmitting }) => {
     try {
       setShowLoader(true)
-      const data = { email: values.email, password: values.password, lat: latiTude , log: longiTude };
+      const data = { email: values.email, password: values.password, lat: latiTude, log: longiTude };
       const response = await loginApi(data);
 
       if (response.status === 200) {
@@ -247,7 +247,7 @@ export default function AuthLogin({ isDemo = false }) {
                     size="large"
                     type="submit"
                     variant="contained"
-                    sx={{ backgroundColor: '#4634ff', color: '#fff', '&:hover, &:active, &:focus': { backgroundColor: '#4634ff', color: '#fff' } }}
+                    sx={{ backgroundColor: '#0D6A84', color: '#fff', '&:hover, &:active, &:focus': { backgroundColor: '#0D6A84', color: '#fff' } }}
                   >
                     Login
                   </Button>
