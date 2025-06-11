@@ -21,6 +21,11 @@ export default function Search() {
               <SearchOutlined />
             </InputAdornment>
           }
+          sx={{
+            '&:hover .MuiOutlinedInput-notchedOutline': {
+              borderColor: '#0D6A84', // Change to your desired green shade
+            },
+          }}
           aria-describedby="header-search-text"
           inputProps={{
             'aria-label': 'weight'

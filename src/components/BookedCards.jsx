@@ -21,14 +21,14 @@ const BookedCards = ({ roomNo, roomType }) => {
                 <Typography
                     textAlign="center"
                     variant="h5"
-                    sx={{ color: 'primary.main', mb: 1 }}
+                    sx={{ color: '#14969D', mb: 1 }}
                 >
                     {roomNo}
                 </Typography>
                 <Tooltip title={roomType} placement={isSmallScreen ? 'bottom' : 'top'} // Change placement on small screens
                     enterDelay={500} // Optional: Adds delay before tooltip shows up
                     leaveDelay={200} // Optional: Adds delay before tooltip hides
-                    >
+                >
                     <Typography
                         variant="body1"
                         textAlign="center"

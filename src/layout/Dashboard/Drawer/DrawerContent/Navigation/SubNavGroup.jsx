@@ -34,7 +34,7 @@ export default function SubNavGroup({ item, level }) {
   //const iconSelectedColor = 'primary.main';
  const iconSelectedColor = '#fff';
  
-  const bgSelectedColor = "#1AC3BE8C";
+ const bgSelectedColor = "#1AC3BE8C";
   // console.log(item, 'item')
   const navCollapse = item.children?.map((menuItemm, index) => {
     switch (menuItemm.type) {
@@ -69,7 +69,7 @@ export default function SubNavGroup({ item, level }) {
         //  bgcolor: `${theme.palette.primary.lighter} !important`,          
             bgColor: open ? bgSelectedColor : isSelected ? bgSelectedColor : 'primary.lighter',        
           },
-          ...(isSelected && {
+          ...(isSelected && { 
             //bgcolor: 'primary.lighter',
             bgColor: open ? bgSelectedColor : isSelected ? bgSelectedColor : 'primary.lighter',
             borderRight: `2px solid #0D6A84`,

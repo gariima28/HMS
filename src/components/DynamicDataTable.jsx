@@ -38,7 +38,8 @@ const DynamicDataTable = ({ columns, rows, dataViewId }) => {
                     zIndex: 1,
                     textWrap: 'nowrap'
                   }}
-                  sx={{ backgroundColor: "#0D6A8426" }}
+                  //sx={{ backgroundColor: "#0D6A8426" }}
+                  sx={{ backgroundColor: "#0D6A84" }}
                 >
                   {column.label}
                 </TableCell>

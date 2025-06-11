@@ -169,7 +169,7 @@ const PaymentsPage = () => {
         ),
         gateway: (
           <>
-            <Typography variant="h6" sx={{ fontWeight: 900, color: '#0d6efd' }}>
+            <Typography variant="h6" sx={{ fontWeight: 900, color: '#14969D' }}>
               {payment?.paymentType}
             </Typography>
             <Typography variant="h6">{payment?.transactionNo}</Typography>
@@ -178,7 +178,7 @@ const PaymentsPage = () => {
         user: (
           <>
             <Typography variant="h6" sx={{ fontWeight: 900 }}>{payment?.userName}</Typography>
-            <Typography variant="h6" sx={{ fontWeight: 900, color: '#0d6efd' }}>{payment?.userEmail}</Typography>
+            <Typography variant="h6" sx={{ fontWeight: 900, color: '#14969D' }}>{payment?.userEmail}</Typography>
           </>
         ),
         amount: (

@@ -6,7 +6,7 @@ import useMediaQuery from '@mui/material/useMediaQuery';
 import AppBar from '@mui/material/AppBar';
 import Toolbar from '@mui/material/Toolbar';
 import IconButton from '@mui/material/IconButton';
-
+import Hamburger from "../../../assets/images/Hamburger.svg"
 // project import
 import AppBarStyled from './AppBarStyled';
 import HeaderContent from './HeaderContent';
@@ -42,9 +42,10 @@ export default function Header() {
         edge="start"
         color="secondary"
         variant="light"
-        sx={{ color: 'text.primary', bgcolor: drawerOpen ? iconBackColorOpen : iconBackColor, ml: { xs: 0, lg: -2 } }}
+        sx={{ color: 'text.primary' }}
       >
-        {!drawerOpen ? <MenuUnfoldOutlined /> : <MenuFoldOutlined />}
+        <img src={Hamburger} alt="" />
+        {/* {!drawerOpen ? <MenuUnfoldOutlined /> : <MenuFoldOutlined />} */}
       </IconButton>
       {headerContent}
     </Toolbar>

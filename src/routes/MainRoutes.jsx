@@ -31,6 +31,7 @@ import Payments from 'pages/booking/Payments';
 import AddedPServices from 'pages/booking/AddedPServices';
 import BookingDetailsPage from 'pages/booking/BookingDetailsPage';
 import AddUpdateRoomType from 'pages/manageHotel/AddUpdateRoomType';
+import AdddUpdateRoomType from 'pages/manageHotel/AdddUpdateRoomType';
 import CancelBookingPage from 'pages/booking/CancelBookingPage';
 import CheckOutInBookings from 'pages/booking/CheckOutInBookings';
 import PremiumServicesInBookings from 'pages/booking/PremiumServicesInBookings';
@@ -117,7 +118,7 @@ const MainRoutes = {
     },
     {
       path: 'addUpdateRoomType/:id',
-      element: <AddUpdateRoomType />
+      element: <AdddUpdateRoomType />
     },
     {
       path: 'premiumServices',

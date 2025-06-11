@@ -3,11 +3,13 @@ import { DashboardOutlined } from '@ant-design/icons';
 import NightShelterOutlined from '@mui/icons-material/NightShelterOutlined';
 import { ChromeOutlined } from '@ant-design/icons';
 
+
 // icons
 const icons = {
   DashboardOutlined,
   ChromeOutlined,
-  NightShelterOutlined
+  NightShelterOutlined,
+
 };
 
 // ==============================|| MENU ITEMS - DASHBOARD ||============================== //
@@ -25,6 +27,7 @@ const booking = {
       url: '/delayedCheckouts',
       breadcrumbs: false,
       icon: icons.DashboardOutlined,
+
     },
     {
       id: 'pendingCheckins',

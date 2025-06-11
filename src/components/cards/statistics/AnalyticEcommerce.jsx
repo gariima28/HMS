@@ -29,7 +29,7 @@ const ImageContainer = styled(Box)(({ theme }) => ({
   padding: '12px'
 }));
 
-export default function AnalyticEcommerce({ color = 'primary', title, count, percentage, isLoss, extra, backgroundColor, image, to }) {
+export default function AnalyticEcommerce({ color = '#2C2C2C', title, count, percentage, isLoss, extra, backgroundColor, image, to }) {
   const cardsData = [
     { title: 'Card 1', count: 123, color: '#B1B1B14D' },
     { title: 'Card 2', count: 456, color: '#E5E0FA' },
@@ -58,7 +58,7 @@ export default function AnalyticEcommerce({ color = 'primary', title, count, per
                 </Typography>
                 <Grid container alignItems="center">
                   <Grid item>
-                    <Typography variant="h4" color="inherit">
+                    <Typography variant="h4" color="#0D5F76">
                       {count}
                     </Typography>
                   </Grid>
