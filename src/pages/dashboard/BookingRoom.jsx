@@ -205,8 +205,6 @@ const BookingRoom = ({ onOpenDrawer, selectedRooms, setSelectedRooms, checkIn, s
                             value={checkIn}
                             onChange={(newValue) => setCheckIn(newValue)}
                             slotProps={{ textField: { fullWidth: true, variant: 'outlined' } }}
-
-
                         />
                     </Grid>
                     <Grid item xs={12} sm={5}>
@@ -222,7 +220,7 @@ const BookingRoom = ({ onOpenDrawer, selectedRooms, setSelectedRooms, checkIn, s
                             fullWidth
                             variant="contained"
                             color="primary"
-                            sx={{ height: '100%' }}
+                            sx={{ height: '100%', py: 2 }}
                             onClick={getAvailableRooms}
                         >
                             Search Rooms
@@ -259,10 +257,13 @@ const BookingRoom = ({ onOpenDrawer, selectedRooms, setSelectedRooms, checkIn, s
 
                                 {/* Legend */}
                                 <Box display="flex" gap={2} mb={2}>
-                                    <Chip label="Booked" sx={{ bgcolor: '#ccc' }} />
-                                    <Chip label="Selected" sx={{ bgcolor: 'green', color: 'white' }} />
-                                    <Chip label="Available" sx={{ bgcolor: 'primary.main', color: 'white' }} />
+                                    <Chip label="Booked" sx={{ bgcolor: '#D8D8D8' }} />
+                                    <Chip label="Selected" sx={{ bgcolor: '#009327', color: 'white' }} />
+                                    <Chip label="Available" sx={{ bgcolor: '#3797D3', color: 'white' }} />
                                 </Box>
+                                <Typography variant="subtitle1" color="#2C2C2C" gutterBottom sx={{ backgroundColor: "#FFFBF0", p: 1.5, fontWeight: 400, borderBottom: "1px solid #DDDDEBBF", borderTop: "1px solid #DDDDEBBF" }}>
+                                    Every room can be select or deselect by a single click. Make sure that selected rooms in each date is equal to the number of rooms you have searched.
+                                </Typography>
 
                                 {/* Rooms Table */}
                                 <Grid container spacing={2}>
@@ -308,11 +309,10 @@ const BookingRoom = ({ onOpenDrawer, selectedRooms, setSelectedRooms, checkIn, s
 
                                                         {room.AvaRooms.map((availRoom) => {
                                                             const isSelected = selectedRooms.some(r => r.id === availRoom.roomId);
-
                                                             return (
                                                                 <Button
                                                                     key={availRoom.roomId}
-                                                                    variant={isSelected ? 'contained' : 'outlined'}
+                                                                    variant='contained'
                                                                     color={
                                                                         !availRoom.availableStatus
                                                                             ? 'inherit'
@@ -327,10 +327,36 @@ const BookingRoom = ({ onOpenDrawer, selectedRooms, setSelectedRooms, checkIn, s
                                                                         availRoom.roomNo
                                                                     )}
                                                                     sx={{
-                                                                        minWidth: '40px',
-                                                                        bgcolor: availRoom.status === 'booked' ? '#ccc' : undefined,
-                                                                        color: availRoom.status === 'booked' ? '#333' : undefined,
+                                                                        minWidth: '50px',
+                                                                        ...(availRoom.status === 'booked' && {
+                                                                            bgcolor: '#ccc',
+                                                                            color: '#333',
+                                                                            '&:hover': {
+                                                                                bgcolor: '#bbb' // Darker shade on hover
+                                                                            }
+                                                                        }),
+                                                                        ...(isSelected && {
+                                                                            bgcolor: '#009327', // Darker success color
+                                                                            color: '#fff',
+                                                                            '&:hover': {
+                                                                                bgcolor: '#1b5e20' // Even darker on hover
+                                                                            }
+                                                                        }),
+                                                                        ...(!isSelected && {
+                                                                            bgcolor: '#3797D3', // White background when not selected
+                                                                            color: '#fff',  // Dark text
+                                                                            border: '1px solid #DDDDEBBF', // Light gray border
+                                                                            '&:hover': {
+                                                                                bgcolor: '' //
+                                                                            }
+                                                                        }),
                                                                     }}
+
+                                                                // sx={{
+                                                                //     minWidth: '50px',
+                                                                //     bgcolor: availRoom.status === 'booked' ? '#ccc' : undefined,
+                                                                //     color: availRoom.status === 'booked' ? '#333' : undefined,
+                                                                // }}
 
                                                                 >
                                                                     {availRoom.roomNo}

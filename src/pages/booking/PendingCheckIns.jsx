@@ -92,7 +92,7 @@ const PendingCheckIns = () => {
                 sx={{
                   mt: 2,
                   '& .MuiPaginationItem-root.Mui-selected': {
-                    backgroundColor: '#0d6efd',
+                    backgroundColor: '#14969D',
                     color: 'white',
                   },
                   '& .MuiPaginationItem-root': {

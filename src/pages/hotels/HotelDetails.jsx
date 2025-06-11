@@ -116,7 +116,7 @@ const HotelDetails = () => {
         action: (
           <Stack justifyContent='end' spacing={2} direction="row">
             <EditButton component={Link} to={`/hotelForm/${hotels.hotelId}`} variant="outlined" size="small" startIcon={<Edit />}>Edit</EditButton>
-            <EnableButton variant="outlined" size="small" startIcon={hotels.status ? <EyeInvisibleFilled /> : <EyeFilled />} color={`${hotels.status ? 'error' : 'success'}`} onClick={() => handleDisableHotel(hotels?.hotelId, hotels.status)}>{`${hotels.status ? 'Disable' : 'Enable'}`}</EnableButton>
+            <EnableButton status={`${hotels.status ? 'enable' : 'disable'}`} variant="outlined" size="small" startIcon={hotels.status ? <EyeInvisibleFilled /> : <EyeFilled />} color={`${hotels.status ? 'error' : 'success'}`} onClick={() => handleDisableHotel(hotels?.hotelId, hotels.status)}>{`${hotels.status ? 'Disable' : 'Enable'}`}</EnableButton>
           </Stack>
         ),
       }));

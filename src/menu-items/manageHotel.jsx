@@ -1,11 +1,11 @@
 // assets
-import { DashboardOutlined } from '@ant-design/icons';
+import { ChromeOutlined, DashboardOutlined } from '@ant-design/icons';
 import NightShelterOutlinedIcon from '@mui/icons-material/NightShelterOutlined';
-import { ChromeOutlined } from '@ant-design/icons';
-
+import { buildIcon } from 'iconify-icon';
 // icons
 const icons = {
   DashboardOutlined,
+  buildIcon,
   NightShelterOutlinedIcon,
   ChromeOutlined
 };
@@ -21,6 +21,7 @@ const manageHotel = {
       id: 'manageHotel',
       title: 'Manage Hotels',
       type: 'collapse',
+      // icon: <Icon icon="solar:buildings-bold" width="24" height="24" style="color: #e10e0e" />,
       icon: icons.NightShelterOutlinedIcon,
       children: [
         {

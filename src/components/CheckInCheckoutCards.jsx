@@ -33,7 +33,7 @@ const CheckInCheckoutCards = ({ name, mobile, bookingNo, bookingId, totalRooms }
           <Typography variant='subtitle2' sx={{ color: 'text.secondary' }}>
             Booking No. :
           </Typography>
-          <Typography variant="subtitle2" onClick={() => navigate(`/bookedRoomInBookings/${bookingId}`)} sx={{ color: '#0d6efd', cursor: 'pointer', '&:hover': { color: '#4634ff' }, ml: 0.4 }}>
+          <Typography variant="subtitle2" onClick={() => navigate(`/bookedRoomInBookings/${bookingId}`)} sx={{ color: '#14969D', cursor: 'pointer', '&:hover': { color: '#14969D' }, ml: 0.4 }}>
             {bookingNo}
           </Typography>
         </Grid>

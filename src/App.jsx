@@ -42,9 +42,18 @@ export default function App() {
             '& .css-rsqidq-MuiPickersSectionList-root-MuiPickersInputBase-sectionsContainer-MuiPickersOutlinedInput-sectionsContainer': {
               padding: '10.5px 0px',
             },
-            ".css - 1tgopf7- MuiPickersInputBase - root - MuiPickersOutlinedInput - root": {
-              padding: '8.5px 0px',
+            ".css-1spv9e7-MuiPickersSectionList-root-MuiPickersInputBase-sectionsContainer-MuiPickersOutlinedInput-sectionsContainer": { padding: '10.5px 0px', },
+            ".css-1f6hyf2-MuiPickersSectionList-root-MuiPickersInputBase-sectionsContainer-MuiPickersOutlinedInput-sectionsContainer ": {
+              padding: '14.8px 0px',
+            },
+            ".css-1spv9e7-MuiPickersSectionList-root-MuiPickersInputBase-sectionsContainer-MuiPickersOutlinedInput-sectionsContainer": {
+              padding: '14.8px 0px',
+            },
+            ".css-1qwtadl-MuiInputBase-input-MuiOutlinedInput-input": {
+              padding: '14.8px 20px'
             }
+
+
           }}
         />
         <RouterProvider router={router} />
