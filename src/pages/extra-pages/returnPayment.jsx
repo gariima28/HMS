@@ -150,7 +150,9 @@ const returnPayment = () => {
           userName: <>
             <Typography>
               {payments.userName} <br />
-              {payments.userEmail}
+              <Typography sx={{ color: '#0D6A84' }}>
+                <b>{`@${payments.userEmail}`}</b>
+              </Typography>
             </Typography>
           </>,
           date: payments?.date?.split("T")[0],
@@ -213,7 +215,7 @@ const returnPayment = () => {
                       key={column.id}
                       align={column.align}
                       style={{ minWidth: column.minWidth }}
-                      sx={{ backgroundColor: "#0D6A8426" }}
+                      sx={{ backgroundColor: "#0D6A84", color: '#fff' }}
                     >
                       {column.label}
                     </TableCell>

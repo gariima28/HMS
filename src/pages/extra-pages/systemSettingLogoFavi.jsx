@@ -16,8 +16,8 @@ const useStyles = makeStyles({
         backgroundColor: '#fff',
         padding: '12px',
         borderRadius: 5,
-        borderLeft: '3px solid #5b6e88',
-        boxShadow: '3px 2px 10px -7px #5b6e88'
+        borderLeft: '3px solid #0D6A84',
+        boxShadow: '3px 2px 10px -7px #0D6A84'
     },
 
     container2: {
@@ -25,9 +25,9 @@ const useStyles = makeStyles({
     },
 
     gridItem: {
-        border: '1px solid #5b6e88',
+        border: '1px solid #0D6A84',
         borderRadius: 4,
-        boxShadow: '3px 2px 10px -7px #5b6e88'
+        boxShadow: '3px 2px 10px -7px #0D6A84'
     },
     box: {
         display: 'flex',
@@ -39,7 +39,7 @@ const useStyles = makeStyles({
     icon: {
         width: '80px',
         height: '80px',
-        border: '1.5px solid #5b6e88',
+        border: '1.5px solid #0D6A84',
         padding: 3,
         borderRadius: 4
     },
@@ -80,7 +80,7 @@ const useStyles = makeStyles({
     forHover: {
         '&:hover': {
             color: "#fff",
-            backgroundColor: '#4634ff',
+            backgroundColor: '#0D6A84',
         },
     }
 });
@@ -201,7 +201,7 @@ const systemSettingLogoFavi = () => {
                                 sx={{ marginTop: 2 }}
                                 accept='png, jpg, jpeg, svg'
                             />
-                            <Typography>Supported Files: <b>.png, .jpg, .jpeg.</b></Typography>
+                            <Typography sx={{color:''}}>Supported Files: <b>.png, .jpg, .jpeg.</b></Typography>
 
                         </Grid>
                         <Grid item xs={12} sm={6} md={4}>

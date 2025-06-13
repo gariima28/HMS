@@ -138,22 +138,22 @@ const loginHistory = () => {
           userName: <>
             <Typography>
               {item.userName} <br />
-              <Typography sx={{ color: '#4634ff' }}>@{item.email}</Typography>
+              <Typography sx={{ color: '#0D6A84' }}>@{item.email}</Typography>
             </Typography>
           </>,
           location: <>
             {
-              <Typography sx={''}>
+              <Typography sx={{color:"#0D6A84"}}>
                 {(item.location)?.length > 20 ? item?.location.substring(0, 20) + '....' : item.location}
                 {(item.location)?.length > 20 ?
                   <HtmlTooltip
                     title={
                       <React.Fragment>
-                        <Typography color="inherit">{item.location}</Typography>
+                        <Typography >{item.location}</Typography>
                       </React.Fragment>
                     }
                   >
-                    <Button >More</Button>
+                    <Button>More</Button>
                   </HtmlTooltip>
                   :
                   ''
@@ -163,7 +163,7 @@ const loginHistory = () => {
           </>,
           systemIP: <>
             {
-              <Typography sx={{ color: '#4634ff' }}>{item.systemIP ? `@${item.systemIP}` : ''}</Typography>
+              <Typography sx={{ color: '#0D6A84' }}>{item.systemIP ? `@${item.systemIP}` : ''}</Typography>
             }
           </>,
           date: item?.date?.split("T")[0],
@@ -269,7 +269,7 @@ const loginHistory = () => {
                       key={column.id}
                       align={column.align}
                       style={{ minWidth: column.minWidth }}
-                      sx={{ backgroundColor: "#0D6A8426" }}
+                      sx={{ backgroundColor: "#0D6A84", color:'#fff' }}
                     >
                       {column.label}
                     </TableCell>

@@ -260,7 +260,7 @@ const reportRequest = () => {
                 </Grid>
                 <Grid>
                     <Button sx={{ ...forHover, borderColor: '#ff9f43', backgroundColor: "#fff", color: '#ff9f43', marginRight: 1 }} variant="outlined" onClick={handleOpen3}> {/* <AddIcon /> */}Report a bug</Button>
-                    <Button sx={{ ...forHover2, borderColor: '#28c76f', backgroundColor: "#fff", color: '#28c76f' }} variant="outlined" onClick={() => window.open('https://www.scriza.in','_blank')}> {/* <AddIcon /> */}Request for Support</Button>
+                    <Button sx={{ ...forHover2, borderColor: '#0D6A84', backgroundColor: "#fff", color: '#0D6A84' }} variant="outlined" onClick={() => window.open('https://www.scriza.in','_blank')}> {/* <AddIcon /> */}Request for Support</Button>
                 </Grid>
             </Box>
             <Box sx={{ marginTop: 5 }}>
@@ -274,6 +274,7 @@ const reportRequest = () => {
                                             key={column.id}
                                             align={column.align}
                                             style={{ minWidth: column.minWidth }}
+                                            sx={{ backgroundColor: "#0D6A84", color:'#fff' }}
                                         >
                                             {column.label}
                                         </TableCell>
