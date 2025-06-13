@@ -46,10 +46,10 @@ const useStyles = makeStyles({
     borderRadius: "0px 3px 3px 0px"
   },
   enable: {
-    border: '1px solid #FFEAC2',
+    border: '#FFEAC2',
     borderRadius: 10,
     fontSize: 12,
-    backgroundColor: 'rgba(255, 159, 67, 0.1)',
+    backgroundColor: '#FFEAC2',
     color: '#FD9808',
   },
   closed: {
@@ -60,11 +60,11 @@ const useStyles = makeStyles({
     color: '#000',
   },
   green: {
-    border: '1px solid #28c76f',
+    border: '#D4F8DB',
     borderRadius: 10,
     fontSize: 13,
-    backgroundColor: 'rgba(40, 199, 111, 0.1)',
-    color: '#28c76f',
+    backgroundColor: '#D4F8DB',
+    color: '#0AAD24',
   },
   high: {
     border: '1px solid #eb2222',
@@ -292,7 +292,6 @@ const allStaff = () => {
     }
   }
 
-
   // let bootstrap;
   const offcanvasRef = useRef(null);
   const offcanvasRef22 = useRef(null);
@@ -345,7 +344,8 @@ const allStaff = () => {
           index: index + 1 + (currentPage - 1) * pageSize,
           email: allRoles?.email,
           role: allRoles?.role?.roleName,
-          status: <Button sx={{ marginLeft: 1, padding: 0, height: 30, borderColor: '#eb2222', color: '#eb2222', borderRadius: "10px" }} className={`${allRoles?.status === 'ENABLED' ? `${classes.green}` : `${classes.enable}`}`} variant="outlined" onClick={() => { setIdForBan(allRoles.id); handleOpen2(); }} >
+          status: 
+          <Button sx={{ marginLeft: 1, padding: 0, height: 30, borderColor: '#eb2222', color: '#eb2222', borderRadius: "10px" }} className={`${allRoles?.status === 'ENABLED' ? `${classes.green}` : `${classes.enable}`}`} variant="outlined" onClick={() => { setIdForBan(allRoles.id); handleOpen2(); }} >
             <Typography sx={{ paddingTop: .8, paddingRight: .3 }}>
             </Typography> {allRoles?.status === "ENABLED" ? `${'Enable'}` : `${'Disbale'}`}
           </Button>,

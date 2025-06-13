@@ -1,13 +1,15 @@
 // assets
 import { ChromeOutlined, DashboardOutlined } from '@ant-design/icons';
 import NightShelterOutlinedIcon from '@mui/icons-material/NightShelterOutlined';
+
 import { buildIcon } from 'iconify-icon';
 import BusinessIcon from '@mui/icons-material/Business';
 import LabelImportantIcon from '@mui/icons-material/LabelImportant';
+
 // icons
 const icons = {
   DashboardOutlined,
-  buildIcon,
+  // buildIcon,
   NightShelterOutlinedIcon,
   ChromeOutlined, BusinessIcon, LabelImportantIcon
 };

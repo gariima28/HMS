@@ -44,19 +44,19 @@ const useStyles = makeStyles({
     color: '#eb2222',
   },
   enable: {
-    border: '1px solid #ff9f43',
+    // border: '1px solid #ff9f43',
     borderRadius: 10,
     fontSize: 13,
-    backgroundColor: 'rgba(255, 159, 67, 0.1)',
-    color: '#ff9f43',
+    backgroundColor: 'rgba(234, 84, 85, 0.1)',
+    color: '#eb2222',
   },
 
   green: {
-    border: '1px solid #28c76f',
+    // border: '1px solid #28c76f',
     borderRadius: 10,
     fontSize: 13,
-    backgroundColor: 'rgba(40, 199, 111, 0.1)',
-    color: '#28c76f',
+     backgroundColor: '#DBE9ED',
+    color: '#0D6A84',
 
   },
 });
@@ -279,7 +279,7 @@ const answerTicket = () => {
                       key={column.id}
                       align={column.align}
                       style={{ minWidth: column.minWidth }}
-                      sx={{ backgroundColor: "#0D6A8426" }}
+                    sx={{ backgroundColor: "#0D6A84", color:'#fff' }}
                     >
                       {column.label}
                     </TableCell>
