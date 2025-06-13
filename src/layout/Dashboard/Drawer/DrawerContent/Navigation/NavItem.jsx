@@ -55,19 +55,21 @@ export default function NavItem({ item, level }) {
       selected={isSelected}
       sx={{
         zIndex: 1201,
+        mx: 1,
         pl: drawerOpen ? `${level * 28}px` : 1.5,
         py: !drawerOpen && level === 1 ? 1.25 : 1,
         ...(drawerOpen && {
           '&:hover': {
-            bgcolor: '#1AC3BE8C'
+            bgColor: "background: linear - gradient(270deg, #167A96 0 %, #0D5F76 100 %)",
           },
           '&.Mui-selected': {
-            bgcolor: '#1AC3BE8C',
-            borderRight: `2px solid ${theme.palette.primary.main}`,
+            bgColor: "background: linear - gradient(270deg, #167A96 100 %, #0D5F76 0 %)",
+
+            borderRight: `2px solid #E4AB55`,
             color: iconSelectedColor,
             '&:hover': {
               color: iconSelectedColor,
-              bgcolor: '#1AC3BE8C'
+              bgColor: "background: linear - gradient(270deg, #167A96 0 %, #0D5F76 100 %)",
             }
           }
         }),
@@ -95,6 +97,7 @@ export default function NavItem({ item, level }) {
               height: 36,
               alignItems: 'center',
               justifyContent: 'center',
+
               '&:hover': {
                 bgcolor: 'secondary.lighter'
               }
@@ -111,25 +114,29 @@ export default function NavItem({ item, level }) {
           {itemIcon}
         </ListItemIcon>
       )}
-      {(drawerOpen || (!drawerOpen && level !== 1)) && (
-        <ListItemText
-          primary={
-            <Typography variant="h6" sx={{ color: isSelected ? '#fff' : '#fff' }}>
-              {item.title}
-            </Typography>
-          }
-        />
-      )}
-      {(drawerOpen || (!drawerOpen && level !== 1)) && item.chip && (
-        <Chip
-          color={item.chip.color}
-          variant={item.chip.variant}
-          size={item.chip.size}
-          label={item.chip.label}
-          avatar={item.chip.avatar && <Avatar>{item.chip.avatar}</Avatar>}
-        />
-      )}
-    </ListItemButton>
+      {
+        (drawerOpen || (!drawerOpen && level !== 1)) && (
+          <ListItemText
+            primary={
+              <Typography variant="h6" sx={{ color: isSelected ? '#fff' : '#fff' }}>
+                {item.title}
+              </Typography>
+            }
+          />
+        )
+      }
+      {
+        (drawerOpen || (!drawerOpen && level !== 1)) && item.chip && (
+          <Chip
+            color={item.chip.color}
+            variant={item.chip.variant}
+            size={item.chip.size}
+            label={item.chip.label}
+            avatar={item.chip.avatar && <Avatar>{item.chip.avatar}</Avatar>}
+          />
+        )
+      }
+    </ListItemButton >
   );
 }
 

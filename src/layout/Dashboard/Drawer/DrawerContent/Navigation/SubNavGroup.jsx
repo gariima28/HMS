@@ -15,27 +15,29 @@ import { useTheme } from '@mui/material/styles';
 // project import
 import NavItem from './NavItem';
 import { useGetMenuMaster } from 'api/menu';
+import { has } from 'lodash';
+
 
 export default function SubNavGroup({ item, level }) {
   const theme = useTheme();
   const { pathname } = useLocation();
   const [open, setOpen] = React.useState(false);
-  const drawerOpen = useGetMenuMaster.isDashboardDrawerOpened;
-
+  const { menuMaster } = useGetMenuMaster(); // Fixed destructuring
+  const drawerOpen = menuMaster.isDashboardDrawerOpened;
 
   const handleClick = () => {
     setOpen(!open);
   };
 
-  const isSelected = item.url ? !!matchPath({ path: item.url, end: false }, pathname) : false;
+  // Check if any child is selected
+  const hasSelectedChild = item.children?.some(child => {
+    return matchPath({ path: child.url, end: true }, pathname);
+  });
 
-  const textColor = 'text.primary';
- 
-  //const iconSelectedColor = 'primary.main';
- const iconSelectedColor = '#fff';
- 
- const bgSelectedColor = "#1AC3BE8C";
-  // console.log(item, 'item')
+  const textColor = '#fff';
+  const iconSelectedColor = '#fff';
+  const bgSelectedColor = "#1AC3BE8C";
+
   const navCollapse = item.children?.map((menuItemm, index) => {
     switch (menuItemm.type) {
       case 'item':
@@ -48,41 +50,52 @@ export default function SubNavGroup({ item, level }) {
         );
     }
   });
-  
 
   return (
-    <List component="div" disablePadding sx={{p:0}}>
+    <List component="div" disablePadding sx={{ p: 0 }}>
       <ListItemButton
         onClick={handleClick}
-        selected={isSelected}
+        selected={hasSelectedChild}
         sx={{
-          p:0,
+          borderRadius: "30px",
+          mx: 1,
+          p: 0,
           pl: drawerOpen ? `${level * 28}px` : 3,
           py: !drawerOpen && level === 2 ? 2 : 1,
-          color: open ? iconSelectedColor : isSelected ? iconSelectedColor : textColor,
-          bgColor: open ? bgSelectedColor : isSelected ? bgSelectedColor : 'primary.lighter',
+          color: hasSelectedChild ? iconSelectedColor : textColor,
+          bgcolor: hasSelectedChild ? bgSelectedColor : 'transparent', // Changed from bgColor to bgcolor
           '&:hover': {
-            //bgcolor: 'primary.lighter',       
-            bgcolor: '#1AC3BE8C',       
+            bgcolor: '#fff',
+            color: 'black',
+            '& .MuiListItemIcon-root': {
+              color: '#C0A65C'
+            }
           },
-          '&:focus, &.Mui-focusVisible, &:focusVisible, &:visited': {
-        //  bgcolor: `${theme.palette.primary.lighter} !important`,          
-            bgColor: open ? bgSelectedColor : isSelected ? bgSelectedColor : 'primary.lighter',        
-          },
-          ...(isSelected && { 
-            //bgcolor: 'primary.lighter',
-            bgColor: open ? bgSelectedColor : isSelected ? bgSelectedColor : 'primary.lighter',
+          '&.Mui-selected': {
+            bgcolor: bgSelectedColor,
             borderRight: `2px solid #0D6A84`,
+            color:"#fff",
             '&:hover': {
-              bgcolor: 'primary.lighter',     
-            },
-          }),
+              bgcolor: bgSelectedColor,
+            }
+          }
         }}
       >
-        <ListItemIcon sx={{ color: open ? iconSelectedColor : isSelected ? iconSelectedColor : textColor, }}>
+        <ListItemIcon sx={{
+          color: hasSelectedChild ? iconSelectedColor : "#C0A65C",
+          transition: 'color 0.3s ease',
+         
+        }}>
           {item.icon && <item.icon />}
         </ListItemIcon>
-        <ListItemText primary={item.title} sx={{px:1}} />
+        <ListItemText
+          primary={
+            <Typography variant="h6" >
+              {item.title}
+            </Typography>
+          }
+          sx={{ px: 1 }}
+        />
         {open ? <ExpandLess /> : <ExpandMore />}
       </ListItemButton>
       <Collapse in={open} timeout="auto" unmountOnExit>
@@ -93,6 +106,7 @@ export default function SubNavGroup({ item, level }) {
     </List>
   );
 }
+
 
 SubNavGroup.propTypes = {
   item: PropTypes.object.isRequired,

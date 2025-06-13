@@ -2,13 +2,29 @@
 import { DashboardOutlined } from '@ant-design/icons';
 import NightShelterOutlined from '@mui/icons-material/NightShelterOutlined';
 import { ChromeOutlined } from '@ant-design/icons';
-
-
+import CalendarMonthIcon from '@mui/icons-material/CalendarMonth';
+import PendingActionsIcon from '@mui/icons-material/PendingActions';
+import UpcomingIcon from '@mui/icons-material/Upcoming';
+import ShoppingCartCheckoutIcon from '@mui/icons-material/ShoppingCartCheckout';
+import KeyIcon from '@mui/icons-material/Key';
+import AccountBalanceWalletIcon from '@mui/icons-material/AccountBalanceWallet';
+import SupportAgentIcon from '@mui/icons-material/SupportAgent';
+import LabelImportantIcon from '@mui/icons-material/LabelImportant';
+import AutoStoriesIcon from '@mui/icons-material/AutoStories';
 // icons
 const icons = {
   DashboardOutlined,
   ChromeOutlined,
   NightShelterOutlined,
+  CalendarMonthIcon,
+  PendingActionsIcon,
+  UpcomingIcon,
+  ShoppingCartCheckoutIcon,
+  KeyIcon,
+  AccountBalanceWalletIcon,
+  SupportAgentIcon,
+  LabelImportantIcon,
+  AutoStoriesIcon
 
 };
 
@@ -23,50 +39,50 @@ const booking = {
     {
       id: 'delayedCheckouts',
       title: 'Delayed Checkouts',
-      type: 'item',
+      type: 'mainItem',
       url: '/delayedCheckouts',
       breadcrumbs: false,
-      icon: icons.DashboardOutlined,
+      icon: icons.CalendarMonthIcon,
 
     },
     {
       id: 'pendingCheckins',
       title: 'Pending Check-Ins',
-      type: 'item',
+      type: 'mainItem',
       url: '/pendingCheckins',
       breadcrumbs: false,
-      icon: icons.DashboardOutlined,
+      icon: icons.PendingActionsIcon,
     },
     {
       id: 'upcomingCheckins',
       title: 'Upcoming Check-Ins',
-      type: 'item',
+      type: 'mainItem',
       url: '/upcomingCheckins',
       breadcrumbs: false,
-      icon: icons.DashboardOutlined,
+      icon: icons.UpcomingIcon,
     },
     {
       id: 'upcomingCheckouts',
       title: 'Upcoming Checkouts',
-      type: 'item',
+      type: 'mainItem',
       url: '/upcomingCheckouts',
       breadcrumbs: false,
-      icon: icons.DashboardOutlined,
+      icon: icons.ShoppingCartCheckoutIcon,
     },
     {
       id: 'bookRoom',
       title: 'Book Room',
-      type: 'item',
+      type: 'mainItem',
       url: '/bookRoom',
       breadcrumbs: false,
-      icon: icons.DashboardOutlined,
+      icon: icons.KeyIcon,
     },
     {
       id: 'manageBookings',
       title: 'Manage Bookings',
       type: 'collapse',
       breadcrumbs: false,
-      icon: icons.NightShelterOutlined,
+      icon: icons.AutoStoriesIcon,
       children: [
         {
           id: 'todaysBooked',
@@ -74,7 +90,7 @@ const booking = {
           type: 'item',
           url: '/todaysBooked',
           breadcrumbs: false,
-          icon: icons.ChromeOutlined
+          icon: icons.LabelImportantIcon
         },
         {
           id: 'todaysCheckIns',
@@ -82,7 +98,7 @@ const booking = {
           type: 'item',
           url: '/todaysCheckIns',
           breadcrumbs: false,
-          icon: icons.ChromeOutlined
+          icon: icons.LabelImportantIcon
         },
         {
           id: 'todaysCheckout',
@@ -90,7 +106,7 @@ const booking = {
           type: 'item',
           url: '/todaysCheckout',
           breadcrumbs: false,
-          icon: icons.ChromeOutlined
+          icon: icons.LabelImportantIcon
         },
         {
           id: 'activeBookings',
@@ -98,7 +114,7 @@ const booking = {
           type: 'item',
           url: '/activeBookings',
           breadcrumbs: false,
-          icon: icons.ChromeOutlined
+          icon: icons.LabelImportantIcon
         },
         {
           id: 'checkedOutBookings',
@@ -106,7 +122,7 @@ const booking = {
           type: 'item',
           url: '/checkedOutBookings',
           breadcrumbs: false,
-          icon: icons.ChromeOutlined
+          icon: icons.LabelImportantIcon
         },
         {
           id: 'canceledBookings',
@@ -114,7 +130,7 @@ const booking = {
           type: 'item',
           url: '/canceledBookings',
           breadcrumbs: false,
-          icon: icons.ChromeOutlined
+          icon: icons.LabelImportantIcon
         },
         {
           id: 'refundableBookings',
@@ -122,7 +138,7 @@ const booking = {
           type: 'item',
           url: '/refundableBookings',
           breadcrumbs: false,
-          icon: icons.ChromeOutlined
+          icon: icons.LabelImportantIcon
         },
         {
           id: 'delayedCheckoutBooking',
@@ -130,7 +146,7 @@ const booking = {
           type: 'item',
           url: '/delayedCheckoutBooking',
           breadcrumbs: false,
-          icon: icons.ChromeOutlined
+          icon: icons.LabelImportantIcon
         },
         {
           id: 'allBookings',
@@ -138,7 +154,7 @@ const booking = {
           type: 'item',
           url: '/allBookings',
           breadcrumbs: false,
-          icon: icons.ChromeOutlined
+          icon: icons.LabelImportantIcon
         },
       ],
     },
@@ -147,7 +163,7 @@ const booking = {
       title: 'Premium Services',
       type: 'collapse',
       breadcrumbs: false,
-      icon: icons.NightShelterOutlined,
+      icon: icons.SupportAgentIcon,
       children: [
         {
           id: 'addService',
@@ -155,7 +171,7 @@ const booking = {
           type: 'item',
           url: '/addService/add',
           breadcrumbs: false,
-          icon: icons.ChromeOutlined
+          icon: icons.LabelImportantIcon
         },
         {
           id: 'addedServices',
@@ -163,7 +179,7 @@ const booking = {
           type: 'item',
           url: '/addedServices',
           breadcrumbs: false,
-          icon: icons.ChromeOutlined
+          icon: icons.LabelImportantIcon
         },
       ],
     },
@@ -172,7 +188,7 @@ const booking = {
       title: 'Online Payments',
       type: 'collapse',
       breadcrumbs: false,
-      icon: icons.NightShelterOutlined,
+      icon: icons.AccountBalanceWalletIcon,
       children: [
         {
           id: 'pendingPayments',
@@ -180,7 +196,7 @@ const booking = {
           type: 'item',
           url: '/payments/PENDING',
           breadcrumbs: false,
-          icon: icons.ChromeOutlined
+          icon: icons.LabelImportantIcon
         },
         {
           id: 'approvedPayments',
@@ -188,7 +204,7 @@ const booking = {
           type: 'item',
           url: '/payments/ACCEPTED',
           breadcrumbs: false,
-          icon: icons.ChromeOutlined
+          icon: icons.LabelImportantIcon
         },
         {
           id: 'successfullPayments',
@@ -196,7 +212,7 @@ const booking = {
           type: 'item',
           url: '/payments/SUCCESSFUL',
           breadcrumbs: false,
-          icon: icons.ChromeOutlined
+          icon: icons.LabelImportantIcon
         },
         {
           id: 'rejectedPayments',
@@ -204,7 +220,7 @@ const booking = {
           type: 'item',
           url: '/payments/REJECTED',
           breadcrumbs: false,
-          icon: icons.ChromeOutlined
+          icon: icons.LabelImportantIcon
         },
         // abc
 
@@ -214,7 +230,7 @@ const booking = {
           type: 'item',
           url: '/payments/FAILED',
           breadcrumbs: false,
-          icon: icons.ChromeOutlined
+          icon: icons.LabelImportantIcon
         },
         {
           id: 'allPayments',
@@ -222,7 +238,7 @@ const booking = {
           type: 'item',
           url: '/payments/all',
           breadcrumbs: false,
-          icon: icons.ChromeOutlined
+          icon: icons.LabelImportantIcon
         },
       ],
     },

@@ -37,7 +37,7 @@ import CheckOutInBookings from 'pages/booking/CheckOutInBookings';
 import PremiumServicesInBookings from 'pages/booking/PremiumServicesInBookings';
 import PaymentInBookings from 'pages/booking/PaymentInBookings';
 import BookedRoomInBookings from 'pages/booking/BookedRoomInBookings';
-import PaymentStatusDetailsPage from 'pages/booking/PaymentStatusDetailsPage';
+import PaymenttStatusDetailsPage from 'pages/booking/PaymenttStatusDetailsPage';
 
 
 
@@ -218,7 +218,7 @@ const MainRoutes = {
     },
     {
       path: 'detailspayments/:paymentId',
-      element: <PaymentStatusDetailsPage />
+      element: <PaymenttStatusDetailsPage />
     },
     // {
     //   path: 'error-500',

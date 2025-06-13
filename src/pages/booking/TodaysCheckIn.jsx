@@ -38,32 +38,33 @@ const CustomEnableButton = styled(Button)(({ status }) => ({
   },
 }));
 
+
 const DetailsButton = styled(Button)(() => ({
-  borderRadius: '3.2px',
-  backgroundColor: '#fff',
-  borderColor: '#4634ff',
-  color: '#4634ff',
+  borderRadius: '20px',
+  backgroundColor: 'transparent',
+  borderColor: '#0D6A84',
+  color: '#0D6A84',
   fontSize: '0.825rem',
   textTransform: 'none',
 
   '&:hover': {
-    backgroundColor: '#4634ff',
-    borderColor: '#4634ff',
+    backgroundColor: '#0D6A84',
+    borderColor: '#0D6A84',
     color: '#fff',
   },
 }));
 
+
 const MoreButton = styled(Button)(() => ({
   borderRadius: '3.2px',
-  backgroundColor: '#fff',
-  borderColor: '#1e9ff2',
-  color: '#1e9ff2',
+  backgroundColor: 'transparent',
+  borderColor: '#0D6A84',
+  color: '#0D6A84',
   fontSize: '0.825rem',
   textTransform: 'none',
-
   '&:hover': {
-    backgroundColor: '#1e9ff2',
-    borderColor: '#1e9ff2',
+    backgroundColor: '#0D6A84',
+    borderColor: '#0D6A84',
     color: '#fff',
   },
 }));

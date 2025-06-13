@@ -29,12 +29,13 @@ export default function Header() {
   // header content
   const headerContent = useMemo(() => <HeaderContent />, []);
 
+
   const iconBackColor = 'grey.100';
   const iconBackColorOpen = 'grey.200';
 
   // common header
   const mainHeader = (
-    <Toolbar sx={{ py: 1.8 }}>
+    <Toolbar sx={{ py: 1.8, ml: 2 }}>
       <IconButton
         disableRipple
         aria-label="open drawer"

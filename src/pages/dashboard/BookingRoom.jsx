@@ -192,7 +192,7 @@ const BookingRoom = ({ onOpenDrawer, selectedRooms, setSelectedRooms, checkIn, s
 
     return (
         <LocalizationProvider dateAdapter={AdapterDayjs}>
-            <Box sx={{ p: 3 }}>
+            <Box sx={{ py: 3, px: .5 }}>
                 <Typography variant="h6" fontWeight="bold" gutterBottom>
                     Booking Room
                 </Typography>
@@ -205,6 +205,11 @@ const BookingRoom = ({ onOpenDrawer, selectedRooms, setSelectedRooms, checkIn, s
                             value={checkIn}
                             onChange={(newValue) => setCheckIn(newValue)}
                             slotProps={{ textField: { fullWidth: true, variant: 'outlined' } }}
+                            sx={{
+                                '&:hover .MuiOutlinedInput-notchedOutline': {
+                                    borderColor: '#0D6A84', // Change to your desired green shade
+                                },
+                            }}
                         />
                     </Grid>
                     <Grid item xs={12} sm={5}>
@@ -213,6 +218,11 @@ const BookingRoom = ({ onOpenDrawer, selectedRooms, setSelectedRooms, checkIn, s
                             value={checkOut}
                             onChange={(newValue) => setCheckOut(newValue)}
                             slotProps={{ textField: { fullWidth: true, variant: 'outlined' } }}
+                            sx={{
+                                '&:hover .MuiOutlinedInput-notchedOutline': {
+                                    borderColor: '#0D6A84', // Change to your desired green shade
+                                },
+                            }}
                         />
                     </Grid>
                     <Grid item xs={12} sm={2}>
@@ -250,7 +260,7 @@ const BookingRoom = ({ onOpenDrawer, selectedRooms, setSelectedRooms, checkIn, s
                 ) : (
                     <Grid container spacing={2}>
                         <Grid item xs={12} >
-                            <Paper elevation={3} sx={{ p: 2, mt: 2 }}>
+                            <Box elevation={3} sx={{ py: 2, mt: 2 }}>
                                 <Typography variant="h6" fontWeight="bold" gutterBottom>
                                     Choose Room
                                 </Typography>
@@ -269,7 +279,7 @@ const BookingRoom = ({ onOpenDrawer, selectedRooms, setSelectedRooms, checkIn, s
                                 <Grid container spacing={2}>
                                     {/* Table Headers */}
                                     <Grid item xs={12}>
-                                        <Grid container>
+                                        <Grid container sx={{ backgroundColor: "#0D6A8426", display: "flex", alignItems: "center", justifyContent: "center", pt: 1, px: 2 }}>
                                             <Grid item xs={12} md={4}>
                                                 <Typography fontWeight="bold" variant="subtitle1" gutterBottom>
                                                     Date
@@ -291,7 +301,7 @@ const BookingRoom = ({ onOpenDrawer, selectedRooms, setSelectedRooms, checkIn, s
                                     {/* Left Side: Date + Rooms */}
                                     <Grid item xs={12} md={7}>
                                         {roomData.map((room, idx) => (
-                                            <Grid container key={idx} spacing={2} mb={2}>
+                                            <Grid container key={idx} spacing={2} mb={2} >
                                                 {/* Date Column */}
                                                 <Grid item xs={12} md={6}>
                                                     <Typography fontWeight="bold" color="text.secondary">
@@ -457,7 +467,7 @@ const BookingRoom = ({ onOpenDrawer, selectedRooms, setSelectedRooms, checkIn, s
 
                                             <TableContainer>
                                                 <Table size="small">
-                                                    <TableHead sx={{ backgroundColor: '#e0eff5' }}>
+                                                    <TableHead sx={{ backgroundColor: '#E7E7E7' }}>
                                                         <TableRow>
                                                             <TableCell><strong>Room No.</strong></TableCell>
                                                             <TableCell><strong>Type</strong></TableCell>
@@ -542,7 +552,7 @@ const BookingRoom = ({ onOpenDrawer, selectedRooms, setSelectedRooms, checkIn, s
                                         </Paper>
                                     </Grid>
                                 </Grid>
-                            </Paper>
+                            </Box>
                         </Grid>
                     </Grid>
                 )}

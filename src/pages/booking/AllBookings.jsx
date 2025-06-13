@@ -56,8 +56,8 @@ const DetailsButton = styled(Button)(() => ({
   textTransform: 'none',
 
   '&:hover': {
-    backgroundColor: '#4634ff',
-    borderColor: '#4634ff',
+    backgroundColor: '#0D6A84',
+    borderColor: '#0D6A84',
     color: '#fff',
   },
 }));
@@ -238,7 +238,6 @@ const AllBookings = () => {
                 MenuListProps={{
                   'aria-labelledby': 'basic-button',
                 }}
-
               >
                 <MenuItem sx={{ p: 0 }}>
                   <Button component={Link} to={`/bookedRoomInBookings/${booking.bookingId}`} sx={{ backgroundColor: 'transparent', color: '#000', '&:hover': { color: '#000', backgroundColor: 'transparent' } }}>Booked Rooms</Button>

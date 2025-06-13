@@ -33,8 +33,8 @@ const DetailsButton = styled(Button)(() => ({
   textTransform: 'none',
 
   '&:hover': {
-    backgroundColor: '#4634ff',
-    borderColor: '#4634ff',
+    backgroundColor: '#0D6A84',
+    borderColor: '#0D6A84',
     color: '#fff',
   },
 }));
@@ -44,41 +44,42 @@ const CustomEnableButton = styled(Button)(({ status }) => ({
   padding: "2px 26px",
   fontSize: "12px",
   textTransform: "none",
+  minWidth: "130px",
 
   // Background Color
   backgroundColor:
     status === "PENDING"
-      ? "rgba(255, 159, 67, 0.1)"
+      ? "#FFEAC2"
       : status === "INITIATED"
         ? "rgba(7, 18, 81, 0.1)"
         : status === "SUCCESSFUL"
-          ? "rgb(40 199 111 / 10%)"
+          ? "#D4F8DB"
           : status === "REJECTED"
-            ? "#eb222278"
+            ? "#FBD8D1"
             : "rgba(108, 117, 125, 0.1)", // Default
 
   // Border Color
   border:
     status === "PENDING"
-      ? "1px solid #ff9f43"
+      ? "1px solid #FFEAC2"
       : status === "INITIATED"
         ? "1px solid #071251"
         : status === "SUCCESSFUL"
-          ? "1px solid #28c76f"
+          ? "1px solid #D4F8DB"
           : status === "REJECTED"
-            ? "1px solid rgb(235, 34, 34)"
-            : "1px solid #6c757d", // Default
+            ? "1px solid #FBD8D1"
+            : "1px solid #6c757d",
 
   // Text Color
   color:
     status === "PENDING"
-      ? "#ff9f43"
+      ? "#FD9808"
       : status === "INITIATED"
         ? "#071251"
         : status === "SUCCESSFUL"
-          ? "#28c76f"
+          ? "#0AAD24"
           : status === "REJECTED"
-            ? "rgb(235, 34, 34)"
+            ? "#943320"
             : "#6c757d", // Default
 }));
 
@@ -169,7 +170,7 @@ const PaymentsPage = () => {
         ),
         gateway: (
           <>
-            <Typography variant="h6" sx={{ fontWeight: 900, color: '#14969D' }}>
+            <Typography variant="h6" sx={{ fontWeight: 900, color: '#3797D3' }}>
               {payment?.paymentType}
             </Typography>
             <Typography variant="h6">{payment?.transactionNo}</Typography>
@@ -178,7 +179,7 @@ const PaymentsPage = () => {
         user: (
           <>
             <Typography variant="h6" sx={{ fontWeight: 900 }}>{payment?.userName}</Typography>
-            <Typography variant="h6" sx={{ fontWeight: 900, color: '#14969D' }}>{payment?.userEmail}</Typography>
+            <Typography variant="h6" sx={{ fontWeight: 900, color: '#3797D3' }}>{payment?.userEmail}</Typography>
           </>
         ),
         amount: (

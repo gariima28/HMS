@@ -8,6 +8,9 @@ import Box from '@mui/material/Box';
 import NavItem from './NavItem';
 import { useGetMenuMaster } from 'api/menu';
 import SubNavGroup from './SubNavGroup';
+import MainItem from './MainItem';
+
+
 
 export default function NavGroup({ item }) {
   const { menuMaster } = useGetMenuMaster();
@@ -19,6 +22,9 @@ export default function NavGroup({ item }) {
         return <SubNavGroup key={menuItem.id} item={menuItem} level={1} />;
       case 'item':
         return <NavItem key={menuItem.id} item={menuItem} level={1} />;
+      case 'mainItem':
+        return <MainItem key={menuItem.id} item={menuItem} level={1} />;
+
       default:
         return (
           <Typography key={menuItem.id} variant="h6" color="error" align="center">
@@ -35,7 +41,7 @@ export default function NavGroup({ item }) {
         drawerOpen && (
           <Box sx={{ pl: 3, mb: 1.5 }}>
             <Typography variant="subtitle2"
-              color="textSecondary">
+              color="#1AC3BE">
               {item.title}
             </Typography>
           </Box>

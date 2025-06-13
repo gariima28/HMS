@@ -25,7 +25,7 @@ const DynamicDataTable = ({ columns, rows, dataViewId }) => {
     <Paper sx={{ width: '100%' }}>
       <TableContainer sx={{ maxHeight: '500px', overflow: 'scroll' }}>
         <Table stickyHeader aria-label="sticky table">
-          <TableHead >
+          <TableHead>
             <TableRow>
               {columns.map((column) => (
                 <TableCell
@@ -38,8 +38,7 @@ const DynamicDataTable = ({ columns, rows, dataViewId }) => {
                     zIndex: 1,
                     textWrap: 'nowrap'
                   }}
-                  //sx={{ backgroundColor: "#0D6A8426" }}
-                  sx={{ backgroundColor: "#0D6A84" }}
+                  sx={{ backgroundColor: "#0D5F76", color: "#ffffff" }}
                 >
                   {column.label}
                 </TableCell>

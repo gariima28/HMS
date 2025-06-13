@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react'
-import { Alert, Box, Button, InputAdornment, InputLabel, OutlinedInput, Snackbar, Stack, Typography } from '@mui/material';
+import { Alert, Box, Button, Divider, InputAdornment, InputLabel, OutlinedInput, Snackbar, Stack, Typography } from '@mui/material';
 import Grid from '@mui/material/Unstable_Grid2/Grid2';
 import axios from 'axios';
 import { useNavigate, useParams } from 'react-router';
@@ -95,14 +95,14 @@ const PaymentInBookings = () => {
       {/* Heading */}
       <Grid sx={{ display: 'flex', mb: 3 }}>
         <Grid alignContent='center' sx={{ flexGrow: 1 }}>
-          <Typography variant="h4" sx={{ color: '#34495e' }}>Bill Payment</Typography>
+          <Typography variant="h4" sx={{ color: '#2C2C2C' }}>Bill Payment</Typography>
         </Grid>
         <Grid>
           <Stack justifyContent='start' spacing={2} direction="row">
-            <Button variant="contained" sx={{ backgroundColor: '#28c76f', color: '#fff', '&:hover': { backgroundColor: '#28c76f', color: '#fff' } }}>
+            <Button variant="contained" sx={{ backgroundColor: '#009327', color: '#fff', '&:hover': { backgroundColor: '#28c76f', color: '#fff' } }}>
               + Add Extra Charges
             </Button>
-            <Button variant="contained" sx={{ backgroundColor: '#eb2222', color: '#fff', '&:hover': { backgroundColor: '#eb2222', color: '#fff' } }}>
+            <Button variant="contained" sx={{ backgroundColor: '#C90303', color: '#fff', '&:hover': { backgroundColor: '#eb2222', color: '#fff' } }}>
               - Subtract Extra Charges
             </Button>
           </Stack>
@@ -113,172 +113,242 @@ const PaymentInBookings = () => {
 
         { /*  Guest Info */}
         <Grid item xs={12} lg={6}>
-          <Box sx={{ backgroundColor: '#fff', borderRadius: '10px', p: 1 }}>
-            <Typography variant="h5" sx={{ color: '#34495e', fontWeight: 600, my: 1 }}>Guest Info</Typography>
-            <TableContainer >
-              <Table aria-label="simple table" sx={{ border: '1px solid #f1f1f1' }}>
-                <TableBody>
-                  <TableRow>
-                    <TableCell align="left">
-                      <Typography variant="h6" sx={{ color: '#34495e', fontWeight: 900 }}>Name</Typography>
-                    </TableCell>
-                    <TableCell align="right">
-                      <Typography variant="h6" sx={{ color: '#34495e' }}>{ }</Typography>
-                    </TableCell>
-                  </TableRow>
-                  <TableRow>
-                    <TableCell align="left">
-                      <Typography variant="h6" sx={{ color: '#34495e', fontWeight: 900 }}>Email</Typography>
-                    </TableCell>
-                    <TableCell align="right">
-                      <Typography variant="h6" sx={{ color: '#34495e' }}>{ }</Typography>
-                    </TableCell>
-                  </TableRow>
-                  <TableRow>
-                    <TableCell align="left">
-                      <Typography variant="h6" sx={{ color: '#34495e', fontWeight: 900 }}>Phone</Typography>
-                    </TableCell>
-                    <TableCell align="right">
-                      <Typography variant="h6" sx={{ color: '#34495e' }}>{ }</Typography>
-                    </TableCell>
-                  </TableRow>
-                  <TableRow>
-                    <TableCell align="left">
-                      <Typography variant="h6" sx={{ color: '#34495e', fontWeight: 900 }}>Address</Typography>
-                    </TableCell>
-                    <TableCell align="right">
-                      <Typography variant="h6" sx={{ color: '#34495e' }}>{ }</Typography>
-                    </TableCell>
-                  </TableRow>
-                </TableBody>
-              </Table>
-            </TableContainer>
+          <Typography variant="h5" sx={{ color: '#34495e', fontWeight: 600, my: 1 }}>Guest Info</Typography>
+          <Box sx={{
+            backgroundColor: '#F2F3F6BF',
+            borderRadius: '10px',
+            p: 2,
+            display: 'flex',
+            flexDirection: 'column',
+            gap: '20px'
+          }}>
+            {/* Name Row */}
+            <Box sx={{ display: 'flex', alignItems: 'center', gap: 4 }}>
+              <Box sx={{ display: "flex", gap: 1 }}>
+
+                <Typography variant='body1' sx={{ width: '120px', fontWeight: 'bold', color: "#8F8F8F" }}>Name</Typography>
+              </Box>
+              <Typography variant='body1' sx={{ mx: 1, color: "#8F8F8F" }}>:</Typography>
+              <Typography variant='body1' sx={{ color: "#2C2C2C" }}>
+                {/* {data?.booking?.guestName || '-'} */}
+              </Typography>
+            </Box>
+
+            {/* Email Row */}
+            <Box sx={{ display: 'flex', alignItems: 'center', gap: 4 }}>
+              <Box sx={{ display: "flex", gap: 1 }}>
+
+                <Typography variant='body1' sx={{ width: '120px', fontWeight: 'bold', color: "#8F8F8F" }}>Email</Typography>
+              </Box>
+              <Typography variant='body1' sx={{ mx: 1, color: "#8F8F8F" }}>:</Typography>
+              <Typography variant='body1' sx={{ color: "#2C2C2C" }}>
+                {/* {data?.booking?.guestEmail || '-'} */}
+              </Typography>
+            </Box>
+
+            {/* Mobile Row */}
+            <Box sx={{ display: 'flex', alignItems: 'center', gap: 4 }}>
+              <Box sx={{ display: "flex", gap: 1 }}>
+
+                <Typography variant='body1' sx={{ width: '120px', fontWeight: 'bold', color: "#8F8F8F" }}>Phone</Typography>
+              </Box>
+              <Typography variant='body1' sx={{ mx: 1, color: "#8F8F8F" }}>:</Typography>
+              <Typography variant='body1' sx={{ color: "#2C2C2C" }}>
+                {/* {data?.booking?.phoneNo || '-'} */}
+              </Typography>
+            </Box>
+
+            {/* Address Row */}
+            <Box sx={{ display: 'flex', alignItems: 'center', gap: 4 }}>
+              <Box sx={{ display: "flex", gap: 1 }}>
+
+                <Typography variant='body1' sx={{ width: '120px', fontWeight: 'bold', color: "#8F8F8F" }}>Address</Typography>
+              </Box>
+              <Typography variant='body1' sx={{ mx: 1, color: "#8F8F8F" }}>:</Typography>
+              <Typography variant='body1' sx={{ color: "#2C2C2C" }}>
+                {/* {data?.booking?.address || '-'} */}
+              </Typography>
+            </Box>
           </Box>
         </Grid>
 
         { /*  Payment Summary */}
         <Grid item xs={12} lg={6}>
-          <Box sx={{ backgroundColor: '#fff', borderRadius: '10px', p: 1 }}>
-            <Grid display='flex' sx={{ p: 0, width: '100%' }}>
-              <Typography variant="h5" sx={{ flexGrow: 1, color: '#34495e', fontWeight: 600, my: 1, alignSelf: 'center' }}>Payment Summary</Typography>
-            </Grid>
-            <TableContainer>
-              <Table aria-label="simple table" sx={{ border: '1px solid #f1f1f1' }}>
-                <TableBody>
+          <Typography variant="h5" sx={{ color: '#34495e', fontWeight: 600, my: 1 }}>Payment Summary</Typography>
+          <Box sx={{
+            backgroundColor: '#F2F3F6BF',
+            borderRadius: '10px',
+            p: 2,
+            display: 'flex',
+            flexDirection: 'column',
+            gap: '20px'
+          }}>
+            {/* Total Payment */}
+            <Box sx={{ display: 'flex', alignItems: 'center', gap: 4 }}>
+              <Box sx={{ display: "flex", gap: 1 }}>
 
-                  <TableRow>
-                    <TableCell align="left">
-                      <Typography variant="h6" sx={{ color: '#34495e', fontWeight: 900 }}>Total Payment</Typography>
-                    </TableCell>
-                    <TableCell align="right">
-                      <Typography variant="h6" sx={{ color: '#34495e' }}></Typography>
-                    </TableCell>
-                  </TableRow>
+                <Typography variant='body1' sx={{ width: '140px', fontWeight: 'bold', color: "#8F8F8F" }}>Total Payment</Typography>
+              </Box>
+              <Typography variant='body1' sx={{ mx: 1, color: "#8F8F8F" }}>:</Typography>
+              <Typography variant='body1' sx={{ color: "#2C2C2C" }}>
+                {/* {data?.booking?.guestName || '-'} */}
+              </Typography>
+            </Box>
 
-                  <TableRow>
-                    <TableCell align="left">
-                      <Typography variant="h6" sx={{ color: '#34495e', fontWeight: 900 }}>Payment Recieved</Typography>
-                    </TableCell>
-                    <TableCell align="right">
-                      <Typography variant="h6" sx={{ color: '#34495e' }}></Typography>
-                    </TableCell>
-                  </TableRow>
+            {/* Payment Received */}
+            <Box sx={{ display: 'flex', alignItems: 'center', gap: 4 }}>
+              <Box sx={{ display: "flex", gap: 1 }}>
 
-                  <TableRow>
-                    <TableCell align="left">
-                      <Typography variant="h6" sx={{ color: '#34495e', fontWeight: 900 }}>Refunded</Typography>
-                    </TableCell>
-                    <TableCell align="right">
-                      <Typography variant="h6" sx={{ color: '#34495e' }}></Typography>
-                    </TableCell>
-                  </TableRow>
+                <Typography variant='body1' sx={{ width: '140px', fontWeight: 'bold', color: "#8F8F8F" }}>Payment Received</Typography>
+              </Box>
+              <Typography variant='body1' sx={{ mx: 1, color: "#8F8F8F" }}>:</Typography>
+              <Typography variant='body1' sx={{ color: "#2C2C2C" }}>
+                {/* {data?.booking?.guestEmail || '-'} */}
+              </Typography>
+            </Box>
 
-                  <TableRow>
-                    <TableCell align="left">
-                      <Typography variant="h6" sx={{ color: '#34495e', fontWeight: 900 }}>Recievable from user</Typography>
-                    </TableCell>
-                    <TableCell align="right">
-                      <Typography variant="h6" sx={{ color: '#34495e' }}></Typography>
-                    </TableCell>
-                  </TableRow>
+            {/* Refunded */}
+            <Box sx={{ display: 'flex', alignItems: 'center', gap: 4 }}>
+              <Box sx={{ display: "flex", gap: 1 }}>
 
-                </TableBody>
-              </Table>
-            </TableContainer>
+                <Typography variant='body1' sx={{ width: '140px', fontWeight: 'bold', color: "#8F8F8F" }}>Refunded</Typography>
+              </Box>
+              <Typography variant='body1' sx={{ mx: 1, color: "#8F8F8F" }}>:</Typography>
+              <Typography variant='body1' sx={{ color: "#2C2C2C" }}>
+                {/* {data?.booking?.phoneNo || '-'} */}
+              </Typography>
+            </Box>
+
+            {/* Receivable from user */}
+            <Box sx={{ display: 'flex', alignItems: 'center', gap: 4 }}>
+              <Box sx={{ display: "flex", gap: 1 }}>
+
+                <Typography variant='body1' sx={{ width: '140px', fontWeight: 'bold', color: "#8F8F8F" }}>Receivable from user</Typography>
+              </Box>
+              <Typography variant='body1' sx={{ mx: 1, color: "#8F8F8F" }}>:</Typography>
+              <Typography variant='body1' sx={{ color: "#2C2C2C" }}>
+                {/* {data?.booking?.address || '-'} */}
+              </Typography>
+            </Box>
           </Box>
         </Grid>
 
         { /*  Payment Info */}
-        <Grid item xs={12} lg={6} >
-          <Box sx={{ backgroundColor: '#fff', borderRadius: '10px', p: 1 }}>
-            <Grid display='flex' justifyContent='space-between' alignItems='center' sx={{ p: 0, width: '100%' }}>
-              <Typography variant="h5" sx={{ color: '#34495e', fontWeight: 600, my: 1 }}>Payment Info</Typography>
-              <Button variant='contained' sx={{ my: 1, py: 0.4, backgroundColor: '#4634ff', '&:hover': { backgroundColor: '#4634ff' } }}>
-                <Computer fontSize='20px' sx={{ mr: 1 }} /> View Details
-              </Button>
-            </Grid>
+        <Grid item xs={12} lg={6}>
+          <Box sx={{ display: "flex", justifyContent: "space-between", mb: 1 }}>
+            <Typography variant="h5" sx={{ color: '#34495e', fontWeight: 600, my: 1 }}>Payment Info</Typography>
+            <Button sx={{ backgroundColor: "#0D6A84", color: "#fff" }}>View Details</Button>
+          </Box>
 
-            <TableContainer>
-              <Table aria-label="simple table" sx={{ border: '1px solid #f1f1f1' }}>
-                <TableBody>
+          <Box sx={{
+            backgroundColor: '#F2F3F6BF',
+            borderRadius: '10px',
+            p: 2,
+            display: 'flex',
+            flexDirection: 'column',
+            gap: '20px'
+          }}>
+            {/* Name Row */}
+            <Box sx={{ display: 'flex', alignItems: 'center', gap: 4 }}>
+              <Box sx={{ display: "flex", gap: 1 }}>
 
-                  <TableRow>
-                    <TableCell align="left"><Typography variant="h6" sx={{ color: '#34495e', fontWeight: 900 }}>Total Fare</Typography></TableCell>
-                    <TableCell align="right"><Typography variant="h6" sx={{ color: '#34495e' }}>{ }</Typography></TableCell>
-                  </TableRow>
+                <Typography variant='body1' sx={{ width: '140px', fontWeight: 'bold', color: "#8F8F8F" }}>Total Fare</Typography>
+              </Box>
+              <Typography variant='body1' sx={{ mx: 1, color: "#8F8F8F" }}>:</Typography>
+              <Typography variant='body1' sx={{ color: "#2C2C2C" }}>
+                {/* {data?.booking?.guestName || '-'} */}
+              </Typography>
+            </Box>
 
-                  <TableRow>
-                    <TableCell align="left"><Typography variant="h6" sx={{ color: '#34495e', fontWeight: 900 }}>Tax Charge</Typography></TableCell>
-                    <TableCell align="right"><Typography variant="h6" sx={{ color: '#34495e' }}>{ }</Typography></TableCell>
-                  </TableRow>
+            {/* Email Row */}
+            <Box sx={{ display: 'flex', alignItems: 'center', gap: 4 }}>
+              <Box sx={{ display: "flex", gap: 1 }}>
 
-                  <TableRow>
-                    <TableCell align="left"><Typography variant="h6" sx={{ color: '#34495e', fontWeight: 900 }}>Canceled Fare</Typography></TableCell>
-                    <TableCell align="right"><Typography variant="h6" sx={{ color: '#34495e' }}>{ }</Typography></TableCell>
-                  </TableRow>
+                <Typography variant='body1' sx={{ width: '140px', fontWeight: 'bold', color: "#8F8F8F" }}>Tax Charge</Typography>
+              </Box>
+              <Typography variant='body1' sx={{ mx: 1, color: "#8F8F8F" }}>:</Typography>
+              <Typography variant='body1' sx={{ color: "#2C2C2C" }}>
+                {/* {data?.booking?.guestEmail || '-'} */}
+              </Typography>
+            </Box>
 
-                  <TableRow>
-                    <TableCell align="left"><Typography variant="h6" sx={{ color: '#34495e', fontWeight: 900 }}>Canceled Tax charge</Typography></TableCell>
-                    <TableCell align="right"><Typography variant="h6" sx={{ color: '#34495e' }}>{ }</Typography></TableCell>
-                  </TableRow>
+            {/* Mobile Row */}
+            <Box sx={{ display: 'flex', alignItems: 'center', gap: 4 }}>
+              <Box sx={{ display: "flex", gap: 1 }}>
 
-                  <TableRow>
-                    <TableCell align="left"><Typography variant="h6" sx={{ color: '#34495e', fontWeight: 900 }}>Extra Service Charge</Typography></TableCell>
-                    <TableCell align="right"><Typography variant="h6" sx={{ color: '#34495e' }}>{ }</Typography></TableCell>
-                  </TableRow>
+                <Typography variant='body1' sx={{ width: '140px', fontWeight: 'bold', color: "#8F8F8F" }}>Canceled Fare</Typography>
+              </Box>
+              <Typography variant='body1' sx={{ mx: 1, color: "#8F8F8F" }}>:</Typography>
+              <Typography variant='body1' sx={{ color: "#2C2C2C" }}>
+                {/* {data?.booking?.phoneNo || '-'} */}
+              </Typography>
+            </Box>
 
-                  <TableRow>
-                    <TableCell align="left"><Typography variant="h6" sx={{ color: '#34495e', fontWeight: 900 }}>Other Charges</Typography></TableCell>
-                    <TableCell align="right"><Typography variant="h6" sx={{ color: '#34495e' }}>{ }</Typography></TableCell>
-                  </TableRow>
+            {/* Address Row */}
+            <Box sx={{ display: 'flex', alignItems: 'center', gap: 4 }}>
+              <Box sx={{ display: "flex", gap: 1 }}>
 
-                  <TableRow>
-                    <TableCell align="left"><Typography variant="h6" sx={{ color: '#34495e', fontWeight: 900 }}>Cancellation Fee</Typography></TableCell>
-                    <TableCell align="right"><Typography variant="h6" sx={{ color: '#34495e' }}>{ }</Typography></TableCell>
-                  </TableRow>
+                <Typography variant='body1' sx={{ width: '140px', fontWeight: 'bold', color: "#8F8F8F" }}>Canceled Tax Charge</Typography>
+              </Box>
+              <Typography variant='body1' sx={{ mx: 1, color: "#8F8F8F" }}>:</Typography>
+              <Typography variant='body1' sx={{ color: "#2C2C2C" }}>
+                {/* {data?.booking?.address || '-'} */}
+              </Typography>
+            </Box>
 
-                  <TableRow>
-                    <TableCell align="left"><Typography variant="h6" sx={{ color: '#34495e', fontWeight: 900 }}>Total Amount</Typography></TableCell>
-                    <TableCell align="right">
-                      <Typography variant="h6" sx={{ color: '#34495e' }}>
-                        {/* {(
-                          Number(item.totalFare || 0) +
-                          Number(item.taxCharge || 0) -
-                          Number(item.canceledFare || 0) -
-                          Number(item.canceledTaxCharge || 0) +
-                          Number(item.extraService || 0) +
-                          Number(item.otherCharges || 0) +
-                          Number(item.cancellationFee || 0)
-                        ).toFixed(2)} */}
-                      </Typography>
-                    </TableCell>
-                  </TableRow>
 
-                </TableBody>
-              </Table>
-            </TableContainer>
+            <Box sx={{ display: 'flex', alignItems: 'center', gap: 4 }}>
+              <Box sx={{ display: "flex", gap: 1 }}>
+
+                <Typography variant='body1' sx={{ width: '140px', fontWeight: 'bold', color: "#8F8F8F" }}>Extra Service Charge</Typography>
+              </Box>
+              <Typography variant='body1' sx={{ mx: 1, color: "#8F8F8F" }}>:</Typography>
+              <Typography variant='body1' sx={{ color: "#2C2C2C" }}>
+                {/* {data?.booking?.address || '-'} */}
+              </Typography>
+            </Box>
+
+            <Box sx={{ display: 'flex', alignItems: 'center', gap: 4 }}>
+              <Box sx={{ display: "flex", gap: 1 }}>
+
+                <Typography variant='body1' sx={{ width: '140px', fontWeight: 'bold', color: "#8F8F8F" }}>Other Charges</Typography>
+              </Box>
+              <Typography variant='body1' sx={{ mx: 1, color: "#8F8F8F" }}>:</Typography>
+              <Typography variant='body1' sx={{ color: "#2C2C2C" }}>
+                {/* {data?.booking?.address || '-'} */}
+              </Typography>
+            </Box>
+
+            <Box sx={{ display: 'flex', alignItems: 'center', gap: 4 }}>
+              <Box sx={{ display: "flex", gap: 1 }}>
+
+                <Typography variant='body1' sx={{ width: '140px', fontWeight: 'bold', color: "#8F8F8F" }}>Cancellation Fee</Typography>
+              </Box>
+              <Typography variant='body1' sx={{ mx: 1, color: "#8F8F8F" }}>:</Typography>
+              <Typography variant='body1' sx={{ color: "#2C2C2C" }}>
+                {/* {data?.booking?.address || '-'} */}
+              </Typography>
+            </Box>
+
+            <Divider fullWidth sx={{ color: '#DDDDEBBF' }} />
+
+            <Box sx={{ display: 'flex', alignItems: 'center', gap: 4 }}>
+              <Box sx={{ display: "flex", gap: 1 }}>
+
+                <Typography variant='body1' sx={{ width: '140px', fontWeight: 'bold', color: "#2C2C2C" }}>Total Amount</Typography>
+              </Box>
+              <Typography variant='body1' sx={{ mx: 1, color: "#8F8F8F" }}>:</Typography>
+              <Typography variant='body1' sx={{ color: "#2C2C2C" }}>
+                {/* {data?.booking?.address || '-'} */}
+              </Typography>
+            </Box>
+
           </Box>
         </Grid>
+
+
+
+
 
 
         {/* <Grid item xs={12} lg={6}>
@@ -363,10 +433,11 @@ const PaymentInBookings = () => {
 
         { /*  Receive Payment */}
         <Grid item xs={12} lg={6}>
-          <Box sx={{ backgroundColor: '#fff', borderRadius: '10px', p: 1 }}>
+          <Typography variant="h5" sx={{ color: '#34495e', fontWeight: 600, my: 1.5 }}>Receive Payment</Typography>
+          <Box sx={{ backgroundColor: '#F2F3F6BF', borderRadius: '10px', p: 1, pb: 25 }}>
             <form onSubmit={handleSubmit(doPayment)}>
-              <Typography variant="h5" sx={{ color: '#34495e', fontWeight: 600, my: 1 }}>Receive Payment</Typography>
-              <Typography variant="h5" sx={{ color: '#28c76f', fontWeight: 600, my: 1, textAlign: 'center' }}>Receivable Amount: $0.00</Typography>
+
+              <Typography variant="h5" sx={{ color: '#009327', fontWeight: 600, my: 1, }}>Receivable Amount: $0.00</Typography>
 
               {/* <OutlinedInput fullWidth
                 id="outlined-adornment-amount" sx={{ p: 0 }}
@@ -384,7 +455,7 @@ const PaymentInBookings = () => {
                   )}
                 </Stack>
               </Grid>
-              <Button variant='contained' type='submit' fullWidth sx={{ my: 2, backgroundColor: '#4634ff', '&:hover': { backgroundColor: '#4634ff' }, '&.Mui-disabled': { backgroundColor: '#4634ff', opacity: 0.5 } }}>Submit</Button>
+              <Button variant='contained' type='submit' fullWidth sx={{ my: 2, backgroundColor: '#0D6A84', '&:hover': { backgroundColor: '#4634ff' }, '&.Mui-disabled': { backgroundColor: '#4634ff', opacity: 0.5 } }}>View Details</Button>
             </form>
           </Box>
         </Grid>

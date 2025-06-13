@@ -436,7 +436,7 @@ const CreateHotel = () => {
                 </Stack>
                 <FormHelperText error id="standard-weight-helper-text-adminAddress">{errors.adminAddress?.message}</FormHelperText>
               </Grid>
-              <Grid xs={12} sm={6} md={6} lg={4} >
+              <Grid xs={12} sm={6} md={6} lg={4}>
                 <Stack spacing={1}>
                   <InputLabel htmlFor="adminPhone">Admin Phone <span style={{ color: 'red' }}> *</span></InputLabel>
                   <OutlinedInput id="adminPhone" type="text" {...register("adminPhone", { required: 'This Field is required', validate: { minLength: (value) => value.length <= 10 || 'Phone number must not be more than 10 digits', maxLength: (value) => value.length === 10 || 'Phone number must be exactly 10 digits', pattern: (value) => /^[6-9]\d{9}$/.test(value) || 'Phone number must contain only digits. Any characters or special characters are not allowed', } })} placeholder="Enter Admin Phone" fullWidth error={Boolean(errors.adminPhone)} />
@@ -445,13 +445,13 @@ const CreateHotel = () => {
               </Grid>
             </Grid>
         </>
-       ) }
+       )}
 
         <Grid xs={12} gap={2}>
           <Button size="sm" type="submit" sx={{ backgroundColor:"#0D6A84", color:"#fff"}}>
             {id === 'add' ? 'Create' : 'Update'}
           </Button>
-          <Button size="sm"  sx={{ backgroundColor: "#0D6A84", color: "#fff", m:2 }} onClick={()=> handleCancelButton()}>Cancel</Button>
+          <Button size="sm" sx={{ backgroundColor: "transparent", color: "#212B36", m:2 }} onClick={()=> handleCancelButton()}>Cancel</Button>
         </Grid>
       </form>
 
@@ -466,8 +466,7 @@ const CreateHotel = () => {
         </Alert>
       </Snackbar>
 
-     
-
+    
       <Dialog
         open={openImageDialog}
         onClose={() => setOpenImageDialog(false)}

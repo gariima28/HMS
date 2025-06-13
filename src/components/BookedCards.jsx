@@ -16,12 +16,15 @@ const BookedCards = ({ roomNo, roomType }) => {
     const isSmallScreen = useMediaQuery((theme) => theme.breakpoints.down('sm'));
 
     return (
-        <Card sx={{ width: '100%', height: '100%' }}>
-            <CardContentMy sx={{ p: 1, display: 'flex', flexDirection: 'column', justifyContent: 'center', backgroundColor: '#f2f6fbe4' }}>
+        <Card sx={{ width: '100%', height: '100%', backgroundColor: "#E7E4E8BF", p: 2 }}>
+            <CardContentMy sx={{
+                p: 1, display: 'flex', flexDirection: 'column', justifyContent: 'center',
+
+            }}>
                 <Typography
                     textAlign="center"
                     variant="h5"
-                    sx={{ color: '#14969D', mb: 1 }}
+                    sx={{ color: '#2C2C2C', mb: 1 }}
                 >
                     {roomNo}
                 </Typography>
@@ -35,7 +38,7 @@ const BookedCards = ({ roomNo, roomType }) => {
                         sx={{
                             cursor: 'pointer',
                             textAlign: 'center',
-                            color: 'text.secondary',
+                            color: '#ADADBD',
                             whiteSpace: 'nowrap',
                             overflow: 'hidden',
                             textOverflow: 'ellipsis',

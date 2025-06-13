@@ -36,6 +36,22 @@ const CustomButton = styled(Button)(({ status }) => ({
   },
 }));
 
+const AddButton = styled(Button)(({ status }) => ({
+  borderRadius: '10px',
+  backgroundColor: '#0D6A84',
+  borderColor: status === 'enable' ? '#FFD8D8' : '#0D6A84',
+  color: '#FFFFFF',
+  padding: '8px 20px',
+  fontSize: '12px',
+  fontWeight: 700,
+  textTransform: 'none',
+  '&:hover': {
+    // backgroundColor: '',
+    // borderColor: '',
+    //color: '',
+  },
+}));
+
 // Table Columns
 const columns = [
   { id: 'sno', label: 'S.No', minWidth: 100 },
@@ -104,9 +120,9 @@ const PremiumServicesInBookings = () => {
         </Grid>
         <Grid>
           <Stack justifyContent='start' spacing={2} direction="row">
-            <Button variant="outlined" component={Link} to={`/addService/${id}`}>
+            <AddButton variant="outlined" component={Link} to={`/addService/${id}`}>
               + Add New
-            </Button>
+            </AddButton>
           </Stack>
         </Grid>
       </Grid>
