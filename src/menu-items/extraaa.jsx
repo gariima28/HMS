@@ -2,13 +2,18 @@
 import { ChromeOutlined, QuestionOutlined } from '@ant-design/icons';
 import { DashboardOutlined } from '@ant-design/icons';
 import NightShelterOutlinedIcon from '@mui/icons-material/NightShelterOutlined';
-
+import BugReportIcon from '@mui/icons-material/BugReport';
+import AddRoadIcon from '@mui/icons-material/AddRoad';
+import LabelImportantIcon from '@mui/icons-material/LabelImportant';
 // icons
 const icons = {
     DashboardOutlined,
     NightShelterOutlinedIcon,
     ChromeOutlined,
-    QuestionOutlined
+    QuestionOutlined,
+    BugReportIcon,
+    LabelImportantIcon,
+    AddRoadIcon
 };
 
 
@@ -22,14 +27,14 @@ const extraaa = {
             title: 'Extra',
             type: 'collapse',
             breadcrumbs: false,
-            icon: icons.NightShelterOutlinedIcon,
+            icon: icons.AddRoadIcon,
             children: [
                 {
                     id: 'extraapplication',
                     title: 'Extra Application',
                     type: 'item',
                     url: '/extraapplication',
-                    icon: icons.ChromeOutlined,
+                    icon: icons.LabelImportantIcon,
                     breadcrumbs: false
                 },
                 {
@@ -37,7 +42,7 @@ const extraaa = {
                     title: 'Extra Server',
                     type: 'item',
                     url: '/extraserver',
-                    icon: icons.ChromeOutlined,
+                    icon: icons.LabelImportantIcon,
                     breadcrumbs: false
                 },
                 {
@@ -45,7 +50,7 @@ const extraaa = {
                     title: 'Extra Cache',
                     type: 'item',
                     url: '/extracache',
-                    icon: icons.ChromeOutlined,
+                    icon: icons.LabelImportantIcon,
                     breadcrumbs: false
                 },
                 {
@@ -53,7 +58,7 @@ const extraaa = {
                     title: 'Extra Update',
                     type: 'item',
                     url: '/extraupdate',
-                    icon: icons.ChromeOutlined,
+                    icon: icons.LabelImportantIcon,
                     breadcrumbs: false
                 },
             ],
@@ -61,9 +66,9 @@ const extraaa = {
         {
             id: 'reportrequest',
             title: 'Report Request',
-            type: 'item',
+            type: 'mainItem',
             url: '/reportrequest',
-            icon: icons.ChromeOutlined,
+            icon: icons.BugReportIcon,
             breadcrumbs: false
         },
 

@@ -13,6 +13,7 @@ import HashLoader from 'components/Skeleton/HashLoader';
 import PlaceholderTable from 'components/Skeleton/PlaceholderTable';
 import ErrorPage from 'components/ErrorPage';
 import { updateRoomTypesApi } from 'api/api';
+import { Link } from 'react-router-dom';
 
 // const LocalGirjesh = 'http://192.168.20.109:5001';
 const ServerIP = 'https://www.auth.edu2all.in/hms'
@@ -251,9 +252,12 @@ const RoomTypes = () => {
         </Grid>
         <Grid>
           <Stack justifyContent='start' spacing={2} direction="row">
+
             <AddButton variant="outlined" href={`addUpdateRoomType/add`}>
               + Add Room Type
             </AddButton>
+
+
           </Stack>
         </Grid>
       </Grid>

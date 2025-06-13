@@ -2,13 +2,13 @@
 import { ChromeOutlined, QuestionOutlined } from '@ant-design/icons';
 import { DashboardOutlined } from '@ant-design/icons';
 import NightShelterOutlinedIcon from '@mui/icons-material/NightShelterOutlined';
-
-// icons
+import SettingsRoundedIcon from '@mui/icons-material/SettingsRounded';// icons
 const icons = {
     DashboardOutlined,
     NightShelterOutlinedIcon,
     ChromeOutlined,
-    QuestionOutlined
+    QuestionOutlined,
+    SettingsRoundedIcon
 };
 
 
@@ -20,9 +20,9 @@ const systemSettings = {
         {
             id: 'sysytemsetting',
             title: 'System Setting',
-            type: 'item',
+            type: 'mainItem',
             url: '/sysytemsetting',
-            icon: icons.ChromeOutlined,
+            icon: icons.SettingsRoundedIcon,
             breadcrumbs: false
         },
 

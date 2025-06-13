@@ -75,7 +75,7 @@ const fetcher = (url) => axios.get(url, { headers: { Authorization: token } }).t
 
 
 const AddButton = styled(Button)(({ status }) => ({
-  borderRadius: '10px',
+  borderRadius: '5px',
   backgroundColor: '#0D6A84',
   borderColor: status === 'enable' ? '#FFD8D8' : '#0D6A84',
   color: '#FFFFFF',
@@ -103,8 +103,6 @@ export default function DashboardDefault() {
     setModalOpen(false); // close modal
     setDrawerOpen(true);     // open drawer
   };
-
-
 
 
   const navigate = useNavigate()
@@ -212,11 +210,7 @@ export default function DashboardDefault() {
 
   return (
     <>
-      <Grid container rowSpacing={4.5} columnSpacing={2.75}>
-        {/* row 1 */}
-        <Grid item xs={12} sx={{ mb: -2.25 }}>
-          <Typography variant="h5">Dashboard</Typography>
-        </Grid>
+      <Grid container rowSpacing={4.5} columnSpacing={2.75} sx={{ mt: .1 }}>
 
         <Grid item xs={12} sm={6} md={4} lg={3}>
           <AnalyticEcommerce title="Delayed Checkout" count="45" percentage={59.3} extra="35,000"
@@ -260,13 +254,14 @@ export default function DashboardDefault() {
           <AnalyticEcommerce title="Total Bookings" count="35" percentage={27.4} isLoss color="warning" extra="$20,395" image={`${totalBookings}`} backgroundColor="#E0DFE2" to="/allBookings" />
         </Grid>
 
-      </Grid>
+
+      </Grid >
 
       <BookingRoom onOpenDrawer={() => setDrawerOpen(true)} selectedRooms={selectedRooms} setSelectedRooms={setSelectedRooms} checkIn={checkInDate} checkOut={checkOutDate} setCheckIn={setCheckInDate} setCheckOut={setCheckOutDate} showData={showData} setShowData={setShowData} roomData={roomData} setRoomdata={setRoomdata} />
 
 
 
-      <Grid container rowSpacing={4.5} columnSpacing={2.75} mt={1}>
+      <Grid container rowSpacing={4.5} columnSpacing={2.75} mt={1} sx={{}}>
         <Grid item xs={12} sm={6} md={4} lg={3}>
           <AnalyticEcommerce title="Total Registered guests" count="42" percentage={59.3} extra="35,000"
             image={`${registered}`}
@@ -523,7 +518,7 @@ const StyledTableRow = styled(TableRow)(({ theme }) => ({
     backgroundColor: gray, // Light grey for odd rows
   },
   '&:hover': {
-    backgroundColor: 'darkgray', // Slightly darker on hover
+    backgroundColor: '#c2c2c2', // Slightly darker on hover
   },
   '& td, & th': {
     border: 0,
@@ -533,10 +528,12 @@ const StyledTableRow = styled(TableRow)(({ theme }) => ({
 
 
 const RoomKey = styled(Box)(({ theme, status }) => ({
+  minWidth: "50px",
   display: 'inline-block',
   padding: '4px 8px',
   borderRadius: 4,
-  backgroundColor: status === 'selected' ? '#1976d2' : '#e0e0e0', // blue or light gray
+  //backgroundColor: status === 'selected' ? '#1976d2' : '#e0e0e0', // blue or light gray
+  backgroundColor: "#0AAD24",
   color: status === 'selected' ? '#ffffff' : '#000000', // white or black
   cursor: 'pointer',
   fontWeight: 500,

@@ -2,11 +2,13 @@
 import { DashboardOutlined } from '@ant-design/icons';
 import NightShelterOutlinedIcon from '@mui/icons-material/NightShelterOutlined';
 import { ChromeOutlined } from '@ant-design/icons';
+import HomeIcon from '@mui/icons-material/Home';
+
 
 // icons
 const icons = {
   DashboardOutlined,
-  NightShelterOutlinedIcon, ChromeOutlined
+  NightShelterOutlinedIcon, ChromeOutlined, HomeIcon
 };
 
 const roleType = localStorage.getItem('roleType')
@@ -19,13 +21,13 @@ const dashboard = {
     {
       id: 'dashboard',
       title: 'Dashboard',
-      type: 'item',
+      type: 'mainItem',
       url: '/',
-      icon: icons.DashboardOutlined,
+      icon: icons.HomeIcon,
       breadcrumbs: false
     },
 
-    ...(roleType === 'SUPERADMIN' ? [ {
+    ...(roleType === 'SUPERADMIN' ? [{
       id: 'hotels',
       title: 'Hotels',
       type: 'collapse',

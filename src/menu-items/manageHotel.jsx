@@ -2,12 +2,14 @@
 import { ChromeOutlined, DashboardOutlined } from '@ant-design/icons';
 import NightShelterOutlinedIcon from '@mui/icons-material/NightShelterOutlined';
 import { buildIcon } from 'iconify-icon';
+import BusinessIcon from '@mui/icons-material/Business';
+import LabelImportantIcon from '@mui/icons-material/LabelImportant';
 // icons
 const icons = {
   DashboardOutlined,
   buildIcon,
   NightShelterOutlinedIcon,
-  ChromeOutlined
+  ChromeOutlined, BusinessIcon, LabelImportantIcon
 };
 
 // ==============================|| MENU ITEMS - DASHBOARD ||============================== //
@@ -22,7 +24,7 @@ const manageHotel = {
       title: 'Manage Hotels',
       type: 'collapse',
       // icon: <Icon icon="solar:buildings-bold" width="24" height="24" style="color: #e10e0e" />,
-      icon: icons.NightShelterOutlinedIcon,
+      icon: icons.BusinessIcon,
       children: [
         {
           id: 'amenities',
@@ -30,7 +32,7 @@ const manageHotel = {
           type: 'item',
           url: '/amenities',
           breadcrumbs: false,
-          icon: icons.ChromeOutlined
+          icon: icons.LabelImportantIcon
         },
         {
           id: 'facilities',
@@ -38,7 +40,7 @@ const manageHotel = {
           type: 'item',
           url: '/facilities',
           breadcrumbs: false,
-          icon: icons.ChromeOutlined
+          icon: icons.LabelImportantIcon
         },
         {
           id: 'bedTypes',
@@ -46,7 +48,7 @@ const manageHotel = {
           type: 'item',
           url: '/bedTypes',
           breadcrumbs: false,
-          icon: icons.ChromeOutlined
+          icon: icons.LabelImportantIcon
         },
         {
           id: 'roomTypes',
@@ -54,7 +56,7 @@ const manageHotel = {
           type: 'item',
           url: '/roomTypes',
           breadcrumbs: false,
-          icon: icons.ChromeOutlined
+          icon: icons.LabelImportantIcon
         },
         {
           id: 'room',
@@ -62,7 +64,7 @@ const manageHotel = {
           type: 'item',
           url: '/room',
           breadcrumbs: false,
-          icon: icons.ChromeOutlined
+          icon: icons.LabelImportantIcon
         },
         {
           id: 'premiumServices',
@@ -70,7 +72,7 @@ const manageHotel = {
           type: 'item',
           url: '/premiumServices',
           breadcrumbs: false,
-          icon: icons.ChromeOutlined
+          icon: icons.LabelImportantIcon
         }
       ],
     }

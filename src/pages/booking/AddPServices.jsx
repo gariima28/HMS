@@ -151,6 +151,15 @@ const AddPServices = () => {
                 fullWidth
                 value={serviceDate}
                 onChange={(e) => { setServiceDate(e.target.value); setErrors({ ...errors, serviceDate: '' }); }}
+                sx={{
+                  '&:hover .MuiOutlinedInput-notchedOutline': {
+                    borderColor: '#0D5F76', // Green color on hover
+                  },
+                  '&.Mui-focused .MuiOutlinedInput-notchedOutline': {
+                    borderColor: '#0D5F76', // Green color when focused
+                    borderWidth: '1px', // Optional: maintain consistent border width
+                  }
+                }}
               />
               {errors.serviceDate && <FormHelperText error>{errors.serviceDate}</FormHelperText>}
             </Grid>
@@ -171,6 +180,15 @@ const AddPServices = () => {
                   }
                 }}
                 disabled={id !== "add"}
+                sx={{
+                  '&:hover .MuiOutlinedInput-notchedOutline': {
+                    borderColor: '#0D5F76', // Green color on hover
+                  },
+                  '&.Mui-focused .MuiOutlinedInput-notchedOutline': {
+                    borderColor: '#0D5F76', // Green color when focused
+                    borderWidth: '1px', // Optional: maintain consistent border width
+                  }
+                }}
               />
               {errors.roomNumber && <FormHelperText error>{errors.roomNumber}</FormHelperText>}
             </Grid>
@@ -198,6 +216,15 @@ const AddPServices = () => {
                   name="premiumServiceName"
                   value={element.premiumServiceName || ''}
                   onChange={(e) => handleChange(index, e)}
+                  sx={{
+                    '&:hover .MuiOutlinedInput-notchedOutline': {
+                      borderColor: '#0D5F76', // Green color on hover
+                    },
+                    '&.Mui-focused .MuiOutlinedInput-notchedOutline': {
+                      borderColor: '#0D5F76', // Green color when focused
+                      borderWidth: '1px', // Optional: maintain consistent border width
+                    }
+                  }}
                 >
                   <MenuItem value="" disabled>Select One</MenuItem>
                   {rows.map((items) => (
@@ -216,7 +243,17 @@ const AddPServices = () => {
                   placeholder="Quantity"
                   value={element.quantity || ''}
                   onChange={(e) => handleChange(index, e)}
-                  sx={{ width: '100%' }}
+                  sx={{
+                    width: '100%',
+                    '&:hover .MuiOutlinedInput-notchedOutline': {
+                      borderColor: '#0D5F76', // Green color on hover
+                    },
+                    '&.Mui-focused .MuiOutlinedInput-notchedOutline': {
+                      borderColor: '#0D5F76', // Green color when focused
+                      borderWidth: '1px', // Optional: maintain consistent border width
+                    }
+                  }}
+                  
                 />
                 {errors[`quantity-${index}`] && <FormHelperText error>{errors[`quantity-${index}`]}</FormHelperText>}
                 {index > 0 && (

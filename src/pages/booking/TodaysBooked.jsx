@@ -5,7 +5,8 @@ import React, { useEffect, useState } from 'react';
 import axios from 'axios';
 import useSWR from 'swr';
 import ErrorPage from 'components/ErrorPage';
-import { Box, Grid, Skeleton, Typography } from '@mui/material';
+import { Box, Divider, Grid, Skeleton, Typography } from '@mui/material';
+import waiting from "../../assets/images/waiting.svg"
 
 const ServerIP = 'https://www.auth.edu2all.in/hms';
 const token = `Bearer ${localStorage.getItem('token')}`;
@@ -114,14 +115,17 @@ const TodaysBooked = () => {
             ))}
           </Grid>
         ) : (
-          <Grid item xs={12} sx={{ p: 2, backgroundColor: '#f2f6fbe4', mt: 2, mb: 2 }} >
-            <Typography variant="h5">No Room Booked Yet</Typography>
+              <Grid item xs={12} sx={{ p: 2, mt: 2, mb: 2, display:"flex", justifyContent:"center", flexDirection:"column", alignItems:"center", gap:1}} >
+                <img height={ 100} src={waiting} alt="" />
+                <Typography variant="h5" sx={{ color:"#0D5F76"}}>No Room Booked Yet</Typography>
           </Grid>
         )}
 
         <Grid item xs={12} sx={{ mt: 2, mb: 2 }}>
           <Typography variant="h5">Available for Booking</Typography>
-        </Grid>
+          </Grid>
+          
+          <Divider sx={{ borderColor: "#DDDDEBBF", width: '100%',mb:2 }} />
 
           {availableRoomData?.rooms?.length > 0 ? (
           <Grid container spacing={2}>
