@@ -11,7 +11,7 @@ const contentDiv1 = {
     color: "#5b6e88",
     marginTop: 3,
     backgroundColor: "#fff",
-    border: '3px solid #28c76f',
+    border: '3px solid #0D6A84',
     boxSizing: 'borderBox'
 }
 const contentDiv2 = {
@@ -57,7 +57,7 @@ const css = {
 const forHover = {
     '&:hover': {
         color: "#fff",
-        backgroundColor: '#28c76f',
+        backgroundColor: '#0D6A84',
     },
 }
 

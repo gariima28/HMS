@@ -94,12 +94,10 @@ const receivedPayment = () => {
   const handleChangePage = (event, newPage) => {
     setPage(newPage);
   };
-
   const handleChangeRowsPerPage = (event) => {
     setRowsPerPage(+event.target.value);
     setPage(0);
   };
-
   const columns = [
     { id: 'bookingNo', label: 'Booking No', minWidth: 170 },
     { id: 'userName', label: 'User', minWidth: 100 },
@@ -130,7 +128,6 @@ const receivedPayment = () => {
   useEffect(() => {
     MyReceivedPaymentGetAllApi()
   }, [])
-
   const MyReceivedPaymentGetAllApi = async () => {
     setLoader(true)
     try {
@@ -145,7 +142,7 @@ const receivedPayment = () => {
           userName: <>
             <Typography>
               {payments.userName} <br />
-              <Typography sx={{ color: '#4634ff' }}>
+              <Typography sx={{ color: '#0D6A84' }}>
                 <b>{`@${payments.userEmail}`}</b>
               </Typography>
             </Typography>
@@ -210,12 +207,12 @@ const receivedPayment = () => {
             <Table stickyHeader aria-label="sticky table">
               <TableHead>
                 <TableRow>
-                  {columns.map((column) => (
+                  {columns?.map((column) => (
                     <TableCell
                       key={column.id}
                       align={column.align}
                       style={{ minWidth: column.minWidth }}
-                      sx={{ backgroundColor: "#0D6A8426" }}
+                      sx={{ backgroundColor: "#0D6A84", color:'#fff' }}
                     >
                       {column.label}
                     </TableCell>

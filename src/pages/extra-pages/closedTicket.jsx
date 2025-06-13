@@ -37,18 +37,25 @@ const useStyles = makeStyles({
   },
 
   enable: {
-    border: '1px solid #ff9f43',
+    // border: '1px solid #ff9f43',
     borderRadius: 10,
     fontSize: 12,
-    backgroundColor: 'rgba(255, 159, 67, 0.1)',
-    color: '#ff9f43',
+    backgroundColor: 'rgba(234, 84, 85, 0.1)',
+    color: '#eb2222',
   },
   closed: {
-    border: '1px solid #000',
+    // border: '1px solid #494848',
     borderRadius: 10,
     fontSize: 12,
-    backgroundColor: 'rgba(88, 81, 74, 0.1)',
-    color: '#000',
+    backgroundColor: 'rgba(234, 84, 85, 0.1)',
+    color: '#eb2222',
+  },
+  green: {
+    // border: '1px solid #494848',
+    borderRadius: 10,
+    fontSize: 12,
+    backgroundColor: '#d7dcdc',
+    color: '#008479',
   },
 
 });
@@ -200,7 +207,8 @@ const closedTicket = () => {
           status: (<>
             <Grid sx={{ width: "100px", marginLeft: 5 }}>
               <Typography className={`${tickets?.status === 'CLOSED' ? `${classes.closed}` : `${classes.green}`}`}> {tickets?.status}</Typography>
-            </Grid></>),
+            </Grid>
+          </>),
           action: (
             <Stack justifyContent='end' spacing={2} direction="row">
               <Link to={`/replyticket/${tickets.ticketNumber}`}>
@@ -271,7 +279,7 @@ const closedTicket = () => {
                       key={column.id}
                       align={column.align}
                       style={{ minWidth: column.minWidth }}
-                      sx={{ backgroundColor: "#0D6A8426" }}
+                      sx={{ backgroundColor: "#0D6A84", color:'#fff' }}
                     >
                       {column.label}
                     </TableCell>

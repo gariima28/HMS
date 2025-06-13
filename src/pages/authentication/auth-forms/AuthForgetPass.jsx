@@ -1,6 +1,12 @@
 import PropTypes from 'prop-types';
 import React, { useEffect, useRef, useState } from 'react';
 import { useNavigate, Link as RouterLink } from 'react-router-dom';
+import { styled } from '@mui/material/styles';
+import Box from '@mui/material/Box';
+import Paper from '@mui/material/Paper';
+import MyForgotLogo from "../../../assets/images/Group 1092.svg"
+import MyForgotLogoOTP from "../../../assets/images/Group 1093.svg"
+import MyForgotLogoNew from "../../../assets/images/Group 1094.svg"
 
 // material-ui
 import Button from '@mui/material/Button';
@@ -200,6 +206,19 @@ export default function AuthForgetPass() {
     localStorage.setItem('forget_Page', 'OTP Page');
     navigate('/');
   }
+
+  const Item = styled(Paper)(({ theme }) => ({
+    backgroundColor: '#fff',
+    ...theme.typography.body2,
+    padding: theme.spacing(1),
+    textAlign: 'center',
+    paddingTop: '0px',
+    color: (theme.vars ?? theme).palette.text.secondary,
+    ...theme.applyStyles('dark', {
+      backgroundColor: '#1A2027',
+
+    }),
+  }));
   return (
     <>
       <Snackbar
@@ -214,119 +233,204 @@ export default function AuthForgetPass() {
       </Snackbar>
       {forgetState === 'OTP Page'
         ?
-        <form noValidate onSubmit={handleSubmit(getOTP)}>
-          <Grid container spacing={3}>
-            <Grid item xs={12}>
-              <Stack spacing={1}>
-                <InputLabel htmlFor="email-login">Email Address</InputLabel>
-                <OutlinedInput id="email-login" type="email" placeholder="Enter email address" fullWidth error={Boolean(errors.email)} {...register('email', { required: 'Email is required', pattern: { value: /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,4}$/, message: 'Must be a valid email', }, })} />
-              </Stack>
-              {errors.email && (
-                <FormHelperText error id="standard-weight-helper-text-email-login">
-                  {errors.email.message}
-                </FormHelperText>
-              )}
+        <Box sx={{ flexGrow: 1 }}>
+          <Grid container spacing={4} sx={{}} >
+            <Grid item xs={10} sm={6} sx={{ margin: 'auto', display: 'flex', justifyContent: 'center' }}>
+              <form noValidate onSubmit={handleSubmit(getOTP)}>
+                <Typography variant="h3">Forget Password ?</Typography>
+                <Grid container spacing={3}>
+                  <Grid item xs={12}>
+                    <Stack spacing={1} sx={{ my: '20px' }}>
+                      <InputLabel htmlFor="email-login">Email Address</InputLabel>
+                      <OutlinedInput id="email-login" type="email" placeholder="Enter email address" error={Boolean(errors.email)} {...register('email', { required: 'Email is required', pattern: { value: /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,4}$/, message: 'Must be a valid email', }, })} />
+                    </Stack>
+                    {errors.email && (
+                      <FormHelperText error id="standard-weight-helper-text-email-login">
+                        {errors.email.message}
+                      </FormHelperText>
+                    )}
+                  </Grid>
+                  <Grid item xs={12}>
+                    <AnimateButton>
+                      <Button disableElevation disabled={isSubmitting} fullWidth size="large" type="submit" variant="contained" sx={{ backgroundColor: '#0D6A84', color: '#fff', '&:hover, &:active, &:focus': { backgroundColor: '#0D6A84', color: '#fff' } }} >
+                        Next
+                      </Button>
+                    </AnimateButton>
+                  </Grid>
+                  <Grid item xs={12} sx={{ mt: -2 }}>
+                    <Stack direction='row' justifyContent="center" alignItems="center" spacing={0.2}>
+                      <Link
+                        component={RouterLink}
+                        to="/"
+                        onClick={returnToLogin}
+                        color="text.primary"
+                        underline="hover"
+                        sx={{ display: 'flex', alignItems: 'center', gap: 1 }}
+                      >
+                        <svg xmlns="http://www.w3.org/2000/svg" width="20" height="30" viewBox="0 0 512 512">
+                          <path fill="#85ea62" d="M497.333 239.999H80.092l95.995-95.995l-22.627-22.627L18.837 256L153.46 390.623l22.627-22.627l-95.997-95.997h417.243z" />
+                        </svg>
+                        Return to the Login Page?
+                      </Link>
+                    </Stack>
+                  </Grid>
+                </Grid>
+              </form>
             </Grid>
-            <Grid item xs={12}>
-              <AnimateButton>
-                <Button disableElevation disabled={isSubmitting} fullWidth size="large" type="submit" variant="contained" sx={{ backgroundColor: '#4634ff', color: '#fff', '&:hover, &:active, &:focus': { backgroundColor: '#4634ff', color: '#fff' } }} >
-                  Get OTP
-                </Button>
-              </AnimateButton>
-            </Grid>
-            <Grid item xs={12} sx={{ mt: -2 }}>
-              <Stack justifyContent="center" alignItems="center" spacing={0.2} >
-                <Link variant="body" component={RouterLink} color="text.primary" to="/" onClick={returnToLogin} sx={{ m: 0 }} >
-                  Return to the Login Page?
-                </Link>
-              </Stack>
+            <Grid item xs={10} sm={6} sx={{ margin: 'auto', display: 'flex', justifyContent: 'center' }}>
+              <Grid
+                container
+                justifyContent="center"
+                alignItems="center"
+                sx={{ height: '100%', textAlign: 'center',display:'flex', justifyContent:'center' }}
+              >
+                <Grid item sx={{ borderRadius: '50px' }}>
+                  <Box sx={{ width: '85%' }}>
+                    <img
+                      src={MyForgotLogo}
+                      alt="Logo"
+                      style={{ width: '100%', height: 'auto', display: 'block', margin: '0 auto', borderRadius: '0px 20px 20px 0px', }}
+                    />
+                  </Box>
+                </Grid>
+              </Grid>
             </Grid>
           </Grid>
-        </form>
+        </Box>
         :
         forgetState === 'Verify Page'
           ?
-          <form noValidate onSubmit={handleSubmit(verifyOTP)}>
-            <Grid container spacing={3}>
-              <Grid item xs={12}>
-                <Stack spacing={1}>
-                  <InputLabel htmlFor="otp-input">Enter OTP</InputLabel>
-                  <Stack direction="row" spacing={1} justifyContent="start">
-                    {Array.from({ length: 4 }).map((_, index) => (
-                      <OutlinedInput key={index} alignItems='center' inputProps={{ maxLength: 1 }} inputRef={(el) => (otpRefs.current[index] = el)} {...register(`otp${index + 1}`, { required: true })} onKeyUp={(e) => handleKeyUp(e, index)} sx={{ width: 38, textAlign: 'center' }} />
-                    ))}
-                  </Stack>
-                </Stack>
+          <Box sx={{ flexGrow: 1 }}>
+            <Grid container spacing={4} sx={{}}>
+              <Grid item xs={10} sm={6} sx={{ margin: 'auto', display: 'flex', justifyContent: 'center' }}>
+                <form noValidate onSubmit={handleSubmit(verifyOTP)}>
+                  <Grid container spacing={3}>
+                    <Grid item xs={12}>
+                      <Stack spacing={1}>
+                        <InputLabel htmlFor="otp-input">Enter OTP</InputLabel>
+                        <Stack direction="row" spacing={1} justifyContent="start">
+                          {Array.from({ length: 4 }).map((_, index) => (
+                            <OutlinedInput key={index} alignItems='center' inputProps={{ maxLength: 1 }} inputRef={(el) => (otpRefs.current[index] = el)} {...register(`otp${index + 1}`, { required: true })} onKeyUp={(e) => handleKeyUp(e, index)} sx={{ width: 38, textAlign: 'center' }} />
+                          ))}
+                        </Stack>
+                      </Stack>
+                    </Grid>
+
+                    <Grid item xs={12}>
+                      <AnimateButton>
+                        <Button disableElevation disabled={isSubmitting} fullWidth size="large" type="submit" variant="contained" sx={{ backgroundColor: '#0D6A84', color: '#fff', '&:hover, &:active, &:focus': { backgroundColor: '#0D6A84', color: '#fff' } }} >
+                          Verify OTP
+                        </Button>
+                      </AnimateButton>
+                    </Grid>
+
+                    <Grid item xs={12} sx={{ mt: -2 }}>
+                      <Stack direction="row" justifyContent="center" alignItems="center" spacing={0.2}>
+                        <Link sx={{ display: 'flex', alignItems: 'center', gap: 1 }} variant="body" component={RouterLink} color="text.primary" to="/" onClick={returnToLogin}  >
+                          <svg xmlns="http://www.w3.org/2000/svg" width="20" height="30" viewBox="0 0 512 512">
+                            <path fill="#85ea62" d="M497.333 239.999H80.092l95.995-95.995l-22.627-22.627L18.837 256L153.46 390.623l22.627-22.627l-95.997-95.997h417.243z" />
+                          </svg> Return to the Login Page?
+                        </Link>
+                      </Stack>
+                    </Grid>
+
+                  </Grid>
+                </form>
               </Grid>
 
-              <Grid item xs={12}>
-                <AnimateButton>
-                  <Button disableElevation disabled={isSubmitting} fullWidth size="large" type="submit" variant="contained" sx={{ backgroundColor: '#4634ff', color: '#fff', '&:hover, &:active, &:focus': { backgroundColor: '#4634ff', color: '#fff' } }} >
-                    Verify OTP
-                  </Button>
-                </AnimateButton>
+              <Grid item xs={10} sm={6} sx={{ margin: 'auto', display: 'flex', justifyContent: 'center' }}>
+                <Box sx={{ width: '85%' }}>
+                  <img
+                    src={MyForgotLogoOTP}
+                    alt="Logo"
+                    style={{ width: '100%', height: 'auto', display: 'block', margin: '0 auto', borderRadius: '0px 20px 20px 0px', }}
+                  />
+                </Box>
               </Grid>
 
-              <Grid item xs={12} sx={{ mt: -2 }}>
-                <Stack direction="row" justifyContent="center" alignItems="center" spacing={0.2}>
-                  <Link variant="body" component={RouterLink} color="text.primary" to="/" onClick={returnToLogin} sx={{ m: 0 }} >
-                    Return to the Login Page?
-                  </Link>
-                </Stack>
-              </Grid>
             </Grid>
-          </form>
+          </Box>
+
           :
           forgetState === 'New Password Page'
             ?
-            <form noValidate onSubmit={handleSubmit(setPassword)}>
-              <Grid container spacing={3}>
-                {/* Password Field */}
-                <Grid item xs={12}>
-                  <Stack spacing={1}>
-                    <InputLabel htmlFor="password">New Password</InputLabel>
-                    <OutlinedInput id="password" type={showPassword ? 'text' : 'password'} placeholder="Enter new password" fullWidth {...register('password', { required: true })} endAdornment={<IconButton aria-label="toggle password visibility" onClick={() => setShowPassword(!showPassword)} edge="end" > {showPassword ? <VisibilityOff /> : <Visibility />} </IconButton>} />
-                  </Stack>
-                </Grid>
-
-                {/* Password Requirements */}
-                {showRequirements && (
-                  <Grid item xs={12}>
-                    <Stack spacing={1}>
-                      {passwordRequirements.map((req, index) => (
-                        <Stack key={index} direction="row" alignItems="center" spacing={0.2}>
-                          {req.isValid ? (
-                            <CheckCircleIcon color="success" fontSize='12px' />
-                          ) : (
-                            <CancelIcon color="error" fontSize='12px' />
-                          )}
-                          <Typography variant="body2" color={req.isValid ? 'success.main' : 'error.main'} sx={{ fontSize: '12px' }} >
-                            {req.label}
-                          </Typography>
+            <Box sx={{ flexGrow: 1 }}>
+              <Grid container spacing={4} sx={{}}>
+                <Grid item xs={10} sm={6} sx={{ margin: 'auto', display: 'flex', justifyContent: 'center' }}>
+                  <form noValidate onSubmit={handleSubmit(setPassword)}>
+                    <Grid container spacing={3}>
+                      {/* Password Field */}
+                      <Grid item xs={12}>
+                        <Stack spacing={1}>
+                          <InputLabel htmlFor="password">New Password</InputLabel>
+                          <OutlinedInput id="password" type={showPassword ? 'text' : 'password'} placeholder="Enter new password" fullWidth {...register('password', { required: true })} endAdornment={<IconButton aria-label="toggle password visibility" onClick={() => setShowPassword(!showPassword)} edge="end" > {showPassword ? <VisibilityOff /> : <Visibility />} </IconButton>} />
                         </Stack>
-                      ))}
-                    </Stack>
+                      </Grid>
+
+                      {/* Password Requirements */}
+                      {showRequirements && (
+                        <Grid item xs={12}>
+                          <Stack spacing={1}>
+                            {passwordRequirements?.map((req, index) => (
+                              <Stack key={index} direction="row" alignItems="center" spacing={0.2}>
+                                {req.isValid ? (
+                                  <CheckCircleIcon color="success" fontSize='12px' />
+                                ) : (
+                                  <CancelIcon color="error" fontSize='12px' />
+                                )}
+                                <Typography variant="body2" color={req.isValid ? 'success.main' : 'error.main'} sx={{ fontSize: '12px' }} >
+                                  {req.label}
+                                </Typography>
+                              </Stack>
+                            ))}
+                          </Stack>
+                        </Grid>
+                      )}
+
+                      {/* Submit Button */}
+                      <Grid item xs={12}>
+                        <AnimateButton>
+                          <Button disableElevation disabled={isSubmitting} fullWidth size="large" type="submit" variant="contained" sx={{ backgroundColor: '#0D6A84', color: '#fff', '&:hover, &:active, &:focus': { backgroundColor: '#0D6A84', color: '#fff' } }} >
+                            Change Password
+                          </Button>
+                        </AnimateButton>
+                      </Grid>
+
+                      <Grid item xs={12} sx={{ mt: -2 }}>
+                        <Stack direction="row" justifyContent="center" alignItems="center" spacing={0.2}>
+                          <Link sx={{ display: 'flex', alignItems: 'center', gap: 1 }} variant="body" component={RouterLink} color="text.primary" to="/" onClick={returnToLogin} >
+                            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="30" viewBox="0 0 512 512">
+                          <path fill="#85ea62" d="M497.333 239.999H80.092l95.995-95.995l-22.627-22.627L18.837 256L153.46 390.623l22.627-22.627l-95.997-95.997h417.243z" />
+                        </svg> Return to the Login Page?
+                          </Link>
+                        </Stack>
+                      </Grid>
+                    </Grid>
+                  </form>
+                </Grid>
+                <Grid item xs={11} sm={6} sx={{}}>
+                  <Grid
+                    container
+                    justifyContent="center"
+                    alignItems="center"
+
+                    sx={{ height: '100%', textAlign: 'center', }}
+                  >
+                    <Grid item sx={{ borderRadius: '50px' }}>
+                      <Box sx={{ width: '85%' }}>
+                        <img
+                          src={MyForgotLogoNew}
+                          alt="Logo"
+                          style={{ width: '100%', height: 'auto', display: 'block', margin: '0 auto', borderRadius: '0px 20px 20px 0px', }}
+                        />
+                      </Box>
+                    </Grid>
                   </Grid>
-                )}
-
-                {/* Submit Button */}
-                <Grid item xs={12}>
-                  <AnimateButton>
-                    <Button disableElevation disabled={isSubmitting} fullWidth size="large" type="submit" variant="contained" sx={{ backgroundColor: '#4634ff', color: '#fff', '&:hover, &:active, &:focus': { backgroundColor: '#4634ff', color: '#fff' } }} >
-                      Change Password
-                    </Button>
-                  </AnimateButton>
                 </Grid>
 
-                <Grid item xs={12} sx={{ mt: -2 }}>
-                  <Stack direction="row" justifyContent="center" alignItems="center" spacing={0.2}>
-                    <Link variant="body" component={RouterLink} color="text.primary" to="/" onClick={returnToLogin} sx={{ m: 0 }} >
-                      Return to the Login Page?
-                    </Link>
-                  </Stack>
-                </Grid>
               </Grid>
-            </form>
+            </Box>
+
             :
             ''
       }

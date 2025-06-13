@@ -36,25 +36,26 @@ const useStyles = makeStyles({
     borderRadius: "0px 3px 3px 0px"
   },
   enable: {
-    border: '1px solid #ff9f43',
+    // border: '1px solid #ff9f43',
     borderRadius: 10,
     fontSize: 12,
-    backgroundColor: 'rgba(255, 159, 67, 0.1)',
-    color: '#ff9f43',
+    backgroundColor: '#FBD8D1',
+    // backgroundColor: 'rgba(255, 159, 67, 0.1)',
+    color: '#943320',
   },
   closed: {
-    border: '1px solid #000',
+    // border: '1px solid #000',
     borderRadius: 10,
     fontSize: 12,
     backgroundColor: 'rgba(88, 81, 74, 0.1)',
     color: '#000',
   },
   green: {
-    border: '1px solid #28c76f',
+    // border: '1px solid #28c76f',
     borderRadius: 10,
     fontSize: 13,
-    backgroundColor: 'rgba(40, 199, 111, 0.1)',
-    color: '#28c76f',
+    backgroundColor: '#DBE9ED',
+    color: '#0D6A84',
   },
   high: {
     border: '1px solid #eb2222',
@@ -212,11 +213,9 @@ const allTicket = () => {
           action: (
             <Stack justifyContent='end' spacing={2} direction="row">
 
-              <Button variant="outlined" size="small" startIcon={<FundProjectionScreenOutlined />} href={`./replyticket/${tickets.ticketNumber}`}>Details</Button>
+              {/* <Button sx={{borderColor:' 1px solid #0D6A84'}}  variant="outlined" size="small" startIcon={<FundProjectionScreenOutlined />} href={`./replyticket/${tickets.ticketNumber}`}>Details</Button> */}
 
               <DetailsButton variant="outlined" size="small" startIcon={<FundProjectionScreenOutlined />} href={`./replyticket/${tickets.ticketNumber}`}>Details</DetailsButton>
-
-
 
             </Stack>
           )
@@ -282,8 +281,7 @@ const allTicket = () => {
                       key={column.id}
                       align={column.align}
                       style={{ minWidth: column.minWidth }}
-                      sx={{ backgroundColor: "#0D6A8426" }}
-                    >
+                      sx={{ backgroundColor: "#0D6A84", color: '#fff' }}                    >
                       {column.label}
                     </TableCell>
                   ))}

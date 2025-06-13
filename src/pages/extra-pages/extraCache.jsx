@@ -41,7 +41,7 @@ const css = {
 const forHover = {
     '&:hover': {
         color: "#fff",
-        backgroundColor: '#4634ff',
+        backgroundColor: '#0D6A84',
     },
 }
 
@@ -179,7 +179,7 @@ const extraCache = () => {
                                 </Box>
 
                                 <Grid xs={12} sx={{}}>
-                                    <Button sx={{ ...forHover, width: '100%', backgroundColor: "#4634ff", color: '#fff', borderRadius: 0 }} variant="contained" onClick={MyCacheExtraPostApi} >Click to clear</Button>
+                                    <Button sx={{ ...forHover, width: '100%', backgroundColor: "#0D6A84", color: '#fff', borderRadius: 0 }} variant="contained" onClick={MyCacheExtraPostApi} >Click to clear</Button>
                                     <Toaster />
                                 </Grid>
                             </Box>

@@ -216,8 +216,7 @@ const bookingAction = () => {
                       key={column.id}
                       align={column.align}
                       style={{ minWidth: column.minWidth }}
-                      sx={{ backgroundColor: "#0D6A8426" }}
-                    >
+                      sx={{ backgroundColor: "#0D6A84", color: '#fff' }}                    >
                       {column.label}
                     </TableCell>
                   ))}

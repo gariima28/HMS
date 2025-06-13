@@ -1,7 +1,9 @@
 import React, { useEffect } from 'react';
 import PropTypes from 'prop-types';
 import { Link as RouterLink, useNavigate } from 'react-router-dom';
-
+import { styled } from '@mui/material/styles';
+import Box from '@mui/material/Box';
+import Paper from '@mui/material/Paper';
 // material-ui
 import Button from '@mui/material/Button';
 import Checkbox from '@mui/material/Checkbox';
@@ -17,6 +19,7 @@ import Snackbar from '@mui/material/Snackbar';
 import Alert from '@mui/material/Alert';
 import Stack from '@mui/material/Stack';
 import Typography from '@mui/material/Typography';
+import MyLogo from "../../../assets/images/Group 1091.svg"
 
 // third party
 import * as Yup from 'yup';
@@ -31,6 +34,7 @@ import EyeInvisibleOutlined from '@ant-design/icons/EyeInvisibleOutlined';
 import { loginApi } from 'api/api';
 import HashLoader from 'components/Skeleton/HashLoader';
 import { useGeolocated } from 'react-geolocated';
+import { display } from '@mui/system';
 
 export default function AuthLogin({ isDemo = false }) {
   const navigate = useNavigate();
@@ -127,6 +131,18 @@ export default function AuthLogin({ isDemo = false }) {
     }
   };
 
+  const Item = styled(Paper)(({ theme }) => ({
+    backgroundColor: '#fff',
+    ...theme.typography.body2,
+    padding: theme.spacing(1),
+    textAlign: 'center',
+    paddingTop:'0px' ,
+    color: (theme.vars ?? theme).palette.text.secondary,
+    ...theme.applyStyles('dark', {
+      backgroundColor: '#1A2027',
+
+    }),
+  }));
 
   return (
     <>
@@ -154,107 +170,231 @@ export default function AuthLogin({ isDemo = false }) {
         onSubmit={handleLogin}
       >
         {({ errors, handleBlur, handleChange, handleSubmit, isSubmitting, touched, values }) => (
-          <form noValidate onSubmit={handleSubmit}>
-            <Grid container spacing={3}>
-              <Grid item xs={12}>
-                <Stack spacing={1}>
-                  <InputLabel htmlFor="email-login">Email Address</InputLabel>
-                  <OutlinedInput
-                    id="email-login"
-                    type="email"
-                    value={values.email}
-                    name="email"
-                    onBlur={handleBlur}
-                    onChange={handleChange}
-                    placeholder="Enter email address"
-                    fullWidth
-                    error={Boolean(touched.email && errors.email)}
-                  />
-                </Stack>
-                {touched.email && errors.email && (
-                  <FormHelperText error id="standard-weight-helper-text-email-login">
-                    {errors.email}
-                  </FormHelperText>
-                )}
-              </Grid>
-              <Grid item xs={12}>
-                <Stack spacing={1}>
-                  <InputLabel htmlFor="password-login">Password</InputLabel>
-                  <OutlinedInput
-                    fullWidth
-                    error={Boolean(touched.password && errors.password)}
-                    id="password-login"
-                    type={showPassword ? 'text' : 'password'}
-                    value={values.password}
-                    name="password"
-                    onBlur={handleBlur}
-                    onChange={handleChange}
-                    placeholder="Enter password"
-                    endAdornment={
-                      <InputAdornment position="end">
-                        <IconButton
-                          aria-label="toggle password visibility"
-                          onClick={handleClickShowPassword}
-                          onMouseDown={handleMouseDownPassword}
-                          edge="end"
-                          color="secondary"
+
+          <Box sx={{ flexGrow: 1 }}>
+            <Grid container spacing={4} >
+              {/* Left Side: Form */}
+              <Grid item xs={12} sm={6} sx={{ margin: 'auto', backgroundColor:'' }}>
+                <form onSubmit={handleSubmit} >
+                  <Grid container spacing={2}>
+                    <Grid item xs={12}>
+                      <Typography variant="h3">Login into your account</Typography>
+                      <Typography >How to i get started lorem ipsum dolor at?</Typography>
+                    </Grid>
+                    <Grid item xs={10} >
+                      <Stack spacing={1} sx={{ my: '20px' }}>
+                        <InputLabel htmlFor="email-login">Email Id :</InputLabel>
+                        <OutlinedInput
+                          id="email-login"
+                          type="email"
+                          value={values.email}
+                          name="email"
+                          onBlur={handleBlur}
+                          onChange={handleChange}
+                          placeholder="info@provistechnologies.com"
+                          fullWidth
+                          error={Boolean(touched.email && errors.email)}
+                          sx={{ backgroundColor: '#EEEEEE', border: 'none' }}
+                        />
+                      </Stack>
+                      {touched.email && errors.email && (
+                        <FormHelperText error id="standard-weight-helper-text-email-login">
+                          {errors.email}
+                        </FormHelperText>
+                      )}
+                    </Grid>
+
+                    <Grid item xs={10}>
+                      <Stack spacing={1}>
+                        <InputLabel htmlFor="password-login">Password</InputLabel>
+                        <OutlinedInput
+                          fullWidth
+                          error={Boolean(touched.password && errors.password)}
+                          id="password-login"
+                          type={showPassword ? 'text' : 'password'}
+                          value={values.password}
+                          name="password"
+                          onBlur={handleBlur}
+                          onChange={handleChange}
+                          sx={{ backgroundColor: '#EEEEEE', border: 'none' }}
+                          placeholder="Enter your password"
+                          endAdornment={
+                            <InputAdornment position="end">
+                              <IconButton
+                                aria-label="toggle password visibility"
+                                onClick={handleClickShowPassword}
+                                onMouseDown={handleMouseDownPassword}
+                                edge="end"
+                                color="secondary"
+                              >
+                                {showPassword ? <EyeOutlined /> : <EyeInvisibleOutlined />}
+                              </IconButton>
+                            </InputAdornment>
+                          }
+                        />
+                      </Stack>
+                      {touched.password && errors.password && (
+                        <FormHelperText error id="standard-weight-helper-text-password-login">
+                          {errors.password}
+                        </FormHelperText>
+                      )}
+                    </Grid>
+
+                    <Grid item xs={10} sx={{ mt: -1 }}>
+                      <Stack direction="row" justifyContent="end" alignItems="center" spacing={2}>
+                        <Link variant="h6" component={RouterLink} color="#FF914D" to="/forgetPass">
+                          Forgot Password?
+                        </Link>
+                      </Stack>
+                    </Grid>
+
+                    {errors.submit && (
+                      <Grid item xs={12}>
+                        <FormHelperText error>{errors.submit}</FormHelperText>
+                      </Grid>
+                    )}
+
+                    <Grid item xs={10}>
+                      <AnimateButton>
+                        <Button
+                          disableElevation
+                          disabled={isSubmitting}
+                          fullWidth
+                          size="large"
+                          type="submit"
+                          variant="contained"
+                          sx={{
+                            backgroundColor: '#0D6A84',
+                            color: '#fff',
+                            '&:hover, &:active, &:focus': {
+                              backgroundColor: '#0D6A84',
+                              color: '#fff'
+                            }
+                          }}
                         >
-                          {showPassword ? <EyeOutlined /> : <EyeInvisibleOutlined />}
-                        </IconButton>
-                      </InputAdornment>
-                    }
-                  />
-                </Stack>
-                {touched.password && errors.password && (
-                  <FormHelperText error id="standard-weight-helper-text-password-login">
-                    {errors.password}
-                  </FormHelperText>
-                )}
+                          Login
+                        </Button>
+                      </AnimateButton>
+                    </Grid>
+                  </Grid>
+                </form>
               </Grid>
 
-              <Grid item xs={12} sx={{ mt: -1 }}>
-                <Stack direction="row" justifyContent="space-between" alignItems="center" spacing={2}>
-                  {/* <FormControlLabel
-                    control={
-                      <Checkbox checked={checked} onChange={(event) => setChecked(event.target.checked)} name="checked"
-                        sx={{
-                          color: '#4634ff', '&.Mui-checked': { backgroundColor: '#fff', color: '#4634ff', borderRadius: '4px', },
-                          '&.Mui-checked:hover': { backgroundColor: '#fff', color: '#4634ff', }, '&:hover': {
-                            backgroundColor: '#fff',
-                            color: '#4634ff',
-                          },
-                        }} size="small"
+              <Grid item xs={12} sm={6} sx={{marginLeft:''}}>
+                <Grid
+                  container
+                  justifyContent="center"
+                  alignItems="center"
+                  
+                  sx={{ height: '100%', textAlign: 'center', }}
+                >
+                  <Grid item sx={{ borderRadius: '50px' }}>
+                    <Box sx={{ width: '100%' }}>
+                      <img
+                        src={MyLogo}
+                        alt="Logo"
+                        style={{ width: '100%', height: 'auto', display: 'block', margin: '0 auto', borderRadius: '0px 20px 20px 0px', }}
                       />
-                    }
-                    label={<Typography variant="h6">Keep me sign in</Typography>}
-                  /> */}
-                  <Link variant="h6" component={RouterLink} color="text.primary" to="/forgetPass">
-                    Forgot Password?
-                  </Link>
-                </Stack>
-              </Grid>
-              {errors.submit && (
-                <Grid item xs={12}>
-                  <FormHelperText error>{errors.submit}</FormHelperText>
+                    </Box>
+                  </Grid>
                 </Grid>
-              )}
-              <Grid item xs={12}>
-                <AnimateButton>
-                  <Button
-                    disableElevation
-                    disabled={isSubmitting}
-                    fullWidth
-                    size="large"
-                    type="submit"
-                    variant="contained"
-                    sx={{ backgroundColor: '#0D6A84', color: '#fff', '&:hover, &:active, &:focus': { backgroundColor: '#0D6A84', color: '#fff' } }}
-                  >
-                    Login
-                  </Button>
-                </AnimateButton>
               </Grid>
+
             </Grid>
-          </form>
+          </Box>
+
+
+
+
+          // <form noValidate onSubmit={handleSubmit}>
+          //   <Grid container spacing={4}>
+          //     <Grid item xs={12}>
+          //       <Stack spacing={1}>
+          //         <InputLabel htmlFor="email-login">Email Id :</InputLabel>
+          //         <OutlinedInput
+          //           id="email-login"
+          //           type="email"
+          //           value={values.email}
+          //           name="email"
+          //           onBlur={handleBlur}
+          //           onChange={handleChange}
+          //           placeholder="info@provistechnologies.com"
+          //           fullWidth
+          //           error={Boolean(touched.email && errors.email)}
+          //           sx={{backgroundColor:'#EEEEEE', border:'none'}}
+          //         />
+          //       </Stack>
+          //       {touched.email && errors.email && (
+          //         <FormHelperText error id="standard-weight-helper-text-email-login">
+          //           {errors.email}
+          //         </FormHelperText>
+          //       )}
+          //     </Grid>
+          //     <Grid item xs={12}>
+          //       <Stack spacing={1}>
+          //         <InputLabel htmlFor="password-login">Password</InputLabel>
+          //         <OutlinedInput
+          //           fullWidth
+          //           error={Boolean(touched.password && errors.password)}
+          //           id="password-login"
+          //           type={showPassword ? 'text' : 'password'}
+          //           value={values.password}
+          //           name="password"
+          //           onBlur={handleBlur}
+          //           onChange={handleChange}
+          //           sx={{backgroundColor:'#EEEEEE', border:'none'}}
+          //           placeholder="Enter your password"
+          //           endAdornment={
+          //             <InputAdornment position="end">
+          //               <IconButton
+          //                 aria-label="toggle password visibility"
+          //                 onClick={handleClickShowPassword}
+          //                 onMouseDown={handleMouseDownPassword}
+          //                 edge="end"
+          //                 color="secondary"
+          //               >
+          //                 {showPassword ? <EyeOutlined /> : <EyeInvisibleOutlined />}
+          //               </IconButton>
+          //             </InputAdornment>
+          //           }
+          //         />
+          //       </Stack>
+          //       {touched.password && errors.password && (
+          //         <FormHelperText error id="standard-weight-helper-text-password-login">
+          //           {errors.password}
+          //         </FormHelperText>
+          //       )}
+          //     </Grid>
+          //     <Grid item xs={12} sx={{ mt: -1 }}>
+          //       <Stack direction="row" justifyContent="end"  alignItems="center" spacing={2}>
+          //         <Link variant="h6" component={RouterLink} color="#FF914D" to="/forgetPass">
+          //           Forgot Password?
+          //         </Link>
+          //       </Stack>
+          //     </Grid>
+          //     {errors.submit && (
+          //       <Grid item xs={12}>
+          //         <FormHelperText error>{errors.submit}</FormHelperText>
+          //       </Grid>
+          //     )}
+          //     <Grid item xs={12}>
+          //       <AnimateButton>
+          //         <Button
+          //           disableElevation
+          //           disabled={isSubmitting}
+          //           fullWidth
+          //           size="large"
+          //           type="submit"
+          //           variant="contained"
+          //           sx={{ backgroundColor: '#0D6A84', color: '#fff', '&:hover, &:active, &:focus': { backgroundColor: '#0D6A84', color: '#fff' } }}
+          //           >
+          //           Login
+          //         </Button>
+          //       </AnimateButton>
+          //     </Grid>
+
+          //   </Grid>
+          // </form>
         )}
       </Formik>
     </>
@@ -262,3 +402,21 @@ export default function AuthLogin({ isDemo = false }) {
 }
 
 AuthLogin.propTypes = { isDemo: PropTypes.bool };
+
+
+
+
+{/* <FormControlLabel
+  control={
+    <Checkbox checked={checked} onChange={(event) => setChecked(event.target.checked)} name="checked"
+      sx={{
+        color: '#4634ff', '&.Mui-checked': { backgroundColor: '#fff', color: '#4634ff', borderRadius: '4px', },
+        '&.Mui-checked:hover': { backgroundColor: '#fff', color: '#4634ff', }, '&:hover': {
+          backgroundColor: '#fff',
+          color: '#4634ff',
+        },
+      }} size="small"
+    />
+  }
+  label={<Typography variant="h6">Keep me sign in</Typography>}
+/> */}

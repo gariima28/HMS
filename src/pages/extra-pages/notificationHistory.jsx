@@ -194,7 +194,7 @@ const notificationHistory = () => {
           dateTime: (<><Grid><Typography>{notifications?.dateTime?.split("T")[0]}</Typography> <br />
           </Grid></>),
           userName: (<><Grid><Typography>{notifications?.userName} <br /></Typography>
-            <Typography sx={{ color: '#4634ff', fontSize: 16 }}>{notifications?.userEmail}</Typography>
+            <Typography sx={{ color: '#0D6A84', fontSize: 16 }}>{notifications?.userEmail}</Typography>
           </Grid></>),
           action: (
             <Stack justifyContent='end' spacing={2} direction="row">
@@ -297,14 +297,14 @@ const notificationHistory = () => {
         <Paper sx={{ width: '100%', overflow: 'hidden' }}>
           <TableContainer sx={{ maxHeight: 440 }}>
             <Table stickyHeader aria-label="sticky table">
-              <TableHead>
+              <TableHead >
                 <TableRow>
                   {columns?.map((column) => (
                     <TableCell
                       key={column.id}
                       align={column.align}
                       style={{ minWidth: column.minWidth }}
-                      sx={{ backgroundColor: "#0D6A8426" }}
+                      sx={{ backgroundColor: "#0D6A84", color:'#fff' }}
                     >
                       {column.label}
                     </TableCell>
